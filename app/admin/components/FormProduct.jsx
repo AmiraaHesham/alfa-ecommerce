@@ -19,15 +19,15 @@ export default function FormProduct({name_categ , img , state}) {
     <hr className="h-1"></hr>
      <div className="flex justify-between mt-3">
 <label htmlFor="fileInput">
-                            <div className="flex flex-col items-center h-[140px] w-[140px]  justify-center p-3 border-2 border-dashed border-blue-300 rounded-lg hover:bg-gray-50">
+                            <div className="flex flex-col items-center h-[120px] w-[120px]  justify-center p-3 border-2 border-dashed border-blue-300 rounded-lg hover:bg-gray-50">
                               <div
                                 id="label-uplod"
                                 className="flex flex-col justify-center items-center"
                               >
-                                <span className="text-4xl text-blue-600">
+                                <span className="text-2xl text-blue-600">
                                   <IoCloudUploadSharp />
                                 </span>
-                                <span className="text-sm text-gray-500">
+                                <span className="text-xs text-gray-500">
                                   {t("add-photo")}
                                 </span>
                               </div>
@@ -51,15 +51,15 @@ export default function FormProduct({name_categ , img , state}) {
                             id="fileInput"
                           />
                           <label htmlFor="fileInput">
-                            <div className="flex flex-col items-center h-[140px] w-[140px] justify-center p-3 border-2 border-dashed border-blue-300 rounded-lg hover:bg-gray-50">
+                            <div className="flex flex-col items-center h-[120px] w-[120px] justify-center p-3 border-2 border-dashed border-blue-300 rounded-lg hover:bg-gray-50">
                               <div
                                 id="label-uplod"
                                 className="flex flex-col justify-center items-center"
                               >
-                                <span className="text-4xl text-blue-600">
+                                <span className="text-2xl text-blue-600">
                                   <IoCloudUploadSharp />
                                 </span>
-                                <span className="text-sm text-gray-500">
+                                <span className="text-xs text-gray-500">
                                   {t("add-photo")}
                                 </span>
                               </div>
@@ -83,15 +83,15 @@ export default function FormProduct({name_categ , img , state}) {
                             id="fileInput"
                           />
                           <label htmlFor="fileInput">
-                            <div className="flex flex-col items-center h-[140px] w-[140px] justify-center p-3 border-2 border-dashed border-blue-300 rounded-lg hover:bg-gray-50">
+                            <div className="flex flex-col items-center h-[120px] w-[120px] justify-center p-3 border-2 border-dashed border-blue-300 rounded-lg hover:bg-gray-50">
                               <div
                                 id="label-uplod"
                                 className="flex flex-col justify-center items-center"
                               >
-                                <span className="text-4xl text-blue-600">
+                                <span className="text-2xl text-blue-600">
                                   <IoCloudUploadSharp />
                                 </span>
-                                <span className="text-sm text-gray-500">
+                                <span className="text-xs text-gray-500">
                                   {t("add-photo")}
                                 </span>
                               </div>
@@ -176,7 +176,7 @@ export default function FormProduct({name_categ , img , state}) {
               </button>
               <button
                 type="submit"
-                className="bg-white border py-2 px-3 text-gray-700s mt-7 w-[150px] hover:bg-blue-800 rounded-lg"
+                className="bg-white border py-2 px-3 text-gray-700ss mt-7 w-[150px] hover:bg-blue-800 rounded-lg"
               >
 Cancel              </button>
 </div>
