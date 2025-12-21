@@ -1,0 +1,37 @@
+{
+    "categories_management":"Categories Management",
+    "dashboard":"Dashboard",
+    "homepage":"Homepage",
+    "categories":"Categories",
+    "orders":"Orders",
+    "users":"Users",
+    "contact":"Contact Us",
+    "admins":"Admins",
+    "products":"Products",
+    "platform_mang":"Platform Management",
+    "super_admin":"Super Admin",
+    "image":"IMAGE",
+    "category_name":"CATEGOR YNAME",
+    "products_count":"COUNT",
+    "add_new_category":"Add New Category",
+    "add_new_product":"Add New Product",
+    "add-photo":"Add Photo",
+    "cat-name":"Category Name",
+    "save":"Save",
+    "main_category":"Main Category",
+    "products_category":"Products",
+    "products_management":"Products Management",
+    "product_name":"PRODUCT",
+    "product_category":"CATEOGRY",
+    "price":"PRICE",
+    "state":"STATE",
+    "state_active":"Active",
+    "state_inactive":"inactive",
+    "code":"Code",
+    "delete":"Delete"
+    
+    
+ 
+    
+
+}

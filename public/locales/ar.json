@@ -1,0 +1,37 @@
+{
+    "categories_management":"إدارة الاقسام",
+      "dashboard":"لوحة التحكم",
+    "homepage":"الصفحة الرئيسية",
+    "categories":"الأقسام",
+    "orders":"الطلبات",
+    "users":"المستخدمين",
+    "contact":"معلومات التواصل",
+    "admins":"المشرفين",
+    "products":"المنتجات",
+    "platform_mang":"إدارة المنصة",
+    "super_admin":"المشرف الرئيسي",
+  "image":"الصورة",
+    "category_name":"الصنف",
+    "products_count":"العدد ",
+    "add_new_category":"إضافة صنف جديد",
+    "add_new_product":"إضافة منتج جديد",
+
+    "add-photo":"إضافة صورة",
+    "cat-name":"إسم الصنف",
+    "save":"حفظ",
+    "main_category":"الفئة الرئيسية",
+    "products_category":"منتج",
+    "products_management":"إدارة المنتجات",
+    "product_name":"المنتج",
+    "product_category":"الفئة",
+    "price":"السعر",
+    "state":"الحالة",
+    "state_active":"نشط",
+    "state_inactive":"غير نشط",
+    "code":"كود",
+    "delete":"حذف"
+
+
+
+
+}
