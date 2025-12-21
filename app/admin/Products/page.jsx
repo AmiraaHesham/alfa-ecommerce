@@ -7,7 +7,8 @@ import { useLanguage } from "../../../context/LanguageContext.js";
 import { FaPlus } from "react-icons/fa";
 import axios from "axios";
 import React, { useRef, useState } from "react";
-import FormCategory from "../components/FormCategory";
+import FormProduct from "../components/FormProduct";
+
 import { MdDelete } from "react-icons/md";
 import { FaCircle } from "react-icons/fa";
 
@@ -16,20 +17,23 @@ export default function Home() {
   const { t } = useLanguage();
 
   return (
-    <div className="h-screen bg-[#F9FAFB]">
+    <div className="h-full bg-[#F9FAFB]">
       <main className=" flex border  ">
         <SideMenu tabId={"Categorys"} />
         <div className="w-full">
           <Header page_title={t("products_management")} />
+
           <div className="mx-10 mt-5 relative">
+                                  <FormProduct />
+
             <div className="bg-white h-[50px] border rounded-lg border-1  w-full mt-5 flex justify-end p-5 items-center">
               <button
                 className="p-2 text-white text-sm rounded-md bg-blue-500 text-center flex items-center justify-center gap-2"
-                onClick={() => {
-                  let form = document.querySelector("#add-category-form");
-                  form.classList.remove("hidden");
-                  form.classList.add("flex");
-                }}
+                // onClick={() => {
+                //   let form = document.querySelector("#add-category-form");
+                //   form.classList.remove("hidden");
+                //   form.classList.add("flex");
+                // }}
               >
                 <span>
                   
@@ -38,6 +42,7 @@ export default function Home() {
                 <h1>{t("add_new_product")}</h1>
               </button>
             </div>
+            
             <div className=" rounded-xl w-full h-[530px] border  mt-3 overflow-hidden overflow-y-scroll ">
               <table className=" w-full  rounded-lg  ">
                 <thead className="bg-[#F9FAFB] text-sm  text-justify">
