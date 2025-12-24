@@ -15,28 +15,23 @@ export default function RecentOrders_table() {
 
 <div className="w-[130px] h-[150px]  bg-[#F9FAFB]  rounded-md flex flex-col items-center justify-center">
     <span  className="text-xl text-blue-600   bg-blue-100 p-3 rounded-full"><FaPlusSquare /></span>
-    <h1 className="text-xs font-semibold mt-2">{t("add_product")}</h1>
+    <h1 className="text- font-semibold mt-2">{t("add_product")}</h1>
 </div>
 <div className="w-[130px] h-[150px]  bg-[#F9FAFB] rounded-md  flex flex-col items-center justify-center">
     <span className="text-xl text-purple-600   bg-purple-100 p-3 rounded-full"><TbCategoryPlus /></span>
-    <h1 className="text-xs font-semibold mt-2">{t("add_category")}</h1>
+    <h1 className="text- font-semibold mt-2">{t("add_category")}</h1>
 </div>
 <div className="w-[130px] h-[150px]  bg-[#F9FAFB] rounded-md  flex flex-col items-center justify-center">
     <span className="text-xl text-orange-600   bg-orange-100 p-3 rounded-full"><MdLocalShipping /></span>
-    <h1 className="text-xs font-semibold mt-2">{t("process_orders")}</h1>
+    <h1 className="text- font-semibold mt-2">{t("process_orders")}</h1>
 </div>
 
 
  
 <div className="w-[130px] h-[150px]  bg-[#F9FAFB] rounded-md  flex flex-col items-center justify-center">
     <span className="text-xl text-green-600 bg-green-100 p-3 rounded-full"><FaPlusSquare /></span>
-    <h1 className="text-xs font-semibold mt-2">{t("add_admin")}</h1>
+    <h1 className="text- font-semibold mt-2">{t("add_admin")}</h1>
 </div>
-
-
-
-
-
         </div>
         </div>
 
