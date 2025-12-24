@@ -32,6 +32,11 @@ export default function RecentOrders_table() {
     <span className="text-xl text-green-600 bg-green-100 p-3 rounded-full"><FaPlusSquare /></span>
     <h1 className="text- font-semibold mt-2">{t("add_admin")}</h1>
 </div>
+
+
+
+
+
         </div>
         </div>
 
