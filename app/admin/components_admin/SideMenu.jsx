@@ -21,7 +21,7 @@ export default function SideMenu({tabId}) {
 
   return (
 <div className="h-screen md:w-[300px]  bg-[#ffffff]">
-      <aside className="">
+      <div className="h-full">
         <div className="flex items-center mx-5 gap-4 my-5">
             <span className="text-2xl bg-blue-500 p-2 text-white rounded-md"><MdElectricBolt/></span>
             <div className="cursor-default">
@@ -73,8 +73,8 @@ export default function SideMenu({tabId}) {
             <h1 className="text-md ">{t('products')}</h1>
         </div></Link>
 
-                <div onClick={()=>handleTabClick('Orders')} 
-                className={`flex gap-4 mx-5 justify-start items-center p-3 rounded-md  cursor-pointer \
+             <Link href='/admin/orders_page/Orders'>
+              <div  className={`flex gap-4 mx-5 justify-start items-center p-3 rounded-md  cursor-pointer \
                 ${              activeTab === 'Orders'
                 ? 'bg-[#e0e7ff6e] text-[#6158ff]'
                 : 'text-[#5c6370] hover:bg-[#e0e7ff6e] hover:text-[#6158ff]'
@@ -82,8 +82,9 @@ export default function SideMenu({tabId}) {
             <span className="text-2xl"><MdOutlineShoppingCart /></span>
             <h1 className="text-md ">{t('orders')}</h1>
         </div>
+        </Link>
 
-            <div onClick={()=>handleTabClick('Users')}
+          <Link href='/admin/Users'>  <div onClick={()=>handleTabClick('Users')}
              className={`flex gap-4 mx-5 justify-start  items-center p-3 rounded-md cursor-pointer 
              ${              activeTab === 'Users'
                 ? 'bg-[#e0e7ff6e] text-[#6158ff]'
@@ -91,9 +92,9 @@ export default function SideMenu({tabId}) {
             }`}>
             <span className="text-2xl"><ImUsers /></span>
             <h1 className="text-md ">{t('users')}</h1>
-        </div>
+        </div></Link> 
 
-         <div onClick={()=>handleTabClick('Admins')}
+        {/* <Link href='/admin/AdminUsers'>  <div onClick={()=>handleTabClick('Admins')}
           className={`flex gap-4 mx-5 justify-start  items-center p-3 rounded-md cursor-pointer 
           ${              activeTab === 'Admins'
                 ? 'bg-[#e0e7ff6e] text-[#6158ff]'
@@ -101,7 +102,7 @@ export default function SideMenu({tabId}) {
             }`}>
             <span className="text-2xl"><MdAdminPanelSettings /></span>
             <h1 className="text-md ">{t('admins')}</h1>
-        </div>
+        </div></Link> */}
 
                 <div onClick={()=>handleTabClick('Contact')} 
                 className={`flex gap-4 mx-5 justify-start  items-center p-3 rounded-md cursor-pointer
@@ -113,10 +114,10 @@ export default function SideMenu({tabId}) {
             <h1 className="text-md ">{t('contact')}</h1>
         </div>
         </div>
-       <div className="flex justify-center ">
+       {/* <div className="flex justify-center ">
         <button>Logout</button>
-       </div>
-      </aside>
+       </div> */}
+      </div>
     </div>
 
   );

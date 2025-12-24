@@ -1,14 +1,18 @@
+"use client"
 import Image from "next/image";
 import { MdCancel } from "react-icons/md";
 import { IoCloudUploadSharp } from "react-icons/io5";
 import axios from "axios";
-import React, { useRef, useState } from "react";
-import { useLanguage } from "../../../context/LanguageContext.js";
+import React, { useRef, useState  } from "react";
+import { useLanguage } from "../../../../context/LanguageContext.js";
+import { postRequest } from '../../../../utils/requestsUtils.js';
 
 export default function Home({name_categ , img , state}) {
   const [photo, setPhoto] = useState();
   const categoryName = useRef();
   const { t } = useLanguage();
+
+
 
   const handelupload = (e) => {
     var reader = new FileReader();
@@ -27,15 +31,17 @@ export default function Home({name_categ , img , state}) {
   const addCategory = async () => {
     try {
       console.log(categoryName.current.value);
-
-      const res = await axios.post(
-        "http://10.202.96.1/api/itemCategory/admin",
-        {
-          name: categoryName.current.value,
-        }
-      );
-      console.log(categoryName.current.value);
-      console.log(res);
+postRequest("/api/admin/itemCategory", { name: categoryName.current.value });
+      // const res = await axios.post(
+      //   "http://10.228.18.1:8787/api/itemCategory/admin",
+        
+      //   {
+      //       name: categoryName.current.value,
+      //     }
+        
+      // );
+      // console.log(categoryName.current.value);
+      // console.log(res);
     } catch (error) {
       console.log(error);
     }
@@ -44,8 +50,9 @@ export default function Home({name_categ , img , state}) {
   return (
     <div
       id="add-category-form"
-      className="absolute  hidden  justify-center items-center w-full mt-5 "
+      className=" hidden justify-center items-center  bg-black absolute     mt-5"
     >
+      <div className="">
       <div className="bg-white shadow-md shadow-slate-400 h-[530px] w-[600px] flex flex-col border rounded-md">
         <div className="m-4 w-2">
           <span
@@ -131,6 +138,7 @@ export default function Home({name_categ , img , state}) {
           </form>
         </div>
       </div>
+    </div>
     </div>
   );
 }

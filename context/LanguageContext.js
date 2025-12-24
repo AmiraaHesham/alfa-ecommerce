@@ -1,10 +1,14 @@
 // context/LanguageContext.js
 import { createContext, useContext, useState, useEffect } from 'react';
 
-const LanguageContext = createContext();
-
+const LanguageContext = createContext({
+  locale: 'en',
+  setLocale: () => {},
+  messages: {},
+  t: (key) => key,
+});
 export const LanguageProvider = ({ children }) => {
-  const [locale, setLocale] = useState('ar');
+  const [locale, setLocale] = useState('en');
   const [messages, setMessages] = useState({});
 
   useEffect(() => {

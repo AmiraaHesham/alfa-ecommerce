@@ -6,6 +6,7 @@ import { useLanguage } from "../context/LanguageContext";
 import { ReactNode, useEffect } from "react";
 import { Tajawal } from "next/font/google";
 
+
 function RTLController({ children }) {
   const { locale } = useLanguage();
 
@@ -36,11 +37,22 @@ const tajawal = Tajawal({
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={tajawal.variable}>
+    <html lang="ar" dir="rtl" className={tajawal.variable}>
       <body className="font-sans">
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                var lang = localStorage.getItem('lang') || 'ar';
+                document.documentElement.lang = lang;
+                document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+              })();
+            `,
+          }}
+        />
         <LanguageProvider>
           <RTLController>{children}</RTLController>
-        </LanguageProvider>{" "}
+        </LanguageProvider>
       </body>
     </html>
   );
