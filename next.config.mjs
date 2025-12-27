@@ -1,13 +1,16 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-//     async rewrites() {
-//     return [
-//       {
-//         source: '/api/:path*',
-//         destination: 'http://10.228.18.1/api/:path*',
-//       },
-//     ];
-//   },
+    images: {
+    remotePatterns: [
+      { protocol: 'https', hostname: 'your-cdn.com',    
+ },
+      
+    ],
+  },
+  
+experimental: {
+    swcMinify: true,
+  },
 };
 
 export default nextConfig;

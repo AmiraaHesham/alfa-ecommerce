@@ -10,7 +10,7 @@ export default function Orders_Table() {
   const navigate = useRouter(); 
     return (
     <div>
-      <div className=" rounded-xl w-full h-[435px] border  mt-3 overflow-hidden overflow-y-scroll ">
+      <div className=" rounded-xl w-[100%] h-[435px] border  mt-3 overflow-hidden overflow-y-scroll ">
         <table className=" w-full  rounded-lg  ">
           <thead className="bg-[#F9FAFB] text-xs text-gray-500  text-justify">
             <tr className=" text-gray-500 h-12  ">

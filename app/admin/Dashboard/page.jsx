@@ -10,15 +10,18 @@ export default function Dashboard() {
   return (
     <div className="bg-[#F9FAFB]">
       <main className="flex">
-        <SideMenu/>
+        <SideMenu dashbord={"bg-[#e0e7ff6e] text-[#6158ff]"}/>
         <div className="w-full">
           <Header page_title={"Dashboard Overview"} />
-             <div className="mx-10 mt-6 relative">
-            <Dashboard_Details />
-            <div className="flex justify-center gap-3 mt-3 items-center w-full">
-            <RecentOrders_Table />
+             <div className="flex w-full flex-col justify-center items-center mt-6 relative">
+              <div className="w-[90%] ">
+                  <Dashboard_Details />
 <QuicksAction />
-            </div>
+            <RecentOrders_Table />
+           
+     </div>
+          
+
              </div>
         </div>
 

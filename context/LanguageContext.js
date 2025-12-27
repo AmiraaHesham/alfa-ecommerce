@@ -1,23 +1,25 @@
-// context/LanguageContext.js
+'use client';
+
 import { createContext, useContext, useState, useEffect } from 'react';
 
 const LanguageContext = createContext({
   locale: 'en',
   setLocale: () => {},
-  messages: {},
   t: (key) => key,
 });
+
 export const LanguageProvider = ({ children }) => {
   const [locale, setLocale] = useState('en');
   const [messages, setMessages] = useState({});
 
   useEffect(() => {
     fetch(`/locales/${locale}.json`)
-      .then(res => res.json())
-      .then(data => setMessages(data));
+      .then((res) => res.json())
+      .then((data) => setMessages(data))
+      .catch((err) => console.error('Failed to load locale:', err));
   }, [locale]);
 
-  const t = (key) => messages[key] || key; // إذا لم يُوجد المفتاح، يُعيد المفتاح نفسه
+  const t = (key) => messages[key] || key;
 
   return (
     <LanguageContext.Provider value={{ locale, setLocale, t }}>
@@ -28,6 +30,8 @@ export const LanguageProvider = ({ children }) => {
 
 export const useLanguage = () => {
   const context = useContext(LanguageContext);
-  if (!context) throw new Error('useLanguage must be used within LanguageProvider');
+  if (!context) {
+    throw new Error('useLanguage must be used within LanguageProvider');
+  }
   return context;
 };

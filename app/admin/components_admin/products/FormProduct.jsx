@@ -17,13 +17,13 @@ export default function FormProduct({ name_categ, img, state }) {
     document.documentElement.lang = saved;
     document.documentElement.dir = saved === "ar" ? "rtl" : "ltr";
   }, []);
-  const toggleLanguage = () => {
-    const newLang = lang === "ar" ? "en" : "ar";
-    setLang(newLang);
-    localStorage.setItem("lang", newLang);
-    document.documentElement.lang = newLang;
-    document.documentElement.dir = newLang === "ar" ? "rtl" : "ltr";
-  };
+  // const toggleLanguage = () => {
+  //   const newLang = lang === "ar" ? "en" : "ar";
+  //   setLang(newLang);
+  //   localStorage.setItem("lang", newLang);
+  //   document.documentElement.lang = newLang;
+  //   document.documentElement.dir = newLang === "ar" ? "rtl" : "ltr";
+  // };
 
   const [photo, setPhoto] = useState({
     img1: "",

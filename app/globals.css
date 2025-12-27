@@ -1,5 +1,5 @@
 @tailwind base;
-@tailwind components_admin;
+/* @tailwind components_admin; */
 @tailwind utilities;
 
 /* :root {
@@ -17,6 +17,11 @@
 body {
   font-family: "Inter", sans-serif;
   cursor: default;
+  /* height: 100%;
+  overflow: hidden;
+  margin: 0;
+  padding: 0; */
+  /* height: auto; */
 }
 
 @layer utilities {

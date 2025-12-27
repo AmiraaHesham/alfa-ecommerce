@@ -1,9 +1,11 @@
+"use client"
 import Image from "next/image";
 import { useLanguage } from "../../../../context/LanguageContext.js";
 import { MdDelete } from "react-icons/md";
 import { FaCircle, FaTimes } from "react-icons/fa";
-
+import { useRouter } from 'next/navigation'; 
 export default function UsersPage() {
+    const navigate = useRouter(); 
   const { t } = useLanguage();
   return (
     <div className=" rounded-xl w-full h-[530px] border  mt-3 overflow-hidden overflow-y-scroll ">
@@ -39,7 +41,8 @@ export default function UsersPage() {
                           }
                           ) */}
 
-          <tr className=" text-blue-950 border hover:bg-gray-50 ">
+          <tr className=" text-blue-950 border hover:bg-gray-50 "
+            onClick={() => navigate.push('/admin/UsersPage/UserInfo')}>
             <td></td>
             <td>
               <div className="flex items-center gap-3">

@@ -28,13 +28,15 @@ export default function Categorys() {
   return (
     <div className="bg-[#F9FAFB] h-full ">
       <main className=" flex border h-full">
-        <SideMenu tabId={'Categorys'}/>
+        <SideMenu categorys={'bg-[#e0e7ff6e] text-[#6158ff]'}/>
         <div className="w-full">
           <Header page_title= {"Categories Management"} />
 
-          <div className="mx-10 mt-5  ">
-          
+          <div className="mx-10 mt-5 relative ">
+          <div className="flex justify-center md:w-[80%] xs:w-full absolute items-center">
             <FormCategory />
+
+          </div>
 
             
            <Table_Category />

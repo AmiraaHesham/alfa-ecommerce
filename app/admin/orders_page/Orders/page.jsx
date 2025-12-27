@@ -8,7 +8,7 @@ export default function Orders() {
   return (
      <div className="h-full bg-[#F9FAFB]">
          <main className=" flex border  ">
-           <SideMenu tabId={"Orders"} />
+           <SideMenu orders={"bg-[#e0e7ff6e] text-[#6158ff]"} />
            <div className="w-full">
              <Header page_title={"Orders Management"} />
    
