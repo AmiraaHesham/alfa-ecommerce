@@ -5,7 +5,7 @@ import { useLanguage } from "../context/LanguageContext";
 import {  useEffect } from "react";
 import { Tajawal } from "next/font/google";
 import { IdProvider } from '../context/idContext'; // ← المسار يعتمد على مكان حفظ الملف
-import { RefreshProvider } from '../context/RefreshContext';
+import { RefreshProvider } from '../context/refreshContext';
 
 
 function RTLController({ children }) {

@@ -9,7 +9,7 @@ import { postRequest, putRequest } from "../../../../utils/requestsUtils.js";
 import { getRequest } from "../../../../utils/requestsUtils.js";
 import { useRouter } from "next/navigation";
 import { useIdContext } from "../../../../context/idContext";
-import { useRefresh } from "../../../../context/RefreshContext";
+import { useRefresh } from "../../../../context/refreshContext.jsx";
 
 export default function CategoryForm() {
   const [photo, setPhoto] = useState();
