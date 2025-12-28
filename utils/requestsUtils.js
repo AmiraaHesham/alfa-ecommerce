@@ -6,7 +6,7 @@ export const postRequest = async (endpoint, data) => {
   const lang =
     typeof window !== "undefined" ? localStorage.getItem("lang") : null;
 
-  console.log("Token retrieved:", token);
+  
 
   try {
     const response = await axios.post(
@@ -32,7 +32,6 @@ export const getRequest = async (endpoint) => {
   const token =
     typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
 
-  console.log("Token retrieved:", token);
 
   try {
     const response = await axios.get(
@@ -58,7 +57,6 @@ export const putRequest = async (endpoint, data) => {
   const token =
     typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
 
-  console.log("Token retrieved:", token);
 
   try {
     const response = await axios.put(
@@ -83,7 +81,6 @@ export const deleteRequest = async (endpoint, data) => {
   const token =
     typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
 
-  console.log("Token retrieved:", token);
 
   try {
     const response = await axios.delete(

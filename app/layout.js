@@ -6,6 +6,7 @@ import {  useEffect } from "react";
 import { Tajawal } from "next/font/google";
 import { IdProvider } from '../context/idContext'; // ← المسار يعتمد على مكان حفظ الملف
 import { RefreshProvider } from '../context/refreshContext';
+import { TableProvider } from '../context/tableContext';
 
 
 function RTLController({ children }) {
@@ -26,16 +27,7 @@ const tajawal = Tajawal({
   variable: "--font-tajawal", // لاستخدامه كـ CSS Variable
 });
 
-// const geistSans = localFont({
-//   src: "./fonts/GeistVF.woff",
-//   variable: "--font-geist-sans",
-//   weight: "100 900",
-// });
-// const geistMono = localFont({
-//   src: "./fonts/GeistMonoVF.woff",
-//   variable: "--font-geist-mono",
-//   weight: "100 900",
-// });
+
 
 export default function RootLayout({ children }) {
   return (
@@ -46,8 +38,10 @@ export default function RootLayout({ children }) {
           <RTLController>
                       <IdProvider>
         <RefreshProvider>
+        <TableProvider>
 
             {children}
+            </TableProvider>
             </RefreshProvider>
                 </IdProvider>
 

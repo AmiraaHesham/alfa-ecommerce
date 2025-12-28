@@ -2,12 +2,12 @@
 import { MdDelete } from "react-icons/md";
 import Image from "next/image";
 import { FaPlus } from "react-icons/fa";
-import { useIdContext } from "../../../../context/idContext"; // ← تأكدي من مسار الملف
+import { useIdContext } from "../../../../context/idContext"; 
 import { useRefresh } from "../../../../context/refreshContext";
 import { useLanguage } from "../../../../context/LanguageContext.js";
-import { deleteRequest, getRequest } from "../../../../utils/requestsUtils.js";
+import { deleteRequest } from "../../../../utils/requestsUtils.js";
 import { useEffect, useState, useCallback } from "react";
-
+import {getCategories} from "../../../../utils/functions"
 export default function CategorysTable() {
   const { t } = useLanguage();
   const { setSelectedId } = useIdContext();
@@ -18,34 +18,21 @@ export default function CategorysTable() {
 
   let [itemCategory, setItemCategory] = useState([]);
 
-  const getCategories = async () => {
-    try {
-      const response = await getRequest(
-        "/api/admin/itemCategory/getCategoryWithItemCounts"
-      );
-      console.log("Full response:", response);
-      console.log("Response data keys:", Object.keys(response.data));
-
-      const categories = response.data || [];
-      setItemCategory(categories);
-
-      console.log("Categories after set:", categories);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const getAllCategories=async()=>{
+    const resData = await getCategories()
+    setItemCategory(resData)
+  }
 
   const itemCategoryId = (category) => {
     let form = document.querySelector("#add-category-form");
-    let nameForm = document.querySelector("#nameForm");
-    let btn_save = document.querySelector("#btn-save");
-    let btn_edit = document.querySelector("#btn-edit");
-    btn_edit.classList.remove("hidden");
-    btn_save.classList.add("hidden");
-    nameForm.innerHTML = "Edit Category";
+    let nameFormCatogery = document.querySelector("#nameFormCategory");
+    let btn_saveCategory = document.querySelector("#btn-saveCategory");
+    let btn_editCategory = document.querySelector("#btn-editCategory");
+    btn_editCategory.classList.remove("hidden");
+    btn_saveCategory.classList.add("hidden");
+    nameFormCatogery.innerHTML = "Edit Category";
     form.classList.remove("hidden");
     form.classList.add("flex");
-    console.log(nameForm.innerHTML);
     setSelectedId(category.itemCategoryId);
     setSelectedNameEn(category.nameEn);
     setSelectedNameAr(category.nameAr);
@@ -62,7 +49,7 @@ export default function CategorysTable() {
   };
 
   useEffect(() => {
-    getCategories();
+    getAllCategories();
   }, [refreshKey]);
   return (
     <div>
@@ -71,12 +58,12 @@ export default function CategorysTable() {
           className="p-2 text-white xs:text-xs md:text-sm rounded-md bg-blue-500 text-center flex items-center justify-center gap-2"
           onClick={() => {
             let form = document.querySelector("#add-category-form");
-            let btn_save = document.querySelector("#btn-save");
-            let btn_edit = document.querySelector("#btn-edit");
-            btn_edit.classList.add("hidden");
-            btn_save.classList.remove("hidden");
-            let nameForm = document.querySelector("#nameForm");
-            nameForm.innerHTML = "Add Category";
+            let btn_saveCategory = document.querySelector("#btn-saveCategory");
+            let btn_editCategory = document.querySelector("#btn-editCategory");
+            btn_editCategory.classList.add("hidden");
+            btn_saveCategory.classList.remove("hidden");
+            let nameFormCategory = document.querySelector("#nameFormCategory");
+            nameFormCategory.innerHTML = "Add Category";
             form.classList.remove("hidden");
             form.classList.add("flex");
             setSelectedId("");
@@ -91,7 +78,7 @@ export default function CategorysTable() {
           <h1>{t("add_new_category")}</h1>
         </button>
       </div>
-      <div className=" rounded-xl w-full h-[530px] border  mt-3 overflow-hidden overflow-y-scroll ">
+      <div className=" rounded-xl w-full h-screen border  mt-3 overflow-hidden overflow-y-scroll ">
         <table className=" w-full rounded-lg  ">
           <thead className="bg-[#F9FAFB]  text-justify">
             <tr className=" text-gray-500 h-12 md:text-xs  xs:text-[10px]">

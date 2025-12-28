@@ -1,7 +1,7 @@
 import SideMenu from "../components_admin/SideMenu";
 import Header from "../components_admin/Header";
 import FormProduct from "../components_admin/products/FormProduct";
-import Table_Products from "../components_admin/products/Table_Products";
+import ProductsTable from "../components_admin/products/ProductsTable";
 
 export default function Products() {
   return (
@@ -13,7 +13,7 @@ export default function Products() {
 
           <div className="mx-10 mt-6 relative">
             <FormProduct />
-            <Table_Products />
+            <ProductsTable />
           </div>
         </div>
       </main>

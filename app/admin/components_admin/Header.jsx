@@ -51,7 +51,7 @@ export default function Header({ page_title }) {
 
   return (
     <header className="md:h-[70px] xs:h-[50px] flex justify-between items-center px-5 font-semibold w-full bg-white  border-b-[1px]">
-      <h1 id="page-title" className="md:text-2xl xs:text-xs text-blue-950 ">{t(page_title)}</h1>
+      <h1 id="page-title" className="md:text-2xl xs:text-lg text-blue-950 ">{t(page_title)}</h1>
       <div className="gap-2 flex xs:text-[10px] md:text-sm ">
         <button
           id="en"

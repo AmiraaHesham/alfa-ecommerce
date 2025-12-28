@@ -77,5 +77,7 @@
   "canceled_orders": "الطلبات تم إلغاؤها",
   "delivered_orders": "طلبات تم تسليمها",
   "save-changes": "حفظ التغيرات",
-  "orders_management": "إدارة الطلبات"
+  "orders_management": "إدارة الطلبات",
+  "featured-product":"المنتج مميز"
+
 }

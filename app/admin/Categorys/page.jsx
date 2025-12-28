@@ -8,22 +8,7 @@ import FormCategory from "../components_admin/categorys/CategoryForm";
 
 
 export default function Categorys() {
-  // const { allCateg, setAllCateg } = useState([]);
-  // useEffect = () => {
-  //   // getAllCategory, []
-  // };
 
-
-  // const getAllCategory = async () => {
-  //   try {
-  //     const res = await axios.get("http://10.202.96.1/api/itemCategory/admin");
-
-  //     console.log(res.data);
-  //     setAllCateg(res.data);
-  //   } catch (error){
-  //     console.log(error)
-  //   }
-  // };
 
   return (
     <div className="bg-[#F9FAFB] h-full ">
@@ -35,10 +20,7 @@ export default function Categorys() {
           <div className="mx-10 mt-5 relative ">
           <div className="flex justify-center md:w-[80%] xs:w-full absolute items-center">
             <FormCategory />
-
           </div>
-
-            
            <Table_Category />
 
           </div>

@@ -13,9 +13,7 @@ export default function SignIn() {
   const [error, setError] = useState(null);
 
     const handleLogin = async (e) => {
-        //   console.log("🚀 handleLogin تم استدعاؤها!"); // ← أضف هذا
-          console.log(username);
-          console.log(password); 
+       
         e.preventDefault();
     setLoading(true);
     setError(null);
@@ -25,7 +23,6 @@ export default function SignIn() {
         username: username,
         password: password
       });
-        console.log('Login successful:', response.data);
         localStorage.setItem('accessToken', response.data.accessToken);
 
     } catch (err) {

@@ -2,7 +2,6 @@
 import Image from "next/image";
 import { MdCancel } from "react-icons/md";
 import { IoCloudUploadSharp } from "react-icons/io5";
-import axios from "axios";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useLanguage } from "../../../../context/LanguageContext.js";
 import { postRequest, putRequest } from "../../../../utils/requestsUtils.js";
@@ -28,7 +27,6 @@ export default function CategoryForm() {
     var reader = new FileReader();
     reader.readAsDataURL(e.target.files[0]);
     reader.onload = () => {
-      console.log(reader.result);
       setPhoto(reader.result);
     };
     let upload = document.querySelector("#label-uplod");
@@ -49,6 +47,7 @@ export default function CategoryForm() {
      await postRequest("/api/admin/itemCategory", {
         nameEn,
         nameAr,
+        // imageFile:photo
       });
       triggerRefresh();
       setNameAr("");
@@ -101,7 +100,7 @@ export default function CategoryForm() {
     >
       <div className="bg-white shadow-md shadow-slate-400 h-[530px] xs:w-full lg:w-[600px] flex flex-col border rounded-md">
         <div className="m-4 flex justify-between items-center">
-          <h1 id="nameForm" className="text-lg font-semibold"></h1>
+          <h1 id="nameFormCategory" className="text-lg font-semibold"></h1>
           <span
             className="text-3xl text-blue-950  hover:text-blue-800"
             onClick={() => {
@@ -186,7 +185,7 @@ export default function CategoryForm() {
             <div className="flex justify-center items-center">
               <button
                 type="submit"
-                id="btn-save"
+                id="btn-saveCategory"
                 className="bg-blue-600 py-2 px-3 text-white mt-7  hover:bg-blue-800 rounded-lg  "
                 onClick={() => {
                   addCategory(); // ← لو في وضع الإضافة
@@ -196,7 +195,7 @@ export default function CategoryForm() {
               </button>
               <button
                 type="submit"
-                id="btn-edit"
+                id="btn-editCategory"
                 className="bg-blue-600 py-2 px-3 text-white mt-7  hover:bg-blue-800 rounded-lg"
                 onClick={() => {
                   updateCategory();
