@@ -17,7 +17,7 @@ export default function Categorys() {
         <div className="w-full">
           <Header page_title= {"Categories Management"} />
 
-          <div className="mx-10 mt-5 relative ">
+          <div className=" mx-5 mt-5 relative ">
           <div className="flex justify-center md:w-[80%] xs:w-full absolute items-center">
             <FormCategory />
           </div>

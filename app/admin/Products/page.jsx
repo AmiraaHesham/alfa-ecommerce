@@ -11,7 +11,7 @@ export default function Products() {
         <div className="w-full">
           <Header page_title={"Products Management"} />
 
-          <div className="mx-10 mt-6 relative">
+          <div className="mx-5 mt-6 relative">
             <FormProduct />
             <ProductsTable />
           </div>

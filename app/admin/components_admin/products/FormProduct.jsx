@@ -29,6 +29,7 @@ export default function FormProduct({ name_categ, img, state }) {
   const { selectedVisible } = useIdContext();
   const { selectedCategory } = useIdContext();
   const { selectedFeatured } = useIdContext();
+  const { selectedPhoto} = useIdContext();
   const [photo, setPhoto] = useState({
     img1: "",
     img2: "",
@@ -41,9 +42,11 @@ export default function FormProduct({ name_categ, img, state }) {
     price: Number,
     description: "",
     code: "",
+    mainImage:""
   });
 
   const handelupload = (e, photoKey) => {
+    const file = e.target.files[0];
     var reader = new FileReader();
     reader.readAsDataURL(e.target.files[0]);
     reader.onload = () => {
@@ -52,6 +55,13 @@ export default function FormProduct({ name_categ, img, state }) {
         [photoKey]: reader.result,
       }));
     };
+
+      setProduct((prev) => ({
+        ...prev,
+        mainImage: file,
+      }));
+      console.log(typeof file)
+    
   };
   let [itemCategory, setItemCategory] = useState([]);
 
@@ -113,6 +123,35 @@ export default function FormProduct({ name_categ, img, state }) {
     selectedFeatured,
     selectedCategory,
   ]);
+
+  const updataProduct = async () => {
+     let form = document.querySelector("#add-product-form");
+    form.classList.add("hidden");
+    try {
+      const formData = new FormData();
+      formData.append("nameEn",product.nameEn)
+      formData.append("nameAr",product.nameAr)
+      formData.append("code",product.code)
+      formData.append("price",Number(product.price))
+      formData.append("description",product.description)
+      formData.append("mainImage",product.mainImage)
+      formData.append("itemCategoryId",product.category)
+
+      // formData.append(itemCategoryId,product.category)
+      await putRequest(`/api/admin/items/${selectedId}`, formData);
+      triggerRefresh();
+
+      setProduct((prev) => ({ ...prev, nameEn: "" }));
+      setProduct((prev) => ({ ...prev, nameAr: "" }));
+      setProduct((prev) => ({ ...prev, code: "" }));
+      setProduct((prev) => ({ ...prev, price: "" }));
+      setProduct((prev) => ({ ...prev, description: "" }));
+      setEnabledFeatured(false);
+      setEnabledVisible(true);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   useEffect(() => {
     showeCategories();
     productData();
@@ -131,14 +170,19 @@ export default function FormProduct({ name_categ, img, state }) {
         }}
       >
         <div className="h-16 flex justify-between items-center ">
-          <h1 id="nameFormProduct" className="text-xl font-semibold">
-            {" "}
-          </h1>
+          <h1 id="nameFormProduct" className="text-xl font-semibold"></h1>
           <span
             className="text-xl text-gray-500  hover:text-blue-800"
             onClick={() => {
               let form = document.querySelector("#add-product-form");
               form.classList.add("hidden");
+              setProduct((prev) => ({ ...prev, nameEn: "" }));
+              setProduct((prev) => ({ ...prev, nameAr: "" }));
+              setProduct((prev) => ({ ...prev, code: "" }));
+              setProduct((prev) => ({ ...prev, price: "" }));
+              setProduct((prev) => ({ ...prev, description: "" }));
+              setEnabledFeatured(false);
+              setEnabledVisible(true);
             }}
           >
             <FaTimes />
@@ -149,7 +193,7 @@ export default function FormProduct({ name_categ, img, state }) {
         <div className="flex flex-col text-gray-600  mt-2">
           <h1 className="T">{t("product_images")}</h1>
 
-          <div className="grid md:grid-cols-3  xs:grid-cols-2 gap-6 mt-3">
+          <div className="grid sm:grid-cols-3  xs:grid-cols-2 gap-6 mt-3">
             <label htmlFor="fileInput">
               <div className="flex flex-col items-center h-[120px] w-[120px]  justify-center p-3 border-2 border-dashed border-blue-300 rounded-lg hover:bg-gray-50">
                 {photo.img1 ? (
@@ -273,18 +317,18 @@ export default function FormProduct({ name_categ, img, state }) {
         </div>
 
         <div className="flex flex-col gap-2 mt-7 ">
-          <div className=" w-full flex justify-between gap-3">
-            <div>
-              <label className="text-sm text-gray-600">
+          <div className=" w-full flex md:flex-row justify-between xs:flex-col gap-3">
+            <div className="">
+              <label className="text-sm text-gray-600 mb-10">
                 {t("product_name")}* [En]
               </label>
               <input
                 type="text"
-                value={product.nameEn}
+                value={product.nameEn || ""}
                 onChange={(e) =>
                   setProduct((prev) => ({ ...prev, nameEn: e.target.value }))
                 }
-                className="w-full bg-[#F9FAFB] outline-none text-blue-900 text-sm  p-1 border rounded-md"
+                className="w-full bg-[#F9FAFB] outline-none text-blue-900 text-base  my-1  p-2 border rounded-md"
               />
             </div>
             <div>
@@ -293,42 +337,42 @@ export default function FormProduct({ name_categ, img, state }) {
               </label>
               <input
                 type="text"
-                value={product.nameAr}
+                value={product.nameAr || ""}
                 onChange={(e) =>
                   setProduct((prev) => ({ ...prev, nameAr: e.target.value }))
                 }
-                className="w-full bg-[#F9FAFB] outline-none text-blue-900 text-sm  p-1 border rounded-md"
+                className="w-full bg-[#F9FAFB] outline-none text-blue-900 text-base my-1  p-2 border rounded-md"
               />
             </div>
           </div>
 
-          <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center md:flex-row  xs:flex-col  justify-between gap-3">
             <div className="w-full">
               <label className="text-sm text-gray-600">
                 {t("product_code")}
               </label>
               <input
                 type="text"
-                value={product.code}
+                value={product.code || ""}
                 onChange={(e) =>
                   setProduct((prev) => ({ ...prev, code: e.target.value }))
                 }
                 required
-                className="w-full bg-[#F9FAFB] outline-none text-blue-900 text-sm  p-1 border rounded-md"
+                className="w-full bg-[#F9FAFB] outline-none text-blue-900 text-base  my-1  p-2 border rounded-md"
               />
             </div>
             <div className="w-full">
               <label className="text-sm text-gray-600">{t("Category")}</label>
               <select
                 type="text"
-                value={product.category}
-                onChange={(e) =>
-                  setProduct((prev) => ({ ...prev, category: e.target.value }))
-                }
+                onChange={(e) =>{
+                      const selectedCategoryId = e.target.value; 
+                  setProduct((prev) => ({ ...prev, category: selectedCategoryId }))
+                }}
                 required
-                className="w-full bg-[#F9FAFB] outline-none text-blue-900 text-sm h-9  p-1 border rounded-md"
+                className="w-full bg-[#F9FAFB] outline-none text-blue-900 text-base my-1  p-3 border rounded-md"
               >
-                <option>Choose Category</option>
+                <option></option>
                 {itemCategory.map((category, index) => {
                   return (
                     <option key={index} value={category.itemCategoryId}>
@@ -342,24 +386,24 @@ export default function FormProduct({ name_categ, img, state }) {
             </div>
           </div>
 
-          <div className="flex  justify-between gap-3">
+          <div className="flex md:flex-row  xs:flex-col  justify-between gap-3">
             <div className="w-full">
               <label className="text-sm text-gray-600">{t("Price")}</label>
               <input
                 type="number"
-                value={product.price}
+                value={product.price || ""}
                 onChange={(e) =>
                   setProduct((prev) => ({ ...prev, price: e.target.value }))
                 }
                 required
-                className=" bg-[#F9FAFB] w-full outline-none text-blue-900 text-sm  p-1 border rounded-md"
+                className=" bg-[#F9FAFB] w-full outline-none text-blue-900 text-base  my-1  p-2 border rounded-md"
               />
             </div>
             <div className="w-full ">
               <label className="w-full">
                 <h1 className="text-sm text-gray-600">{t("product_state ")}</h1>
               </label>
-              <div className="bg-[#F9FAFB] flex items-center justify-between h-10 px-3 mb-2 border rounded-md ">
+              <div className="bg-[#F9FAFB] flex items-center justify-between h-10 px-3 my-2 border rounded-md ">
                 <h1 className="text-sm text-gray-600">
                   {t("visible_in_store")}
                 </h1>
@@ -428,22 +472,22 @@ export default function FormProduct({ name_categ, img, state }) {
           <textarea
             type="text"
             required
-            value={product.description}
+            value={product.description || ""}
             onChange={(e) =>
               setProduct((prev) => ({ ...prev, description: e.target.value }))
             }
-            className="w-full bg-[#F9FAFB] outline-none mb-2 text-blue-900 text-sm  p-1 
+            className="w-full bg-[#F9FAFB] outline-none mb-2 text-blue-900 text-base  my-1  p-2 
             border rounded-md"
           />
           <hr className="h-1"></hr>
         </div>
-        <div className="flex bg-[#F9FAFB] h-20 mt-7 rounded-md justify-center items-center ">
-          <div className="flex justify-between  gap-3 items-center">
-            <div className="flex justify-center items-center">
+        <div className="flex bg-[#F9FAFB] px-4 h-20 mt-7 rounded-md justify-center items-center ">
+          <div className="flex justify-between w-full gap-3 items-center">
+            <div className="flex  w-full items-center">
               <button
                 type="submit"
                 id="btn-saveProduct"
-                className="bg-blue-600 h-8  px-3 text-white  hover:bg-blue-800 rounded-lg"
+                className="bg-blue-600 h-8  px-3 text-white w-full hover:bg-blue-800 rounded-lg"
                 onClick={addProduct}
               >
                 {t("save")}
@@ -451,10 +495,8 @@ export default function FormProduct({ name_categ, img, state }) {
               <button
                 type="submit"
                 id="btn-editProduct"
-                className="bg-blue-600 h-8  px-3 text-white   hover:bg-blue-800 rounded-lg"
-                onClick={() => {
-                  updateCategory();
-                }}
+                className="bg-blue-600 h-8  px-3 text-white w-full  hover:bg-blue-800 rounded-lg"
+                onClick={updataProduct}
               >
                 {t("save-changes")}
               </button>
@@ -462,14 +504,17 @@ export default function FormProduct({ name_categ, img, state }) {
 
             <button
               type="submit"
-              className="bg-white  border h-8  px-3 text-gray-700ss   hover:bg-blue-800 hover:text-white rounded-lg"
+              className="bg-white w-full  border h-8  px-3 text-gray-700ss   hover:bg-blue-800 hover:text-white rounded-lg"
               onClick={() => {
                 let form = document.querySelector("#add-product-form");
                 form.classList.add("hidden");
-                // let upload = document.querySelector("#label-uplod");
-                // let img = document.querySelector("#lable-img");
-                // img.classList.add("hidden");
-                // upload.classList.remove("hidden");
+                setProduct((prev) => ({ ...prev, nameEn: "" }));
+                setProduct((prev) => ({ ...prev, nameAr: "" }));
+                setProduct((prev) => ({ ...prev, code: "" }));
+                setProduct((prev) => ({ ...prev, price: "" }));
+                setProduct((prev) => ({ ...prev, description: "" }));
+                setEnabledFeatured(false);
+                setEnabledVisible(true);
               }}
             >
               {t("cancel")}

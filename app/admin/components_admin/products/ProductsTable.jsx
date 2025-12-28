@@ -7,12 +7,14 @@ import { FaPlus } from "react-icons/fa";
 import Image from "next/image";
 import { GoStarFill } from "react-icons/go";
 import { postRequest } from "../../../../utils/requestsUtils.js";
-import { useIdContext } from "../../../../context/idContext"; 
+import { useIdContext } from "../../../../context/idContext";
+import { IoMdSearch } from "react-icons/io";
+import { deleteRequest } from "../../../../utils/requestsUtils.js";
 
 export default function ProductsTable() {
   const { t } = useLanguage();
   const [products, setProducts] = useState([]);
-  const productTableRef = useRef()
+  const productTableRef = useRef();
   let [itemCategory, setItemCategory] = useState([]);
   // const {selectedProductData, setSelectedProductData } = useIdContext();
   const { setSelectedId } = useIdContext();
@@ -24,16 +26,17 @@ export default function ProductsTable() {
   const { setSelectedVisible } = useIdContext();
   const { setSelectedCategory } = useIdContext();
   const { setSelectedFeatured } = useIdContext();
-    const [ product, setProduct ] = useState({
-      nameEn: "",
-      nameAr: "",
-      category: Number,
-      price: Number,
-      description: "",
-      code: "",
-    });
-  
-  const getAllProducts = useCallback( async () => {
+  const { setSelectedPhoto } = useIdContext();
+  const [product, setProduct] = useState({
+    nameEn: "",
+    nameAr: "",
+    category: Number,
+    price: Number,
+    description: "",
+    code: "",
+  });
+
+  const getAllProducts = useCallback(async () => {
     try {
       const response = await postRequest("/api/public/items/search", {
         page: 0,
@@ -41,16 +44,16 @@ export default function ProductsTable() {
       });
       const resProducts = response.data || [];
       setProducts(resProducts);
-// pagination()
-//       console.log("Categories after set:", resProducts);
+      // pagination()
+      //       console.log("Categories after set:", resProducts);
     } catch (error) {
       console.log(error);
     }
-  },[]);
+  }, []);
 
-  const pagination=()=>{
-// console.log(productTableRef.current)
-  }
+  const pagination = () => {
+    // console.log(productTableRef.current)
+  };
 
   const itemProductId = (product) => {
     let form = document.querySelector("#add-product-form");
@@ -62,7 +65,7 @@ export default function ProductsTable() {
     nameFormProduct.innerHTML = "Edit Product";
     form.classList.remove("hidden");
     form.classList.add("flex");
-   
+
     // console.log(product)
     setSelectedId(product.itemId);
     setSelectedNameEn(product.nameEn);
@@ -73,21 +76,54 @@ export default function ProductsTable() {
     setSelectedVisible(product.active);
     setSelectedCategory(product.itemCategoryId);
     setSelectedFeatured(product.favorite);
+    setSelectedPhoto(product.mainImage);
     // setSelectedPhoto(product.imageURL);
   };
-
+  const deleteProduct = async (product) => {
+    try {
+      await deleteRequest(`/api/admin/items/${product.itemId}`);
+      getAllProducts();
+    } catch (error) {
+      console.log(error);
+    }
+  };
   useEffect(() => {
     getAllProducts();
   }, []);
   return (
-    <div>
-      <div className="bg-white h-[50px] border rounded-lg border-1  w-full mt-5 flex justify-end p-5 items-center">
+    <div className="">
+      <div className="bg-white h-[50px] border rounded-lg border-1  w-full mt-5 flex justify-between p-5 items-center">
+        <div className="flex items-center justify-center border px-3 rounded-md bg-gray-100 h-9">
+          <span className="text-gray-400 text-lg ">
+            <IoMdSearch />
+          </span>
+          <input
+            type="text"
+            placeholder="Searsh"
+            className="bg-none outline-none placeholder:text-sm  h-8  w-[250px] bg-gray-100 p-2 rounded-lg"
+          />
+        </div>
         <button
           className="p-2 text-white xs:text-xs md:text-sm rounded-md bg-blue-500 text-center flex items-center justify-center gap-2"
           onClick={() => {
             let form = document.querySelector("#add-product-form");
             form.classList.remove("hidden");
             form.classList.add("flex");
+            let nameFormProduct = document.querySelector("#nameFormProduct");
+            let btn_saveProduct = document.querySelector("#btn-saveProduct");
+            let btn_editProduct = document.querySelector("#btn-editProduct");
+            btn_editProduct.classList.add("hidden");
+            btn_saveProduct.classList.remove("hidden");
+            nameFormProduct.innerHTML = "Add Product";
+            setSelectedId("");
+            setSelectedNameEn("");
+            setSelectedNameAr("");
+            setSelectedCode("");
+            setSelectedPrice("");
+            setSelectedDescription("");
+            setSelectedVisible("");
+            setSelectedCategory("");
+            setSelectedFeatured("");
           }}
         >
           <span>
@@ -97,8 +133,11 @@ export default function ProductsTable() {
         </button>
       </div>
 
-      <div ref={productTableRef} className=" rounded-xl w-full h-screen border  mt-3 overflow-hidden xs:overflow-x-scroll lg:overflow-auto overflow-y-scroll ">
-        <table   className=" xs:w-[220%] lg:w-full    ">
+      <div
+        ref={productTableRef}
+        className=" rounded-xl w-full h-screen border  mt-3 overflow-hidden xs:overflow-x-scroll lg:overflow-auto overflow-y-scroll "
+      >
+        <table className=" xs:w-[200%] lg:w-full    ">
           <thead className="bg-[#F9FAFB] text-xs    text-justify">
             <tr className=" text-gray-500 h-12  ">
               <th className="w-[10%]"></th>
@@ -114,7 +153,7 @@ export default function ProductsTable() {
             {products.map((product, index) => {
               return (
                 <tr key={index} className=" border hover:bg-gray-100  ">
-                  <td >
+                  <td>
                     <div className="flex items-center justify-center gap-3">
                       <button
                         className={
@@ -136,8 +175,10 @@ export default function ProductsTable() {
                       </button>
                     </div>
                   </td>
-                  <td className="flex items-center gap-4"
-                  onClick={() => itemProductId(product)}>
+                  <td
+                    className="flex items-center gap-4"
+                    onClick={() => itemProductId(product)}
+                  >
                     <Image
                       alt=""
                       src="/img.jpg"
@@ -159,17 +200,28 @@ export default function ProductsTable() {
 
                   <td onClick={() => itemProductId(product)}>
                     <div className="  text-sm text-gray-500 font-semibold mx-1">
-                      <h1> {localStorage.lang === "ar"
-                          ? product.nameAr
-                          : product.nameEn}</h1>
+                      <h1>
+                        {" "}
+                        {localStorage.lang === "ar"
+                          ? product.itemCategory.nameAr
+                          : product.itemCategory. nameEn}
+                      </h1>
                     </div>
                   </td>
-                  <td className="text-sm font-bold"
-                  
-                  onClick={() => itemProductId(product)}>{product.price} EG</td>
+                  <td
+                    className="text-sm font-bold"
+                    onClick={() => itemProductId(product)}
+                  >
+                    {product.price} EG
+                  </td>
                   {/* <td></td> */}
                   <td>
-                    <button className="text-red-800 text-sm flex items-center gap-1 bg-red-300 px-2 py-1 font-semibold rounded-md hover:bg-red-400">
+                    <button
+                      className="text-red-800 text-sm flex items-center gap-1 bg-red-300 px-2 py-1 font-semibold rounded-md hover:bg-red-400"
+                      onClick={() => {
+                        deleteProduct(product);
+                      }}
+                    >
                       <MdDelete />
                       {t("delete")}
                     </button>

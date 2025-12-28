@@ -14,7 +14,7 @@ export const postRequest = async (endpoint, data) => {
       data,
       {
         headers: {
-          "Content-Type": "application/json",
+          // "Content-Type": "application/json",
           Authorization: token ? `Bearer ${token}` : undefined,
           "Accept-Language": localStorage.getItem("lang"),
         },
@@ -64,7 +64,7 @@ export const putRequest = async (endpoint, data) => {
       data,
       {
         headers: {
-          "Content-Type": "application/json",
+          // "Content-Type": "multipart/form-data",
           Authorization: token ? `Bearer ${token}` : undefined,
           "Accept-Language": localStorage.getItem("lang"),
         },
