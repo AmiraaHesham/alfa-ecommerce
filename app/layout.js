@@ -38,10 +38,10 @@ export default function RootLayout({ children }) {
           <RTLController>
                       <IdProvider>
         <RefreshProvider>
-        <TableProvider>
+        {/* <TableProvider> */}
 
             {children}
-            </TableProvider>
+            {/* </TableProvider> */}
             </RefreshProvider>
                 </IdProvider>
 

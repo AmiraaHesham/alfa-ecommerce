@@ -11,7 +11,10 @@ import { useIdContext } from "../../../../context/idContext";
 import { useRefresh } from "../../../../context/refreshContext.jsx";
 
 export default function CategoryForm() {
-  const [photo, setPhoto] = useState();
+  const [photo, setPhoto] = useState({
+    imageFile: "",
+    image: "",
+  });
   const [nameEn, setNameEn] = useState("");
   const [nameAr, setNameAr] = useState("");
   const { t } = useLanguage();
@@ -27,8 +30,15 @@ export default function CategoryForm() {
     var reader = new FileReader();
     reader.readAsDataURL(e.target.files[0]);
     reader.onload = () => {
-      setPhoto(reader.result);
+            setPhoto((prev) => ({ ...prev, image:reader.result }));
+
     };
+    const file = e.target.files[0];
+    setPhoto((prev) => ({ ...prev, imageFile: file }));
+
+console.log(file)
+console.log(file.name)
+
     let upload = document.querySelector("#label-uplod");
     let img = document.querySelector("#lable-img");
     img.classList.remove("hidden");
@@ -43,12 +53,11 @@ export default function CategoryForm() {
     img.classList.add("hidden");
     upload.classList.remove("hidden");
     try {
-     
-     await postRequest("/api/admin/itemCategory", {
-        nameEn,
-        nameAr,
-        // imageFile:photo
-      });
+      const formData = new FormData()
+      formData.append('nameEn',nameEn)
+      formData.append('nameAr',nameAr)
+      formData.append('imageFile', photo.imageFile)
+      await postRequest("/api/admin/itemCategory", formData);
       triggerRefresh();
       setNameAr("");
       setNameEn("");
@@ -59,13 +68,19 @@ export default function CategoryForm() {
   };
 
   const CategoryData = useCallback(async () => {
-    try {
-      await getRequest(`/api/admin/itemCategory/${selectedId}`);
-      setNameAr(selectedNameAr), setNameEn(selectedNameEn);
-    } catch (error) {
-      console.log(error);
+    if (selectedId != null) {
+      try {
+        await getRequest(`/api/admin/itemCategory/${selectedId}`);
+        setNameAr(selectedNameAr), setNameEn(selectedNameEn);setPhoto((prev) => ({ ...prev, image: selectedPhoto }))
+           let upload = document.querySelector("#label-uplod");
+    let img = document.querySelector("#lable-img");
+    img.classList.remove("hidden");
+    upload.classList.add("hidden");
+      } catch (error) {
+        console.log(error);
+      }
     }
-  }, [selectedId, selectedNameAr, selectedNameEn]);
+  }, [selectedId, selectedNameAr, selectedNameEn,selectedPhoto]);
 
   const updateCategory = async () => {
     let form = document.querySelector("#add-category-form");
@@ -76,12 +91,14 @@ export default function CategoryForm() {
     upload.classList.remove("hidden");
 
     try {
-      await putRequest(`/api/admin/itemCategory/${selectedId}`, {
-        nameEn,
-        nameAr,
-      });
-      triggerRefresh();
+     const formData = new FormData()
+      formData.append('nameEn',nameEn)
+      formData.append('nameAr',nameAr)
+      formData.append('imageFile', photo.imageFile)
 
+      // formData.append('imageFile', photo.imageFile)
+      await putRequest(`/api/admin/itemCategory/${selectedId}`,formData);
+      triggerRefresh();
       setNameAr("");
       setNameEn("");
       setPhoto("");
@@ -106,13 +123,13 @@ export default function CategoryForm() {
             onClick={() => {
               let form = document.querySelector("#add-category-form");
               form.classList.add("hidden");
-              let upload = document.querySelector("#label-uplod");
-              let img = document.querySelector("#lable-img");
-              img.classList.add("hidden");
-              upload.classList.remove("hidden");
-              setNameAr("");
-              setNameEn("");
-              setPhoto("");
+              // let upload = document.querySelector("#label-uplod");
+              // let img = document.querySelector("#lable-img");
+              // img.classList.add("hidden");
+              // upload.classList.remove("hidden");
+              // setNameAr("");
+              // setNameEn("");
+              // setPhoto("");
             }}
           >
             <MdCancel />
@@ -165,7 +182,7 @@ export default function CategoryForm() {
                 <div id="lable-img" className="hidden w-[100px] h-[100px]">
                   <Image
                     alt=""
-                    src={photo}
+                    src={photo.image}
                     width={100}
                     height={100}
                     className="w-full h-full"

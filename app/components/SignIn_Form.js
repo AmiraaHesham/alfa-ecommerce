@@ -24,6 +24,7 @@ export default function SignIn() {
         password: password
       });
         localStorage.setItem('accessToken', response.data.accessToken);
+        console.log('accessToken', response.data.accessToken);
 
     } catch (err) {
       console.log('Login failed. Please check your credentials and try again.');

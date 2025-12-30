@@ -10,9 +10,14 @@ export default function UsersPage() {
           <SideMenu users={"bg-[#e0e7ff6e] text-[#6158ff]"} />
           <div className="w-full">
             <Header page_title={"Users Management"} />
-              <div className="mx-10 mt-3 relative">
+              <div className="flex w-full flex-col justify-center items-center mt-3 ">
+              <div className="w-[90%]">
                 <Failter placeholder={"Search by user name or email"} view={"hidden"} />
+                {/* <div className="bg-black">  */}
                 <Users_Table />
+
+                {/* </div> */}
+              </div>
               </div>
   </div>
   </main>

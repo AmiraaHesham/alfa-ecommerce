@@ -2,11 +2,11 @@ import { getRequest } from "../utils/requestsUtils";
 
 export const getCategories = async () => {
     try {
-      const response = await getRequest(
+      const res= await getRequest(
         "/api/admin/itemCategory/getCategoryWithItemCounts"
       );
      
-    return await response.data;
+  return await res
 
 
 

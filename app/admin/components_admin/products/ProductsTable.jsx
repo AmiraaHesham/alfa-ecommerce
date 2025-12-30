@@ -92,15 +92,15 @@ export default function ProductsTable() {
   }, []);
   return (
     <div className="">
-      <div className="bg-white h-[50px] border rounded-lg border-1  w-full mt-5 flex justify-between p-5 items-center">
-        <div className="flex items-center justify-center border px-3 rounded-md bg-gray-100 h-9">
+      <div className="bg-white  border rounded-lg border-1  w-full mt-5 flex flex-row justify-between  p-3 items-center  xs:gap-4">
+        <div className="flex items-center justify-center border px-3 rounded-md bg-gray-100">
           <span className="text-gray-400 text-lg ">
             <IoMdSearch />
           </span>
           <input
             type="text"
             placeholder="Searsh"
-            className="bg-none outline-none placeholder:text-sm  h-8  w-[250px] bg-gray-100 p-2 rounded-lg"
+            className="bg-none outline-none placeholder:text-sm   w-[250px] bg-gray-100 p-1 rounded-lg"
           />
         </div>
         <button
@@ -126,10 +126,10 @@ export default function ProductsTable() {
             setSelectedFeatured("");
           }}
         >
-          <span>
+          <span className="text-base">
             <FaPlus />
           </span>
-          <h1>{t("add_new_product")}</h1>
+          <h1 className="xs:hidden md:block">{t("add_new_product")}</h1>
         </button>
       </div>
 

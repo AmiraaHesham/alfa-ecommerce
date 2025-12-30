@@ -2,14 +2,17 @@
 import { MdDelete } from "react-icons/md";
 import Image from "next/image";
 import { FaPlus } from "react-icons/fa";
-import { useIdContext } from "../../../../context/idContext"; 
+import { useIdContext } from "../../../../context/idContext";
 import { useRefresh } from "../../../../context/refreshContext";
 import { useLanguage } from "../../../../context/LanguageContext.js";
 import { deleteRequest } from "../../../../utils/requestsUtils.js";
 import { useEffect, useState, useCallback } from "react";
-import {getCategories} from "../../../../utils/functions"
+import { getCategories } from "../../../../utils/functions";
+
 export default function CategorysTable() {
   const { t } = useLanguage();
+  const { triggerRefresh } = useRefresh();
+
   const { setSelectedId } = useIdContext();
   const { setSelectedNameEn } = useIdContext();
   const { setSelectedNameAr } = useIdContext();
@@ -18,11 +21,11 @@ export default function CategorysTable() {
 
   let [itemCategory, setItemCategory] = useState([]);
 
-  const getAllCategories=async()=>{
-    const resData = await getCategories()
-    setItemCategory(resData)
-  }
-
+  const getAllCategories = async () => {
+    const resData = await getCategories();
+    setItemCategory(resData);
+    console.log(process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL)
+  };
   const itemCategoryId = (category) => {
     let form = document.querySelector("#add-category-form");
     let nameFormCatogery = document.querySelector("#nameFormCategory");
@@ -36,13 +39,12 @@ export default function CategorysTable() {
     setSelectedId(category.itemCategoryId);
     setSelectedNameEn(category.nameEn);
     setSelectedNameAr(category.nameAr);
-    setSelectedPhoto(category.imageURL);
+    setSelectedPhoto(process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL+category.imageURL);
   };
   const deleteCategory = async (category) => {
- 
     try {
       await deleteRequest(`/api/admin/itemCategory/${category.itemCategoryId}`);
-    getCategories();
+      triggerRefresh()
     } catch (error) {
       console.log(error);
     }
@@ -50,7 +52,10 @@ export default function CategorysTable() {
 
   useEffect(() => {
     getAllCategories();
+
   }, [refreshKey]);
+
+
   return (
     <div>
       <div className="bg-white h-[50px] border rounded-lg border-1  w-full mt-2 flex justify-end p-5 items-center">
@@ -66,10 +71,14 @@ export default function CategorysTable() {
             nameFormCategory.innerHTML = "Add Category";
             form.classList.remove("hidden");
             form.classList.add("flex");
-            setSelectedId("");
+            // setSelectedId("");
             setSelectedNameEn("");
             setSelectedNameAr("");
             setSelectedPhoto("");
+                let upload = document.querySelector("#label-uplod");
+    let img = document.querySelector("#lable-img");
+    img.classList.add("hidden");
+    upload.classList.remove("hidden");
           }}
         >
           <span>
@@ -89,8 +98,10 @@ export default function CategorysTable() {
             </tr>
           </thead>
           <tbody className="bg-white text-md w-full cursor-pointer ">
-            {itemCategory.map((category, index) => {
-              return (
+            {itemCategory && itemCategory.length > 0 ? (
+              
+              itemCategory.map((category, index) => (
+                
                 <tr
                   key={index}
                   className=" text-blue-950 border hover:bg-gray-100 "
@@ -100,11 +111,11 @@ export default function CategorysTable() {
                     <span className="w-[100px]">
                       <Image
                         alt=""
-                        src="/img.jpg"
+                        src={`${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL+category.imageURL||''}`}
                         width={50}
                         height={50}
                         className="rounded-xl xs:w-10 xs:h-10 md:w-14 md:h-12  border my-1 p-1"
-                        decoding="async"
+                        // decoding="async"
                       />
                     </span>
                   </td>
@@ -112,7 +123,9 @@ export default function CategorysTable() {
                   <td onClick={() => itemCategoryId(category)}>
                     <div>
                       <h1 className="md:text-sm xs:text-xs font-semibold">
-                        {localStorage.lang==='ar'?category.nameAr:category.nameEn}
+                        {localStorage.lang === "ar"
+                          ? category.nameAr
+                          : category.nameEn}
                       </h1>
                       <h1 className="md:text-xs xs:text-[10px]">
                         {t("main_category")}
@@ -121,7 +134,7 @@ export default function CategorysTable() {
                   </td>
                   <td onClick={() => itemCategoryId(category)}>
                     <div className="bg-blue-100 md:w-[80px]  xs:w-[60px] text-center rounded-full text-blue-600  px-2 font-semibold md:text-xs xs:text-[10px]">
-                      <h1>120</h1>
+                      <h1>{category.itemsCount}</h1>
                       <h2>{t("products_category")}</h2>
                     </div>
                   </td>
@@ -135,8 +148,14 @@ export default function CategorysTable() {
                     </button>
                   </td>
                 </tr>
-              );
-            })}
+              ))
+            ) : (
+              <tr>
+                <td colSpan="5" className="text-center p-4">
+                  لا توجد بيانات
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>

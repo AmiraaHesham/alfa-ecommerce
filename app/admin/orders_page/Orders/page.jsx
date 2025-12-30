@@ -11,11 +11,14 @@ export default function Orders() {
            <SideMenu orders={"bg-[#e0e7ff6e] text-[#6158ff]"} />
            <div className="w-full">
              <Header page_title={"Orders Management"} />
-   
-             <div className="mx-10 mt-3 relative">
+             {/* <div className="flex w-full flex-col justify-center items-center mt-6 relative"> */}
+          <div className="flex w-full flex-col justify-center items-center  relative">
+
+             <div className="w-[90%] mt-3 ">
               <Orders_Details />
-              <Orders_Failter placeholder={"Search by order code or name"} view={""} />
+              <Orders_Failter placeholder={"Search by order code or name"}  />
               <Orders_Table />
+        </div>
              </div>
            </div>
          </main>

@@ -5,16 +5,13 @@ export const postRequest = async (endpoint, data) => {
     typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
   const lang =
     typeof window !== "undefined" ? localStorage.getItem("lang") : null;
-
-  
-
   try {
     const response = await axios.post(
       process.env.NEXT_PUBLIC_API_BASE_URL + endpoint,
       data,
       {
         headers: {
-          // "Content-Type": "application/json",
+        //  " Content-Type": "multipart/form-data",
           Authorization: token ? `Bearer ${token}` : undefined,
           "Accept-Language": localStorage.getItem("lang"),
         },
@@ -45,8 +42,8 @@ export const getRequest = async (endpoint) => {
         },
       }
     );
-    console.log(response);
-    return await response.data;
+    console.log(response.data.data);
+    return await response.data.data;
   } catch (error) {
     console.error("POST request error:", error);
     throw error;

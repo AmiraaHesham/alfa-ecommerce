@@ -1,13 +1,9 @@
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    images: {
-    remotePatterns: [
-      { protocol: 'https', hostname: 'your-cdn.com',    
- },
-      
-    ],
+   images: {
+    domains: [ '10.65.77.1'],
   },
-  
 experimental: {
     swcMinify: true,
   },

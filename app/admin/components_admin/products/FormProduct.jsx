@@ -6,7 +6,7 @@ import axios from "axios";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useLanguage } from "../../../../context/LanguageContext.js";
 import { Switch } from "@headlessui/react";
-import { FaTimes } from "react-icons/fa";
+import { FaCircle, FaTimes } from "react-icons/fa";
 import { getCategories } from "../../../../utils/functions";
 import {
   getRequest,
@@ -15,6 +15,7 @@ import {
 } from "../../../../utils/requestsUtils.js";
 import { useRefresh } from "../../../../context/refreshContext.jsx";
 import { useIdContext } from "../../../../context/idContext";
+import { GoStarFill } from "react-icons/go";
 
 export default function FormProduct({ name_categ, img, state }) {
   const [enabledVisible, setEnabledVisible] = useState(true);
@@ -29,7 +30,7 @@ export default function FormProduct({ name_categ, img, state }) {
   const { selectedVisible } = useIdContext();
   const { selectedCategory } = useIdContext();
   const { selectedFeatured } = useIdContext();
-  const { selectedPhoto} = useIdContext();
+  const { selectedPhoto } = useIdContext();
   const [photo, setPhoto] = useState({
     img1: "",
     img2: "",
@@ -42,7 +43,7 @@ export default function FormProduct({ name_categ, img, state }) {
     price: Number,
     description: "",
     code: "",
-    mainImage:""
+    mainImage: "",
   });
 
   const handelupload = (e, photoKey) => {
@@ -56,12 +57,11 @@ export default function FormProduct({ name_categ, img, state }) {
       }));
     };
 
-      setProduct((prev) => ({
-        ...prev,
-        mainImage: file,
-      }));
-      console.log(typeof file)
-    
+    setProduct((prev) => ({
+      ...prev,
+      mainImage: file,
+    }));
+    console.log(typeof file);
   };
   let [itemCategory, setItemCategory] = useState([]);
 
@@ -73,16 +73,16 @@ export default function FormProduct({ name_categ, img, state }) {
     let form = document.querySelector("#add-product-form");
     form.classList.add("hidden");
     try {
-      await postRequest("/api/admin/items", {
-        nameEn: product.nameEn,
-        nameAr: product.nameAr,
-        code: product.code,
-        price: product.price,
-        description: product.description,
-        favorite: enabledVisible,
-        active: enabledVisible,
-        itemCategoryId: product.category,
-      });
+      const formData = new FormData();
+      formData.append("nameEn", product.nameEn);
+      formData.append("nameAr", product.nameAr);
+      formData.append("code", product.code);
+      formData.append("price", product.price);
+      formData.append("description", product.description);
+      formData.append("favorite", enabledFeatured);
+      formData.append("active", enabledVisible);
+      formData.append("itemCategoryId", product.category);
+      await postRequest("/api/admin/items", formData);
       triggerRefresh();
       setProduct((prev) => ({ ...prev, nameEn: "" }));
       setProduct((prev) => ({ ...prev, nameAr: "" }));
@@ -90,7 +90,7 @@ export default function FormProduct({ name_categ, img, state }) {
       setProduct((prev) => ({ ...prev, price: "" }));
       setProduct((prev) => ({ ...prev, description: "" }));
       setProduct((prev) => ({ ...prev, enabledVisible: true }));
-      setProduct((prev) => ({ ...prev, category: "Choose Category" }));
+      setProduct((prev) => ({ ...prev, category: "" }));
       setProduct((prev) => ({ ...prev, enabledVisible: false }));
     } catch (error) {
       console.log(error);
@@ -125,17 +125,17 @@ export default function FormProduct({ name_categ, img, state }) {
   ]);
 
   const updataProduct = async () => {
-     let form = document.querySelector("#add-product-form");
+    let form = document.querySelector("#add-product-form");
     form.classList.add("hidden");
     try {
       const formData = new FormData();
-      formData.append("nameEn",product.nameEn)
-      formData.append("nameAr",product.nameAr)
-      formData.append("code",product.code)
-      formData.append("price",Number(product.price))
-      formData.append("description",product.description)
-      formData.append("mainImage",product.mainImage)
-      formData.append("itemCategoryId",product.category)
+      formData.append("nameEn", product.nameEn);
+      formData.append("nameAr", product.nameAr);
+      formData.append("code", product.code);
+      formData.append("price", Number(product.price));
+      formData.append("description", product.description);
+      formData.append("mainImage", product.mainImage);
+      formData.append("itemCategoryId", product.category);
 
       // formData.append(itemCategoryId,product.category)
       await putRequest(`/api/admin/items/${selectedId}`, formData);
@@ -191,7 +191,7 @@ export default function FormProduct({ name_categ, img, state }) {
         <hr className="h-1"></hr>
 
         <div className="flex flex-col text-gray-600  mt-2">
-          <h1 className="T">{t("product_images")}</h1>
+          <h1 className="text-xs">{t("product_images")}</h1>
 
           <div className="grid sm:grid-cols-3  xs:grid-cols-2 gap-6 mt-3">
             <label htmlFor="fileInput">
@@ -319,7 +319,7 @@ export default function FormProduct({ name_categ, img, state }) {
         <div className="flex flex-col gap-2 mt-7 ">
           <div className=" w-full flex md:flex-row justify-between xs:flex-col gap-3">
             <div className="">
-              <label className="text-sm text-gray-600 mb-10">
+              <label className="text-xs text-gray-600 mb-10">
                 {t("product_name")}* [En]
               </label>
               <input
@@ -328,11 +328,13 @@ export default function FormProduct({ name_categ, img, state }) {
                 onChange={(e) =>
                   setProduct((prev) => ({ ...prev, nameEn: e.target.value }))
                 }
-                className="w-full bg-[#F9FAFB] outline-none text-blue-900 text-base  my-1  p-2 border rounded-md"
+                                required
+
+                className="w-full bg-[#F9FAFB] outline-none text-blue-900 text-base  my-1  p-1 border rounded-md"
               />
             </div>
             <div>
-              <label className="text-sm text-gray-600">
+              <label className="text-xs text-gray-600">
                 {t("product_name")}* [Ar]
               </label>
               <input
@@ -341,14 +343,16 @@ export default function FormProduct({ name_categ, img, state }) {
                 onChange={(e) =>
                   setProduct((prev) => ({ ...prev, nameAr: e.target.value }))
                 }
-                className="w-full bg-[#F9FAFB] outline-none text-blue-900 text-base my-1  p-2 border rounded-md"
+                                required
+
+                className="w-full bg-[#F9FAFB] outline-none text-blue-900 text-base my-1  p-1 border rounded-md"
               />
             </div>
           </div>
 
           <div className="flex items-center md:flex-row  xs:flex-col  justify-between gap-3">
             <div className="w-full">
-              <label className="text-sm text-gray-600">
+              <label className="text-xs text-gray-600">
                 {t("product_code")}
               </label>
               <input
@@ -358,37 +362,11 @@ export default function FormProduct({ name_categ, img, state }) {
                   setProduct((prev) => ({ ...prev, code: e.target.value }))
                 }
                 required
-                className="w-full bg-[#F9FAFB] outline-none text-blue-900 text-base  my-1  p-2 border rounded-md"
+                className="w-full bg-[#F9FAFB] outline-none text-blue-900 text-base  my-1  p-1 border rounded-md"
               />
             </div>
             <div className="w-full">
-              <label className="text-sm text-gray-600">{t("Category")}</label>
-              <select
-                type="text"
-                onChange={(e) =>{
-                      const selectedCategoryId = e.target.value; 
-                  setProduct((prev) => ({ ...prev, category: selectedCategoryId }))
-                }}
-                required
-                className="w-full bg-[#F9FAFB] outline-none text-blue-900 text-base my-1  p-3 border rounded-md"
-              >
-                <option></option>
-                {itemCategory.map((category, index) => {
-                  return (
-                    <option key={index} value={category.itemCategoryId}>
-                      {localStorage.lang === "ar"
-                        ? category.nameAr
-                        : category.nameEn}
-                    </option>
-                  );
-                })}
-              </select>
-            </div>
-          </div>
-
-          <div className="flex md:flex-row  xs:flex-col  justify-between gap-3">
-            <div className="w-full">
-              <label className="text-sm text-gray-600">{t("Price")}</label>
+              <label className="text-xs text-gray-600">{t("Price")}</label>
               <input
                 type="number"
                 value={product.price || ""}
@@ -396,79 +374,78 @@ export default function FormProduct({ name_categ, img, state }) {
                   setProduct((prev) => ({ ...prev, price: e.target.value }))
                 }
                 required
-                className=" bg-[#F9FAFB] w-full outline-none text-blue-900 text-base  my-1  p-2 border rounded-md"
+                className=" bg-[#F9FAFB] w-full outline-none text-blue-900 text-base  my-1  p-1 border rounded-md"
               />
             </div>
-            <div className="w-full ">
+          </div>
+
+          <div className="flex md:flex-row  xs:flex-col items-start  justify-between gap-3">
+            <div className="w-full">
+              <label className="text-xs text-gray-600">{t("Category")}</label>
+              <select
+                type="text"
+                
+                onChange={(e) => {
+                  const selectedCategoryId = e.target.value;
+                  setProduct((prev) => ({
+                    ...prev,
+                    category: selectedCategoryId,
+                  }));
+                }}
+                required
+                className="w-full bg-[#F9FAFB] outline-none text-blue-900 text-base my-1 p-2 border rounded-md"
+              >
+                <option></option>
+                {itemCategory
+                  ? itemCategory.map((category, index) => {
+                      return (
+                        <option key={index} value={category.itemCategoryId}>
+                          {localStorage.lang === "ar"
+                            ? category.nameAr
+                            : category.nameEn}
+                        </option>
+                      );
+                    })
+                  : ""}
+              </select>
+            </div>
+            <div className="w-full mt-2">
               <label className="w-full">
-                <h1 className="text-sm text-gray-600">{t("product_state ")}</h1>
+                <h1 className="text-xs text-gray-600">{t("product_state ")}</h1>
               </label>
-              <div className="bg-[#F9FAFB] flex items-center justify-between h-10 px-3 my-2 border rounded-md ">
-                <h1 className="text-sm text-gray-600">
+              <div className="bg-[#F9FAFB] flex items-center justify-between h-9    px-3 my-2 border rounded-md ">
+                <h1 className="text-xs text-gray-600">
                   {t("visible_in_store")}
                 </h1>
-                <Switch
-                  checked={enabledVisible}
-                  onChange={setEnabledVisible}
-                  className={`${enabledVisible ? "bg-blue-600" : "bg-gray-300"}
-    relative inline-flex h-5 w-12 shrink-0 cursor-pointer rounded-full 
-    border-2 border-transparent transition-colors duration-200 ease-in-out`}
-                >
-                  <span
-                    aria-hidden="true"
-                    className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
-                      enabledVisible ? "translate-x-7" : "translate-x-0"
-                    }`}
-                  />
-                </Switch>
-                {/* <Switch
-                  checked={enabledVisible}
-                  onChange={setEnabledVisible}
-                  className={
-                    `${enabledVisible ? "bg-blue-600" : "bg-gray-300"}
-    relative inline-flex h-5 w-12 shrink-0 cursor-pointer rounded-full 
-    border-2 border-transparent transition-colors duration-200 ease-in-out` +
-                      localStorage.lang ===
-                    "ar"
-                      ? "block"
-                      : "hidden"
+                <button
+                  onClick={() => {
+                    setEnabledVisible(!enabledVisible);
+                  }}
+                  className={`${
+                    enabledVisible ? "text-green-600" : "text-gray-300"
                   }
+
+    transition-colors duration-200`}
                 >
-                  <span
-                    aria-hidden="true"
-                    className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
-                      enabledVisible
-                        ? "translate-x-0"
-                        : "translate-x-[-30px]" + localStorage.lang === "ar"
-                        ? "block"
-                        : "hidden"
-                    }`}
-                  />
-                </Switch> */}
+                  <FaCircle />
+                </button>
               </div>
               <div className="bg-[#F9FAFB] flex items-center justify-between   h-10   px-3  border rounded-md ">
-                <h1 className="text-sm text-gray-600">
+                <h1 className="text-xs text-gray-600">
                   {t("featured-product")}
                 </h1>
-                <Switch
-                  checked={enabledFeatured}
-                  value={enabledFeatured}
-                  onChange={setEnabledFeatured}
-                  className={`${enabledFeatured ? "bg-blue-600" : "bg-gray-300"}
-    relative inline-flex h-5 w-12 shrink-0 cursor-pointer rounded-full 
-    border-2 border-transparent transition-colors duration-200 ease-in-out`}
-                >
-                  <span
-                    aria-hidden="true"
-                    className={`pointer-events-none inline-block h-4 w-4 transform rounded-full 
-      bg-white shadow ring-0 transition duration-200 ease-in-out
-      ${enabledFeatured ? "translate-x-7" : "translate-x-0"}`}
-                  />
-                </Switch>
+                <button
+                  onClick={() => {
+                    setEnabledFeatured(!enabledFeatured);
+                  }}
+                  className={`${enabledFeatured ? "text-yellow-500" : "text-gray-400" } text-xl transition-colors duration-200`}>
+                
+                  <GoStarFill />
+                </button>
               </div>
             </div>
           </div>
-          <label className="text-sm text-gray-700">{t("description")}</label>
+          <label className="text-xs text-gray-700">{t("description")}</label>
           <textarea
             type="text"
             required
@@ -476,7 +453,7 @@ export default function FormProduct({ name_categ, img, state }) {
             onChange={(e) =>
               setProduct((prev) => ({ ...prev, description: e.target.value }))
             }
-            className="w-full bg-[#F9FAFB] outline-none mb-2 text-blue-900 text-base  my-1  p-2 
+            className="w-full bg-[#F9FAFB] outline-none mb-2 text-blue-900 text-base  my-1  p-1 
             border rounded-md"
           />
           <hr className="h-1"></hr>

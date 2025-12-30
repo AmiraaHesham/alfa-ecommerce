@@ -8,8 +8,8 @@ export default function UsersPage() {
     const navigate = useRouter(); 
   const { t } = useLanguage();
   return (
-    <div className=" rounded-xl w-full h-[530px] border  mt-3 overflow-hidden overflow-y-scroll ">
-      <table className=" w-full     rounded-lg  ">
+      <div className=" rounded-xl w-full   h-screen border  mt-3 overflow-hidden overflow-x-scroll overflow-y-scroll ">
+        <table className="  xs:w-[200%] lg:w-full   ">
         <thead className="bg-[#F9FAFB] text-xs text-justify">
           <tr className=" text-gray-500 h-12  ">
             <th className="w-[5%]"></th>
@@ -21,25 +21,7 @@ export default function UsersPage() {
           </tr>
         </thead>
         <tbody className="bg-white text-md w-full ">
-          {/* (
-                          {
-                            (allCateg.map = (category, index) => {
-                              <tr
-                                key={index}
-                                className="text-center text-blue-950 border "
-                              >
-                                <td className="py-5">{index}</td>
-                                <td>{category.imageURL}</td>
-                                <td>{category.name}</td>
-                                <td>{category.product_count}</td>
-                                <td className="text-2xl">
-                                  <span className="text-blue-800"><FiEdit /></span> 
-                                <span className="text-red-800"><MdDelete/></span>
-                                </td>
-                              </tr>;
-                            })
-                          }
-                          ) */}
+        
 
           <tr className=" text-blue-950 border hover:bg-gray-50 "
             onClick={() => navigate.push('/admin/UsersPage/UserInfo')}>
@@ -53,7 +35,7 @@ export default function UsersPage() {
                   height={45}
                   className="rounded-full border my-2 p-1"
                 />
-                <h1 className="text-md font-semibold">John Doe</h1>
+                <h1 className="text-base font-semibold">John Doe</h1>
               </div>
             </td>
 
