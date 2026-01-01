@@ -57,8 +57,8 @@ jspm_packages/
 # Next.js specific
 # (لا ترفع ملفات التكوين لو فيها بيانات حساسة مثل API keys)
 # next.config.js   # ← احذف التعليق لو متأكد أنه آمن
-# next.config.mjs
-
+next.config.mjs
+next.config.js   
 # Misc
 .DS_Store
 Thumbs.db
