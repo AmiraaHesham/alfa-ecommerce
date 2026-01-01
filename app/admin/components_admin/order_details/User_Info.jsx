@@ -9,10 +9,10 @@ export default function Orders_Details() {
   const { t } = useLanguage();
 
   return (
-    <div className="w-[35%] bg-white mt-3 p-7  border rounded-lg">
+    <div className="w-full bg-white p-7  border rounded-lg">
       <div className="flex justify-between items-center">
         <h1 className="text-lg font-semibold">{t("user_info")}</h1>
-        <button className=" text-blue-700">{t("view_profile")}</button>
+        {/* <button className={`text-blue-700`}>{t("view_profile")}</button> */}
       </div>
       <div>
         <div className="flex gap-5 mt-5 items-center">

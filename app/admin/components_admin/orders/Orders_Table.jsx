@@ -5,9 +5,29 @@ import { FaPlus } from "react-icons/fa";
 import { useLanguage } from "../../../../context/LanguageContext.js";
 import Link from "next/link.js";
 import { useRouter } from 'next/navigation'; 
+import { useCallback, useEffect } from "react";
+import { postRequest } from "../../../../utils/requestsUtils.js";
 export default function Orders_Table() {
   const { t } = useLanguage();
   const navigate = useRouter(); 
+
+ const getAllOrders = useCallback(async () => {
+    try {
+      const response = await postRequest("/api/orders/search", {
+        page: 0,
+        size: 20,
+      });
+      const resProducts = response.data || [];
+      setProducts(resProducts);
+      // pagination()
+      //       console.log("Categories after set:", resProducts);
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
+useEffect(() => {
+    getAllOrders();
+  }, []);
     return (
       <div className=" rounded-xl w-full   h-screen border  mt-3 overflow-hidden overflow-x-scroll overflow-y-scroll ">
         <table className="  xs:w-[200%] lg:w-full   ">
@@ -53,8 +73,8 @@ export default function Orders_Table() {
               <td className="text-sm">Oct 24, 2023</td>
 
               <td>
-                <div className="flex items-center gap-3">
-                  <td>
+              
+                    <div className="flex items-center gap-3">
                     <Image
                       alt=""
                       src="/img.jpg"
@@ -62,126 +82,20 @@ export default function Orders_Table() {
                       height={45}
                       className="rounded-full border my-1 p-1"
                     />
-                  </td>
+                  
                   <div>
                     <h1 className="font-semibold text-sm">Jane Cooper</h1>
                     <h1 className="text-xs  text-gray-500">Jane@example.com</h1>
                   </div>
-                </div>
-              </td>
-              <td className="text-sm">iphone15 pro, ...</td>
-              <td className="text-sm font-semibold">EG 1,200.00</td>
-              <td className="text-sm font-semibold">Pending</td>
-            </tr>
-            <tr className=" text-blue-950 border  hover:bg-gray-50 ">
-              <td></td>
-
-              <td className="font-semibold text-blue-500">#ORD-7782</td>
-              <td className="text-sm">Oct 24, 2023</td>
-
-              <td>
-                <div className="flex items-center gap-3">
-                  <td>
-                    <Image
-                      alt=""
-                      src="/img.jpg"
-                      width={45}
-                      height={45}
-                      className="rounded-full border my-1 p-1"
-                    />
+                   </div>
                   </td>
-                  <div>
-                    <h1 className="font-semibold text-sm">Jane Cooper</h1>
-                    <h1 className="text-xs text-gray-500">Jane@example.com</h1>
-                  </div>
-                </div>
-              </td>
+               
+             
               <td className="text-sm">iphone15 pro, ...</td>
               <td className="text-sm font-semibold">EG 1,200.00</td>
               <td className="text-sm font-semibold">Pending</td>
             </tr>
-              <tr className=" text-blue-950 border  hover:bg-gray-50 ">
-              <td></td>
-
-              <td className="font-semibold text-blue-500">#ORD-7782</td>
-              <td className="text-sm">Oct 24, 2023</td>
-
-              <td>
-                <div className="flex items-center gap-3">
-                  <td>
-                    <Image
-                      alt=""
-                      src="/img.jpg"
-                      width={45}
-                      height={45}
-                      className="rounded-full border my-1 p-1"
-                    />
-                  </td>
-                  <div>
-                    <h1 className="font-semibold text-sm">Jane Cooper</h1>
-                    <h1 className="text-xs text-gray-500">Jane@example.com</h1>
-                  </div>
-                </div>
-              </td>
-              <td className="text-sm">iphone15 pro, ...</td>
-              <td className="text-sm font-semibold">EG 1,200.00</td>
-              <td className="text-sm font-semibold">Pending</td>
-            </tr>
-              <tr className=" text-blue-950 border  hover:bg-gray-50 ">
-              <td></td>
-
-              <td className="font-semibold text-blue-500">#ORD-7782</td>
-              <td className="text-sm">Oct 24, 2023</td>
-
-              <td>
-                <div className="flex items-center gap-3">
-                  <td>
-                    <Image
-                      alt=""
-                      src="/img.jpg"
-                      width={45}
-                      height={45}
-                      className="rounded-full border my-1 p-1"
-                    />
-                  </td>
-                  <div>
-                    <h1 className="font-semibold text-sm">Jane Cooper</h1>
-                    <h1 className="text-xs text-gray-500">Jane@example.com</h1>
-                  </div>
-                </div>
-              </td>
-              <td className="text-sm">iphone15 pro, ...</td>
-              <td className="text-sm font-semibold">EG 1,200.00</td>
-              <td className="text-sm font-semibold">Pending</td>
-            </tr>
-              <tr className=" text-blue-950 border  hover:bg-gray-50 ">
-              <td></td>
-
-              <td className="font-semibold text-blue-500">#ORD-7782</td>
-              <td className="text-sm">Oct 24, 2023</td>
-
-              <td>
-                <div className="flex items-center gap-3">
-                  <td>
-                    <Image
-                      alt=""
-                      src="/img.jpg"
-                      width={45}
-                      height={45}
-                      className="rounded-full border my-1 p-1"
-                    />
-                  </td>
-                  <div>
-                    <h1 className="font-semibold text-sm">Jane Cooper</h1>
-                    <h1 className="text-xs text-gray-500">Jane@example.com</h1>
-                  </div>
-                </div>
-              </td>
-              <td className="text-sm">iphone15 pro, ...</td>
-              <td className="text-sm font-semibold">EG 1,200.00</td>
-              <td className="text-sm font-semibold">Pending</td>
-            </tr>
-
+           
           </tbody>
         </table>
       </div>

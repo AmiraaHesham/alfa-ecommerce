@@ -112,8 +112,8 @@ export default function CategorysTable() {
                       <Image
                         alt=""
                         src={`${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL+category.imageURL||''}`}
-                        width={50}
-                        height={50}
+                        width={40}
+                        height={40}
                         className="rounded-xl xs:w-10 xs:h-10 md:w-14 md:h-12  border my-1 p-1"
                         // decoding="async"
                       />

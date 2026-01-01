@@ -78,6 +78,11 @@
   "delivered_orders": "طلبات تم تسليمها",
   "save-changes": "حفظ التغيرات",
   "orders_management": "إدارة الطلبات",
-  "featured-product":"المنتج مميز"
+  "featured-product":"المنتج مميز",
+  "contact-details":"التواصل",
+"official-email-address":"البريد الإلكتروني",
+"support-phone-number":"رقم التليفون ",
+"social-media-links":"روابط التواصل الاجتماعي"
+
 
 }

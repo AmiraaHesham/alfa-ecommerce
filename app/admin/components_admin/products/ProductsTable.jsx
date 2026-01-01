@@ -6,36 +6,20 @@ import { useLanguage } from "../../../../context/LanguageContext.js";
 import { FaPlus } from "react-icons/fa";
 import Image from "next/image";
 import { GoStarFill } from "react-icons/go";
-import { postRequest } from "../../../../utils/requestsUtils.js";
+import {  postRequest } from "../../../../utils/requestsUtils.js";
 import { useIdContext } from "../../../../context/idContext";
 import { IoMdSearch } from "react-icons/io";
 import { deleteRequest } from "../../../../utils/requestsUtils.js";
+import { useRefresh } from "../../../../context/refreshContext.jsx";
 
 export default function ProductsTable() {
   const { t } = useLanguage();
   const [products, setProducts] = useState([]);
   const productTableRef = useRef();
-  let [itemCategory, setItemCategory] = useState([]);
-  // const {selectedProductData, setSelectedProductData } = useIdContext();
-  const { setSelectedId } = useIdContext();
-  const { setSelectedNameEn } = useIdContext();
-  const { setSelectedNameAr } = useIdContext();
-  const { setSelectedCode } = useIdContext();
-  const { setSelectedPrice } = useIdContext();
-  const { setSelectedDescription } = useIdContext();
-  const { setSelectedVisible } = useIdContext();
-  const { setSelectedCategory } = useIdContext();
-  const { setSelectedFeatured } = useIdContext();
-  const { setSelectedPhoto } = useIdContext();
-  const [product, setProduct] = useState({
-    nameEn: "",
-    nameAr: "",
-    category: Number,
-    price: Number,
-    description: "",
-    code: "",
-  });
+  const { refreshKey } = useRefresh();
+   const { triggerRefresh } = useRefresh();
 
+  const { setSelectedId } = useIdContext();
   const getAllProducts = useCallback(async () => {
     try {
       const response = await postRequest("/api/public/items/search", {
@@ -51,6 +35,29 @@ export default function ProductsTable() {
     }
   }, []);
 
+  const productFavorite = async(productId) => {
+       await postRequest(`/api/admin/items/${productId}/favorite`,'' )
+    triggerRefresh();
+
+  }; 
+  
+  const productUnfavorite = async(productId) => {
+       await postRequest(`/api/admin/items/${productId}/unfavorite`,'' )
+    triggerRefresh();
+
+  }; 
+  const productActive = async(productId) => {
+       await postRequest(`/api/admin/items/${productId}/activate`,'' )
+    triggerRefresh();
+
+  }; 
+  
+  const productDeaactive = async(productId) => {
+       await postRequest(`/api/admin/items/${productId}/deactivate`,'' )
+    triggerRefresh();
+
+  }; 
+
   const pagination = () => {
     // console.log(productTableRef.current)
   };
@@ -65,19 +72,8 @@ export default function ProductsTable() {
     nameFormProduct.innerHTML = "Edit Product";
     form.classList.remove("hidden");
     form.classList.add("flex");
-
-    // console.log(product)
     setSelectedId(product.itemId);
-    setSelectedNameEn(product.nameEn);
-    setSelectedNameAr(product.nameAr);
-    setSelectedCode(product.code);
-    setSelectedPrice(product.price);
-    setSelectedDescription(product.description);
-    setSelectedVisible(product.active);
-    setSelectedCategory(product.itemCategoryId);
-    setSelectedFeatured(product.favorite);
-    setSelectedPhoto(product.mainImage);
-    // setSelectedPhoto(product.imageURL);
+
   };
   const deleteProduct = async (product) => {
     try {
@@ -89,7 +85,7 @@ export default function ProductsTable() {
   };
   useEffect(() => {
     getAllProducts();
-  }, []);
+  }, [refreshKey]);
   return (
     <div className="">
       <div className="bg-white  border rounded-lg border-1  w-full mt-5 flex flex-row justify-between  p-3 items-center  xs:gap-4">
@@ -160,6 +156,16 @@ export default function ProductsTable() {
                           "flex items-center justify-center gap-3 text-sm " +
                           (product.active ? "text-green-600" : "text-gray-600")
                         }
+                        onClick={()=>{
+                          if(product.active === false){
+                          productActive(product.itemId)
+
+                          }
+                          else{
+                          productDeaactive(product.itemId)
+
+                          }
+                        }}
                       >
                         <FaCircle />
                       </button>
@@ -170,6 +176,16 @@ export default function ProductsTable() {
                             ? " text-yellow-500"
                             : " text-gray-500")
                         }
+                        onClick={async()=>{
+                          console.log(product.favorite)
+                          if(product.favorite === false){
+                           await productFavorite(product.itemId)
+                           
+                          }
+                          else{
+                           await productUnfavorite(product.itemId)
+                          }
+                        }}
                       >
                         <GoStarFill />
                       </button>
@@ -181,10 +197,10 @@ export default function ProductsTable() {
                   >
                     <Image
                       alt=""
-                      src="/img.jpg"
-                      width={45}
-                      height={45}
-                      className="rounded-xl border my-1 p-1"
+                      src={`${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL+product.mainImageURL||''}`}
+                      width={40}
+                      height={40}
+                      className="rounded-xl xs:w-10 xs:h-10 md:w-14 md:h-12  border my-1 p-1"
                     />
                     <div>
                       <h1 className="text-sm font-semibold">

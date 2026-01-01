@@ -9,18 +9,18 @@ export default function UsersPage() {
   const { t } = useLanguage();
   return (
       <div className=" rounded-xl w-full   h-screen border  mt-3 overflow-hidden overflow-x-scroll overflow-y-scroll ">
-        <table className="  xs:w-[200%] lg:w-full   ">
+        <table className="  xs:w-[230%] lg:w-full   ">
         <thead className="bg-[#F9FAFB] text-xs text-justify">
           <tr className=" text-gray-500 h-12  ">
             <th className="w-[5%]"></th>
             <th className="w-[25%]">{t("User")}</th>
             <th className="w-[25%]">{t("email")}</th>
-            <th className="w-[20%] mx-5">{t("registered-on")}</th>
-            <th className="w-[15%] mx-20">{t("orders")}</th>
-            <th className="w-[10%] mx-5">{t("status")}</th>
+            <th className="w-[20%] ">{t("registered-on")}</th>
+            <th className="w-[15%] px-4">{t("orders")}</th>
+            <th className="w-[10%] px-4">{t("status")}</th>
           </tr>
         </thead>
-        <tbody className="bg-white text-md w-full ">
+        <tbody className="bg-white text-md ">
         
 
           <tr className=" text-blue-950 border hover:bg-gray-50 "

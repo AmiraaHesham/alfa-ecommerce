@@ -182,7 +182,7 @@ console.log(file.name)
                 <div id="lable-img" className="hidden w-[100px] h-[100px]">
                   <Image
                     alt=""
-                    src={photo.image}
+                    src={photo.image||'/images/no-image.png'}
                     width={100}
                     height={100}
                     className="w-full h-full"

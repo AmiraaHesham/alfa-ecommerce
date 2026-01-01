@@ -26,7 +26,7 @@ export default function SideMenu({
 
   return (
     <div className="  xs:w-[60px] md:w-[300px]  bg-[#ffffff]">
-      <div className=" h-screen  ">
+      <div className=" h-screen   ">
         <div className="flex  items-center justify-center gap-4 my-5">
           <span className="text-2xl bg-blue-500 p-2 text-white rounded-md">
             <MdElectricBolt />
@@ -39,7 +39,7 @@ export default function SideMenu({
           </div>
         </div>
 
-        <div className="mt-9">
+        <div className="mt-9 flex flex-col gap-1">
           <Link href="/admin/Dashboard">
             <div
               className={`flex gap-4 mx-3 xs:justify-center md:justify-start  items-center p-3 rounded-md cursor-pointer hover:bg-[#e0e7ff6e] hover:text-[#6158ff] ${dashbord}`}
