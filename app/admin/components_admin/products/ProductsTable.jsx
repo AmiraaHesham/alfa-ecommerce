@@ -16,15 +16,20 @@ export default function ProductsTable() {
   const { t } = useLanguage();
   const [products, setProducts] = useState([]);
   const productTableRef = useRef();
+  const [inputValue, setInputValue] = useState('');
+
   const { refreshKey } = useRefresh();
    const { triggerRefresh } = useRefresh();
-
+const [searchInput , setSearshInput]=useState();
   const { setSelectedId } = useIdContext();
+  const searchInputRef = useRef()
   const getAllProducts = useCallback(async () => {
     try {
+      console.log(searchInputRef.current.value)
       const response = await postRequest("/api/public/items/search", {
         page: 0,
         size: 10,
+        searchText:searchInputRef.current.value
       });
       const resProducts = response.data || [];
       setProducts(resProducts);
@@ -89,15 +94,29 @@ export default function ProductsTable() {
   return (
     <div className="">
       <div className="bg-white  border rounded-lg border-1  w-full mt-5 flex flex-row justify-between  p-3 items-center  xs:gap-4">
-        <div className="flex items-center justify-center border px-3 rounded-md bg-gray-100">
-          <span className="text-gray-400 text-lg ">
-            <IoMdSearch />
-          </span>
+        <div className="flex items-center justify-between border px-1 rounded-md w-[300px] bg-gray-100">
           <input
             type="text"
             placeholder="Searsh"
-            className="bg-none outline-none placeholder:text-sm   w-[250px] bg-gray-100 p-1 rounded-lg"
+            className="bg-none outline-none placeholder:text-sm   bg-gray-100 p-1 rounded-lg"
+            // value={searchInput}
+            ref={searchInputRef}
+ onKeyDown={(e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      getAllProducts();
+    }
+  }}
+            // onChange={(e)=>setSearshInput(e.target.value)}
           />
+          <button className="text-lg bg-blue-300 hover:bg-blue-500 p-1 text-white  rounded-md"
+          onClick={getAllProducts}
+   
+          >
+            
+            <IoMdSearch />
+          </button>
+         
         </div>
         <button
           className="p-2 text-white xs:text-xs md:text-sm rounded-md bg-blue-500 text-center flex items-center justify-center gap-2"
@@ -217,7 +236,6 @@ export default function ProductsTable() {
                   <td onClick={() => itemProductId(product)}>
                     <div className="  text-sm text-gray-500 font-semibold mx-1">
                       <h1>
-                        {" "}
                         {localStorage.lang === "ar"
                           ? product.itemCategory.nameAr
                           : product.itemCategory. nameEn}

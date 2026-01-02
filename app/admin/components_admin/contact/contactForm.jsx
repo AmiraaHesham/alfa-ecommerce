@@ -96,7 +96,7 @@ export default function ContactForm() {
                   {t("official-email-address")}
                 </h1>
               </label>
-              <div className="flex items-center gap-2 w-full">
+              <div className="flex items-center gap-5 w-full">
                 <input
                   type="text"
                   className=" border w-full border-gray-300 rounded-md px-3 py-1 "
@@ -129,7 +129,7 @@ export default function ContactForm() {
                   {t("support-phone-number")}
                 </h1>
               </label>
-              <div className="flex items-center gap-2 w-full">
+              <div className="flex items-center gap-5 w-full">
                 <input
                   type="text"
                   className=" border w-full border-gray-300 rounded-md px-3 py-1 "
@@ -154,7 +154,7 @@ export default function ContactForm() {
             </div>
           </div>
         </div>
-        <div className="flex items-center gap-3 mt-14 p-4">
+        <div className="flex items-center gap-3 mt-9 p-4">
           <span className="text-2xl text-blue-700">
             <IoMdShare />
           </span>
@@ -164,7 +164,7 @@ export default function ContactForm() {
         </div>
         <hr className="h-1"></hr>
         <div className=" w-full flex justify-center items-center">
-          <div className=" md:w-[80%] xs:w-full flex flex-col gap-3   my-5">
+          <div className=" md:w-[80%] xs:w-full flex flex-col gap-3   my-3">
             <div className="flex lg:flex-row xs:flex-col w-full  justify-between gap-2 xs:px-5 lg:px-10 rounded-md py-2 bg-[#f3f4f6a1] ">
               <label className="font-semibold xs:w-[200px] lg:w-[320px]  flex gap-3 items-center">
                 <span className="text-xl text-blue-700">
@@ -174,7 +174,7 @@ export default function ContactForm() {
                   Facebock
                 </h1>
               </label>
-              <div className="flex items-center gap-2 w-full">
+              <div className="flex items-center gap-5 w-full">
                 <input
                   type="text"
                   className=" border w-full border-gray-300 rounded-md px-3 py-1 "
@@ -206,7 +206,7 @@ export default function ContactForm() {
                   WhatsApp
                 </h1>
               </label>
-              <div className="flex items-center gap-2 w-full">
+              <div className="flex items-center gap-5 w-full">
                 <input
                   type="text"
                   className=" border w-full border-gray-300 rounded-md px-3 py-1 "
@@ -239,7 +239,7 @@ export default function ContactForm() {
                   Telegram
                 </h1>
               </label>
-              <div className="flex items-center gap-2 w-full">
+              <div className="flex items-center gap-5 w-full">
                 <input
                   type="text"
                   className=" border w-full border-gray-300 rounded-md px-3 py-1 "
@@ -272,7 +272,7 @@ export default function ContactForm() {
                   Instagram
                 </h1>
               </label>
-              <div className="flex items-center gap-2 w-full">
+              <div className="flex items-center gap-5 w-full">
                 <input
                   type="text"
                   className=" border w-full border-gray-300 rounded-md px-3 py-1 "
@@ -303,7 +303,7 @@ export default function ContactForm() {
                 </span>
                 <h1 className=" text-gray-500  md:text-sm xs:text-xs">X</h1>
               </label>
-              <div className="flex items-center gap-2 w-full">
+              <div className="flex items-center gap-5 w-full">
                 <input
                   type="text"
                   className=" border w-full border-gray-300 rounded-md px-3 py-1 "
