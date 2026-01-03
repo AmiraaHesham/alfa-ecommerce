@@ -47,8 +47,8 @@ export default function Sliders() {
   }, []);
 
   return (
-    <div className="h-auto">
-      <div className=" w-[100%] my-1 px-10 ">
+    <div className="h-auto mx-5">
+      <div className=" w-[100%] my-1 ">
         <div className="flex items-center gap-2 mb-3 ">
           <span className="text-xl text-blue-600">
             <TfiLayoutSliderAlt />
@@ -129,7 +129,7 @@ export default function Sliders() {
 
         {/* </div> */}
       </div>
-      <div className="w-full grid grid-cols-5 gap-3 px-10  ">
+      <div className="w-full grid lg:grid-cols-5 md:grid-cols-3 xs:grid-cols-2 gap-3  ">
         <div className="bg-white border rounded-md h-full w-full flex flex-col gap-3 p-5">
           <h1 className="text-xs font-bold text-gray-600">Upload New Image</h1>
           <div className=" border-dashed flex justify-center p-5 items-center border-2 rounded-md border-blue-400 bg-gray-50  w-full h-full">

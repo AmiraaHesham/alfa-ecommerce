@@ -21,15 +21,15 @@ useEffect(()=>{
   getFeatuersProducts()
 },[])
   return (
-    <div className="w-full  py-5  px-10">
+    <div className="w-full  mx-5">
         <div className=" flex justify-between items-center">
       <div className="flex  items-center gap-5">
         <span className="text-2xl text-yellow-400">
           <BsStars />
         </span>
-        <h1 className="text-xl font-semibold"> Featured Products</h1>
+        <h1 className="font-semibold md:text-xl xs:text-lg"> Featured Products</h1>
       </div>
-      <Link href='/admin/Products' className="text-4xl mx-10 text-blue-700 hover:text-blue-800"><FaCirclePlus/></Link>
+      <Link href='/admin/Products' className="md:text-4xl xs:text-3xl mx-10 text-blue-700 hover:text-blue-800"><FaCirclePlus/></Link>
       </div>
       <div className="my-5 grid lg:grid-cols-5 md:grid-cols-3 xs:grid-cols-2 gap-5 w-full">
         {featuersProducts.map((product ,index)=>{
