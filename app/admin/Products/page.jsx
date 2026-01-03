@@ -1,6 +1,6 @@
 import SideMenu from "../components_admin/SideMenu";
 import Header from "../components_admin/Header";
-import FormProduct from "../components_admin/products/FormProduct";
+import FormProduct from "../components_admin/products/ProductForm";
 import ProductsTable from "../components_admin/products/ProductsTable";
 
 export default function Products() {

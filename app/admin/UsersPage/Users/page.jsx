@@ -12,10 +12,6 @@ export default function UsersPage() {
           <Header page_title={"Users Management"} />
           <div className="flex w-full flex-col justify-center items-center  relative">
             <div className="w-[90%] mt-3 ">
-              <Failter
-                placeholder={"Search by user name or email"}
-                view={"hidden"}
-              />
               <Users_Table />
             </div>
           </div>

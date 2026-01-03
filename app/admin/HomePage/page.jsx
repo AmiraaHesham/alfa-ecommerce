@@ -2,6 +2,8 @@ import SideMenu from "../components_admin/SideMenu";
 import Header from "../components_admin/Header";
 import Sliders from '../components_admin/homepage/Sliders'
 import FeatuersProducts  from '../components_admin/homepage/FeatuersProducts'
+import ProductForm  from '../components_admin/products/ProductForm'
+
 export default function HomePage() {
 
     
@@ -20,6 +22,7 @@ export default function HomePage() {
           <div className=" mt-3 relative bg-[#F9FAFB]">
           <Sliders/>
           <hr className="h-1 mx-10 my-10"></hr>
+
           <FeatuersProducts/>
           </div>
         </div>

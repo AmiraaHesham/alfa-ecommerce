@@ -29,10 +29,10 @@ useEffect(() => {
     getAllOrders();
   }, []);
     return (
-      <div className=" rounded-xl w-full   h-screen border  mt-3 overflow-hidden overflow-x-scroll overflow-y-scroll ">
+      <div className=" rounded-xl w-full  h-full border  overflow-hidden overflow-x-scroll overflow-y-scroll ">
         <table className="  xs:w-[200%] lg:w-full   ">
           <thead className="bg-[#F9FAFB] text-xs text-gray-500  text-justify">
-            <tr className=" text-gray-500 h-12  ">
+            <tr className=" text-gray-500 h-12">
               <th className="w-[2%] "></th>
               <th className="w-[15%]">{t("order_id")}</th>
               <th className="w-[15%]">{t("date")}</th>

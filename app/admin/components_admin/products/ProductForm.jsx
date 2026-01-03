@@ -7,14 +7,14 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useLanguage } from "../../../../context/LanguageContext.js";
 import { Switch } from "@headlessui/react";
 import { FaCircle, FaTimes } from "react-icons/fa";
-import { getCategories } from "../../../../utils/functions";
+import { getCategories } from "../../../../utils/functions.jsx";
 import {
   getRequest,
   postRequest,
   putRequest,
 } from "../../../../utils/requestsUtils.js";
 import { useRefresh } from "../../../../context/refreshContext.jsx";
-import { useIdContext } from "../../../../context/idContext";
+import { useIdContext } from "../../../../context/idContext.jsx";
 import { GoStarFill } from "react-icons/go";
 
 export default function FormProduct() {

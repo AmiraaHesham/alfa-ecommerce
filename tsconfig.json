@@ -27,7 +27,7 @@
     ".next/types/**/*.ts",
     "**/*.ts",
     "**/*.tsx"
-  ],
+, "app/admin/components_admin/users/Users_Table.jsx"  ],
   "exclude": [
     "node_modules"
   ]

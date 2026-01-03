@@ -1,12 +1,12 @@
 "use client";
 import { MdDelete, MdStar } from "react-icons/md";
 import { FaCircle } from "react-icons/fa";
-import React, { use, useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useLanguage } from "../../../../context/LanguageContext.js";
 import { FaPlus } from "react-icons/fa";
 import Image from "next/image";
 import { GoStarFill } from "react-icons/go";
-import {  postRequest } from "../../../../utils/requestsUtils.js";
+import { postRequest } from "../../../../utils/requestsUtils.js";
 import { useIdContext } from "../../../../context/idContext";
 import { IoMdSearch } from "react-icons/io";
 import { deleteRequest } from "../../../../utils/requestsUtils.js";
@@ -16,20 +16,19 @@ export default function ProductsTable() {
   const { t } = useLanguage();
   const [products, setProducts] = useState([]);
   const productTableRef = useRef();
-  const [inputValue, setInputValue] = useState('');
 
   const { refreshKey } = useRefresh();
-   const { triggerRefresh } = useRefresh();
-const [searchInput , setSearshInput]=useState();
+  const { triggerRefresh } = useRefresh();
+  const [searchInput, setSearshInput] = useState();
   const { setSelectedId } = useIdContext();
-  const searchInputRef = useRef()
+  const searchInputRef = useRef();
   const getAllProducts = useCallback(async () => {
     try {
-      console.log(searchInputRef.current.value)
+      console.log(searchInputRef.current.value);
       const response = await postRequest("/api/public/items/search", {
         page: 0,
         size: 10,
-        searchText:searchInputRef.current.value
+        searchText: searchInputRef.current.value,
       });
       const resProducts = response.data || [];
       setProducts(resProducts);
@@ -40,28 +39,24 @@ const [searchInput , setSearshInput]=useState();
     }
   }, []);
 
-  const productFavorite = async(productId) => {
-       await postRequest(`/api/admin/items/${productId}/favorite`,'' )
+  const productFavorite = async (productId) => {
+    await postRequest(`/api/admin/items/${productId}/favorite`, "");
     triggerRefresh();
+  };
 
-  }; 
-  
-  const productUnfavorite = async(productId) => {
-       await postRequest(`/api/admin/items/${productId}/unfavorite`,'' )
+  const productUnfavorite = async (productId) => {
+    await postRequest(`/api/admin/items/${productId}/unfavorite`, "");
     triggerRefresh();
-
-  }; 
-  const productActive = async(productId) => {
-       await postRequest(`/api/admin/items/${productId}/activate`,'' )
+  };
+  const productActive = async (productId) => {
+    await postRequest(`/api/admin/items/${productId}/activate`, "");
     triggerRefresh();
+  };
 
-  }; 
-  
-  const productDeaactive = async(productId) => {
-       await postRequest(`/api/admin/items/${productId}/deactivate`,'' )
+  const productDeaactive = async (productId) => {
+    await postRequest(`/api/admin/items/${productId}/deactivate`, "");
     triggerRefresh();
-
-  }; 
+  };
 
   const pagination = () => {
     // console.log(productTableRef.current)
@@ -78,7 +73,6 @@ const [searchInput , setSearshInput]=useState();
     form.classList.remove("hidden");
     form.classList.add("flex");
     setSelectedId(product.itemId);
-
   };
   const deleteProduct = async (product) => {
     try {
@@ -101,22 +95,19 @@ const [searchInput , setSearshInput]=useState();
             className="bg-none outline-none placeholder:text-sm   bg-gray-100 p-1 rounded-lg"
             // value={searchInput}
             ref={searchInputRef}
- onKeyDown={(e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      getAllProducts();
-    }
-  }}
-            // onChange={(e)=>setSearshInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                getAllProducts();
+              }
+            }}
           />
-          <button className="text-lg bg-blue-300 hover:bg-blue-500 p-1 text-white  rounded-md"
-          onClick={getAllProducts}
-   
+          <button
+            className="text-lg bg-blue-300 hover:bg-blue-500 p-1 text-white  rounded-md"
+            onClick={getAllProducts}
           >
-            
             <IoMdSearch />
           </button>
-         
         </div>
         <button
           className="p-2 text-white xs:text-xs md:text-sm rounded-md bg-blue-500 text-center flex items-center justify-center gap-2"
@@ -175,14 +166,11 @@ const [searchInput , setSearshInput]=useState();
                           "flex items-center justify-center gap-3 text-sm " +
                           (product.active ? "text-green-600" : "text-gray-600")
                         }
-                        onClick={()=>{
-                          if(product.active === false){
-                          productActive(product.itemId)
-
-                          }
-                          else{
-                          productDeaactive(product.itemId)
-
+                        onClick={() => {
+                          if (product.active === false) {
+                            productActive(product.itemId);
+                          } else {
+                            productDeaactive(product.itemId);
                           }
                         }}
                       >
@@ -195,14 +183,12 @@ const [searchInput , setSearshInput]=useState();
                             ? " text-yellow-500"
                             : " text-gray-500")
                         }
-                        onClick={async()=>{
-                          console.log(product.favorite)
-                          if(product.favorite === false){
-                           await productFavorite(product.itemId)
-                           
-                          }
-                          else{
-                           await productUnfavorite(product.itemId)
+                        onClick={async () => {
+                          console.log(product.favorite);
+                          if (product.favorite === false) {
+                            await productFavorite(product.itemId);
+                          } else {
+                            await productUnfavorite(product.itemId);
                           }
                         }}
                       >
@@ -216,7 +202,10 @@ const [searchInput , setSearshInput]=useState();
                   >
                     <Image
                       alt=""
-                      src={`${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL+product.mainImageURL||''}`}
+                      src={`${
+                        process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +
+                          product.mainImageURL || ""
+                      }`}
                       width={40}
                       height={40}
                       className="rounded-xl xs:w-10 xs:h-10 md:w-14 md:h-12  border my-1 p-1"
@@ -238,7 +227,7 @@ const [searchInput , setSearshInput]=useState();
                       <h1>
                         {localStorage.lang === "ar"
                           ? product.itemCategory.nameAr
-                          : product.itemCategory. nameEn}
+                          : product.itemCategory.nameEn}
                       </h1>
                     </div>
                   </td>
