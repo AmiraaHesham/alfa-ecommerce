@@ -13,6 +13,8 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
 import { Pagination } from "swiper/modules";
+import LivePreview from '../../components_admin/homepage/LivePreview.jsx'
+
 import {
   deleteRequest,
   getRequest,
@@ -47,85 +49,27 @@ export default function Sliders() {
   }, []);
 
   return (
-    <div className="h-auto mx-5">
+    <div className="h-auto  ">
       <div className=" w-[100%] my-1 ">
-        <div className="flex items-center gap-2 mb-3 ">
-          <span className="text-xl text-blue-600">
+        <div className="flex items-center justify-between  gap-2 mb-3 ">
+          <div className="flex items-center gap-3">
+             <span className="text-xl text-blue-600">
             <TfiLayoutSliderAlt />
           </span>
           <h1 className="md:text-xl xs:text-lg font-semibold ">Sliders</h1>
-        </div>
-        {/* <div className="grid lg:grid-cols-4 xs:grid-cols-1 w-full justify-between items-center gap-5"> */}
-        {/* <div className=" lg:col-span-3  xs:col-span-1 bg-black border h-full rounded-md ">
-            <div className="bg-white h-full w-[100%] p-3">
-              <div className="flex justify-between items-center">
-                <div className="flex items-center gap-3">
-                  <span className="text-blue-600">
-                    <LuEye />
-                  </span>
-                  <h1 className="font-semibold md:text-sm xs:text-xs text-gray-600">
-                    Live Previwe
-                  </h1>
-                </div>
-                <span className="flex items-center md:text-sm xs:text-xs gap-2 bg-green-50 p-1 rounded-md text-green-500 font-semibold">
-                  <TbLivePhotoFilled />
-                  <h1>Live</h1>
-                </span>
-              </div>
-
-              <div className=" mt-3  ">
-                <Swiper
-                  pagination={{
-                    clickable: true,
-                  }}
-                  spaceBetween={20}
-                  modules={[Pagination]}
-                  className=" flex justify-center items-center"
-                >
-                  <SwiperSlide>
-          
-                    <Image
-                      src="/slide.png"
-                      alt=" "
-                      width={500}
-                      height={500}
-                      className=" w-full rounded-lg"
-                    />
-                  </SwiperSlide>
-                  <SwiperSlide>
-     
-                    <Image
-                      src="/slide.png"
-                      alt=" "
-                      width={500}
-                      height={500}
-                      className=" w-full rounded-lg"
-                    />
-                  </SwiperSlide>
-                  <SwiperSlide>
-           
-                    <Image
-                      src="/slide.png"
-                      alt=" "
-                      width={500}
-                      height={500}
-                      className=" w-full rounded-lg"
-                    />
-                  </SwiperSlide>
-                  <SwiperSlide>
-                
-                    <Image
-                      src="/slide.png"
-                      alt=" "
-                      width={500}
-                      height={500}
-                      className="w-full rounded-lg"
-                    />
-                  </SwiperSlide>
-                </Swiper>
-              </div>
             </div>
-          </div> */}
+         <button className="p-2 bg-blue-300 text-white hover:bg-blue-600 text-sm rounded-md"
+         onClick={()=>{
+          const LivePreview = document.querySelector('#LivePreview')
+          LivePreview.classList.toggle("hidden")
+          LivePreview.classList.toggle("flex")
+         }}
+         >Live Previwe</button>
+        </div>
+        <div id="LivePreview" className=" hidden  justify-center items-center my-7 w-full">
+         <LivePreview sliderImages={sliderImages} />
+        {/* <div className="grid lg:grid-cols-4 xs:grid-cols-1 w-full justify-between items-center gap-5"> */}
+       </div>
 
         {/* </div> */}
       </div>
@@ -164,7 +108,9 @@ export default function Sliders() {
         </div>
         {sliderImages.map((img, index) => {
           return (
-            <div key={index} className="bg-white   border p-4 rounded-md">
+            <div key={index} className="bg-white   border p-4 rounded-md"
+
+            >
               <span className="flex justify-end mb-1">
                 <button
                   className="text-lg text-gray-500 hover:text-gray-600"

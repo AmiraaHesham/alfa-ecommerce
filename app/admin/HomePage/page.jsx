@@ -15,13 +15,15 @@ export default function HomePage() {
 
   return (
     <div className='bg-[#F9FAFB] '>
-      <main className="flex  h-screen">
+      <main className="flex  ">
         <SideMenu homepage={"bg-[#e0e7ff6e] text-[#6158ff]"} />
         <div className="w-full  ">
           <Header page_title={"HomePage Management"} />
-          <div className=" mt-3  bg-[#F9FAFB]">
+          <div className=" mt-3 mx-5   bg-[#F9FAFB]">
+            
           <Sliders/>
-          <hr className="h-1 mx-10 my-10"></hr>
+          <hr className="h-1  my-10"></hr>
+          
           <FeatuersProducts/>
           </div>
         </div>
