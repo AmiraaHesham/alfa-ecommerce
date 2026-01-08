@@ -1,6 +1,5 @@
 "use client"
 import Image from "next/image";
-import Dashboard from "./admin/Dashboard/page";
 import Link from "next/link"; 
 import { useLanguage } from "../context/LanguageContext";
 
@@ -13,7 +12,6 @@ export default function Home() {
  <Link href="/SignIn" className="m-4 p-2 bg-blue-600 text-white rounded-lg">Sign In</Link>
  <Link href="/SignUp" className="m-4 p-2 bg-blue-600 text-white rounded-lg">Sign Up</Link>
         </header>
-        {/* <Dashboard /> */}
       </main>
 
     </div>

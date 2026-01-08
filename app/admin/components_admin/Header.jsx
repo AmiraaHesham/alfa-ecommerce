@@ -17,14 +17,17 @@ export default function Header({ page_title }) {
     case "Orders Management":
             page_title= "orders_management";
       break;
-      case "Dashboard Management":
-            page_title= "dashboard_management";
+      case "Dashboard Overview":
+            page_title= "dashboard_overview";
       break;
       case "Homepage Management":
             page_title= "homepage_management";
       break;
-      case "User Management":
-            page_title= "user_management";
+      case "Users Management":
+            page_title= "users_management";
+      break;
+      case "Admins Management":
+            page_title= "admins_management";
       break;
       case "contact Management":
             page_title= "contact_management";

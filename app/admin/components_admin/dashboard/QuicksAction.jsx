@@ -10,7 +10,7 @@ export default function RecentOrders_table() {
 
     return(
 <div className=" h-full bg-white  p-5 mt-5 border rounded-lg">
-      <h1 className="md:text-lg xs:text-sm font-bold">Quick Actions</h1>
+      <h1 className="md:text-lg xs:text-sm font-bold">{t("quick-actions")}</h1>
         <div className="grid md:grid-cols-4 xs:grid-cols-2 gap-5 mt-3 items-center">
 
 <Link href='/admin/Products'>

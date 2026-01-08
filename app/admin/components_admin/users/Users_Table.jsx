@@ -28,7 +28,7 @@ export default function UsersPage() {
         page: 0,
         size: 10,
         searchText: searchInput.current.value,
-      });
+      },'');
       const resUsers = response.data || [];
       setUsers(resUsers);
       // pagination()

@@ -29,7 +29,7 @@ export default function ProductsTable() {
         page: 0,
         size: 10,
         searchText: searchInputRef.current.value,
-      });
+      },'');
       const resProducts = response.data || [];
       setProducts(resProducts);
       // pagination()

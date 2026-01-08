@@ -1,5 +1,13 @@
 {
   "categories_management": "إدارة الاقسام",
+  "products_management": "إدارة المنتجات",
+  "orders_management": "إدارة الطلبات",
+  "homepage_management": "إدارة الصفحة الرئيسية",
+  "admins_management": "إدارة المشرفين",
+  "users_management": "إدارة المستخدمين",
+  "dashboard_overview": "لوحة التحكم",
+  "contact_management": "إدارة التواصل",
+"quick-actions":"أوامر سريعة",
   "dashboard": "لوحة التحكم",
   "homepage": "الصفحة الرئيسية",
   "categories": "الأقسام",
@@ -15,13 +23,11 @@
   "products_count": "العدد ",
   "add_new_category": "إضافة صنف جديد",
   "add_new_product": "إضافة منتج جديد",
-
   "add-photo": "إضافة صورة",
   "category_name": "إسم الصنف",
   "save": "حفظ",
   "main_category": "الفئة الرئيسية",
   "products_category": "منتج",
-  "products_management": "إدارة المنتجات",
   "product": "المنتج",
   "product_category": "الفئة",
   "price": "السعر",
@@ -77,13 +83,22 @@
   "canceled_orders": "الطلبات تم إلغاؤها",
   "delivered_orders": "طلبات تم تسليمها",
   "save-changes": "حفظ التغيرات",
-  "orders_management": "إدارة الطلبات",
-  "featured-product":"المنتج مميز",
-  "contact-details":"التواصل",
-"official-email-address":"البريد الإلكتروني",
-"support-phone-number":"رقم التليفون ",
-"social-media-links":"روابط التواصل الاجتماعي",
-"deactive":"غير نشط"
+  "featured-product": "المنتج مميز",
+  "contact-details": "التواصل",
+  "official-email-address": "البريد الإلكتروني",
+  "support-phone-number": "رقم التليفون ",
+  "social-media-links": "روابط التواصل الاجتماعي",
+  "deactive": "غير نشط",
+    "edit": "تعديل",
+  "admin": "مشرف",
+    "upload-new-img": "رفع صورة جديده",
+  "click_to_upload": "إضغط للرفع",
+  "featured_products": "المنتحات المميزة",
+  "live": "مباشر",
+  "hide": "إخفاء",
+    "message": "هل انت متأكد",
+
+  "live_previwe": " معاينة الصور"
 
 
 }

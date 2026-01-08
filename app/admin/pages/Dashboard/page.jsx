@@ -1,10 +1,10 @@
 "use client";
 import Image from "next/image";
-import SideMenu from "../components_admin/SideMenu";
-import Header from "../components_admin/Header";
-import Dashboard_Details from "../components_admin/dashboard/Details";
-import RecentOrders_Table from "../components_admin/dashboard/Table";
-import QuicksAction from "../components_admin/dashboard/QuicksAction";
+import SideMenu from "../../components_admin/SideMenu";
+import Header from "../../components_admin/Header";
+import Dashboard_Details from "../../components_admin/dashboard/Details";
+import RecentOrders_Table from "../../components_admin/dashboard/Table";
+import QuicksAction from "../../components_admin/dashboard/QuicksAction";
 export default function Dashboard() {
   return (
     <div className="bg-[#F9FAFB]">

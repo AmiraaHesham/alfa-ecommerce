@@ -1,6 +1,6 @@
-import SideMenu from "../components_admin/SideMenu";
-import Header from "../components_admin/Header";
-import Form_contact from "../components_admin/contact/contactForm.jsx";
+import SideMenu from "../../components_admin/SideMenu";
+import Header from "../../components_admin/Header";
+import Form_contact from "../../components_admin/contact/contactForm.jsx";
 
 export default function ContactPage() {
   return (

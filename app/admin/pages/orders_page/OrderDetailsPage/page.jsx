@@ -1,5 +1,5 @@
-import SideMenu from "../../components_admin/SideMenu";
-import Header from "../../components_admin/Header";
+import SideMenu from "../../../components_admin/SideMenu";
+import Header from "../../../components_admin/Header";
 import OrderDetailsHeader from "../../components_admin/order_details/Header";
 import Order_Iitems from "../../components_admin/order_details/Order_Items";
 import User_Info from "../../components_admin/order_details/User_Info";

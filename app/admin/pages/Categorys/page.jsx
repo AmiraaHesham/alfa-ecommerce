@@ -1,10 +1,10 @@
 // "use client";
-import SideMenu from "../components_admin/SideMenu";
-import Header from "../components_admin/Header";
-import Table_Category from "../components_admin/categorys/CategoryTable";
+import SideMenu from "../../components_admin/SideMenu";
+import Header from "../../components_admin/Header";
+import Table_Category from "../../components_admin/categories/CategoryTable";
 import axios from "axios";
 // import React, {  useRef, useState } from "react";
-import FormCategory from "../components_admin/categorys/CategoryForm";
+import FormCategory from "../../components_admin/categories/CategoryForm";
 
 
 export default function Categorys() {

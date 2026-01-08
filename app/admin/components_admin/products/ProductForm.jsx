@@ -152,7 +152,7 @@ export default function FormProduct() {
   const updataProduct = async () => {
     let form = document.querySelector("#add-product-form");
     form.classList.add("hidden");
-    console.log(`>>>>>${product.mainImagefile}`);
+    // console.log(`>>>>>${product.mainImagefile}`);
       const formData = new FormData();
       formData.append("nameEn", product.nameEn);
       formData.append("nameAr", product.nameAr);
@@ -165,7 +165,7 @@ export default function FormProduct() {
         formData.append("mainImage", product.mainImagefile);
       }
       formData.append("itemCategoryId", product.category.id);
-      await putRequest(`/api/admin/items/${selectedId}`, formData);
+      await putRequest(`/api/admin/items/${selectedId}`, formData , t('message_edit'));
       triggerRefresh();
 
       setProduct((prev) => ({
@@ -198,7 +198,7 @@ export default function FormProduct() {
   return (
     <div
       id="add-product-form"
-      className=" absolute w-full  h-full   hidden justify-end items-end "
+      className=" absolute w-full hidden justify-end items-end "
     >
       <form
         className=" bg-white shadow-md shadow-slate-400 rounded-lg w-[550px] px-7 pb-10 border overflow-hidden overflow-y-scroll h-full"
@@ -213,23 +213,23 @@ export default function FormProduct() {
             onClick={() => {
               let form = document.querySelector("#add-product-form");
               form.classList.add("hidden");
-              setProduct((prev) => ({
-                ...prev,
-                nameEn: "",
-                nameAr: "",
-                code: "",
-                price: "",
-                description: "",
-                mainImage: "",
-                img2: "",
-                img3: "",
-                category: {
-                  ...prev.category,
-                  id: "",
-                  nameAr: "",
-                  nameEn: "",
-                },
-              }));
+              // setProduct((prev) => ({
+              //   ...prev,
+              //   nameEn: "",
+              //   nameAr: "",
+              //   code: "",
+              //   price: "",
+              //   description: "",
+              //   mainImage: "",
+              //   img2: "",
+              //   img3: "",
+              //   category: {
+              //     ...prev.category,
+              //     id: "",
+              //     nameAr: "",
+              //     nameEn: "",
+              //   },
+              // }));
               setenabledFavorite(false);
               setenabledActive(true);
             }}
@@ -519,7 +519,7 @@ export default function FormProduct() {
           />
           <hr className="h-1"></hr>
         </div>
-        <div className="flex bg-[#F9FAFB] px-4 h-20 mt-7 rounded-md justify-center items-center ">
+          <div className="flex bg-[#F9FAFB] px-4 h-20 mt-7 rounded-md justify-center items-center ">
           <div className="flex justify-between w-full gap-3 items-center">
             <div className="flex  w-full items-center">
               <button
@@ -546,25 +546,25 @@ export default function FormProduct() {
               onClick={() => {
                 let form = document.querySelector("#add-product-form");
                 form.classList.add("hidden");
-                setProduct((prev) => ({
-                  ...prev,
-                  nameEn: "",
-                  nameAr: "",
-                  code: "",
-                  price: "",
-                  description: "",
-                  mainImage: "",
-                  img2: "",
-                  img3: "",
-                  category: {
-                    ...prev.category,
-                    id: "",
-                    nameAr: "",
-                    nameEn: "",
-                  },
-                }));
-                setenabledFavorite(false);
-                setenabledActive(true);
+                // setProduct((prev) => ({
+                //   ...prev,
+                //   nameEn: "",
+                //   nameAr: "",
+                //   code: "",
+                //   price: "",
+                //   description: "",
+                //   mainImage: "",
+                //   img2: "",
+                //   img3: "",
+                //   category: {
+                //     ...prev.category,
+                //     id: "",
+                //     nameAr: "",
+                //     nameEn: "",
+                //   },
+                // }));
+                // setenabledFavorite(false);
+                // setenabledActive(true);
               }}
             >
               {t("cancel")}

@@ -27,8 +27,8 @@ export default function SideMenu({
   return (
     <div className="  xs:w-[60px] md:w-[300px]  bg-[#ffffff]">
       <div className=" h-screen   ">
-        <div className="flex  items-center justify-center gap-4 my-5">
-          <span className="text-2xl bg-blue-500 p-2 text-white rounded-md">
+        <div className="flex  items-center xs:justify-center md:justify-start md:mx-5 xs:mx-0 gap-4 xs:mt-2 md:mt-5">
+          <span className="text-xl bg-blue-500 p-2 text-white rounded-md">
             <MdElectricBolt />
           </span>
           <div className="cursor-default md:block xs:hidden">
@@ -39,60 +39,60 @@ export default function SideMenu({
           </div>
         </div>
 
-        <div className="mt-9 flex flex-col gap-1">
-          <Link href="/admin/Dashboard">
+        <div className="mt-9 flex flex-col gap-1 text-gray-600">
+          <Link href="/admin/pages/Dashboard">
             <div
               className={`flex gap-4 mx-3 xs:justify-center md:justify-start  items-center p-3 rounded-md cursor-pointer hover:bg-[#e0e7ff6e] hover:text-[#6158ff] ${dashbord}`}
             >
-              <span className="text-2xl text-gray-600">
+              <span className="text-2xl ">
                 <MdDashboard />
               </span>
               <h1 className="text-md xs:hidden md:block ">{t("dashboard")}</h1>
             </div>
           </Link>
 
-        <Link href="/admin/HomePage">
+        <Link href="/admin/pages/HomePage">
           <div
             className={`flex gap-4 mx-3 xs:justify-center md:justify-start  items-center p-3 rounded-md  cursor-pointer hover:bg-[#e0e7ff6e] hover:text-[#6158ff]
         ${homepage}`}
           >
-            <span className="text-2xl text-gray-600">
+            <span className="text-2xl ">
               <RiPagesFill />
             </span>
             <h1 className="text-md xs:hidden md:block ">{t("homepage")}</h1>
           </div>
         </Link>
 
-          <Link href="/admin/Categorys">
+          <Link href="/admin/pages/Categorys">
             <div
               className={`flex gap-4 mx-3 xs:justify-center md:justify-start  items-center p-3 rounded-md cursor-pointer hover:bg-[#e0e7ff6e] hover:text-[#6158ff]
          ${categorys} `}
             >
-              <span className="text-2xl text-gray-600">
+              <span className="text-2xl ">
                 <MdCategory />
               </span>
               <h1 className="text-md xs:hidden md:block">{t("categories")}</h1>
             </div>
           </Link>
 
-          <Link href="/admin/Products">
+          <Link href="/admin/pages/Products">
             <div
               className={`flex gap-4 mx-3 xs:justify-center md:justify-start items-center p-3 rounded-md cursor-pointer  hover:bg-[#e0e7ff6e] hover:text-[#6158ff]
                  ${products}`}
             >
-              <span className="text-2xl text-gray-600">
+              <span className="text-2xl ">
                 <IoFileTray />
               </span>
               <h1 className="text-md xs:hidden md:block">{t("products")}</h1>
             </div>
           </Link>
 
-          <Link href="/admin/orders_page/Orders">
+          <Link href="/admin/pages/orders_page/Orders">
             <div
               className={`flex gap-4 mx-3 xs:justify-center md:justify-start items-center p-3 rounded-md  cursor-pointer hover:bg-[#e0e7ff6e] hover:text-[#6158ff]
                 ${orders} `}
             >
-              <span className="text-2xl text-gray-600">
+              <span className="text-2xl ">
                 <MdOutlineShoppingCart />
               </span>
               <h1 className="text-md xs:hidden md:block">{t("orders")}</h1>
@@ -104,28 +104,27 @@ export default function SideMenu({
               className={`flex gap-4 mx-3 xs:justify-center md:justify-start  items-center p-3 rounded-md cursor-pointer hover:bg-[#e0e7ff6e] hover:text-[#6158ff]
              ${users}`}
             >
-              <span className="text-2xl text-gray-600">
+              <span className="text-2xl ">
                 <ImUsers />
               </span>
               <h1 className="text-md xs:hidden md:block">{t("users")}</h1>
             </div>
           </Link>
 
-          {/* <Link href='/admin/AdminUsers'>  <div onClick={()=>handleTabClick('Admins')}
-          className={`flex gap-4 mx-5 justify-start  items-center p-3 rounded-md cursor-pointer 
-          ${              activeTab === 'Admins'
-                ? 'bg-[#e0e7ff6e] text-[#6158ff]'
-                : 'text-[#5c6370] hover:bg-[#e0e7ff6e] hover:text-[#6158ff]'
-            }`}>
+          <Link href='/admin/pages/Admins'> 
+          <div
+              className={`flex gap-4 mx-3 xs:justify-center md:justify-start  items-center p-3 rounded-md cursor-pointer hover:bg-[#e0e7ff6e] hover:text-[#6158ff]
+             ${admins}`}
+            >
             <span className="text-2xl"><MdAdminPanelSettings /></span>
-            <h1 className="text-md ">{t('admins')}</h1>
-        </div></Link> */}
+            <h1  className="text-md xs:hidden md:block">{t('admins')}</h1>
+        </div></Link>
 
-          <Link href="/admin/Contact">
+          <Link href="/admin/pages/Contact">
             <div
               className={`flex gap-4 mx-3 xs:justify-center md:justify-start items-center p-3 rounded-md cursor-pointer hover:bg-[#e0e7ff6e] hover:text-[#6158ff] ${contact}`}
             >
-              <span className="text-2xl text-gray-600">
+              <span className="text-2xl">
                 <MdContactSupport />
               </span>
               <h1 className="text-md xs:hidden md:block">{t("contact")}</h1>

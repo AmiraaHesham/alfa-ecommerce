@@ -16,7 +16,7 @@ export default function Orders_Table() {
       const response = await postRequest("/api/orders/search", {
         page: 0,
         size: 20,
-      });
+      },'');
       const resProducts = response.data || [];
       setProducts(resProducts);
       // pagination()
