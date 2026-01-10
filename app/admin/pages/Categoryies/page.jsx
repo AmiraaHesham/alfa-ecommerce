@@ -11,14 +11,14 @@ export default function Categorys() {
 
 
   return (
-    <div className="bg-[#F9FAFB] h-full ">
-      <main className=" flex border h-full">
-        <SideMenu categorys={'bg-[#e0e7ff6e] text-[#6158ff]'}/>
-        <div className="w-full">
+     <div className=" ">
+          <main className=" flex border  ">
+            <SideMenu categoryies={"bg-[#e0e7ff6e] text-[#6158ff]"} />
+            <div className="w-full h-full bg-[#F9FAFB]">
           <Header page_title= {"Categories Management"} />
 
-          <div className=" mx-5 mt-5 relative ">
-          <div className="flex justify-center md:w-[80%] xs:w-full absolute items-center">
+          <div className=" mx-5 mt-5 relative h-full bg-[#F9FAFB] ">
+          <div className="flex justify-center md:w-[80%] xs:w-full absolute items-center ">
             <FormCategory />
           </div>
            <Table_Category />

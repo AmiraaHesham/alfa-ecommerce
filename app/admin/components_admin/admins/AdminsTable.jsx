@@ -19,7 +19,7 @@ export default function AdminsTable() {
 
   const searchInput = useRef();
   // const searchInputRef = useRef();
-  const { setSelectedId } = useIdContext();
+  const { setSelectedAdminId } = useIdContext();
 
   const getAllUsers = useCallback(async () => {
     try {
@@ -50,7 +50,7 @@ export default function AdminsTable() {
     nameForm.innerHTML = t("edit")+(' ')+t('admin')
     form.classList.remove("hidden");
     form.classList.add("flex");
-    setSelectedId(adminId);
+    setSelectedAdminId(adminId);
    
   };
 
@@ -67,7 +67,7 @@ export default function AdminsTable() {
     getAllUsers();
   }, [getAllUsers]);
   return (
-    <div>
+    <div className="w-full ">
       <div className="w-full  bg-white mt-3 rounded-lg border flex flex-row  gap-5 justify-between  items-start  p-4 ">
         <div className="flex items-center justify-center border px-3 rounded-md bg-gray-100 h-9">
           <span className="text-gray-400 text-lg ">
@@ -82,11 +82,11 @@ export default function AdminsTable() {
               }
             }}
             type="text"
-            placeholder="Search by user name or email"
-            className="bg-none outline-none placeholder:text-sm  h-8   bg-gray-100 p-2 rounded-lg"
+            placeholder={t("search")}
+            className="bg-none outline-none placeholder:text-xs  h-8   bg-gray-100 p-3 rounded-lg"
           />
         </div>
-        <div className="flex items-center gap-4">
+        <div className="">
           <button
             className="p-2 text-white xs:text-xs md:text-sm rounded-md bg-blue-500 text-center flex items-center justify-center gap-2"
             onClick={() => {
@@ -98,26 +98,26 @@ export default function AdminsTable() {
               let btn_edit = document.querySelector("#btn-edit");
               btn_edit.classList.add("hidden");
               // btn_saveProduct.classList.remove("hidden");
-              nameForm.innerHTML = "Add New Admin";
+              nameForm.innerHTML = t( "add_new_admin");
         
             }}
           >
-            <span className="text-base">
+            <span className="text-xs">
               <FaPlus />
             </span>
-            <h1 className="xs:hidden md:block">{t("add_new_admin")}</h1>
+            <h1 className="">{t("add_admin")}</h1>
           </button>
         </div>
       </div>
-      <div className=" rounded-xl w-full   h-screen border  mt-3 overflow-hidden overflow-x-scroll overflow-y-scroll ">
-        <table className="  xs:w-[220%] lg:w-full   ">
+      <div className="rounded-xl w-full h-screen border  mt-3 overflow-hidden overflow-y-scroll ">
+        <table className="xs:w-[220%] lg:w-full">
           <thead className="bg-[#F9FAFB] text-xs text-justify">
             <tr className=" text-gray-500 h-12  ">
               {/* <th className="w-[5%]"></th> */}
               <th className="w-[1%] px-4">{t("status")}</th>
-              <th className="w-[30%] px-10">{t("Admin")}</th>
-              <th className="w-[25%]">{t("Username")}</th>
-              <th className="w-[25%] ">{t("Last Login")}</th>
+              <th className="w-[30%] px-10">{t("admin")}</th>
+              <th className="w-[25%]">{t("username")}</th>
+              <th className="w-[25%] ">{t("last_login")}</th>
             </tr>
           </thead>
           <tbody className="bg-white text-md ">
@@ -127,7 +127,7 @@ export default function AdminsTable() {
                   key={index}
                   className=" text-blue-950 border hover:bg-gray-50 cursor-pointer">
                   <td>
-                    <div className="flex items-center gap-4  w-[90px]  rounded-full   px-5 py-1 font-semibold  ">
+                    <div className="flex items-center gap-4   rounded-full   px-5 py-1 font-semibold  ">
                       <span
                         className={`flex items-center justify-center cursor-default text-sm ${
                           user.active === true

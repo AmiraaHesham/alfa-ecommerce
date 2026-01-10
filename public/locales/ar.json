@@ -96,8 +96,19 @@
   "featured_products": "المنتحات المميزة",
   "live": "مباشر",
   "hide": "إخفاء",
-    "message": "هل انت متأكد",
-
+  "message_DeleteText":"هل أنت متأكد من الحذف ؟",
+  "message_EditText":"هل أنت متأكد من التعديل ؟",
+  "message_AddText":"هل أنت متأكد من الحفظ ؟",
+  "sliders": "صور العروض",
+  "search": "بحث",
+  "all_statuses": "جميع الحالات",
+ "last_login": "أخر تسجيل دخول",
+  "username": "اسم المستخدم",
+  "add_new_admin": "إضافة مشرف جديد",
+  "first_name": "الاسم الاول",
+  "last_name": "الاسم الاخير",
+  "password": "كلمة السر",
+  "confirm_password": "تأكيد كلمة السر",
   "live_previwe": " معاينة الصور"
 
 

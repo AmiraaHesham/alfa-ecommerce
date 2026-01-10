@@ -15,6 +15,7 @@ export default function FeaturedProducts() {
   const { setSelectedId } = useIdContext();
   const { refreshKey } = useRefresh();
 const {t} = useLanguage() 
+
   const getFeatuersProducts = async () => {
     const response = await postRequest("/api/public/items/search", {
       page: 0,

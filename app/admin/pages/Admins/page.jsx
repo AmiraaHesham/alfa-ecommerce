@@ -11,7 +11,7 @@ export default function AdminsPage() {
         <div className="w-full  ">
           <Header page_title={"Admins Management"} />
 
-          <div className=" mx-7  relative">
+          <div className=" mx-5 relative">
             <AdminForm />
 
             <Admins_Table />

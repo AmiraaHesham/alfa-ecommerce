@@ -14,7 +14,7 @@ import { useLanguage } from "../../../context/LanguageContext.js";
 export default function SideMenu({
   dashbord,
   homepage,
-  categorys,
+  categoryies,
   products,
   orders,
   users,
@@ -63,10 +63,10 @@ export default function SideMenu({
           </div>
         </Link>
 
-          <Link href="/admin/pages/Categorys">
+          <Link href="/admin/pages/Categoryies">
             <div
               className={`flex gap-4 mx-3 xs:justify-center md:justify-start  items-center p-3 rounded-md cursor-pointer hover:bg-[#e0e7ff6e] hover:text-[#6158ff]
-         ${categorys} `}
+         ${categoryies} `}
             >
               <span className="text-2xl ">
                 <MdCategory />

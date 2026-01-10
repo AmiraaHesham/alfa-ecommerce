@@ -19,7 +19,7 @@ export default function UsersPage() {
   
   const searchInput= useRef()
   // const searchInputRef = useRef();
-  const { setSelectedId } = useIdContext();
+  const { setSelectedUserId } = useIdContext();
 
   const getAllUsers = useCallback(async () => {
     try {
@@ -38,11 +38,11 @@ export default function UsersPage() {
     }
   }, []);
 const addBlock = async (userId) => {
-    await postRequest(`/api/admin/users/${userId}/block`);
+    await postRequest(`/api/admin/users/${userId}/block`,'',t('message_AddText'));
     getAllUsers();
   };
   const removeBlock = async (userId) => {
-    await postRequest(`/api/admin/users/${userId}/unblock`);
+    await postRequest(`/api/admin/users/${userId}/unblock`,'',t('message_AddText'));
     getAllUsers();
   };
   useEffect(() => {
@@ -59,14 +59,14 @@ const addBlock = async (userId) => {
                 getAllUsers();
               }
             }}
-        type="text" placeholder='Search by user name or email'
-         className="bg-none outline-none placeholder:text-sm  h-8   bg-gray-100 p-2 rounded-lg"/>
+        type="text" placeholder={t('search')}
+         className="bg-none outline-none placeholder:text-xs  h-8   bg-gray-100 p-2 rounded-lg"/>
       </div>
-      <div className="flex items-center gap-4">
- <div className="flex items-center justify-center border px-3 rounded-md bg-gray-100 h-9">
+      <div className="flex items-center gap-4 border rounded-md">
+ <div className="flex items-center justify-center  px-3   bg-gray-100 h-9">
         <span className="text-gray-400 text-lg "><MdFilterList /></span>
         <select className="bg-none outline-none text-gray-700  w-[200px] h-9 text-sm font-semibold bg-gray-100 p-2 rounded-lg ">
-        <option value="">All Statuses</option>
+        <option value=""> {t('all_statuses')} </option>
         <option value="Active">Active</option>
         <option value="Deactive">Deactive</option>
         <option value="Blocked">Blocked</option>
@@ -115,7 +115,7 @@ const addBlock = async (userId) => {
                   </div>
                 </td>
                 <td   onClick={() => {
-                  setSelectedId(user.userId)
+                  setSelectedUserId(user.userId)
                   navigate.push("/admin/UsersPage/UserInfo")}}>
                   <div className="flex items-center gap-3 px-10">
                     <span className="w-[40px] text-gray-600 my-2 h-[40px] bg-gray-50 flex justify-center items-center p-2 rounded-full border ">
@@ -131,12 +131,12 @@ const addBlock = async (userId) => {
                 </td>
 
                 <td   onClick={() => {
-                  setSelectedId(user.userId)
+                  setSelectedUserId(user.userId)
                   navigate.push("/admin/UsersPage/UserInfo")}}>
                   <h1 className=" text-gray-500">{user.email}</h1>
                 </td>
                 <td   onClick={() => {
-                  setSelectedId(user.userId)
+                  setSelectedUserId(user.userId)
                   navigate.push("/admin/UsersPage/UserInfo")}}>
                   <div className="text-gray-500 text-sm">
                     <h1>{user.birthDate}</h1>
@@ -144,7 +144,7 @@ const addBlock = async (userId) => {
                   </div>
                 </td>
                 <td   onClick={() => {
-                  setSelectedId(user.userId)
+                  setSelectedUserId(user.userId)
                   navigate.push("/admin/UsersPage/UserInfo")}}>
                   <div className="bg-blue-100 w-[80px] text-center rounded-full text-blue-700  px-2 font-semibold text-xs">
                     <h1>10 </h1>

@@ -7,7 +7,7 @@ export default function Orders_Details() {
   const { t } = useLanguage();
 
   return (
-    <div className="w-full mt-3">
+    <div className="w-full ">
       <div className="h-16 flex border-t  border-l border-r rounded-t-lg items-center justify-between  px-6 bg-white">
         <h1 className="text-lg">{t("order_items")} (3)</h1>
         <h2 className="text-gray-500"> {t("Total")}: 1,179 EG</h2>

@@ -18,26 +18,21 @@ export default function CategoryForm() {
   const [nameEn, setNameEn] = useState("");
   const [nameAr, setNameAr] = useState("");
   const { t } = useLanguage();
-  const router = useRouter();
   const { triggerRefresh } = useRefresh();
 
-  const { selectedId } = useIdContext();
-  const { selectedNameEn } = useIdContext();
-  const { selectedNameAr } = useIdContext();
-  const { selectedPhoto } = useIdContext();
+  const { selectedCategoryId } = useIdContext();
 
   const handelupload = (e) => {
     var reader = new FileReader();
     reader.readAsDataURL(e.target.files[0]);
     reader.onload = () => {
-            setPhoto((prev) => ({ ...prev, image:reader.result }));
-
+      setPhoto((prev) => ({ ...prev, image: reader.result }));
     };
     const file = e.target.files[0];
     setPhoto((prev) => ({ ...prev, imageFile: file }));
 
-console.log(file)
-console.log(file.name)
+    console.log(file);
+    console.log(file.name);
 
     let upload = document.querySelector("#label-uplod");
     let img = document.querySelector("#lable-img");
@@ -53,34 +48,51 @@ console.log(file.name)
     img.classList.add("hidden");
     upload.classList.remove("hidden");
     try {
-      const formData = new FormData()
-      formData.append('nameEn',nameEn)
-      formData.append('nameAr',nameAr)
-      formData.append('imageFile', photo.imageFile)
-      await postRequest("/api/admin/itemCategory", formData);
+      const formData = new FormData();
+      formData.append("nameEn", nameEn);
+      formData.append("nameAr", nameAr);
+      formData.append("imageFile", photo.imageFile);
+      await postRequest(
+        "/api/admin/itemCategory",
+        formData,
+        t("message_AddText")
+      );
       triggerRefresh();
+      let upload = document.querySelector("#label-uplod");
+      let img = document.querySelector("#lable-img");
+      img.classList.add("hidden");
+      upload.classList.remove("hidden");
       setNameAr("");
       setNameEn("");
-      setPhoto("");
+      setPhoto((prev)=>({...prev, image:''}))
     } catch (error) {
       console.log(error);
     }
   };
 
   const CategoryData = useCallback(async () => {
-    if (selectedId != null) {
+   
+    if (selectedCategoryId != null) {
       try {
-        await getRequest(`/api/admin/itemCategory/${selectedId}`);
-        setNameAr(selectedNameAr), setNameEn(selectedNameEn);setPhoto((prev) => ({ ...prev, image: selectedPhoto }))
-           let upload = document.querySelector("#label-uplod");
+         let upload = document.querySelector("#label-uplod");
     let img = document.querySelector("#lable-img");
     img.classList.remove("hidden");
     upload.classList.add("hidden");
+        const res = await getRequest(`/api/admin/itemCategory/${selectedCategoryId}`);
+        setNameAr(res.nameAr), setNameEn(res.nameEn);
+        setPhoto((prev) => ({
+          ...prev,
+          image: process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL + res.imageURL,
+        }));
       } catch (error) {
         console.log(error);
       }
     }
-  }, [selectedId, selectedNameAr, selectedNameEn,selectedPhoto]);
+    else{
+      setNameAr(''), setNameEn('');
+        setPhoto('');
+    }
+  }, [selectedCategoryId]);
 
   const updateCategory = async () => {
     let form = document.querySelector("#add-category-form");
@@ -91,17 +103,24 @@ console.log(file.name)
     upload.classList.remove("hidden");
 
     try {
-     const formData = new FormData()
-      formData.append('nameEn',nameEn)
-      formData.append('nameAr',nameAr)
-      formData.append('imageFile', photo.imageFile)
-
-      // formData.append('imageFile', photo.imageFile)
-      await putRequest(`/api/admin/itemCategory/${selectedId}`,formData);
+      const formData = new FormData();
+      formData.append("nameEn", nameEn);
+      formData.append("nameAr", nameAr);
+      if (photo.imageFile) {
+        formData.append("imageFile", photo.imageFile);
+      }
+      await putRequest(
+        `/api/admin/itemCategory/${selectedId}`,
+        formData,
+        t("message_EditText")
+      );
       triggerRefresh();
+      let upload = document.querySelector("#label-uplod");
+      let img = document.querySelector("#lable-img");
+      img.classList.add("hidden");
+      upload.classList.remove("hidden");
       setNameAr("");
       setNameEn("");
-      setPhoto("");
     } catch (error) {
       console.log(error);
     }
@@ -123,13 +142,6 @@ console.log(file.name)
             onClick={() => {
               let form = document.querySelector("#add-category-form");
               form.classList.add("hidden");
-              // let upload = document.querySelector("#label-uplod");
-              // let img = document.querySelector("#lable-img");
-              // img.classList.add("hidden");
-              // upload.classList.remove("hidden");
-              // setNameAr("");
-              // setNameEn("");
-              // setPhoto("");
             }}
           >
             <MdCancel />
@@ -137,8 +149,9 @@ console.log(file.name)
         </div>
         <hr className="h-1 mb-3"></hr>
         <div className="flex   justify-center items-center ">
+
           <form
-            className=" w-[50%] "
+            className=" md:w-[60%] xs:w-[80%] "
             onSubmit={(e) => {
               e.preventDefault();
             }}
@@ -182,7 +195,7 @@ console.log(file.name)
                 <div id="lable-img" className="hidden w-[100px] h-[100px]">
                   <Image
                     alt=""
-                    src={photo.image||'/images/no-image.png'}
+                    src={photo.image}
                     width={100}
                     height={100}
                     className="w-full h-full"
@@ -205,7 +218,7 @@ console.log(file.name)
                 id="btn-saveCategory"
                 className="bg-blue-600 py-2 px-3 text-white mt-7  hover:bg-blue-800 rounded-lg  "
                 onClick={() => {
-                  addCategory(); // ← لو في وضع الإضافة
+                  addCategory();
                 }}
               >
                 {t("save")}
@@ -213,7 +226,7 @@ console.log(file.name)
               <button
                 type="submit"
                 id="btn-editCategory"
-                className="bg-blue-600 py-2 px-3 text-white mt-7  hover:bg-blue-800 rounded-lg"
+                className=" hidden bg-blue-600 py-2 px-3 text-white mt-7  hover:bg-blue-800 rounded-lg"
                 onClick={() => {
                   updateCategory();
                 }}

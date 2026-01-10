@@ -1,20 +1,13 @@
 import { getRequest, postRequest } from "../utils/requestsUtils";
 
 export const getCategories = async () => {
-    try {
-      const res= await getRequest(
-        "/api/admin/itemCategory/getCategoryWithItemCounts"
-      );
-     
-  return await res
-
-
-
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
+  const res = await getRequest("/api/admin/itemCategory/getCategoryWithItemCounts");
+  return await res;
+};
+export const getSliderImage = async () => {
+  const res = await getRequest("/api/admin/sliderImages");
+  return await res;
+};
 //  export const getAllUsers = async () => {
 //       try {
 //         // console.log(searchInputRef.current.value);

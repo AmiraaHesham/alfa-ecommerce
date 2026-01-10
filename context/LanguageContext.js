@@ -3,13 +3,13 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 
 const LanguageContext = createContext({
-  locale: 'en',
+  locale: 'ar',
   setLocale: () => {},
   t: (key) => key,
 });
 
 export const LanguageProvider = ({ children }) => {
-  const [locale, setLocale] = useState('en');
+  const [locale, setLocale] = useState('ar');
   const [messages, setMessages] = useState({});
 
   useEffect(() => {

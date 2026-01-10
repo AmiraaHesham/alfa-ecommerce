@@ -1,19 +1,40 @@
+// pages/index.jsx
 "use client"
-import Image from "next/image";
-import Link from "next/link"; 
-import { useLanguage } from "../context/LanguageContext";
+import { useEffect, useState } from 'react';
+import Header from './user/components/Header';
+import ImageSlider from './user/components/home/ImageSlider'; // أو المسار الصحيح
+import { getSliderImage } from '../utils/functions';
 
 export default function Home() {
-  const { t } = useLanguage();
-  return (
-    <div className=" bg-[#F3F4F6] ">
-      <main className="">
-        <header className="w-full h-[70px] ">
- <Link href="/SignIn" className="m-4 p-2 bg-blue-600 text-white rounded-lg">Sign In</Link>
- <Link href="/SignUp" className="m-4 p-2 bg-blue-600 text-white rounded-lg">Sign Up</Link>
-        </header>
-      </main>
+  const [sliderImages, setSliderImages] = useState([]);
 
+  const getSliderImages = async () => {
+    try {
+      const data = await getSliderImage();
+    
+        setSliderImages(data);
+    
+    } catch (error) {
+      console.error('Failed to fetch slider images:', error);
+      setSliderImages([]);
+    }
+  };
+
+  useEffect(() => {
+    getSliderImages();
+  }, []);
+
+  return (
+    <div className="bg-[#F3F4F6] h-screen  justify-center items-center ">
+      <div className=' justify-center '>
+<Header />
+      <main className="my-10 mx-16">
+        <div className=" mb-10">
+          <ImageSlider sliderImages={sliderImages} />
+        </div>
+      </main>
+      </div>
+      
     </div>
   );
 }

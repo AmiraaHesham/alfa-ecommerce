@@ -1,5 +1,7 @@
 "use client";
-import { MdDelete } from "react-icons/md";
+import { MdAddBox, MdDelete } from "react-icons/md";
+import { BiSolidEdit } from "react-icons/bi";
+
 import Image from "next/image";
 import { FaPlus } from "react-icons/fa";
 import { useIdContext } from "../../../../context/idContext";
@@ -13,10 +15,7 @@ export default function CategorysTable() {
   const { t } = useLanguage();
   const { triggerRefresh } = useRefresh();
 
-  const { setSelectedId } = useIdContext();
-  const { setSelectedNameEn } = useIdContext();
-  const { setSelectedNameAr } = useIdContext();
-  const { setSelectedPhoto } = useIdContext();
+  const { setSelectedCategoryId } = useIdContext();
   const { refreshKey } = useRefresh();
 
   let [itemCategory, setItemCategory] = useState([]);
@@ -26,24 +25,23 @@ export default function CategorysTable() {
     setItemCategory(resData);
     console.log(process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL)
   };
+
   const itemCategoryId = (category) => {
+    setSelectedCategoryId(category.itemCategoryId);
     let form = document.querySelector("#add-category-form");
     let nameFormCatogery = document.querySelector("#nameFormCategory");
     let btn_saveCategory = document.querySelector("#btn-saveCategory");
     let btn_editCategory = document.querySelector("#btn-editCategory");
-    btn_editCategory.classList.remove("hidden");
-    btn_saveCategory.classList.add("hidden");
-    nameFormCatogery.innerHTML = "Edit Category";
-    form.classList.remove("hidden");
+    btn_editCategory.classList.toggle("hidden");
+    btn_saveCategory.classList.toggle("hidden");
+    nameFormCatogery.innerHTML = 'Edit Category ';
+    form.classList.toggle("hidden");
     form.classList.add("flex");
-    setSelectedId(category.itemCategoryId);
-    setSelectedNameEn(category.nameEn);
-    setSelectedNameAr(category.nameAr);
-    setSelectedPhoto(process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL+category.imageURL);
   };
+
   const deleteCategory = async (category) => {
     try {
-      await deleteRequest(`/api/admin/itemCategory/${category.itemCategoryId}`);
+      await deleteRequest(`/api/admin/itemCategory/${category.itemCategoryId}`,t('message_DeleteText'));
       triggerRefresh()
     } catch (error) {
       console.log(error);
@@ -60,7 +58,7 @@ export default function CategorysTable() {
     <div>
       <div className="bg-white h-[50px] border rounded-lg border-1  w-full mt-2 flex justify-end p-5 items-center">
         <button
-          className="p-2 text-white xs:text-xs md:text-sm rounded-md bg-blue-500 text-center flex items-center justify-center gap-2"
+          className="p-2  text-white xs:text-xs md:text-sm rounded-md bg-blue-500 text-center flex items-center justify-center gap-2"
           onClick={() => {
             let form = document.querySelector("#add-category-form");
             let btn_saveCategory = document.querySelector("#btn-saveCategory");
@@ -71,20 +69,17 @@ export default function CategorysTable() {
             nameFormCategory.innerHTML = "Add Category";
             form.classList.remove("hidden");
             form.classList.add("flex");
-            // setSelectedId("");
-            setSelectedNameEn("");
-            setSelectedNameAr("");
-            setSelectedPhoto("");
                 let upload = document.querySelector("#label-uplod");
     let img = document.querySelector("#lable-img");
     img.classList.add("hidden");
     upload.classList.remove("hidden");
+    setSelectedCategoryId(null)
           }}
         >
           <span>
             <FaPlus />
           </span>
-          <h1>{t("add_new_category")}</h1>
+          <h1>{t("add_category")}</h1>
         </button>
       </div>
       <div className=" rounded-xl w-full h-screen border  mt-3 overflow-hidden overflow-y-scroll ">
@@ -98,10 +93,7 @@ export default function CategorysTable() {
             </tr>
           </thead>
           <tbody className="bg-white text-md w-full cursor-pointer ">
-            {itemCategory && itemCategory.length > 0 ? (
-              
-              itemCategory.map((category, index) => (
-                
+            {  itemCategory.map((category, index) => (
                 <tr
                   key={index}
                   className=" text-blue-950 border hover:bg-gray-100 "
@@ -149,13 +141,13 @@ export default function CategorysTable() {
                   </td>
                 </tr>
               ))
-            ) : (
-              <tr>
-                <td colSpan="5" className="text-center p-4">
-                  لا توجد بيانات
-                </td>
-              </tr>
-            )}
+            
+              // <tr>
+              //   <td colSpan="5" className="text-center p-4">
+              //     لا توجد بيانات
+              //   </td>
+              // </tr>
+            }
           </tbody>
         </table>
       </div>

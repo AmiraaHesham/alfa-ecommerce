@@ -22,7 +22,7 @@ export default function CategoryForm() {
   const router = useRouter();
   const { triggerRefresh } = useRefresh();
 
-  const { selectedId } = useIdContext();
+  const { selectedAdminId } = useIdContext();
 
   const addAdminUser = async () => {
     let form = document.querySelector("#add-admin-form");
@@ -35,7 +35,7 @@ export default function CategoryForm() {
         username: adminUser.username,
         password: adminUser.password,
         repeatPassword: adminUser.confirmPassword,
-      });
+      }, t('message_AddText'));
       triggerRefresh();
     } catch (error) {
       console.log(error);
@@ -43,9 +43,9 @@ export default function CategoryForm() {
   };
 
   const AdminData = useCallback(async () => {
-    if (selectedId != null) {
+    if (selectedAdminId != null) {
       try {
-       const res =  await getRequest(`/api/users/${selectedId}`);
+       const res =  await getRequest(`/api/users/${selectedAdminId}`);
        setAdminUser((prev) => ({
                         ...prev,
                         l_name: res.lastName,
@@ -57,7 +57,7 @@ export default function CategoryForm() {
         console.log(error);
       }
     }
-  }, [selectedId]);
+  }, [selectedAdminId]);
 
   const updateAdmin = async () => {
     let form = document.querySelector("#add-admin-form");
@@ -70,7 +70,7 @@ export default function CategoryForm() {
         username: adminUser.username,
         password: adminUser.password,
         repeatPassword: adminUser.confirmPassword,
-      });
+      }, t('message_EditText'));
       triggerRefresh();
     } catch (error) {
       console.log(error);
@@ -83,7 +83,7 @@ export default function CategoryForm() {
   return (
     <div
       id="add-admin-form"
-      className=" hidden absolute justify-end items-center w-full h-screen "
+      className=" hidden absolute justify-end  w-full h-screen "
     >
       <div className="bg-white shadow-md shadow-slate-400  xs:w-full lg:w-[500px] flex flex-col border rounded-md">
         <div className="m-4 flex justify-between items-center">
@@ -108,8 +108,9 @@ export default function CategoryForm() {
           >
             <div className="my-5 ">
               <div className="flex flex-col gap-4 ">
-                <div>
-                  <label className="text-sm ">{t("first-name")}</label>
+                <div className="flex justify-between items-center gap-3">
+<div>
+                  <label className="text-sm ">{t("first_name")}</label>
                   <input
                     type="text"
                     value={adminUser.f_name}
@@ -124,7 +125,7 @@ export default function CategoryForm() {
                   />
                 </div>
                 <div>
-                  <label className="text-sm ">{t("last-name")}</label>
+                  <label className="text-sm ">{t("last_name")}</label>
                   <input
                     type="text"
                     value={adminUser.l_name}
@@ -137,9 +138,10 @@ export default function CategoryForm() {
                     className="w-full bg-[#F9FAFB] outline-none text-blue-900 text-lg  p-1 border rounded-md"
                   />
                 </div>
+                </div>
+                
 
                 <div>
-                  {" "}
                   <label className="text-sm">{t("username")}</label>
                   <input
                     type="text"
@@ -155,7 +157,7 @@ export default function CategoryForm() {
                 </div>
                 <div className="flex gap-3">
                   <div>
-                    <label className="text-sm ">{t("passward")}</label>
+                    <label className="text-sm ">{t("password")}</label>
                     <input
                       type="password"
                       value={adminUser.password}
@@ -170,7 +172,7 @@ export default function CategoryForm() {
                   </div>
                   <div>
                     {" "}
-                    <label className="text-sm ">{t("confirm-passward")}</label>
+                    <label className="text-sm ">{t("confirm_password")}</label>
                     <input
                       type="password"
                       value={adminUser.confirmPassword}

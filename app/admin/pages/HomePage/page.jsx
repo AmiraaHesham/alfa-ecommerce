@@ -10,9 +10,9 @@ export default function HomePage() {
       <main className="flex  ">
         <SideMenu homepage={"bg-[#e0e7ff6e] text-[#6158ff]"} />
         <div className="w-full  ">
-          <Header page_title={"HomePage Management"} />
+          <Header page_title={"Homepage Management"} />
           <div className=" mt-3 mx-5 relative   bg-[#F9FAFB]">
-            
+
           <Sliders/>
           <hr className="h-1  my-10"></hr>
           

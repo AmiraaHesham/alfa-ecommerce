@@ -5,13 +5,13 @@ import ProductsTable from "../../components_admin/products/ProductsTable";
 
 export default function Products() {
   return (
-    <div className="h-full bg-[#F9FAFB]">
+    <div className="h-screen bg-[#F9FAFB]">
       <main className=" flex border  ">
         <SideMenu products={"bg-[#e0e7ff6e] text-[#6158ff]"} />
-        <div className="w-full">
+        <div className="w-full bg-[#F9FAFB]">
           <Header page_title={"Products Management"} />
 
-          <div className="mx-5 mt-6 relative">
+          <div className="mx-5  mt-6 relative ">
             <FormProduct />
             <ProductsTable />
           </div>

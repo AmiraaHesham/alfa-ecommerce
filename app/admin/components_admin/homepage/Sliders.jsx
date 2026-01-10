@@ -20,6 +20,7 @@ import {
   getRequest,
   postRequest,
 } from "../../../../utils/requestsUtils.js";
+import { getSliderImage } from "../../../../utils/functions.jsx";
 
 export default function Sliders() {
  const { t } = useLanguage();
@@ -28,8 +29,8 @@ export default function Sliders() {
   const [responsSuccess, setResponsSuccess] = useState();
 
 
-  const getSliderImage = async () => {
-    const res = await getRequest("/api/admin/sliderImages");
+  const getSliderImages = async () => {
+    const res = await getSliderImage()
     console.log(res);
     setSliderImages(res);
   };
@@ -39,7 +40,7 @@ export default function Sliders() {
     const formData = new FormData();
     formData.append("imageFile", file);
     await postRequest("/api/admin/sliderImages", formData, t("message_add"));
-    getSliderImage();
+    getSliderImages();
   };
 
   const deleteSlideImage = async (deletedSliderImageId) => {
@@ -48,7 +49,7 @@ export default function Sliders() {
       `/api/admin/sliderImages/${deletedSliderImageId}`,
       t('message')
     );
-       getSliderImage();
+       getSliderImages();
     }
     catch(error){
       console.log(error)
@@ -56,7 +57,7 @@ export default function Sliders() {
   };
 
   useEffect(() => {
-    getSliderImage();
+    getSliderImages();
   }, []);
 
 
@@ -110,9 +111,8 @@ export default function Sliders() {
 
         {/* </div> */}
       </div>
-      <div className="w-full grid lg:grid-cols-5 md:grid-cols-3 xs:grid-cols-2 gap-3  ">
-        <div className="bg-white border rounded-md h-full w-full flex flex-col gap-3 p-5">
-          <h1 className="text-xs font-bold text-gray-600"> {t("upload-new-img")}</h1>
+       <div className="w-full grid lg:grid-cols-5 md:grid-cols-3  xs:grid-cols-2 gap-3  ">
+        <div className="bg-white border rounded-md h-[170px] w-full flex flex-col gap-3 p-4">
           <div className=" border-dashed flex justify-center p-5 items-center border-2 rounded-md border-blue-400 bg-gray-50  w-full h-full">
             <label htmlFor="fileInput">
               <div
@@ -145,18 +145,18 @@ export default function Sliders() {
         </div>
         {sliderImages.map((img, index) => {
           return (
-            <div key={index} className="bg-white   border p-4 rounded-md"
+            <div key={index} className="bg-white  h-[170px] border p-1 rounded-md"
 
             >
               <span className="flex justify-end mb-1">
                 <button
-                  className="text-lg text-gray-500 hover:text-gray-600"
+                  className="text-sm text-gray-500 hover:text-gray-600"
                   onClick={()=>deleteSlideImage(img.sliderImageId)}
                 >
                   <FaTimes />
                 </button>
               </span>
-              <div className="flex justify-center items-center border">
+              <div className="flex justify-center items-center ">
                 <Image
                   src={
                     process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL + img.imageUrl
@@ -164,7 +164,7 @@ export default function Sliders() {
                   alt=""
                   width={100}
                   height={100}
-                  className="h-[120px] w-full rounded-md"
+                  className="h-[140px] w-full rounded-md"
                 />
               </div>
             </div>

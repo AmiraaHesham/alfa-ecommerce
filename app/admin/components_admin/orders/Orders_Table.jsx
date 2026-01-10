@@ -18,7 +18,7 @@ export default function Orders_Table() {
         size: 20,
       },'');
       const resProducts = response.data || [];
-      setProducts(resProducts);
+      // setProducts(resProducts);
       // pagination()
       //       console.log("Categories after set:", resProducts);
     } catch (error) {
@@ -65,15 +65,11 @@ useEffect(() => {
 
         
         <tr className=" text-blue-950 border w-full hover:bg-gray-50"
-            onClick={() => navigate.push('/admin/orders_page/OrderDetailsPage')}
-            >
+            onClick={() => navigate.push('/admin/pages/orders_page/OrderDetailsPage')}>
               <td></td>
-
               <td className="font-semibold text-blue-500">#ORD-7782</td>
               <td className="text-sm">Oct 24, 2023</td>
-
               <td>
-              
                     <div className="flex items-center gap-3">
                     <Image
                       alt=""
@@ -92,7 +88,7 @@ useEffect(() => {
                
              
               <td className="text-sm">iphone15 pro, ...</td>
-              <td className="text-sm font-semibold">EG 1,200.00</td>
+              <td className="text-sm font-semibold">1,200.00</td>
               <td className="text-sm font-semibold">Pending</td>
             </tr>
            

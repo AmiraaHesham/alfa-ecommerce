@@ -19,10 +19,10 @@ export default function ProductsTable() {
 
   const { refreshKey } = useRefresh();
   const { triggerRefresh } = useRefresh();
-  const [searchInput, setSearshInput] = useState();
-  const { setSelectedId } = useIdContext();
+  const [searchInput, setsearchInput] = useState();
+  const { setSelectedProductId } = useIdContext();
   const searchInputRef = useRef();
-  const getAllProducts = useCallback(async () => {
+  const getAllProducts = async () => {
     try {
       console.log(searchInputRef.current.value);
       const response = await postRequest("/api/public/items/search", {
@@ -37,7 +37,7 @@ export default function ProductsTable() {
     } catch (error) {
       console.log(error);
     }
-  }, []);
+  };
 
   const productFavorite = async (productId) => {
     await postRequest(`/api/admin/items/${productId}/favorite`, "");
@@ -72,7 +72,7 @@ export default function ProductsTable() {
     nameFormProduct.innerHTML = "Edit Product";
     form.classList.remove("hidden");
     form.classList.add("flex");
-    setSelectedId(product.itemId);
+    setSelectedProductId(product.itemId);
   };
   const deleteProduct = async (product) => {
     try {
@@ -86,12 +86,12 @@ export default function ProductsTable() {
     getAllProducts();
   }, [refreshKey]);
   return (
-    <div className="">
+    <div className="w-full">
       <div className="bg-white  border rounded-lg border-1  w-full mt-5 flex flex-row justify-between  p-3 items-center  xs:gap-4">
         <div className="flex items-center justify-between border px-1 rounded-md w-[300px] bg-gray-100">
           <input
             type="text"
-            placeholder="Searsh"
+            placeholder={t('search')}
             className="bg-none outline-none placeholder:text-sm   bg-gray-100 p-1 rounded-lg"
             // value={searchInput}
             ref={searchInputRef}
@@ -121,15 +121,7 @@ export default function ProductsTable() {
             btn_editProduct.classList.add("hidden");
             btn_saveProduct.classList.remove("hidden");
             nameFormProduct.innerHTML = "Add Product";
-            setSelectedId("");
-            setSelectedNameEn("");
-            setSelectedNameAr("");
-            setSelectedCode("");
-            setSelectedPrice("");
-            setSelectedDescription("");
-            setSelectedVisible("");
-            setSelectedCategory("");
-            setSelectedFeatured("");
+            setSelectedProductId(null)
           }}
         >
           <span className="text-base">
@@ -141,10 +133,10 @@ export default function ProductsTable() {
 
       <div
         ref={productTableRef}
-        className=" rounded-xl w-full h-screen border  mt-3 overflow-hidden xs:overflow-x-scroll lg:overflow-auto overflow-y-scroll "
+        className=" rounded-xl w-full border  h-screen mt-3 overflow-hidden xs:overflow-x-scroll lg:overflow-auto overflow-y-scroll "
       >
-        <table className=" xs:w-[200%] lg:w-full    ">
-          <thead className="bg-[#F9FAFB] text-xs    text-justify">
+        <table className=" xs:w-[200%] lg:w-full">
+          <thead className="bg-[#F9FAFB] text-xs text-justify">
             <tr className=" text-gray-500 h-12  ">
               <th className="w-[10%]"></th>
               <th className="w-[30%]">{t("PRODUCT_NAME")}</th>
@@ -235,7 +227,7 @@ export default function ProductsTable() {
                     className="text-sm font-bold"
                     onClick={() => itemProductId(product)}
                   >
-                    {product.price} EG
+                    {product.price}
                   </td>
                   {/* <td></td> */}
                   <td>

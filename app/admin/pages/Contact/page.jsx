@@ -10,7 +10,7 @@ export default function ContactPage() {
         <div className="w-full  ">
           <Header page_title={"Contact Management"} />
 
-          <div className=" px-7 mt-5  ">
+          <div className=" px-7 mt-4   ">
               <Form_contact />
           </div>
         </div>

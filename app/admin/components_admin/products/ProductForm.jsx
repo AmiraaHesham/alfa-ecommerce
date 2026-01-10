@@ -21,7 +21,7 @@ export default function FormProduct() {
   const [enabledActive, setenabledActive] = useState(true);
   const [enabledFavorite, setenabledFavorite] = useState(false);
   const { triggerRefresh } = useRefresh();
-  const { selectedId } = useIdContext();
+  const { selectedProductId } = useIdContext();
 
   const [product, setProduct] = useState({
     nameEn: "",
@@ -40,8 +40,6 @@ export default function FormProduct() {
     img2file: "",
     img3: "",
     img3file: "",
-    // active:"",
-    // featured:""
   });
 
   const [itemCategory, setItemCategory] = useState([]);
@@ -73,101 +71,75 @@ export default function FormProduct() {
       [photoKey + "file"]: file,
     }));
   };
+
   const showeCategories = async () => {
     const resData = await getCategories();
     setItemCategory(resData);
     console.log(resData);
   };
+
   const addProduct = async () => {
     // let form = document.querySelector("#add-product-form");
     // form.classList.add("hidden");
-      const formData = new FormData();
-      formData.append("nameEn", product.nameEn);
-      formData.append("nameAr", product.nameAr);
-      formData.append("code", product.code);
-      formData.append("price", product.price);
-      formData.append("description", product.description);
-      formData.append("favorite", enabledFavorite);
-      formData.append("active", enabledActive);
-      formData.append("itemCategoryId", product.category.id);
-      formData.append("mainImage", product.mainImagefile);
-      formData.append("itemImages", [product.img2file, product.img3file]);
-      console.log(formData);
+    const formData = new FormData();
+    formData.append("nameEn", product.nameEn);
+    formData.append("nameAr", product.nameAr);
+    formData.append("code", product.code);
+    formData.append("price", product.price);
+    formData.append("description", product.description);
+    formData.append("favorite", enabledFavorite);
+    formData.append("active", enabledActive);
+    formData.append("itemCategoryId", product.category.id);
+    formData.append("mainImage", product.mainImagefile);
+    formData.append("itemImages", [product.img2file, product.img3file]);
+    console.log(formData);
 
-      await postRequest("/api/admin/items", formData);
-      triggerRefresh();
-      setProduct({
-        nameEn: "",
-        nameAr: "",
-        price: 0,
-        description: "",
-        category: {
-          id: 0,
-          nameAr: "",
-          nameEn: "",
-        },
-        code: "",
-        mainImage: "",
-        img2: "",
-        img3: "",
-      });
-      setProduct((prev) => ({ ...prev, enabledActive: false }));
-     setProduct((prev) => ({ ...prev, enabledActive: true }));
- 
+    await postRequest("/api/admin/items", formData, t("message_AddText"));
+    triggerRefresh();
+    setProduct({
+      nameEn: "",
+      nameAr: "",
+      price: 0,
+      description: "",
+      category: { id: 0,nameAr: "",nameEn: "",},
+      code: "",
+      mainImage: "",
+      img2: "",
+      img3: "",
+    });
+    setProduct((prev) => ({ ...prev, enabledActive: false }));
+    setProduct((prev) => ({ ...prev, enabledActive: true }));
   };
   const productData = useCallback(async () => {
-    if (selectedId != null) {
+    if (selectedProductId != null) {
       const deleteImg = document.querySelector("#delete-mainImage");
       deleteImg.classList.remove("hidden");
       const labelImg = document.querySelector("#mainImage");
       labelImg.classList.remove("hidden");
       const labelUpload = document.querySelector("#label-mainImage");
       labelUpload.classList.add("hidden");
-        const res = await getRequest(`/api/public/items/${selectedId}`);
-        // console.log(res)
-        setProduct((prev) => ({
-          ...prev,
-          nameEn: res.nameEn,
-          nameAr: res.nameAr,
-          code: res.code,
-          price: res.price,
-          description: res.description,
-          mainImage:
-            process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL + res.mainImageURL || "",
-          img2: res.img2 || "",
-          img3: res.img3 || "",
-          category: {
-            ...prev.category,
-            id: res.itemCategory.itemCategoryId,
-            nameAr: res.itemCategory.nameAr,
-            nameEn: res.itemCategory.nameEn,
-          },
-        }));
-        setenabledFavorite(res.favorite);
-        setenabledActive(res.active);
-     
-    }
-  }, [selectedId]);
-
-  const updataProduct = async () => {
-    let form = document.querySelector("#add-product-form");
-    form.classList.add("hidden");
-    // console.log(`>>>>>${product.mainImagefile}`);
-      const formData = new FormData();
-      formData.append("nameEn", product.nameEn);
-      formData.append("nameAr", product.nameAr);
-      formData.append("code", product.code);
-      formData.append("price", product.price);
-      formData.append("description", product.description);
-      formData.append("active", enabledActive);
-      formData.append("favorite", enabledFavorite);
-      if (product.mainImagefile) {
-        formData.append("mainImage", product.mainImagefile);
-      }
-      formData.append("itemCategoryId", product.category.id);
-      await putRequest(`/api/admin/items/${selectedId}`, formData , t('message_edit'));
-      triggerRefresh();
-
+      const res = await getRequest(`/api/public/items/${selectedProductId}`);
+      setProduct((prev) => ({
+        ...prev,
+        nameEn: res.nameEn,
+        nameAr: res.nameAr,
+        code: res.code,
+        price: res.price,
+        description: res.description,
+        mainImage:
+          process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL + res.mainImageURL || "",
+        img2: res.img2 || "",
+        img3: res.img3 || "",
+        category: {
+          ...prev.category,
+          id: res.itemCategory.itemCategoryId,
+          nameAr: res.itemCategory.nameAr,
+          nameEn: res.itemCategory.nameEn,
+        },
+      }));
+      setenabledFavorite(res.favorite);
+      setenabledActive(res.active);
+    } else {
       setProduct((prev) => ({
         ...prev,
         nameEn: "",
@@ -178,16 +150,58 @@ export default function FormProduct() {
         mainImage: "",
         img2: "",
         img3: "",
-        category: {
-          ...prev.category,
-          id: 0,
-          nameAr: "",
-          nameEn: "",
-        },
+        category: {id: 0,nameAr: "",nameEn: "",},
       }));
       setenabledFavorite(false);
       setenabledActive(true);
- 
+      const labelsUpload = document.querySelectorAll(
+        "#label-mainImage",
+        "#label-img2",
+        "#label-img3"
+      );
+      // labelsUpload.forEach((e) => {
+      //   e.style.display = "flex";
+      // });
+    }
+  }, [selectedProductId]);
+
+  const updataProduct = async () => {
+    let form = document.querySelector("#add-product-form");
+    form.classList.add("hidden");
+    const formData = new FormData();
+    formData.append("nameEn", product.nameEn);
+    formData.append("nameAr", product.nameAr);
+    formData.append("code", product.code);
+    formData.append("price", product.price);
+    formData.append("description", product.description);
+    formData.append("active", enabledActive);
+    formData.append("favorite", enabledFavorite);
+    if (product.mainImagefile) {
+      formData.append("mainImage", product.mainImagefile);
+    }
+    formData.append("itemCategoryId", product.category.id);
+    await putRequest(
+      `/api/admin/items/${selectedProductId}`,
+      formData,
+      t("message_EditText")
+    );
+    triggerRefresh();
+
+    setProduct((prev) => ({
+      ...prev,
+      nameEn: "",
+      nameAr: "",
+      code: "",
+      price: 0,
+      description: "",
+      mainImage: "",
+      img2: "",
+      img3: "",
+       category: {id: 0,nameAr: "",nameEn: "",},
+
+    }));
+    setenabledFavorite(false);
+    setenabledActive(true);
   };
   useEffect(() => {
     showeCategories();
@@ -198,10 +212,10 @@ export default function FormProduct() {
   return (
     <div
       id="add-product-form"
-      className=" absolute w-full hidden justify-end items-end "
+      className=" absolute w-full hidden justify-end items-end h-full"
     >
       <form
-        className=" bg-white shadow-md shadow-slate-400 rounded-lg w-[550px] px-7 pb-10 border overflow-hidden overflow-y-scroll h-full"
+        className=" bg-white shadow-md shadow-slate-400 rounded-lg w-[550px] px-7 pb-10 border overflow-hidden xs:overflow-y-scroll md:over h-full"
         onSubmit={(e) => {
           e.preventDefault();
         }}
@@ -213,25 +227,6 @@ export default function FormProduct() {
             onClick={() => {
               let form = document.querySelector("#add-product-form");
               form.classList.add("hidden");
-              // setProduct((prev) => ({
-              //   ...prev,
-              //   nameEn: "",
-              //   nameAr: "",
-              //   code: "",
-              //   price: "",
-              //   description: "",
-              //   mainImage: "",
-              //   img2: "",
-              //   img3: "",
-              //   category: {
-              //     ...prev.category,
-              //     id: "",
-              //     nameAr: "",
-              //     nameEn: "",
-              //   },
-              // }));
-              setenabledFavorite(false);
-              setenabledActive(true);
             }}
           >
             <FaTimes />
@@ -244,22 +239,25 @@ export default function FormProduct() {
 
           <div className="mt-3 grid sm:grid-cols-3  xs:grid-cols-2 gap-6 ">
             <div>
-              <span
-                id="delete-mainImage"
-                className="hidden"
-                onClick={() => {
-                  const deleteImg = document.querySelector("#delete-mainImage");
-                  deleteImg.classList.add("hidden");
-                  const labelImg = document.querySelector("#mainImage");
-                  labelImg.classList.add("hidden");
-                  const labelUpload =
-                    document.querySelector("#label-mainImage");
-                  labelUpload.classList.remove("hidden");
-                  setProduct((prev) => ({ ...prev, mainImagefile: {} }));
-                }}
-              >
-                <FaTimes />
-              </span>
+              <div className="h-4">
+                <span
+                  id="delete-mainImage"
+                  className="hidden"
+                  // onClick={() => {
+                  //   const deleteImg = document.querySelector("#delete-mainImage");
+                  //   deleteImg.classList.add("hidden");
+                  //   const labelImg = document.querySelector("#mainImage");
+                  //   labelImg.classList.add("hidden");
+                  //   const labelUpload =
+                  //     document.querySelector("#label-mainImage");
+                  //   labelUpload.classList.remove("hidden");
+                  //   setProduct((prev) => ({ ...prev, mainImagefile: {} }));
+                  // }}
+                >
+                  <FaTimes />
+                </span>
+              </div>
+
               <label htmlFor="fileInput-mainImage">
                 <div className="flex flex-col items-center h-[140px]  justify-center p-3 border-2 border-dashed border-blue-300 rounded-lg hover:bg-gray-50">
                   <div
@@ -296,10 +294,11 @@ export default function FormProduct() {
               />
             </div>
             <div>
-              <span id="delete-img2" className="hidden">
-                {" "}
-                <FaTimes />
-              </span>
+              <div className="h-4">
+                <span id="delete-img2" className="hidden ">
+                  <FaTimes />
+                </span>
+              </div>
               <label htmlFor="fileInput-img2">
                 <div className="flex flex-col items-center h-[140px]  justify-center p-3 border-2 border-dashed border-blue-300 rounded-lg hover:bg-gray-50">
                   <div
@@ -333,11 +332,14 @@ export default function FormProduct() {
               />
             </div>
             <div>
-              <span id="delete-img3" className="hidden">
-                <FaTimes />
-              </span>
+              <div className="h-4">
+                <span id="delete-img3" className="hidden ">
+                  <FaTimes />
+                </span>
+              </div>
+
               <label htmlFor="fileInput-img3">
-                <div className="flex flex-col items-center h-[140px]  justify-center p-3 border-2 border-dashed border-blue-300 rounded-lg hover:bg-gray-50">
+                <div className="flex flex-col items-center h-[140px]   justify-center p-3 border-2 border-dashed border-blue-300 rounded-lg hover:bg-gray-50">
                   <div
                     id="label-img3"
                     className="flex flex-col justify-center items-center"
@@ -371,7 +373,7 @@ export default function FormProduct() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-2 mt-7 ">
+        <div className="flex flex-col  mt-3">
           <div className=" w-full flex md:flex-row justify-between xs:flex-col gap-3">
             <div className="">
               <label className="text-xs text-gray-600 mb-10">
@@ -482,9 +484,7 @@ export default function FormProduct() {
                   }}
                   className={`${
                     enabledActive ? "text-green-600" : "text-gray-300"
-                  }
-
-    transition-colors duration-200`}
+                  } transition-colors duration-200`}
                 >
                   <FaCircle />
                 </button>
@@ -519,7 +519,7 @@ export default function FormProduct() {
           />
           <hr className="h-1"></hr>
         </div>
-          <div className="flex bg-[#F9FAFB] px-4 h-20 mt-7 rounded-md justify-center items-center ">
+        <div className="flex bg-[#F9FAFB] px-4 h-10 py-10 mt-5 rounded-md justify-center items-center ">
           <div className="flex justify-between w-full gap-3 items-center">
             <div className="flex  w-full items-center">
               <button
@@ -546,25 +546,6 @@ export default function FormProduct() {
               onClick={() => {
                 let form = document.querySelector("#add-product-form");
                 form.classList.add("hidden");
-                // setProduct((prev) => ({
-                //   ...prev,
-                //   nameEn: "",
-                //   nameAr: "",
-                //   code: "",
-                //   price: "",
-                //   description: "",
-                //   mainImage: "",
-                //   img2: "",
-                //   img3: "",
-                //   category: {
-                //     ...prev.category,
-                //     id: "",
-                //     nameAr: "",
-                //     nameEn: "",
-                //   },
-                // }));
-                // setenabledFavorite(false);
-                // setenabledActive(true);
               }}
             >
               {t("cancel")}

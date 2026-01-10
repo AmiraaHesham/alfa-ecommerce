@@ -1,6 +1,7 @@
 "use client";
 import { use, useEffect } from "react";
 import { useLanguage } from "../../../context/LanguageContext.js";
+import { postRequest } from "../../../utils/requestsUtils.js";
 
 export default function Header({ page_title }) {
   const { locale, setLocale } = useLanguage();
@@ -29,10 +30,14 @@ export default function Header({ page_title }) {
       case "Admins Management":
             page_title= "admins_management";
       break;
-      case "contact Management":
+      case "Contact Management":
             page_title= "contact_management";
       break;
   }
+
+  // const language =()=>{
+  //   await postRequest(`/api/users/${userId}/langauge/${language}`)
+  // }
 
   useEffect(() => {
     let en = document.querySelector("#en");

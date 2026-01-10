@@ -33,7 +33,7 @@ export default function ContactForm() {
       telegramURL: contactInfo.telegram,
       instagramURL: contactInfo.instagram,
       xURL: contactInfo.x,
-    });
+    },t("message_EditText"));
     getcontactInfo();
   };
 
