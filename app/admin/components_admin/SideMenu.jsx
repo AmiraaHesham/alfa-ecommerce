@@ -34,6 +34,10 @@ export default function SideMenu() {
     setSelectedNamePage(
       lastPort === "Dashboard"
         ? lastPort + " " + "Overview"
+        : window.location.pathname.includes("User")
+        ? "Users Management"
+        : window.location.pathname.includes("Order")
+        ? "Orders Management"
         : lastPort + " " + "Management"
     );
   }, []);

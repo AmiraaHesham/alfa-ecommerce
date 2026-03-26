@@ -10,7 +10,9 @@ import { postRequest } from "../../../../utils/requestsUtils.js";
 import { FaUserLarge } from "react-icons/fa6";
 import { IoReloadCircle } from "react-icons/io5";
 import { IoMdSearch } from "react-icons/io";
-export default function OrderOrders() {
+import { useNamePageInAdminContext } from "../../../../context/namePageInAdmin.jsx";
+
+export default function UserOrders({ userId }) {
   const { t } = useLanguage();
   const navigate = useRouter();
   const [inputSearch, setInputSearch] = useState(null);
@@ -18,7 +20,8 @@ export default function OrderOrders() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const pageNum = useRef(0);
-
+  const { setSelectedNamePage } = useNamePageInAdminContext();
+  const searchInputRef = useRef(null);
   const getAllOrders = async () => {
     try {
       const response = await postRequest(
@@ -26,8 +29,9 @@ export default function OrderOrders() {
         {
           page: pageNum.current,
           size: 10,
-          searchText: inputSearch,
+          searchText: searchInputRef.current.value,
           orderState: state,
+          userId: userId,
         },
         ""
       );
@@ -49,21 +53,25 @@ export default function OrderOrders() {
   return (
     <div>
       <div className="w-full  bg-white mt-3 rounded-lg border flex md:flex-row xs:flex-col gap-5  items-start  p-4 ">
-        <div className="flex items-center justify-center border px-3 rounded-md bg-gray-100 h-9">
-          <span className="text-gray-400 text-lg ">
-            <IoMdSearch />
-          </span>
+        <div className="flex items-center justify-between border px-1 rounded-md w-[300px] bg-gray-100">
           <input
             type="text"
+            ref={searchInputRef}
             placeholder={t("search")}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 e.preventDefault();
-                setInputSearch(e.target.value);
+                getAllOrders();
               }
             }}
             className="bg-none outline-none placeholder:text-xs h-8   bg-gray-100 p-3 rounded-lg"
           />
+          <button
+            className="text-lg bg-red-300 hover:bg-red-500 p-1 text-white  rounded-md"
+            onClick={getAllOrders}
+          >
+            <IoMdSearch />
+          </button>
         </div>
         <div className="flex items-center gap-4">
           <div className="flex items-center justify-center border px-3 rounded-md bg-gray-100 h-9">
@@ -92,11 +100,11 @@ export default function OrderOrders() {
             <tr className=" text-gray-500 h-12">
               {/* <th className="w-[2%] "></th> */}
               <th className="w-[20%] px-5 ">{t("order_id")}</th>
-              <th className="w-[15%] ">{t("date")}</th>
+              <th className="w-[10%] ">{t("date")}</th>
               <th className="w-[25%] ">{t("user")}</th>
-              <th className="w-[15%] ">{t("items")}</th>
-              <th className="w-[15%] ">{t("total")}</th>
-              <th className="w-[20%] ">{t("state_order")}</th>
+              <th className="w-[10%] ">{t("items")}</th>
+              <th className="w-[10%] ">{t("total")}</th>
+              <th className="w-[10%] ">{t("state_order")}</th>
             </tr>
           </thead>
           <tbody className="bg-white text-md w-full ">
@@ -140,13 +148,14 @@ export default function OrderOrders() {
                     <tr
                       key={index}
                       className=" text-red-950 border w-full hover:bg-gray-50 cursor-pointer"
-                      onClick={() =>
+                      onClick={() => {
                         navigate.push(
                           `/admin/pages/orders_page/OrderDetailsPage/${order.orderId}`
-                        )
-                      }
+                        );
+                        setSelectedNamePage("Orders Management");
+                      }}
                     >
-                      <td className="font-semibold text-red-500 px-5">
+                      <td className="font-semibold text-sm text-red-500 px-5">
                         {order.code}
                       </td>
                       <td className="text-sm">{dateOnly}</td>
@@ -177,8 +186,12 @@ export default function OrderOrders() {
                       <td
                         className={`text-xs font-semibold ${
                           order.state === "PROCESSING"
+                            ? "text-blue-500"
+                            : order.state === "SHIPPED"
+                            ? "text-yellow-500"
+                            : order.state === "PENDING"
                             ? "text-red-500"
-                            : "text-red-500"
+                            : "text-green-500"
                         }`}
                       >
                         {t(order.state)}

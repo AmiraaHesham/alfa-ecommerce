@@ -17,7 +17,7 @@ import { PiUserListFill } from "react-icons/pi";
 import { useParams } from "next/navigation";
 import { ImBlocked } from "react-icons/im";
 import { VscCircleFilled } from "react-icons/vsc";
-
+import UserOrders from "./userOrder";
 export default function UserInfo({ userId }) {
   const { t } = useLanguage();
 
@@ -70,65 +70,69 @@ export default function UserInfo({ userId }) {
           <h1 className="text-lg font-semibold mb-2">
             {userInfo.firstName + " " + userInfo.lastName}
           </h1>
-          <div className="flex items-center text-sm gap-3 text-gray-600">
-            <h1 className="flex items-center gap-2">
-              ID: #{userId}
-              <TbPointFilled className="text-xs text-gray-200" />
-            </h1>
-            <h1 className="flex items-center gap-2">
-              <IoLocationSharp />
-              Egypt <TbPointFilled className="text-xs text-gray-200" />
-            </h1>
-            <div
-              className={`${
-                userInfo.active === true
-                  ? "text-green-600 bg-green-50"
-                  : "text-red-600 bg-gray-100"
-              }  flex px-3 gap-2 rounded-2xl items-center justify-center`}
-            >
-              <span
-                className={`flex items-center justify-center ${
-                  userInfo.active === true ? "text-green-600" : "text-red-600"
-                }`}
-              >
-                <VscCircleFilled />
-              </span>
-              <h1>{userInfo.active === true ? "Active" : "Deactive"}</h1>
+          <div className="flex md:flex-row xs:flex-col items-start gap-3 text-sm  text-gray-600">
+            <div className="flex gap-3">
+              <h1 className="flex items-center">
+                ID: #{userId}
+                <TbPointFilled className="text-xs text-gray-200" />
+              </h1>
+              <h1 className="flex items-center">
+                <IoLocationSharp />
+                Egypt <TbPointFilled className="text-xs text-gray-200" />
+              </h1>
             </div>
+            <div className="flex  gap-3">
+              <div
+                className={`${
+                  userInfo.active === true
+                    ? "text-green-600 bg-green-50"
+                    : "text-red-600 bg-gray-100"
+                }  flex px-3 gap-2 rounded-2xl items-center justify-center`}
+              >
+                <span
+                  className={`flex items-center justify-center ${
+                    userInfo.active === true ? "text-green-600" : "text-red-600"
+                  }`}
+                >
+                  <VscCircleFilled />
+                </span>
+                <h1>{userInfo.active === true ? "Active" : "Deactive"}</h1>
+              </div>
 
-            <div
-              className={`${
-                userInfo.blocked === false
-                  ? "text-gray-600 bg-gray-100  hover:bg-red-100"
-                  : "text-red-600 bg-red-50  hover:bg-gray-100"
-              }  flex px-3 gap-2 rounded-2xl items-center justify-center`}
-            >
-              <span
-              // className={` ${
-              //   userInfo.blocked === false
-              //     ? "text-gray-600"
-              //     : "text-red-600"
-              // }`}
+              <div
+                className={`${
+                  userInfo.blocked === false
+                    ? "text-gray-600 bg-gray-100  hover:bg-red-100"
+                    : "text-red-600 bg-red-50  hover:bg-gray-100"
+                }  flex px-3 gap-2 rounded-2xl items-center justify-center`}
               >
-                <ImBlocked />
-              </span>
-              <button
-                // className={`${
+                <span
+                // className={` ${
                 //   userInfo.blocked === false
-                //     ? "text-gray-600 bg-gray-100 "
-                //     : "text-red-600 bg-red-50 "
-                // }   rounded-2xl`}
-                onClick={() => {
-                  console.log(userInfo.blocked);
-                  if (userInfo.blocked === false) {
-                    addBlock();
-                  } else {
-                    removeBlock();
-                  }
-                }}
-              >
-                {userInfo.blocked === false ? "Unblocked" : "Blocked"}
-              </button>
+                //     ? "text-gray-600"
+                //     : "text-red-600"
+                // }`}
+                >
+                  <ImBlocked />
+                </span>
+                <button
+                  // className={`${
+                  //   userInfo.blocked === false
+                  //     ? "text-gray-600 bg-gray-100 "
+                  //     : "text-red-600 bg-red-50 "
+                  // }   rounded-2xl`}
+                  onClick={() => {
+                    console.log(userInfo.blocked);
+                    if (userInfo.blocked === false) {
+                      addBlock();
+                    } else {
+                      removeBlock();
+                    }
+                  }}
+                >
+                  {userInfo.blocked === false ? "Unblocked" : "Blocked"}
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -170,9 +174,9 @@ export default function UserInfo({ userId }) {
         </div>
       </div>
 
-      <div className="flex items-start bg-[#F9FAFB] justify-between my-7  gap-5">
+      <div className="flex md:flex-row xs:flex-col items-start bg-[#F9FAFB] justify-between my-7  gap-5">
         <div className="md:order-1 w-full   xs:order-2">
-          <Orders_Table />
+          <UserOrders userId={userId} />
         </div>
         <div className="md:order-2 xs:order-1 xs:w-full h-[400px] md:w-[50%] bg-white">
           <div className="  bg-white p-7  border rounded-lg">

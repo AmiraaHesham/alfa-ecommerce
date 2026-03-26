@@ -18,6 +18,7 @@ export default function Orders_Table() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const pageNum = useRef(0);
+  const searchInputRef = useRef(null);
 
   const getAllOrders = async () => {
     try {
@@ -26,7 +27,7 @@ export default function Orders_Table() {
         {
           page: pageNum.current,
           size: 15,
-          searchText: inputSearch,
+          searchText: searchInputRef.current.value,
           orderState: state,
         },
         ""
@@ -49,21 +50,25 @@ export default function Orders_Table() {
   return (
     <div>
       <div className="w-full  bg-white mt-3 rounded-lg border flex md:flex-row xs:flex-col gap-5  items-start  p-4 ">
-        <div className="flex items-center justify-center border px-3 rounded-md bg-gray-100 h-9">
-          <span className="text-gray-400 text-lg ">
-            <IoMdSearch />
-          </span>
+        <div className="flex items-center justify-between border px-1 rounded-md w-[300px] bg-gray-100">
           <input
             type="text"
+            ref={searchInputRef}
             placeholder={t("search")}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 e.preventDefault();
-                setInputSearch(e.target.value);
+                getAllOrders();
               }
             }}
             className="bg-none outline-none placeholder:text-xs h-8   bg-gray-100 p-3 rounded-lg"
           />
+          <button
+            className="text-lg bg-red-300 hover:bg-red-500 p-1 text-white  rounded-md"
+            onClick={getAllOrders}
+          >
+            <IoMdSearch />
+          </button>
         </div>
         <div className="flex items-center gap-4">
           <div className="flex items-center justify-center border px-3 rounded-md bg-gray-100 h-9">

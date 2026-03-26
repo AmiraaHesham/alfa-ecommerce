@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useLanguage } from "../../../../context/LanguageContext.js";
 import { getRequest } from "../../../../utils/requestsUtils.js";
 import { FaBox, FaCheck, FaShoppingBag, FaTruck } from "react-icons/fa";
+
 export default function Orders_Details() {
   const { t } = useLanguage();
   const [ordersState, setOrdersState] = useState([]);

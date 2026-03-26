@@ -13,12 +13,15 @@ export default function Dashboard_Details() {
   const [activeItems, setActiveItems] = useState();
   const [newUsers, setNewUsers] = useState();
   const [pendingOrders, setPendingOrders] = useState();
+  const [ordersCount, setOrdersCount] = useState();
 
   const dashboardPendingOrders = async () => {
     const response = await getRequest("/api/admin/dashboard");
     setNewUsers(response.newUsers);
     setActiveItems(response.activeItems);
     setPendingOrders(response.ordersStats[1].count);
+    setOrdersCount(response.ordersCount);
+
     console.log(response);
   };
 
@@ -36,7 +39,7 @@ export default function Dashboard_Details() {
             {t("total_orders")}
           </h1>
         </div>
-        <h1 className="md:text-2xl xs:text-lg  font-bold">3,456</h1>
+        <h1 className="md:text-2xl xs:text-lg  font-bold">{ordersCount}</h1>
       </div>
 
       <div className="bg-white border border-orange-300 flex flex-col gap-5 rounded-lg p-3">
