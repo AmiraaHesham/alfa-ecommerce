@@ -139,7 +139,7 @@ export default function Orders_Table() {
                   return (
                     <tr
                       key={index}
-                      className=" text-blue-950 border w-full hover:bg-gray-50 cursor-pointer"
+                      className=" text-red-950 border w-full hover:bg-gray-50 cursor-pointer"
                       onClick={() =>
                         navigate.push(
                           `/admin/pages/orders_page/OrderDetailsPage/${order.orderId}`

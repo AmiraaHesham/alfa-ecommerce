@@ -96,7 +96,7 @@ export default function CategoryForm() {
         <div className="m-4 flex justify-between items-center">
           <h1 id="nameForm" className="text-lg font-semibold"></h1>
           <span
-            className="text-3xl text-blue-950  hover:text-blue-800"
+            className="text-3xl text-red-950  hover:text-red-800"
             onClick={() => {
               let form = document.querySelector("#add-admin-form");
               form.classList.add("hidden");
@@ -128,7 +128,7 @@ export default function CategoryForm() {
                         }))
                       }
                       required
-                      className="w-full bg-[#F9FAFB] outline-none text-blue-900 text-lg  p-1 border rounded-md"
+                      className="w-full bg-[#F9FAFB] outline-none text-red-900 text-lg  p-1 border rounded-md"
                     />
                   </div>
                   <div>
@@ -142,7 +142,7 @@ export default function CategoryForm() {
                           l_name: e.target.value,
                         }))
                       }
-                      className="w-full bg-[#F9FAFB] outline-none text-blue-900 text-lg  p-1 border rounded-md"
+                      className="w-full bg-[#F9FAFB] outline-none text-red-900 text-lg  p-1 border rounded-md"
                     />
                   </div>
                 </div>
@@ -158,7 +158,7 @@ export default function CategoryForm() {
                         username: e.target.value,
                       }))
                     }
-                    className="w-full bg-[#F9FAFB] outline-none text-blue-900 text-lg  p-1 border rounded-md"
+                    className="w-full bg-[#F9FAFB] outline-none text-red-900 text-lg  p-1 border rounded-md"
                   />
                 </div>
                 <div className="flex gap-3">
@@ -173,7 +173,7 @@ export default function CategoryForm() {
                           password: e.target.value,
                         }))
                       }
-                      className="w-full bg-[#F9FAFB] outline-none text-blue-900 text-lg  p-1 border rounded-md"
+                      className="w-full bg-[#F9FAFB] outline-none text-red-900 text-lg  p-1 border rounded-md"
                     />
                   </div>
                   <div>
@@ -188,7 +188,7 @@ export default function CategoryForm() {
                           confirmPassword: e.target.value,
                         }))
                       }
-                      className="w-full bg-[#F9FAFB] outline-none text-blue-900 text-lg  p-1 border rounded-md"
+                      className="w-full bg-[#F9FAFB] outline-none text-red-900 text-lg  p-1 border rounded-md"
                     />
                   </div>
                 </div>

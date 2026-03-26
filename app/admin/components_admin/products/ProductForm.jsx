@@ -245,7 +245,7 @@ export default function FormProduct() {
         <div className="h-16 flex justify-between items-center ">
           <h1 id="nameFormProduct" className="text-xl font-semibold"></h1>
           <span
-            className="text-xl text-gray-500  hover:text-blue-800"
+            className="text-xl text-gray-500  hover:text-red-800"
             onClick={() => {
               let form = document.querySelector("#add-product-form");
               form.classList.add("hidden");
@@ -282,12 +282,12 @@ export default function FormProduct() {
               </div>
 
               <label htmlFor="fileInput-mainImage">
-                <div className="flex flex-col items-center h-[140px]  justify-center p-3 border-2 border-dashed border-blue-300 rounded-lg hover:bg-gray-50">
+                <div className="flex flex-col items-center h-[140px]  justify-center p-3 border-2 border-dashed border-red-300 rounded-lg hover:bg-gray-50">
                   <div
                     id="label-mainImage"
                     className="flex flex-col mt-3 justify-center items-center"
                   >
-                    <span className="text-4xl text-blue-600">
+                    <span className="text-4xl text-red-600">
                       <IoCloudUploadSharp />
                     </span>
                     <span className="text-sm text-gray-500">
@@ -323,12 +323,12 @@ export default function FormProduct() {
                 </span>
               </div>
               <label htmlFor="fileInput-img2">
-                <div className="flex flex-col items-center h-[140px]  justify-center p-3 border-2 border-dashed border-blue-300 rounded-lg hover:bg-gray-50">
+                <div className="flex flex-col items-center h-[140px]  justify-center p-3 border-2 border-dashed border-red-300 rounded-lg hover:bg-gray-50">
                   <div
                     id="label-img2"
                     className="flex flex-col justify-center items-center"
                   >
-                    <span className="text-4xl text-blue-600">
+                    <span className="text-4xl text-red-600">
                       <IoCloudUploadSharp />
                     </span>
                     <span className="text-xs text-gray-500">
@@ -362,12 +362,12 @@ export default function FormProduct() {
               </div>
 
               <label htmlFor="fileInput-img3">
-                <div className="flex flex-col items-center h-[140px]   justify-center p-3 border-2 border-dashed border-blue-300 rounded-lg hover:bg-gray-50">
+                <div className="flex flex-col items-center h-[140px]   justify-center p-3 border-2 border-dashed border-red-300 rounded-lg hover:bg-gray-50">
                   <div
                     id="label-img3"
                     className="flex flex-col justify-center items-center"
                   >
-                    <span className="text-4xl text-blue-600">
+                    <span className="text-4xl text-red-600">
                       <IoCloudUploadSharp />
                     </span>
                     <span className="text-xs text-gray-500">
@@ -410,7 +410,7 @@ export default function FormProduct() {
                 }
                 required
                 onClick={images}
-                className="w-full bg-[#F9FAFB] outline-none text-blue-900 text-base  my-1  p-1 border rounded-md"
+                className="w-full bg-[#F9FAFB] outline-none text-red-900 text-base  my-1  p-1 border rounded-md"
               />
             </div>
             <div>
@@ -424,7 +424,7 @@ export default function FormProduct() {
                   setProduct((prev) => ({ ...prev, nameAr: e.target.value }))
                 }
                 required
-                className="w-full bg-[#F9FAFB] outline-none text-blue-900 text-base my-1  p-1 border rounded-md"
+                className="w-full bg-[#F9FAFB] outline-none text-red-900 text-base my-1  p-1 border rounded-md"
               />
             </div>
           </div>
@@ -441,7 +441,7 @@ export default function FormProduct() {
                   setProduct((prev) => ({ ...prev, code: e.target.value }))
                 }
                 required
-                className="w-full bg-[#F9FAFB] outline-none text-blue-900 text-base  my-1  p-1 border rounded-md"
+                className="w-full bg-[#F9FAFB] outline-none text-red-900 text-base  my-1  p-1 border rounded-md"
               />
             </div>
             <div className="w-full ">
@@ -460,7 +460,7 @@ export default function FormProduct() {
                   console.log(e.target);
                 }}
                 required
-                className="w-full bg-[#F9FAFB] outline-none text-blue-900 text-base my-2 p-1 border rounded-md"
+                className="w-full bg-[#F9FAFB] outline-none text-red-900 text-base my-2 p-1 border rounded-md"
               >
                 <option value={product.category.id}>
                   {localStorage.lang === "ar"
@@ -491,7 +491,7 @@ export default function FormProduct() {
                   setProduct((prev) => ({ ...prev, price: e.target.value }))
                 }
                 required
-                className=" bg-[#F9FAFB] w-full outline-none text-blue-900 text-base  my-1  p-1 border rounded-md"
+                className=" bg-[#F9FAFB] w-full outline-none text-red-900 text-base  my-1  p-1 border rounded-md"
               />
             </div>
             <div className="w-full">
@@ -502,7 +502,7 @@ export default function FormProduct() {
                   setProduct((prev) => ({ ...prev, oldPrice: e.target.value }))
                 }
                 id="oldPrice"
-                className=" bg-[#F9FAFB] w-full outline-none text-blue-900 text-base  my-1  p-1 border rounded-md"
+                className=" bg-[#F9FAFB] w-full outline-none text-red-900 text-base  my-1  p-1 border rounded-md"
               />
             </div>
           </div>
@@ -553,7 +553,7 @@ export default function FormProduct() {
             onChange={(e) =>
               setProduct((prev) => ({ ...prev, descriptionEn: e.target.value }))
             }
-            className="w-full bg-[#F9FAFB] outline-none mb-2 text-blue-900 text-base  my-1  p-1 
+            className="w-full bg-[#F9FAFB] outline-none mb-2 text-red-900 text-base  my-1  p-1 
             border rounded-md"
           />
           <label className="text-xs text-gray-700">
@@ -567,7 +567,7 @@ export default function FormProduct() {
             onChange={(e) =>
               setProduct((prev) => ({ ...prev, descriptionAr: e.target.value }))
             }
-            className="w-full bg-[#F9FAFB] outline-none mb-2 text-blue-900 text-base  my-1  p-1 
+            className="w-full bg-[#F9FAFB] outline-none mb-2 text-red-900 text-base  my-1  p-1 
             border rounded-md"
           />
           <hr className="h-1"></hr>

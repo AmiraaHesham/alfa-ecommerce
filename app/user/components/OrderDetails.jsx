@@ -136,7 +136,7 @@ export default function OrderDetails({ orderId }) {
                 return (
                   <tr
                     key={index}
-                    className=" text-blue-950 border h-14 w-full cursor-pointer hover:bg-gray-100"
+                    className=" text-red-950 border h-14 w-full cursor-pointer hover:bg-gray-100"
                     onClick={() => {
                       setSelectedProductId(product.item.itemId);
                       navigate.push(

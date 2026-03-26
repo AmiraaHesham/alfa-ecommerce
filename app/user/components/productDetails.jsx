@@ -244,7 +244,7 @@ export default function ProductDetails({ itemId }) {
                   onClick={() => {
                     setCount(count + 1);
                   }}
-                  className="text-xl font-bold text-gray-600  hover:text-blue-600"
+                  className="text-xl font-bold text-gray-600  hover:text-red-600"
                 >
                   +
                 </button>
@@ -259,7 +259,7 @@ export default function ProductDetails({ itemId }) {
                   onClick={() => {
                     setCount(count - 1);
                   }}
-                  className="text-xl font-bold text-gray-600 hover:text-blue-600"
+                  className="text-xl font-bold text-gray-600 hover:text-red-600"
                 >
                   −
                 </button>

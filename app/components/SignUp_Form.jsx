@@ -106,8 +106,7 @@ export default function SignUp() {
             <div className=" flex items-center  gap-5">
               <div className="flex flex-col gap-2  w-full">
                 <label className="text-gray-500 text-sm ">
-                  {" "}
-                  {t("firstName")}{" "}
+                  {t("firstName")}
                 </label>
                 <div className=" flex w-full px-2 rounded-md  border h-10 items-center gap-3">
                   <input
@@ -122,10 +121,7 @@ export default function SignUp() {
                 </div>
               </div>
               <div className="flex flex-col gap-2 w-full ">
-                <label className="text-gray-500 text-sm">
-                  {" "}
-                  {t("lastName")}{" "}
-                </label>
+                <label className="text-gray-500 text-sm">{t("lastName")}</label>
                 <div className=" flex w-full px-2 rounded-md  border h-10 items-center gap-3">
                   <input
                     className=" w-full px-3 outline-none"
@@ -156,9 +152,7 @@ export default function SignUp() {
             </div>
             <div className="flex gap-5">
               <div className="flex flex-col gap-2 w-full">
-                <label className="text-gray-500 text-sm">
-                  {t("username")}{" "}
-                </label>
+                <label className="text-gray-500 text-sm">{t("username")}</label>
                 <div className=" flex w-full px-2 rounded-md  border h-10 items-center gap-3">
                   <input
                     className=" w-full px-3 outline-none"

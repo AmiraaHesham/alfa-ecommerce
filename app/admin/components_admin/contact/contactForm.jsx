@@ -25,15 +25,19 @@ export default function ContactForm() {
   const { t } = useLanguage();
 
   const addContactInfo = async () => {
-    await putRequest("/api/admin/contact", {
-      phone: contactInfo.phone,
-      email: contactInfo.email,
-      facebookURL: contactInfo.facebock,
-      whatsappURL: contactInfo.whatsApp,
-      telegramURL: contactInfo.telegram,
-      instagramURL: contactInfo.instagram,
-      xURL: contactInfo.x,
-    },t("message_EditText"));
+    await putRequest(
+      "/api/admin/contact",
+      {
+        phone: contactInfo.phone,
+        email: contactInfo.email,
+        facebookURL: contactInfo.facebock,
+        whatsappURL: contactInfo.whatsApp,
+        telegramURL: contactInfo.telegram,
+        instagramURL: contactInfo.instagram,
+        xURL: contactInfo.x,
+      },
+      t("message_EditText")
+    );
     getcontactInfo();
   };
 
@@ -108,13 +112,14 @@ export default function ContactForm() {
                   }}
                   value={contactInfo.email}
                 />
-                <button className=" text-gray-500 text-base"
-                onClick={()=>{
-                   setContactInfo((prev) => ({
+                <button
+                  className=" text-gray-500 text-base"
+                  onClick={() => {
+                    setContactInfo((prev) => ({
                       ...prev,
-                      email: '',
+                      email: "",
                     }));
-                }}
+                  }}
                 >
                   <FaTimes />
                 </button>
@@ -141,13 +146,15 @@ export default function ContactForm() {
                   }}
                   value={contactInfo.phone}
                 />
-                <button className=" text-gray-500 text-base"
-                 onClick={()=>{
-                   setContactInfo((prev) => ({
+                <button
+                  className=" text-gray-500 text-base"
+                  onClick={() => {
+                    setContactInfo((prev) => ({
                       ...prev,
-                      phone: '',
+                      phone: "",
                     }));
-                }}>
+                  }}
+                >
                   <FaTimes />
                 </button>
               </div>
@@ -167,7 +174,7 @@ export default function ContactForm() {
           <div className=" md:w-[80%] xs:w-full flex flex-col gap-3   my-3">
             <div className="flex lg:flex-row xs:flex-col w-full  justify-between gap-2 xs:px-5 lg:px-10 rounded-md py-2 bg-[#f3f4f6a1] ">
               <label className="font-semibold xs:w-[200px] lg:w-[320px]  flex gap-3 items-center">
-                <span className="text-xl text-blue-700">
+                <span className="text-xl text-red-700">
                   <FaFacebookSquare />
                 </span>
                 <h1 className=" text-gray-500  md:text-sm xs:text-xs">
@@ -186,13 +193,15 @@ export default function ContactForm() {
                   }
                   value={contactInfo.facebock}
                 />
-                <button className=" text-gray-500 text-base"
-                 onClick={()=>{
-                   setContactInfo((prev) => ({
+                <button
+                  className=" text-gray-500 text-base"
+                  onClick={() => {
+                    setContactInfo((prev) => ({
                       ...prev,
-                      facebock: '',
+                      facebock: "",
                     }));
-                }}>
+                  }}
+                >
                   <FaTimes />
                 </button>
               </div>
@@ -218,13 +227,15 @@ export default function ContactForm() {
                   }
                   value={contactInfo.whatsApp}
                 />
-                <button className=" text-gray-500 text-base"
-                 onClick={()=>{
-                   setContactInfo((prev) => ({
+                <button
+                  className=" text-gray-500 text-base"
+                  onClick={() => {
+                    setContactInfo((prev) => ({
                       ...prev,
-                      whatsApp: '',
+                      whatsApp: "",
                     }));
-                }}>
+                  }}
+                >
                   <FaTimes />
                 </button>
               </div>
@@ -232,7 +243,7 @@ export default function ContactForm() {
 
             <div className="flex lg:flex-row xs:flex-col w-full  justify-between gap-2 xs:px-5 lg:px-10 rounded-md py-2 bg-[#f3f4f6a1] ">
               <label className="font-semibold xs:w-[200px] lg:w-[320px]  flex gap-3 items-center">
-                <span className="text-2xl text-blue-600">
+                <span className="text-2xl text-red-600">
                   <FaTelegram />
                 </span>
                 <h1 className=" text-gray-500   md:text-sm xs:text-xs">
@@ -251,13 +262,15 @@ export default function ContactForm() {
                   }
                   value={contactInfo.telegram}
                 />
-                <button className=" text-gray-500 text-base"
-                 onClick={()=>{
-                   setContactInfo((prev) => ({
+                <button
+                  className=" text-gray-500 text-base"
+                  onClick={() => {
+                    setContactInfo((prev) => ({
                       ...prev,
-                      telegram: '',
+                      telegram: "",
                     }));
-                }}>
+                  }}
+                >
                   <FaTimes />
                 </button>
               </div>
@@ -284,13 +297,15 @@ export default function ContactForm() {
                   }
                   value={contactInfo.instagram}
                 />
-                <button className=" text-gray-500 text-base"
-                 onClick={()=>{
-                   setContactInfo((prev) => ({
+                <button
+                  className=" text-gray-500 text-base"
+                  onClick={() => {
+                    setContactInfo((prev) => ({
                       ...prev,
-                      instagram: '',
+                      instagram: "",
                     }));
-                }}>
+                  }}
+                >
                   <FaTimes />
                 </button>
               </div>
@@ -315,13 +330,15 @@ export default function ContactForm() {
                   }
                   value={contactInfo.x}
                 />
-                <button className=" text-gray-500 text-base"
-                 onClick={()=>{
-                   setContactInfo((prev) => ({
+                <button
+                  className=" text-gray-500 text-base"
+                  onClick={() => {
+                    setContactInfo((prev) => ({
                       ...prev,
-                      x: '',
+                      x: "",
                     }));
-                }}>
+                  }}
+                >
                   <FaTimes />
                 </button>
               </div>

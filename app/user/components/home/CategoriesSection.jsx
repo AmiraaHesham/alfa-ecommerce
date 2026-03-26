@@ -51,8 +51,8 @@ export default function CategorySection({ categories }) {
           dir={lang === "ar" ? "rtl" : "ltr"}
           spaceBetween={20}
           navigation={{
-            nextEl: ".next-btn",
-            prevEl: ".prev-btn",
+            nextEl: ".next-btn2",
+            prevEl: ".prev-btn2",
           }}
           className="w-full h-full  "
         >
@@ -70,7 +70,9 @@ export default function CategorySection({ categories }) {
               >
                 <div className="py-2">
                   <Image
-                    src={`${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL}${category.imageURL || ""}`}
+                    src={`${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL}${
+                      category.imageURL || ""
+                    }`}
                     alt={category.nameAr || "category"}
                     width={100}
                     height={100}
@@ -87,14 +89,14 @@ export default function CategorySection({ categories }) {
           ))}
           <div className=" flex flex-col justify-center items-center relative my-20  ">
             <div className=" p-1 rounded-full absolute flex gap-2 justify-center items-center  ">
-              <button className="prev-btn p-1 rounded-full hover:bg-red-600 border-2 border-red-600  hover:text-white text-red-600 text-3xl   font-bold cursor-pointer *:">
+              <button className="prev-btn2 p-1 rounded-full hover:bg-red-600 border-2 border-red-600  hover:text-white text-red-600 text-3xl   font-bold cursor-pointer *:">
                 {lang === "ar" ? (
                   <IoIosArrowRoundForward className="text-3xl font-bold" />
                 ) : (
                   <IoIosArrowRoundBack />
                 )}
               </button>
-              <button className="next-btn p-1 rounded-full hover:bg-red-600  border-2  border-red-600   hover:text-white text-red-600 text-3xl cursor-pointer font-bold">
+              <button className="next-btn2 p-1 rounded-full hover:bg-red-600  border-2  border-red-600   hover:text-white text-red-600 text-3xl cursor-pointer font-bold">
                 {lang === "ar" ? (
                   <IoIosArrowRoundBack className="text-3xl font-bold" />
                 ) : (

@@ -70,20 +70,18 @@ export default function ProductCard({ productInfo, favorite }) {
     } catch (error) {}
   };
   const describtion =
-    typeof localStorage.lang !== "undefined" && localStorage.lang === "ar"
+    localStorage.lang === "ar"
       ? productInfo.descriptionAr
       : productInfo.descriptionEn;
 
   const productName =
-    typeof localStorage.lang !== "undefined" && localStorage.lang === "ar"
-      ? productInfo.nameAr
-      : productInfo.nameEn;
+    localStorage.lang === "ar" ? productInfo.nameAr : productInfo.nameEn;
 
   return (
     // <div className="h-full w-full border rounded-md bg-white flex justify-center py-2  cursor-pointer duration-300 hover:scale-105 ">
     <div
       id={`div_${productInfo.itemId}`}
-      className="h-[350px] bg-white border rounded-md cursor-pointer  hover:border-b-[7px] hover:border-b-red-600  hover:scale-105 duration-200   hover:shadow-lg "
+      className="h-[350px] w-full bg-white border rounded-md cursor-pointer  hover:border-b-[7px] hover:border-b-red-600  hover:scale-105 duration-200   hover:shadow-lg "
     >
       <div className="flex flex-col justify-between items-baseline">
         <Image
@@ -157,10 +155,11 @@ export default function ProductCard({ productInfo, favorite }) {
             }}
             // title={describtion}
           >
-            {describtion}
-            {/* {describtion.length <= 70
-              ? describtion
-              : describtion.slice(0, 70) + " ..."} */}
+            {describtion
+              ? describtion.length <= 70
+                ? describtion
+                : describtion.slice(0, 70) + " ..."
+              : ""}
           </h1>
 
           {/* <div className="absolute bottom-full left-0  

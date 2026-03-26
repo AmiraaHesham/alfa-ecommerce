@@ -200,7 +200,7 @@ export default function OrdersHistory() {
                     <span
                       className={`flex items-center ${
                         order.state === "PROCESSING"
-                          ? "text-blue-600"
+                          ? "text-red-600"
                           : order.state === "PENDING"
                           ? " text-red-600"
                           : order.state === "SHIPPED"

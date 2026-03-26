@@ -127,7 +127,7 @@ export default function CategorysTable() {
               : itemCategory.map((category, index) => (
                   <tr
                     key={index}
-                    className=" text-blue-950 border hover:bg-gray-100 cursor-pointer "
+                    className=" text-red-950 border hover:bg-gray-100 cursor-pointer "
                   >
                     <td
                       className="px-4"

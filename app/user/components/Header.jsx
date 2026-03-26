@@ -135,6 +135,7 @@ export default function Header() {
             <Link href="/user/cart">
               <IoMdCart className="w-7 h-7" />
             </Link>
+            <hr className="w- h-10 bg-white"></hr>
             <Link href={id ? "/user/pages/profile" : "/signin"}>
               <div className="flex items-center gap-1  ">
                 <span className="w-9 h-9">

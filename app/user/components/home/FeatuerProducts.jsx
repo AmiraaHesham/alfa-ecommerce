@@ -47,8 +47,8 @@ export default function FeatuerProducts({ FeatuerProducts }) {
           }}
           modules={[Navigation, Autoplay]}
           navigation={{
-            nextEl: ".next-btn",
-            prevEl: ".prev-btn",
+            nextEl: ".next-btn1",
+            prevEl: ".prev-btn1",
           }}
           dir={lang === "ar" ? "rtl" : "ltr"}
           spaceBetween={15}
@@ -65,14 +65,14 @@ export default function FeatuerProducts({ FeatuerProducts }) {
           })}
           <div className=" flex flex-col justify-center items-center relative my-20 ">
             <div className=" p-1 rounded-full absolute flex gap-2 justify-center items-center  ">
-              <button className="next-btn p-1 rounded-full border-2 hover:bg-red-600 border-red-600   hover:text-white text-red-600 text-3xl   font-bold">
+              <button className="prev-btn1 p-1 rounded-full border-2 hover:bg-red-600 border-red-600   hover:text-white text-red-600 text-3xl   font-bold">
                 {lang === "ar" ? (
                   <IoIosArrowRoundForward className="text-3xl font-bold" />
                 ) : (
                   <IoIosArrowRoundBack />
                 )}
               </button>
-              <button className="next-btn p-1 rounded-full border-2 hover:bg-red-600 border-red-600   hover:text-white text-red-600 text-3xl   font-bold">
+              <button className="next-btn1 p-1 rounded-full border-2 hover:bg-red-600 border-red-600   hover:text-white text-red-600 text-3xl   font-bold">
                 {lang === "ar" ? (
                   <IoIosArrowRoundBack className="text-3xl font-bold" />
                 ) : (

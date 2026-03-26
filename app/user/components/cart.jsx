@@ -153,7 +153,7 @@ export default function Cart() {
               ) : items.length != 0 ? (
                 items.map((product, index) => {
                   return (
-                    <tr key={index} className=" text-blue-950 border w-full">
+                    <tr key={index} className=" text-red-950 border w-full">
                       <td className="px-5">
                         <div className="flex items-center gap-3">
                           <Image
@@ -220,7 +220,7 @@ export default function Cart() {
                                 product.quantity + 1
                               );
                             }}
-                            className="text-xl font-bold text-gray-600  hover:text-blue-600"
+                            className="text-xl font-bold text-gray-600  hover:text-red-600"
                           >
                             +
                           </button>
@@ -240,7 +240,7 @@ export default function Cart() {
                                 );
                               }
                             }}
-                            className="text-xl font-bold text-gray-600 hover:text-blue-600"
+                            className="text-xl font-bold text-gray-600 hover:text-red-600"
                           >
                             −
                           </button>

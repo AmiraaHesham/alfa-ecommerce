@@ -68,12 +68,12 @@ export default function SideMenu() {
             />
           </span>
           <div className="cursor-default md:block xs:hidden">
-            <h1 className="text-md  text-blue-950 font-semibold font-sans">
+            <h1 className="text-md  text-red-950 font-semibold font-sans">
               <span className="text-sm  font-bold">
                 {username === "" ? "" : username}
               </span>
             </h1>
-            <h1 className="text-xs text-blue-950">{t("super_admin")}</h1>
+            <h1 className="text-xs text-red-950">{t("super_admin")}</h1>
           </div>
         </div>
         {/* <hr></hr> */}

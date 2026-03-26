@@ -24,7 +24,7 @@ export default function Orders_Details({ orderId }) {
       <div className="  bg-white p-7  border rounded-lg">
         <div className="flex justify-between items-center ">
           <h1 className="text-lg font-semibold">{t("user_info")}</h1>
-          {/* <button className={`text-blue-700`}>{t("view_profile")}</button> */}
+          {/* <button className={`text-red-700`}>{t("view_profile")}</button> */}
         </div>
         <div>
           <div className="flex gap-5 mt-5 items-center">
@@ -33,7 +33,9 @@ export default function Orders_Details({ orderId }) {
             </span>
 
             <div>
-              <h1 className="font-semibold">{orderUser.firstName + " "+ orderUser.lastName}</h1>
+              <h1 className="font-semibold">
+                {orderUser.firstName + " " + orderUser.lastName}
+              </h1>
               {/* <h2 className="text-sm text-gray-500">B.D birthDate</h2> */}
             </div>
           </div>

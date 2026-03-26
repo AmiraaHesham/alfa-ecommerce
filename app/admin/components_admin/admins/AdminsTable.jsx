@@ -156,7 +156,7 @@ export default function AdminsTable() {
                   return (
                     <tr
                       key={index}
-                      className=" text-blue-950 border hover:bg-gray-50 cursor-pointer"
+                      className=" text-red-950 border hover:bg-gray-50 cursor-pointer"
                     >
                       <td>
                         <div className="flex items-center gap-4   rounded-full   px-5 py-1 font-semibold  ">

@@ -139,7 +139,7 @@ export default function OrderOrders() {
                   return (
                     <tr
                       key={index}
-                      className=" text-blue-950 border w-full hover:bg-gray-50 cursor-pointer"
+                      className=" text-red-950 border w-full hover:bg-gray-50 cursor-pointer"
                       onClick={() =>
                         navigate.push(
                           `/admin/pages/orders_page/OrderDetailsPage/${order.orderId}`
@@ -177,7 +177,7 @@ export default function OrderOrders() {
                       <td
                         className={`text-xs font-semibold ${
                           order.state === "PROCESSING"
-                            ? "text-blue-500"
+                            ? "text-red-500"
                             : "text-red-500"
                         }`}
                       >

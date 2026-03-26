@@ -53,7 +53,7 @@ export default function OrdersItems({ orderId }) {
           <tbody className="bg-white text-md w-full ">
             {orderItems.map((item, index) => {
               return (
-                <tr key={index} className=" text-blue-950 border-b w-full">
+                <tr key={index} className=" text-red-950 border-b w-full">
                   <td></td>
                   <td>
                     <div className="flex items-center gap-3">
