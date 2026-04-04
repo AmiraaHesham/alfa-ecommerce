@@ -101,7 +101,10 @@ export default function ProductsTable() {
   };
   const deleteProduct = async (product) => {
     try {
-      await deleteRequest(`/api/admin/items/${product.itemId}`);
+      await deleteRequest(
+        `/api/admin/items/${product.itemId}`,
+        t("message_DeleteText")
+      );
       getAllProducts();
     } catch (error) {
       console.log(error);

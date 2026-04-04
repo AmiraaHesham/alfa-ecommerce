@@ -64,7 +64,7 @@ export default function Footer() {
             rel="noopener noreferrer"
           >
             <span
-              className={`w-8 h-8 text-red-700 ${
+              className={`w-8 h-8 text-blue-600 ${
                 contact.facebook === "" ? "hidden" : "block"
               }`}
             >
@@ -80,7 +80,7 @@ export default function Footer() {
             <FaSquareWhatsapp className="w-full h-full" />
           </span>
           <span
-            className={` w-8 h-8  text-red-600 ${
+            className={` w-8 h-8  text-blue-600 ${
               contact.telegram === "" ? "hidden" : "block"
             }`}
           >

@@ -4,14 +4,14 @@ import { createContext, useContext, useState, useEffect } from 'react';
 
 const LanguageContext = createContext({
   locale: '',
-  setLocale: () => {},
+  setLocale: () => { },
   t: (key) => key,
 });
 
 export const LanguageProvider = ({ children }) => {
-  const [locale, setLocale] = useState(typeof window !== 'undefined'?localStorage.lang!='undefined'?localStorage.lang:'ar':null );
+  const [locale, setLocale] = useState(typeof window !== 'undefined' ? localStorage.lang = 'ar' : null);
   const [messages, setMessages] = useState({});
-  
+
   useEffect(() => {
     fetch(`/locales/${locale}.json`)
       .then((res) => res.json())

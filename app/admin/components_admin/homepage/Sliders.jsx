@@ -40,7 +40,11 @@ export default function Sliders() {
     const file = e.target.files[0];
     const formData = new FormData();
     formData.append("imageFile", file);
-    await postRequest("/api/admin/sliderImages", formData, t("message_add"));
+    await postRequest(
+      "/api/admin/sliderImages",
+      formData,
+      t("message_AddText")
+    );
     getSliderImages();
   };
 
@@ -48,7 +52,7 @@ export default function Sliders() {
     try {
       const res = await deleteRequest(
         `/api/admin/sliderImages/${deletedSliderImageId}`,
-        t("message")
+        t("message_DeleteText")
       );
       getSliderImages();
     } catch (error) {

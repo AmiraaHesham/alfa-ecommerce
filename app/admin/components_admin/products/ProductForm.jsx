@@ -25,13 +25,13 @@ export default function FormProduct() {
   const [enabledActive, setenabledActive] = useState(true);
   const [enabledFavorite, setenabledFavorite] = useState(false);
   const { triggerRefresh } = useRefresh();
-  const { selectedProductId } = useIdContext();
+  const { selectedProductId, setSelectedProductId } = useIdContext();
 
   const [product, setProduct] = useState({
     nameEn: "",
     nameAr: "",
     price: 0,
-    oldPrice: "",
+    oldPrice: 0,
     descriptionEn: "",
     descriptionAr: "",
     category: {
@@ -81,18 +81,21 @@ export default function FormProduct() {
   const showeCategories = async () => {
     const resData = await getCategories();
     setItemCategory(resData.data);
-    console.log(resData);
   };
 
-  const images = () => {
-    console.log(product.img2file);
-    console.log(product.img3file);
-    console.log(product.mainImagefile);
-  };
+  // const images = () => {
+  //   console.log(product.img2file);
+  //   console.log(product.img3file);
+  //   console.log(product.mainImagefile);
+  // };
 
   const addProduct = async () => {
     // let form = document.querySelector("#add-product-form");
     // form.classList.add("hidden");
+    if (!product.mainImagefile) {
+      console.warn("Missing required fields");
+      return;
+    }
     const formData = new FormData();
     formData.append("nameEn", product.nameEn);
     formData.append("nameAr", product.nameAr);
@@ -104,31 +107,37 @@ export default function FormProduct() {
     formData.append("favorite", enabledFavorite);
     formData.append("active", enabledActive);
     formData.append("itemCategoryId", product.category.id);
-    formData.append("mainImage", product.mainImagefile);
-    formData.append("itemImages", product.img2file);
-    formData.append("itemImages", product.img3file);
+    if (product.mainImagefile) {
+      formData.append("mainImage", product.mainImagefile);
+    }
+    // formData.append("itemImages", product.img2file);
+    // formData.append("itemImages", product.img3file);
     // console.log(formData);
-
-    await postRequest("/api/admin/items", formData, t("message_AddText"));
-    triggerRefresh();
-    selectedProductId === null;
-
-    // setProduct({
-    //   nameEn: "",
-    //   nameAr: "",
-    //   price: 0,
-    //   oldPrice: 0,
-    //   descriptionAr: "",
-    //   descriptionEn: "",
-    //   category: { id: 0, nameAr: "", nameEn: "" },
-    //   code: "",
-    //   mainImage: "",
-    //   img2: "",
-    //   img3: "",
-    // });
-    // setProduct((prev) => ({ ...prev, enabledActive: false }));
-    // setProduct((prev) => ({ ...prev, enabledActive: true }));
+    try {
+      await postRequest("/api/admin/items", formData, t("message_AddText"));
+      triggerRefresh();
+      setSelectedProductId(null);
+    } catch (err) {
+      console.error("Error adding product:", err);
+      // handleApiError(err); // دالة مقترحة لعرض الخطأ
+    }
   };
+  // setProduct({
+  //   nameEn: "",
+  //   nameAr: "",
+  //   price: 0,
+  //   oldPrice: 0,
+  //   descriptionAr: "",
+  //   descriptionEn: "",
+  //   category: { id: 0, nameAr: "", nameEn: "" },
+  //   code: "",
+  //   mainImage: "",
+  //   img2: "",
+  //   img3: "",
+  // });
+  // setProduct((prev) => ({ ...prev, enabledActive: false }));
+  // setProduct((prev) => ({ ...prev, enabledActive: true }));
+
   const productData = useCallback(async () => {
     if (selectedProductId != null) {
       const deleteImg = document.querySelector("#delete-mainImage");
@@ -174,7 +183,7 @@ export default function FormProduct() {
         mainImage: "",
         img2: "",
         img3: "",
-        category: { id: 0, nameAr: "", nameEn: "" },
+        category: { id: "", nameAr: "", nameEn: "" },
       }));
       const labelUpload = document.querySelector(`#label-mainImage`);
       labelUpload.classList.remove("hidden");
@@ -409,8 +418,7 @@ export default function FormProduct() {
                   setProduct((prev) => ({ ...prev, nameEn: e.target.value }))
                 }
                 required
-                onClick={images}
-                className="w-full bg-[#F9FAFB] outline-none text-red-900 text-base  my-1  p-1 border rounded-md"
+                className="w-full bg-[#F9FAFB] outline-none  text-base  my-1  p-1 border rounded-md"
               />
             </div>
             <div>
@@ -424,7 +432,7 @@ export default function FormProduct() {
                   setProduct((prev) => ({ ...prev, nameAr: e.target.value }))
                 }
                 required
-                className="w-full bg-[#F9FAFB] outline-none text-red-900 text-base my-1  p-1 border rounded-md"
+                className="w-full bg-[#F9FAFB] outline-none  text-base my-1  p-1 border rounded-md"
               />
             </div>
           </div>
@@ -441,7 +449,7 @@ export default function FormProduct() {
                   setProduct((prev) => ({ ...prev, code: e.target.value }))
                 }
                 required
-                className="w-full bg-[#F9FAFB] outline-none text-red-900 text-base  my-1  p-1 border rounded-md"
+                className="w-full bg-[#F9FAFB] outline-none  text-base  my-1  p-1 border rounded-md"
               />
             </div>
             <div className="w-full ">
@@ -460,7 +468,7 @@ export default function FormProduct() {
                   console.log(e.target);
                 }}
                 required
-                className="w-full bg-[#F9FAFB] outline-none text-red-900 text-base my-2 p-1 border rounded-md"
+                className="w-full bg-[#F9FAFB] outline-none  text-base my-2 p-1 border rounded-md"
               >
                 <option value={product.category.id}>
                   {localStorage.lang === "ar"
@@ -491,7 +499,7 @@ export default function FormProduct() {
                   setProduct((prev) => ({ ...prev, price: e.target.value }))
                 }
                 required
-                className=" bg-[#F9FAFB] w-full outline-none text-red-900 text-base  my-1  p-1 border rounded-md"
+                className=" bg-[#F9FAFB] w-full outline-none  text-base  my-1  p-1 border rounded-md"
               />
             </div>
             <div className="w-full">
@@ -502,7 +510,7 @@ export default function FormProduct() {
                   setProduct((prev) => ({ ...prev, oldPrice: e.target.value }))
                 }
                 id="oldPrice"
-                className=" bg-[#F9FAFB] w-full outline-none text-red-900 text-base  my-1  p-1 border rounded-md"
+                className=" bg-[#F9FAFB] w-full outline-none  text-base  my-1  p-1 border rounded-md"
               />
             </div>
           </div>
@@ -553,7 +561,7 @@ export default function FormProduct() {
             onChange={(e) =>
               setProduct((prev) => ({ ...prev, descriptionEn: e.target.value }))
             }
-            className="w-full bg-[#F9FAFB] outline-none mb-2 text-red-900 text-base  my-1  p-1 
+            className="w-full bg-[#F9FAFB] outline-none mb-2 text-base  my-1  p-1 
             border rounded-md"
           />
           <label className="text-xs text-gray-700">
@@ -567,7 +575,7 @@ export default function FormProduct() {
             onChange={(e) =>
               setProduct((prev) => ({ ...prev, descriptionAr: e.target.value }))
             }
-            className="w-full bg-[#F9FAFB] outline-none mb-2 text-red-900 text-base  my-1  p-1 
+            className="w-full bg-[#F9FAFB] outline-none mb-2  text-base  my-1  p-1 
             border rounded-md"
           />
           <hr className="h-1"></hr>
@@ -599,6 +607,7 @@ export default function FormProduct() {
               onClick={() => {
                 let form = document.querySelector("#add-product-form");
                 form.classList.add("hidden");
+                setSelectedProductId(null);
               }}
             >
               {t("cancel")}

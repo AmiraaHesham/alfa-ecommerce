@@ -51,9 +51,9 @@ export default function Header() {
   return (
     <header>
       <div className="w-full h-[60px] lg:px-10 xs:px-0 flex items-center border-b  justify-between bg-red-700">
-        <Link href="/">
+        <Link href="/user/home">
           <div className="flex  items-center  ">
-            <span className=" w-12 h-12 ">
+            <span className="w-12 h-12 ">
               <Image
                 src="/Images/logo.png"
                 alt="logo"
@@ -73,7 +73,7 @@ export default function Header() {
         <div
           ref={divRef}
           className={`md:flex xs:hidden items-center bg-white justify-start border w-[50%] bg-none h-10  rounded-md 
- ${isFocused ? "border-[3px] border-red-400 " : ""}`}
+        ${isFocused ? "border-[3px] border-red-400 " : ""}`}
           onClick={() => setIsFocused(true)}
           tabIndex={0}
         >
