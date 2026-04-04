@@ -15,7 +15,6 @@ import { useNamePageInAdminContext } from "../../../../context/namePageInAdmin.j
 export default function UserOrders({ userId }) {
   const { t } = useLanguage();
   const navigate = useRouter();
-  const [inputSearch, setInputSearch] = useState(null);
   const [state, setState] = useState("");
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -49,7 +48,7 @@ export default function UserOrders({ userId }) {
 
   useEffect(() => {
     getAllOrders();
-  }, [state, inputSearch]);
+  }, [state]);
   return (
     <div>
       <div className="w-full  bg-white mt-3 rounded-lg border flex md:flex-row xs:flex-col gap-5  items-start  p-4 ">
@@ -95,7 +94,7 @@ export default function UserOrders({ userId }) {
         </div>
       </div>
       <div className=" rounded-xl w-full  h-[500px] mt-5  border  overflow-hidden overflow-x-scroll overflow-y-scroll ">
-        <table className="  xs:w-[200%] lg:w-full   ">
+        <table className="  xs:w-[200%] xl:w-full   ">
           <thead className="bg-[#F9FAFB] text-xs text-gray-500  text-justify">
             <tr className=" text-gray-500 h-12">
               {/* <th className="w-[2%] "></th> */}

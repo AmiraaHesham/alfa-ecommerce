@@ -170,5 +170,7 @@
   "priceHighToLow": "Price: High to Low",
   "no_data": "No products found",
   "hello": "Hello",
-  "edit_category": "Edit Category"
+  "edit_category": "Edit Category",
+  "processing_orders": "Processing Orders",
+  "shipped_orders": "Shipped Orders"
 }

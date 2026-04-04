@@ -32,6 +32,13 @@ export default function UserInfo({ userId }) {
     address: "",
     birthDate: "",
   });
+  const [orderState, setOrderState] = useState({
+    PROCESSING: 0,
+    PENDING: 0,
+    DELIVERED: 0,
+    SHIPPED: 0,
+    totalOrders: 0,
+  });
 
   const getUserInfo = async () => {
     const res = await getRequest(`/api/users/${userId}`);
@@ -47,6 +54,19 @@ export default function UserInfo({ userId }) {
       address: res.address,
       birthDate: res.birthDate,
     }));
+    setOrderState((prev) => ({
+      ...prev,
+      PROCESSING: res.ordersState[0].count,
+      PENDING: res.ordersState[3].count,
+      DELIVERED: res.ordersState[1].count,
+      SHIPPED: res.ordersState[2].count,
+      totalOrders:
+        res.ordersState[0].count +
+        res.ordersState[1].count +
+        res.ordersState[2].count +
+        res.ordersState[3].count,
+    }));
+    console.log(res);
   };
 
   const addBlock = async () => {
@@ -102,7 +122,7 @@ export default function UserInfo({ userId }) {
               <div
                 className={`${
                   userInfo.blocked === false
-                    ? "text-gray-600 bg-gray-100  hover:bg-red-100"
+                    ? "text-gray-600 bg-gray-100  hover:bg-red-100 hover:text-red-600"
                     : "text-red-600 bg-red-50  hover:bg-gray-100"
                 }  flex px-3 gap-2 rounded-2xl items-center justify-center`}
               >
@@ -137,7 +157,7 @@ export default function UserInfo({ userId }) {
           </div>
         </div>
       </div>
-      <div className="grid md:grid-cols-3 xs:grid-cols-2 gap-7 mt-3">
+      <div className="grid xl:grid-cols-5 md:grid-cols-3 xs:grid-cols-2 gap-7 mt-3">
         <div className="bg-white border flex flex-col gap-5 rounded-lg p-5">
           <div className="flex items-center  gap-2">
             <span className="text-lg text-red-600 bg-red-100 p-1 rounded-md"></span>
@@ -146,10 +166,44 @@ export default function UserInfo({ userId }) {
             </h1>
           </div>
           <h1 className="text-xl font-bold text-gray-700 bg-gray-100  w-[100px] rounded-xl px-2">
-            3,456
+            {orderState.totalOrders}
           </h1>
         </div>
 
+        <div className="bg-white border flex flex-col gap-5 rounded-lg p-5">
+          <div className="flex items-center  gap-2">
+            <span className="text-lg text-red-600 bg-red-100 p-1 rounded-md"></span>
+            <h1 className="text-base text-gray-500 font-semibold">
+              {t("pending_orders")}
+            </h1>
+          </div>
+          <h1 className="text-xl font-bold text-red-700 bg-red-100  w-[100px] rounded-xl px-2">
+            {orderState.PENDING}
+          </h1>
+        </div>
+        <div className="bg-white border flex flex-col gap-5 rounded-lg p-5">
+          <div className="flex items-center  gap-2">
+            <span className="text-lg text-red-600 bg-red-100 p-1 rounded-md"></span>
+            <h1 className="text-base text-gray-500 font-semibold">
+              {t("processing_orders")}
+            </h1>
+          </div>
+          <h1 className="text-xl font-bold text-blue-700 bg-blue-100  w-[100px] rounded-xl px-2">
+            {orderState.PROCESSING}
+          </h1>
+        </div>
+
+        <div className="bg-white border flex flex-col gap-5 rounded-lg p-5">
+          <div className="flex items-center  gap-2">
+            <span className="text-lg text-red-600 bg-red-100 p-1 rounded-md"></span>
+            <h1 className="text-base text-gray-500 font-semibold">
+              {t("shipped_orders")}
+            </h1>
+          </div>
+          <h1 className="text-xl font-bold text-yellow-700 bg-yellow-100  w-[100px] rounded-xl px-2">
+            {orderState.SHIPPED}
+          </h1>
+        </div>
         <div className="bg-white border flex flex-col gap-5 rounded-lg p-5">
           <div className="flex items-center  gap-2">
             <span className="text-lg text-red-600 bg-red-100 p-1 rounded-md"></span>
@@ -158,23 +212,12 @@ export default function UserInfo({ userId }) {
             </h1>
           </div>
           <h1 className="text-xl font-bold text-green-700 bg-green-100  w-[100px] rounded-xl px-2">
-            3,456
-          </h1>
-        </div>
-        <div className="bg-white border flex flex-col gap-5 rounded-lg p-5">
-          <div className="flex items-center  gap-2">
-            <span className="text-lg text-red-600 bg-red-100 p-1 rounded-md"></span>
-            <h1 className="text-base text-gray-500 font-semibold">
-              {t("canceled_orders")}
-            </h1>
-          </div>
-          <h1 className="text-xl font-bold text-red-700 bg-red-100  w-[100px] rounded-xl px-2">
-            3,456
+            {orderState.DELIVERED}
           </h1>
         </div>
       </div>
 
-      <div className="flex md:flex-row xs:flex-col items-start bg-[#F9FAFB] justify-between my-7  gap-5">
+      <div className="flex xl:flex-row xs:flex-col items-start bg-[#F9FAFB] justify-between my-7  gap-5">
         <div className="md:order-1 w-full   xs:order-2">
           <UserOrders userId={userId} />
         </div>

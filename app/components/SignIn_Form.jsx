@@ -184,7 +184,7 @@ export default function SignIn() {
                 />
               </span>
             </div>
-            <button
+            <span
               className="text-red-500 text-sm flex justify-start items-start "
               onClick={() => {
                 const welcome_section =
@@ -201,7 +201,7 @@ export default function SignIn() {
               }}
             >
               {t("forgotPassword")}
-            </button>
+            </span>
             <hr className="h-1"></hr>
             <button
               type="submit"
