@@ -26,6 +26,7 @@ export default function FormProduct() {
   const [enabledFavorite, setenabledFavorite] = useState(false);
   const { triggerRefresh } = useRefresh();
   const { selectedProductId, setSelectedProductId } = useIdContext();
+  const [loading, setLoading] = useState(false);
 
   const [product, setProduct] = useState({
     nameEn: "",
@@ -92,10 +93,7 @@ export default function FormProduct() {
   const addProduct = async () => {
     // let form = document.querySelector("#add-product-form");
     // form.classList.add("hidden");
-    if (!product.mainImagefile) {
-      console.warn("Missing required fields");
-      return;
-    }
+
     const formData = new FormData();
     formData.append("nameEn", product.nameEn);
     formData.append("nameAr", product.nameAr);
@@ -107,19 +105,19 @@ export default function FormProduct() {
     formData.append("favorite", enabledFavorite);
     formData.append("active", enabledActive);
     formData.append("itemCategoryId", product.category.id);
-    if (product.mainImagefile) {
-      formData.append("mainImage", product.mainImagefile);
-    }
-    // formData.append("itemImages", product.img2file);
-    // formData.append("itemImages", product.img3file);
+    if (product.mainImagefile) formData.append("mainImage", product.mainImagefile);
+    if (product.img2file) formData.append("itemImages", product.img2file);
+    if (product.img3file) formData.append("itemImages", product.img3file);
     // console.log(formData);
+    setLoading(true);
     try {
       await postRequest("/api/admin/items", formData, t("message_AddText"));
       triggerRefresh();
       setSelectedProductId(null);
     } catch (err) {
       console.error("Error adding product:", err);
-      // handleApiError(err); // دالة مقترحة لعرض الخطأ
+    } finally {
+      setLoading(false);
     }
   };
   // setProduct({
@@ -138,8 +136,9 @@ export default function FormProduct() {
   // setProduct((prev) => ({ ...prev, enabledActive: false }));
   // setProduct((prev) => ({ ...prev, enabledActive: true }));
 
-  const productData = useCallback(async () => {
-    if (selectedProductId != null) {
+  const productData = async () => {
+    try{
+      if (selectedProductId != null) {
       const deleteImg = document.querySelector("#delete-mainImage");
       deleteImg.classList.remove("hidden");
       const labelImg = document.querySelector("#mainImage");
@@ -196,10 +195,19 @@ export default function FormProduct() {
       setenabledFavorite(false);
       setenabledActive(true);
     }
-  }, [selectedProductId]);
+    }
+    catch(error){
+console.log(error)
+    }finally {
+      setLoading(false);
+    }
+    
+  }
+ 
 
   const updataProduct = async () => {
-    if (product.oldPrice > product.price || product.oldPrice === "") {
+try{
+   if (product.oldPrice > product.price || product.oldPrice ) {
       let form = document.querySelector("#add-product-form");
       form.classList.add("hidden");
       const formData = new FormData();
@@ -212,16 +220,15 @@ export default function FormProduct() {
       formData.append("descriptionEn", product.descriptionEn);
       formData.append("active", enabledActive);
       formData.append("favorite", enabledFavorite);
-      if (product.mainImagefile) {
+      if (product.mainImagefile)
         formData.append("mainImage", product.mainImagefile);
-      }
-      formData.append("itemImages", product.img2file);
-      formData.append("itemImages", product.img3file);
+      if (product.img2file) formData.append("itemImages", product.img2file);
+      if (product.img3file) formData.append("itemImages", product.img3file);
       formData.append("itemCategoryId", product.category.id);
       await putRequest(
         `/api/admin/items/${selectedProductId}`,
         formData,
-        t("message_EditText")
+        t("message_EditText"),
       );
       triggerRefresh();
       selectedProductId === null;
@@ -233,11 +240,18 @@ export default function FormProduct() {
       oldPrice.classList.add("border-red-600");
       toast.error(t("check_oldPrice"));
     }
+}catch(error){
+  console.log(error)
+}finally{
+        setLoading(false);
+
+}
+   
   };
   useEffect(() => {
     showeCategories();
     productData();
-  }, [productData]);
+  }, []);
   const { t } = useLanguage();
 
   return (
@@ -245,6 +259,17 @@ export default function FormProduct() {
       id="add-product-form"
       className=" absolute w-full hidden justify-end items-end h-full"
     >
+      {loading && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <Image
+            src="/Images/logo.png"
+            alt=""
+            className="w-[100px] h-[100px]  border-t-transparent rounded-full animate-pulse"
+            width={100}
+            height={100}
+          />
+        </div>
+      )}
       <form
         className=" bg-white shadow-md shadow-slate-400 rounded-lg w-[550px] px-7 pb-10 border overflow-hidden xs:overflow-y-scroll md:over h-full"
         onSubmit={(e) => {

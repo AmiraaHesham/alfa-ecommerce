@@ -36,10 +36,12 @@ export default function Header({ page_title }) {
       setSelectedNamePage("contact_management");
       break;
   }
+const userId = typeof window !== "undefined" ? localStorage.getItem("id") : "";
 
-  // const language =()=>{
-  //   await postRequest(`/api/users/${userId}/langauge/${language}`)
-  // }
+  const changeLanguage =async()=>{
+    await postRequest(`/api/users/${userId}/langauge/${locale}`)
+    localStorage.lang = locale
+  }
   const lang =
     typeof window !== "undefined" ? localStorage.getItem("lang") : "";
   useEffect(() => {
@@ -62,7 +64,7 @@ export default function Header({ page_title }) {
 
   return (
     <header className="md:h-[70px] xs:h-[50px] flex justify-between items-center px-5 font-semibold w-full bg-white  border-b-[1px]">
-      <h1 id="page-title" className="md:text-2xl xs:text-lg text-red-950 ">
+      <h1 id="page-title" className="md:text-2xl xs:text-lg ">
         {t(selectedNamePage)}
       </h1>
       <div className="gap-2 flex xs:text-[10px] md:text-sm ">
@@ -71,6 +73,7 @@ export default function Header({ page_title }) {
           className=" p-2 rounded-md text-white"
           onClick={() => {
             setLocale("en");
+            changeLanguage()
           }}
         >
           English
@@ -80,6 +83,7 @@ export default function Header({ page_title }) {
           className=" p-2 rounded-md text-white "
           onClick={() => {
             setLocale("ar");
+            changeLanguage()
           }}
         >
           العربية

@@ -172,5 +172,7 @@
   "hello": "Hello",
   "edit_category": "Edit Category",
   "processing_orders": "Processing Orders",
-  "shipped_orders": "Shipped Orders"
+  "shipped_orders": "Shipped Orders",
+  "redirect_home_message":"You will be redirected to the home page in",
+  "account_activated_successfully":"Your account has been successfully activated!"
 }

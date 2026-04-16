@@ -17,7 +17,6 @@ import LivePreview from "../../components_admin/homepage/LivePreview.jsx";
 
 import {
   deleteRequest,
-  getRequest,
   postRequest,
 } from "../../../../utils/requestsUtils.js";
 import {

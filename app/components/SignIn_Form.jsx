@@ -83,6 +83,17 @@ export default function SignIn() {
 
   return (
     <div className="h-full w-full p-10  md:order-1 xs:order-2">
+      {loading && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <Image
+            src="/Images/logo.png"
+            alt=""
+            className="w-[100px] h-[100px]  border-t-transparent rounded-full animate-pulse"
+            width={100}
+            height={100}
+          />
+        </div>
+      )}
       <div className="flex justify-between">
         <div id="welcome_section" className="">
           <h3 className="text-3xl my-3 font-semibold font-serif">

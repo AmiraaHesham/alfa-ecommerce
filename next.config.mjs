@@ -2,7 +2,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['209.50.228.90'],
+    domains: ['192.168.1.33'],
   },
   experimental: {
     swcMinify: true,

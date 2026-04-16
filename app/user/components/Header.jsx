@@ -142,7 +142,7 @@ export default function Header() {
                   <FaRegCircleUser className="w-full h-full" />
                 </span>
                 <span className="md:text-sm xs:text-xs font-semibold text-center ">
-                  {username === "" ? t("login") : t("hello") + ", " + username}
+                  {username ? t("hello") + ", " + username : t("login")}
                 </span>
               </div>
             </Link>

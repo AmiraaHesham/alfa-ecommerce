@@ -33,7 +33,7 @@ export default function FeaturedProducts() {
   };
   useEffect(() => {
     getFeatuersProducts();
-  }, [refreshKey]);
+  }, []);
   return (
     <div className="w-full h-auto relative bg-[#F9FAFB]  ">
       <ProductForm />

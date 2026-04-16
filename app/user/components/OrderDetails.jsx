@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import { MdDelete } from "react-icons/md";
-import { getRequest } from "../../../utils/requestsUtils";
+import { getRequest, postRequest } from "../../../utils/requestsUtils";
 import { useEffect, useState } from "react";
 import { useLanguage } from "../../../context/LanguageContext";
 import { useIdContext } from "../../../context/idContext";
@@ -15,6 +15,8 @@ export default function OrderDetails({ orderId }) {
   const [itemsNum, setItemsNum] = useState();
   const [createdDate, setCreatedDate] = useState();
   const [state, setState] = useState();
+  const [netTotalOrder, setNetTotalOrder] = useState();
+
   const { setSelectedProductId } = useIdContext();
   const navigate = useRouter();
   const { t } = useLanguage();
@@ -37,10 +39,18 @@ export default function OrderDetails({ orderId }) {
     setTotalOrder(res.total);
     setItemsNum(res.orderItemLines.length);
     setState(res.state);
+    setNetTotalOrder(res.netTotal);
     setCreatedDate(res.createdDate);
     setTotalDiscount(res.totalDiscount);
   };
-
+ const orderCancel = async () => {
+    try {
+      if (state === "PENDING")
+        await postRequest(`/api/user/orders/${orderId}/cancel`);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   useEffect(() => {
     getOrder();
   }, []);
@@ -140,7 +150,7 @@ export default function OrderDetails({ orderId }) {
                     onClick={() => {
                       setSelectedProductId(product.item.itemId);
                       navigate.push(
-                        `/user/pages/productdetails/${product.item.itemId}`
+                        `/user/pages/productdetails/${product.item.itemId}`,
                       );
                     }}
                   >
@@ -248,12 +258,20 @@ export default function OrderDetails({ orderId }) {
             <hr className="my-6" />
             <div className="flex justify-between orderss-center text-2xl font-semibold">
               <span>{t("grandTotal")} </span>
-              <span className="text-red-500">
-                {totalOrder === 0
-                  ? 0
-                  : totalOrder + shappingCost + " " + t("currency")}
+              <span className="text-blue-500">
+                {netTotalOrder === 0 ? 0 : netTotalOrder + " " + t("currency")}
               </span>
             </div>
+            <button
+              className={`w-full h-7  mt-5 rounded-md text-white ${
+                state === "PENDING"
+                  ? "bg-red-500 hover:bg-red-600"
+                  : "bg-gray-500 cursor-not-allowed"
+              }`}
+              onClick={orderCancel}
+            >
+              {t("order_cancel")}
+            </button>
           </div>
         </div>
       </div>
