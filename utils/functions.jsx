@@ -13,7 +13,7 @@ export const getCategories = async () => {
 };
 export const getSliderImage = async () => {
   const response = await getRequest("/api/public/sliderImages");
-  return await response;
+  return await response.data;
 };
 export const getFeatuerProducts = async () => {
   const response = await postRequest(
@@ -40,19 +40,4 @@ export const getThumbnailUrl = (imageUrl) => {
   const fileName = imageUrl.substring(lastSlashIndex + 1);
   return `${path}thumb_${fileName}`;
 };
-//  export const getAllUsers = async () => {
-//       try {
-//         // console.log(searchInputRef.current.value);
-//         const response = await postRequest("/api/users/search", {
-//           page: 0,
-//           size: 10,
-//           searchText: searchInput.current.value,
-//         });
-//         const resUsers = response.data || [];
-//         setUsers(resUsers);
-//         // pagination()
-//         //       console.log("Categories after set:", resProducts);
-//       } catch (error) {
-//         console.log(error);
-//       }
-//     };
+

@@ -21,12 +21,12 @@ import Image from "next/image";
 // });
 
 export default function RootLayout({ children }) {
-   const lang = typeof window !== 'undefined'? localStorage.getItem("lang"):'';
+   const lang = typeof window !== 'undefined'? localStorage.getItem("lang"):'ar';
 
    
 
   return (
-    <html lang={lang} dir={lang == "ar"? "rtl" : "ltr"} >
+    <html lang={lang} dir={lang === "ar" ? "rtl" : "ltr"} >
       <body >
         
         <ToastContainer

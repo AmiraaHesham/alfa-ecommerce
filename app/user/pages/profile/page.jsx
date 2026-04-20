@@ -1,5 +1,4 @@
 import Profile from "../../components/Profile"
-import AOS from "aos";
 import "aos/dist/aos.css";
 import ResetPasswordForm from '../../components/ResetPasswordForm'
 export default function ProfilePage() {  

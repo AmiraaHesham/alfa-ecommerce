@@ -5,7 +5,6 @@ import { FaRegCalendar } from "react-icons/fa";
 import { IoMdSearch } from "react-icons/io";
 import { VscCircleFilled } from "react-icons/vsc";
 import { postRequest } from "../../../utils/requestsUtils";
-import AOS from "aos";
 import "aos/dist/aos.css";
 import { useLanguage } from "../../../context/LanguageContext";
 import { useRouter } from "next/navigation";
@@ -19,10 +18,7 @@ export default function OrdersHistory() {
   const navigate = useRouter();
   const { setSelectedProductId } = useIdContext();
   useEffect(() => {
-    AOS.init({
-      duration: 1000,
-      once: false,
-    });
+  
     getOrders();
   }, [state, inputSearch]);
   const getOrders = async () => {
@@ -50,14 +46,11 @@ export default function OrdersHistory() {
   };
 
   useEffect(() => {
-    AOS.init({
-      duration: 1000,
-      once: false,
-    });
+  
     getOrders();
   }, [state, inputSearch]);
   return (
-    <div data-aos="fade-up">
+    <div >
       <div className="md:flex xs:block justify-between  items-center  mb-16">
         <div className="flex flex-col gap-2">
           <span className="text-3xl font-bold">{t("orderHistory")} </span>
@@ -200,11 +193,13 @@ export default function OrdersHistory() {
                     <span
                       className={`flex items-center ${
                         order.state === "PROCESSING"
-                          ? "text-red-600"
+                          ? "text-blue-600"
                           : order.state === "PENDING"
-                          ? " text-red-600"
+                          ? " text-orange-400"
                           : order.state === "SHIPPED"
-                          ? "text-yellow-600"
+                          ? "text-yellow-600":
+                          order.state === "CANCELLED"
+                          ? "text-red-600"
                           : "text-green-600"
                       } `}
                     >
@@ -245,7 +240,7 @@ export default function OrdersHistory() {
                           />
                           <div className="flex flex-col text-sm ">
                             <span className="">
-                              {localStorage.lang == "ar"
+                              {localStorage.lang === "ar"
                                 ? itemLine.item.nameAr
                                 : itemLine.item.nameEn}
                             </span>

@@ -1,18 +1,18 @@
-import SideMenu from "../../components_admin/SideMenu";
-import Header from "../../components_admin/Header";
+"use client";
 import FormProduct from "../../components_admin/products/ProductForm";
 import ProductsTable from "../../components_admin/products/ProductsTable";
-import Image from "next/image";
+import { useState } from "react";
 
 export default function Products() {
   // const role =
   //   typeof window !== "undefined" ? localStorage.getItem("role") : null;
   // if(role === "ADMIN"){
+  const [isFormOpen, setIsFormOpen] = useState(false);
   return (
     <div className=" p-5 bg-[#F9FAFB]">
       <div className="  relative ">
-        <FormProduct />
-        <ProductsTable />
+        <FormProduct isFormOpen={isFormOpen} setIsFormOpen={setIsFormOpen} />
+        <ProductsTable setIsFormOpen={setIsFormOpen} />
       </div>
     </div>
   );

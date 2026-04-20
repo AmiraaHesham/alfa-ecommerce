@@ -27,7 +27,7 @@ export default function Searchpage() {
           page: 0,
           size: 10,
           searchText: selectedSearchInput,
-          categoryId: selectedCategoryId,
+          categoryId: selectedSearchInput ? null : selectedCategoryId,
           sortBy: sortBy || null,
           ascending: ascending || true,
         },
@@ -55,9 +55,9 @@ export default function Searchpage() {
   return (
     <div className=" ">
       <div className="flex items-start justify-end gap-5 ">
-        <CategoriesSideManu />
+       {selectedSearchInput ? '':   <CategoriesSideManu />}
 
-        <div className="md:w-[80%] xs:w-full p-5  ">
+        <div className={` xs:w-full p-5  ${selectedSearchInput ? "w-full" : "md:w-[80%]"} `}>
           <div className="flex gap-5 ">
             <span
               className="xs:flex md:hidden p-2 cursor-pointer gap-2 bg-red-600 h-10 text-white rounded-md items-center"

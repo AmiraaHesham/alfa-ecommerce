@@ -9,7 +9,7 @@ export default function Header({ page_title }) {
   const { selectedNamePage, setSelectedNamePage } = useNamePageInAdminContext();
   const { t } = useLanguage();
 
-  switch (selectedNamePage) {
+   switch (selectedNamePage) {
     case "Categories Management":
       setSelectedNamePage("categories_management");
       break;
@@ -36,11 +36,13 @@ export default function Header({ page_title }) {
       setSelectedNamePage("contact_management");
       break;
   }
+
+ 
 const userId = typeof window !== "undefined" ? localStorage.getItem("id") : "";
 
   const changeLanguage =async()=>{
-    await postRequest(`/api/users/${userId}/langauge/${locale}`)
-    localStorage.lang = locale
+    await postRequest(`/api/users/${userId}/langauge/${locale}`,"","")
+
   }
   const lang =
     typeof window !== "undefined" ? localStorage.getItem("lang") : "";

@@ -73,6 +73,7 @@ export default function SignUp() {
             className="w-[100px] h-[100px]  border-t-transparent rounded-full animate-pulse"
             width={100}
             height={100}
+            priority
           />
         </div>
       )}
@@ -119,7 +120,7 @@ export default function SignUp() {
                 <label className="text-gray-500 text-sm ">
                   {t("firstName")}
                 </label>
-                <div className=" flex w-full px-2 rounded-md  border h-10 items-center gap-3">
+                <div className=" flex w-full px-2 rounded-md  border h-10 items-center gap-3 shadow-md">
                   <input
                     className=" w-full px-3 outline-none"
                     value={firstName}
@@ -133,7 +134,7 @@ export default function SignUp() {
               </div>
               <div className="flex flex-col gap-2 w-full ">
                 <label className="text-gray-500 text-sm">{t("lastName")}</label>
-                <div className=" flex w-full px-2 rounded-md  border h-10 items-center gap-3">
+                <div className=" flex w-full px-2 rounded-md  border h-10 items-center gap-3 shadow-md">
                   <input
                     className=" w-full px-3 outline-none"
                     value={lastName}
@@ -148,7 +149,7 @@ export default function SignUp() {
             </div>
             <div className="flex flex-col gap-2">
               <label className="text-gray-500 text-sm">{t("email")}</label>
-              <div className=" flex w-full px-2 rounded-md  border h-10 items-center gap-3">
+              <div className=" flex w-full px-2 rounded-md  border h-10 items-center gap-3  shadow-md">
                 <input
                   className=" w-full px-3 outline-none"
                   value={email}
@@ -164,7 +165,7 @@ export default function SignUp() {
             <div className="flex gap-5">
               <div className="flex flex-col gap-2 w-full">
                 <label className="text-gray-500 text-sm">{t("username")}</label>
-                <div className=" flex w-full px-2 rounded-md  border h-10 items-center gap-3">
+                <div className=" flex w-full px-2 rounded-md  border h-10 items-center gap-3 shadow-md">
                   <input
                     className=" w-full px-3 outline-none"
                     value={username}
@@ -181,7 +182,7 @@ export default function SignUp() {
                   {" "}
                   {t("phoneNumber")}
                 </label>
-                <div className=" flex w-full px-2 rounded-md  border h-10 items-center gap-3">
+                <div className=" flex w-full px-2 rounded-md  border h-10 items-center gap-3 shadow-md">
                   <input
                     className=" w-full px-3 outline-none"
                     value={phoneNumber}
@@ -197,7 +198,7 @@ export default function SignUp() {
             </div>
             <div className="flex flex-col gap-2">
               <label className="text-gray-500 text-sm"> {t("address")} </label>
-              <div className=" flex w-full px-2 rounded-md  border h-10 items-center gap-3">
+              <div className=" flex w-full px-2 rounded-md  border h-10 items-center gap-3 shadow-md">
                 <input
                   className=" w-full px-3 outline-none"
                   value={address}
@@ -213,7 +214,7 @@ export default function SignUp() {
             <div className=" flex items-center gap-5">
               <div className="flex flex-col gap-2 w-full">
                 <label className="text-gray-500 text-sm">{t("password")}</label>
-                <div className=" flex w-full px-2 rounded-md  border h-10 items-center gap-3">
+                <div className=" flex w-full px-2 rounded-md  border h-10 items-center gap-3 shadow-md">
                   <input
                     ref={input_passwordRef}
                     className=" w-full px-3 outline-none"
@@ -257,7 +258,7 @@ export default function SignUp() {
                 <label className="text-gray-500 text-sm">
                   {t("confirmPassword")}
                 </label>
-                <div className=" flex w-full px-2 rounded-md  border h-10 items-center gap-3">
+                <div className=" flex w-full px-2 rounded-md  border h-10 items-center gap-3 shadow-md">
                   <input
                     ref={input_confirmPasswordRef}
                     className=" w-full px-3 outline-none"

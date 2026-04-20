@@ -1,5 +1,5 @@
 // components/ImageSlider.jsx
-
+"use client"
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation } from "swiper/modules";
 import "swiper/css";
@@ -9,23 +9,22 @@ import { AiFillStar } from "react-icons/ai";
 import { IoIosArrowRoundBack, IoIosArrowRoundForward } from "react-icons/io";
 import { useLanguage } from "../../../../context/LanguageContext";
 import ProductCard from "../../components/ProductCard";
+import { useEffect, useState } from "react";
 
 export default function FeatuerProducts({ FeatuerProducts }) {
   const lang =
     typeof window !== "undefined" ? localStorage.getItem("lang") || "ar" : "ar";
   const { t } = useLanguage();
+const [mounted, setMounted] = useState(false);
 
+useEffect(() => {
+  setMounted(true);
+}, []);
+if (!mounted) return null;
   return (
-    <div className="flex flex-col justify-center items-center  relative mt-40">
-      <div className="w-full flex justify-center items-center gap-2 text-center px-10 text-2xl shadow-md shadow-gray-300 font-semibold bg-gray-100  h-12 ">
-        <span className=" text-red-600 rounded-full  p-1">
-          <AiFillStar className="" />
-        </span>
-        <h1 className="flex items-center gap-2 text-gray-600">
-          {t("featured_products")}{" "}
-        </h1>
-      </div>
-      <div className=" w-full mt-28">
+    <div className="flex flex-col justify-center items-center  relative mt-28">
+      
+      <div className=" w-full">
         <Swiper
           key={lang}
           breakpoints={{
@@ -63,7 +62,7 @@ export default function FeatuerProducts({ FeatuerProducts }) {
               </SwiperSlide>
             );
           })}
-          <div className=" flex flex-col justify-center items-center relative my-20 ">
+          <div className=" flex flex-col justify-center items-center relative my-10 ">
             <div className=" p-1 rounded-full absolute flex gap-2 justify-center items-center  ">
               <button className="prev-btn1 p-1 rounded-full border-2 hover:bg-red-600 border-red-600   hover:text-white text-red-600 text-3xl   font-bold">
                 {lang === "ar" ? (

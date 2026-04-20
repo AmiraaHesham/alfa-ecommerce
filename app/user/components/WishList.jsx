@@ -5,7 +5,6 @@ import ProductCard from "./ProductCard";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { useRefresh } from "../../../context/refreshContext";
 import Link from "next/link";
-import AOS from "aos";
 import "aos/dist/aos.css";
 import { useLanguage } from "../../../context/LanguageContext";
 export default function WishList() {
@@ -13,29 +12,24 @@ export default function WishList() {
   const [loading, setLoading] = useState(true);
 
   const { t } = useLanguage();
-  const userId =typeof window !== 'undefined'?  localStorage.id:null;
+  const userId = typeof window !== "undefined" ? localStorage.getItem("id") : null;
+  const lang = typeof window !== "undefined" ? localStorage.getItem("lang") : null;
   const getWishList = async () => {
     try {
       const response = await getRequest(`/api/users/${userId}/favoriteItems`);
-      setProducts(response);
-            setLoading(false)
-
+      setProducts(response.data);
+      setLoading(false);
     } catch (error) {
       console.log(error);
-            setLoading(true)
-
-    } 
+      setLoading(true);
+    }
   };
 
   useEffect(() => {
-    AOS.init({
-      duration: 1000,
-      once: false,
-    });
     getWishList();
   }, []);
   return (
-    <div data-aos="fade-up" className="p-5  ">
+    <div className="p-5  ">
       <div className="flex justify-between py-5">
         <div className="">
           <h1 className="text-4xl font-bold mb-2">{t("wishlist")} </h1>
@@ -49,7 +43,7 @@ export default function WishList() {
         >
           <h1>{t("continueShopping")} </h1>
           <span className="mt-2">
-            {localStorage.lang === "ar" ? <FaArrowLeft /> : <FaArrowRight />}
+            {lang === "ar" ? <FaArrowLeft /> : <FaArrowRight />}
           </span>
         </Link>
       </div>
@@ -62,8 +56,9 @@ export default function WishList() {
             ></div>
           ))}
         </div>
+      ) : products.length === 0 ? (
+        <div className="w-full h-[400px]"></div>
       ) : (
-        products.length === 0 ?<div className="w-full h-[400px]"></div>:
         <div className="grid xl:grid-cols-6 lg:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 gap-5 ">
           {products.map((product, index) => {
             return (

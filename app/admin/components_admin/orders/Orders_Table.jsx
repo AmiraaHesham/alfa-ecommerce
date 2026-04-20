@@ -186,7 +186,9 @@ export default function Orders_Table() {
                             : order.state === "SHIPPED"
                             ? "text-yellow-500"
                             : order.state === "PENDING"
-                            ? "text-red-500"
+                            ? "text-orange-700":
+                              order.state === "CANCELLED" ? 
+                              "text-red-500"
                             : "text-green-500"
                         }`}
                       >

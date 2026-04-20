@@ -6,13 +6,17 @@ import {
   FaInstagramSquare,
   FaTelegram,
   FaTimes,
+  FaYoutube,
 } from "react-icons/fa";
 import { IoMdSave, IoMdShare } from "react-icons/io";
 import { useEffect, useState } from "react";
 import { getRequest, putRequest } from "../../../../utils/requestsUtils";
 import { useLanguage } from "../../../../context/LanguageContext";
+import Image from "next/image";
 
 export default function ContactForm() {
+    const [loading, setLoading] = useState();
+
   const [contactInfo, setContactInfo] = useState({
     phone: "",
     email: "",
@@ -21,11 +25,15 @@ export default function ContactForm() {
     instagram: "",
     x: "",
     telegram: "",
+    youtube:""
   });
   const { t } = useLanguage();
 
   const addContactInfo = async () => {
-    await putRequest(
+    try{
+        setLoading(true);
+
+      const res = await putRequest(
       "/api/admin/contact",
       {
         phone: contactInfo.phone,
@@ -34,24 +42,34 @@ export default function ContactForm() {
         whatsappURL: contactInfo.whatsApp,
         telegramURL: contactInfo.telegram,
         instagramURL: contactInfo.instagram,
-        xURL: contactInfo.x,
+        xurl: contactInfo.x,
+        youtubeURL: contactInfo.youtube
       },
-      t("message_EditText")
+      t("message")
     );
+    console.log(res)
     getcontactInfo();
+    }catch(error){
+      console.log(error)
+    }finally {
+      setLoading(false);
+    }
+   
   };
 
   const getcontactInfo = async () => {
     const res = await getRequest("/api/public/contact");
+    const resData = res.data
     setContactInfo((prev) => ({
       ...prev,
-      phone: res.phone,
-      email: res.email,
-      facebock: res.facebookURL,
-      whatsApp: res.whatsappURL,
-      instagram: res.instagramURL,
-      x: res.xURL,
-      telegram: res.telegramURL,
+      phone: resData.phone,
+      email: resData.email,
+      facebock: resData.facebookURL,
+      whatsApp: resData.whatsappURL,
+      instagram: resData.instagramURL,
+      x: resData.xurl,
+      telegram: resData.telegramURL,
+      youtube: resData.youtubeURL
     }));
   };
   useEffect(() => {
@@ -62,6 +80,18 @@ export default function ContactForm() {
   }, []);
   return (
     <div className="bg-white border rounded-md px-5 h-[100%]">
+       {loading && (
+              <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+                <Image
+                  src="/Images/logo.png"
+                  alt=""
+                  className="w-[100px] h-[100px]  border-t-transparent rounded-full animate-pulse"
+                  width={100}
+                  height={100}
+                  priority
+                />
+              </div>
+            )}
       <form
         className="h-full"
         onSubmit={(e) => {
@@ -174,7 +204,7 @@ export default function ContactForm() {
           <div className=" md:w-[80%] xs:w-full flex flex-col gap-3   my-3">
             <div className="flex lg:flex-row xs:flex-col w-full  justify-between gap-2 xs:px-5 lg:px-10 rounded-md py-2 bg-[#f3f4f6a1] ">
               <label className="font-semibold xs:w-[200px] lg:w-[320px]  flex gap-3 items-center">
-                <span className="text-xl text-red-700">
+                <span className="text-xl text-blue-700">
                   <FaFacebookSquare />
                 </span>
                 <h1 className=" text-gray-500  md:text-sm xs:text-xs">
@@ -243,7 +273,7 @@ export default function ContactForm() {
 
             <div className="flex lg:flex-row xs:flex-col w-full  justify-between gap-2 xs:px-5 lg:px-10 rounded-md py-2 bg-[#f3f4f6a1] ">
               <label className="font-semibold xs:w-[200px] lg:w-[320px]  flex gap-3 items-center">
-                <span className="text-2xl text-red-600">
+                <span className="text-2xl text-blue-600">
                   <FaTelegram />
                 </span>
                 <h1 className=" text-gray-500   md:text-sm xs:text-xs">
@@ -343,7 +373,39 @@ export default function ContactForm() {
                 </button>
               </div>
             </div>
-          </div>
+             <div className="flex lg:flex-row xs:flex-col w-full  justify-between gap-2 xs:px-5 lg:px-10 rounded-md py-2 bg-[#f3f4f6a1] ">
+              <label className="font-semibold xs:w-[200px] lg:w-[320px]  flex gap-3 items-center">
+                <span className="text-2xl text-red-600">
+                 <FaYoutube />
+                </span>
+                <h1 className=" text-gray-500  md:text-sm xs:text-xs">Youtube</h1>
+              </label>
+              <div className="flex items-center gap-5 w-full">
+                <input
+                  type="text"
+                  className=" border w-full border-gray-300 rounded-md px-3 py-1 "
+                  onChange={(e) =>
+                    setContactInfo((prev) => ({
+                      ...prev,
+                      youtube: e.target.value,
+                    }))
+                  }
+                  value={contactInfo.youtube}
+                />
+                <button
+                  className=" text-gray-500 text-base"
+                  onClick={() => {
+                    setContactInfo((prev) => ({
+                      ...prev,
+                      youtube: "",
+                    }));
+                  }}
+                >
+                  <FaTimes />
+                </button>
+              </div>
+            </div> 
+            </div>
         </div>
       </form>
     </div>

@@ -13,17 +13,17 @@ import { deleteRequest } from "../../../../utils/requestsUtils.js";
 import { useRefresh } from "../../../../context/refreshContext.jsx";
 import { getThumbnailUrl } from "../../../../utils/functions.jsx";
 
-export default function ProductsTable() {
+export default function ProductsTable({setIsFormOpen}) {
   const { t } = useLanguage();
   const [products, setProducts] = useState([]);
   const productTableRef = useRef();
   const pageNum = useRef(0);
   const { refreshKey } = useRefresh();
   const { triggerRefresh } = useRefresh();
+  const [mode, setMode] = useState("add"); 
   const { setSelectedProductId } = useIdContext();
   const searchInputRef = useRef();
   // const [loading, setLoading] = useState(true);
-
   const getAllProducts = async () => {
     try {
       console.log(searchInputRef.current.value);
@@ -55,7 +55,7 @@ export default function ProductsTable() {
     await postRequest(
       `/api/admin/items/${productId}/favorite`,
       "",
-      t("message_AddText")
+      t("message")
     );
     triggerRefresh();
   };
@@ -64,7 +64,7 @@ export default function ProductsTable() {
     await postRequest(
       `/api/admin/items/${productId}/unfavorite`,
       "",
-      t("message_AddText")
+      t("message")
     );
     triggerRefresh();
   };
@@ -72,7 +72,7 @@ export default function ProductsTable() {
     await postRequest(
       `/api/admin/items/${productId}/activate`,
       "",
-      t("message_AddText")
+      t("message")
     );
     triggerRefresh();
   };
@@ -81,29 +81,20 @@ export default function ProductsTable() {
     await postRequest(
       `/api/admin/items/${productId}/deactivate`,
       "",
-      t("message_AddText")
+      t("message")
     );
     triggerRefresh();
   };
 
-  const itemProductId = (product) => {
-    let form = document.querySelector("#add-product-form");
-    let nameFormProduct = document.querySelector("#nameFormProduct");
-    let btn_saveProduct = document.querySelector("#btn-saveProduct");
-    let btn_editProduct = document.querySelector("#btn-editProduct");
-    btn_editProduct.classList.remove("hidden");
-    btn_saveProduct.classList.add("hidden");
-    nameFormProduct.innerHTML = "Edit Product";
-    form.classList.remove("hidden");
-    form.classList.add("flex");
-    setSelectedProductId(product.itemId);
-    console.log(getThumbnailUrl(products[0].mainImageURL));
+const openForm = (productID) => {
+setIsFormOpen(true);
+    setSelectedProductId(productID);
   };
   const deleteProduct = async (product) => {
     try {
       await deleteRequest(
         `/api/admin/items/${product.itemId}`,
-        t("message_DeleteText")
+        t("message")
       );
       getAllProducts();
     } catch (error) {
@@ -163,15 +154,8 @@ export default function ProductsTable() {
         <button
           className="p-2 text-white xs:text-xs md:text-sm rounded-md bg-red-500 text-center flex items-center justify-center gap-2"
           onClick={() => {
-            let form = document.querySelector("#add-product-form");
-            form.classList.remove("hidden");
-            form.classList.add("flex");
-            let nameFormProduct = document.querySelector("#nameFormProduct");
-            let btn_saveProduct = document.querySelector("#btn-saveProduct");
-            let btn_editProduct = document.querySelector("#btn-editProduct");
-            btn_editProduct.classList.add("hidden");
-            btn_saveProduct.classList.remove("hidden");
-            nameFormProduct.innerHTML = t("add_product");
+            setIsFormOpen(true)
+          
             setSelectedProductId(null);
           }}
         >
@@ -273,7 +257,7 @@ export default function ProductsTable() {
                 </td>
                 <td
                   className="flex items-center gap-4"
-                  onClick={() => itemProductId(product)}
+                  onClick={() => openForm(product.itemId)}
                 >
                   <Image
                     alt=""
@@ -299,7 +283,7 @@ export default function ProductsTable() {
                   </div>
                 </td>
 
-                <td onClick={() => itemProductId(product)}>
+                <td onClick={() => openForm(product.itemId)}>
                   <div className="  text-sm text-gray-500 font-semibold mx-1">
                     <h1>
                       {typeof window !== "undefined"
@@ -312,14 +296,14 @@ export default function ProductsTable() {
                 </td>
                 <td
                   className="text-sm font-bold"
-                  onClick={() => itemProductId(product)}
+                  onClick={() => openForm(product.itemId)}
                 >
                   {product.price.toLocaleString("en-US")}
                 </td>
                 {/* <td></td> */}
                 <td
                   className="text-sm font-bold text-gray-600"
-                  onClick={() => itemProductId(product)}
+                  onClick={() => openForm(product.itemId)}
                 >
                   {product.oldPrice
                     ? product.oldPrice.toLocaleString("en-US") +

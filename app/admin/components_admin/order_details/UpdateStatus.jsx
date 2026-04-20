@@ -49,7 +49,7 @@ export default function UpdateStatus({ orderId }) {
       const res = await postRequest(
         `/api/admin/orders/${orderId}/changeState/${state}`,
         "",
-        t("message_AddText")
+        t("message")
       );
       if (res.success === true) {
         setSelectedOrderState(state);

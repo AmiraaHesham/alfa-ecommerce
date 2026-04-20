@@ -9,7 +9,6 @@ import { FaBoxArchive } from "react-icons/fa6";
 import { IoLocationSharp } from "react-icons/io5";
 import { MdEmail, MdLock, MdPhoneEnabled } from "react-icons/md";
 import { PiSignOutBold } from "react-icons/pi";
-import AOS from "aos";
 import "aos/dist/aos.css";
 import { useLanguage } from "../../../context/LanguageContext";
 import { RiShoppingBag4Fill } from "react-icons/ri";
@@ -24,10 +23,7 @@ export default function Profile() {
   const { t } = useLanguage();
 
   useEffect(() => {
-    AOS.init({
-      duration: 1000,
-      once: false,
-    });
+  
     const firstName = localStorage.getItem("firstName");
     setFirstName(firstName);
     const lastName = localStorage.getItem("lastName");
@@ -43,7 +39,7 @@ export default function Profile() {
   }, []);
 
   return (
-    <div data-aos="fade-up" className="p-10">
+    <div  className="p-10">
       <div className="flex h-full gap-10 justify-between">
         <div className="bg-white w-[30%] h-[400px] md:flex xs:hidden flex-col gap-3   p-10 rounded-md shadow-md">
           <div className="flex items-center bg-red-600 p-2 rounded-md text-white gap-3 cursor-pointer">

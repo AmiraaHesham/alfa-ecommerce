@@ -10,104 +10,88 @@ import { useRouter } from "next/navigation";
 import { useIdContext } from "../../../../context/idContext";
 import { useRefresh } from "../../../../context/refreshContext.jsx";
 
-export default function CategoryForm() {
+export default function CategoryForm({ isFormOpen, setIsFormOpen }) {
   const [photo, setPhoto] = useState({
     imageFile: "",
     image: "",
   });
+
   const [nameEn, setNameEn] = useState("");
   const [nameAr, setNameAr] = useState("");
   const { t } = useLanguage();
   const { triggerRefresh } = useRefresh();
+  const [loading, setLoading] = useState();
 
-  const { selectedCategoryId } = useIdContext();
+  const { selectedCategoryId, setSelectedCategoryId } = useIdContext();
+  const isEditMode = selectedCategoryId !== null;
 
   const handelupload = (e) => {
-    var reader = new FileReader();
-    reader.readAsDataURL(e.target.files[0]);
+    const file = e.target.files?.[0];
+    if (!file) return; // مهم جدًا
+
+    const reader = new FileReader();
+
     reader.onload = () => {
-      setPhoto((prev) => ({ ...prev, image: reader.result }));
+      setPhoto((prev) => ({
+        ...prev,
+        image: reader.result,
+        imageFile: file,
+      }));
     };
-    const file = e.target.files[0];
-    setPhoto((prev) => ({ ...prev, imageFile: file }));
-
-    console.log(file);
-    console.log(file.name);
-
-    let upload = document.querySelector("#label-uplod");
-    let img = document.querySelector("#lable-img");
-    img.classList.remove("hidden");
-    upload.classList.add("hidden");
+    reader.readAsDataURL(file);
   };
 
   const addCategory = async () => {
     let form = document.querySelector("#add-category-form");
     form.classList.add("hidden");
-    let upload = document.querySelector("#label-uplod");
-    let img = document.querySelector("#lable-img");
-    img.classList.add("hidden");
-    upload.classList.remove("hidden");
+
     try {
+      setLoading(true);
+
       const formData = new FormData();
       formData.append("nameEn", nameEn);
       formData.append("nameAr", nameAr);
       formData.append("imageFile", photo.imageFile);
-      await postRequest(
-        "/api/admin/itemCategory",
-        formData,
-        t("message_AddText")
-      );
+      await postRequest("/api/admin/itemCategory", formData, t("message"));
       triggerRefresh();
-      selectedCategoryId === null;
-      // let upload = document.querySelector("#label-uplod");
-      // let img = document.querySelector("#lable-img");
-      // img.classList.add("hidden");
-      // upload.classList.remove("hidden");
-      // setNameAr("");
-      // setNameEn("");
-      // setPhoto((prev)=>({...prev, image:''}))
+      setSelectedCategoryId(null);
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const CategoryData = useCallback(async () => {
-    if (selectedCategoryId != null) {
-      try {
-        let upload = document.querySelector("#label-uplod");
-        let img = document.querySelector("#lable-img");
-        img.classList.remove("hidden");
-        upload.classList.add("hidden");
+  const CategoryData = async () => {
+    try {  setLoading(true);
+      if (selectedCategoryId !== null) {
+      
+
         const res = await getRequest(
-          `/api/admin/itemCategory/${selectedCategoryId}`
+          `/api/admin/itemCategory/${selectedCategoryId}`,
         );
-        setNameAr(res.nameAr), setNameEn(res.nameEn);
+        (setNameAr(res.nameAr), setNameEn(res.nameEn));
         setPhoto((prev) => ({
           ...prev,
           image: process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL + res.imageURL,
         }));
-      } catch (error) {
-        console.log(error);
+      } else {
+        (setNameAr(""), setNameEn(""));
+        setPhoto((prev) => ({
+          ...prev,
+          image: "",
+        }));
       }
-    } else {
-      setNameAr(""), setNameEn("");
-      setPhoto("");
-      let upload = document.querySelector("#label-uplod");
-      let img = document.querySelector("#lable-img");
-      img.classList.add("hidden");
-      upload.classList.remove("hidden");
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
     }
-  }, [selectedCategoryId]);
+  };
 
   const updateCategory = async () => {
-    let form = document.querySelector("#add-category-form");
-    form.classList.add("hidden");
-    // let upload = document.querySelector("#label-uplod");
-    // let img = document.querySelector("#lable-img");
-    // img.classList.add("hidden");
-    // upload.classList.remove("hidden");
-
     try {
+      setLoading(true);
       const formData = new FormData();
       formData.append("nameEn", nameEn);
       formData.append("nameAr", nameAr);
@@ -117,42 +101,53 @@ export default function CategoryForm() {
       await putRequest(
         `/api/admin/itemCategory/${selectedCategoryId}`,
         formData,
-        t("message_EditText")
+        t("message"),
       );
       triggerRefresh();
-      selectedCategoryId === null;
-      // let upload = document.querySelector("#label-uplod");
-      // let img = document.querySelector("#lable-img");
-      // img.classList.add("hidden");
-      // upload.classList.remove("hidden");
-      // setNameAr("");
-      // setNameEn("");
+      setSelectedCategoryId(null);
+      setIsFormOpen(false);
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    console.log(">>>>>>>>.." + selectedCategoryId);
     CategoryData();
-  }, [CategoryData]);
+  }, [selectedCategoryId]);
   return (
     <div
       id="add-category-form"
-      className=" hidden justify-center items-center w-full  mt-5"
+      className={`justify-center items-center w-full  mt-5  ${isFormOpen ? "flex" : "hidden"}`}
     >
+      {loading && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <Image
+            src="/Images/logo.png"
+            alt=""
+            className="w-[100px] h-[100px]  border-t-transparent rounded-full animate-pulse"
+            width={100}
+            height={100}
+            priority
+          />
+        </div>
+      )}
       <div className="bg-white shadow-md shadow-slate-400 h-[530px] xs:w-full lg:w-[600px] flex flex-col border rounded-md">
         <div className="m-4 flex justify-between items-center">
-          <h1 id="nameFormCategory" className="text-lg font-semibold"></h1>
-          <span
+          <h1 id="nameFormCategory" className="text-lg font-semibold">
+            {" "}
+            {isEditMode ? t("edit_category") : t("add_category")}
+          </h1>
+          <button
             className="text-3xl text-red-950  hover:text-red-800"
             onClick={() => {
-              let form = document.querySelector("#add-category-form");
-              form.classList.add("hidden");
+              setIsFormOpen(false);
+              setSelectedCategoryId(null);
             }}
           >
             <MdCancel />
-          </span>
+          </button>
         </div>
         <hr className="h-1 mb-3"></hr>
         <div className="flex   justify-center items-center ">
@@ -185,28 +180,30 @@ export default function CategoryForm() {
                 />
               </div>
             </div>
+
             <label htmlFor="fileInput">
-              <div className="flex flex-col items-center h-[150px]  justify-center p-3 border-2 border-dashed border-red-300 rounded-lg hover:bg-gray-50">
-                <div
-                  id="label-uplod"
-                  className="flex flex-col justify-center items-center"
-                >
-                  <span className="text-4xl text-red-600">
-                    <IoCloudUploadSharp />
-                  </span>
-                  <span className="text-sm text-gray-500">
-                    {t("add-photo")}
-                  </span>
-                </div>
-                <div id="lable-img" className="hidden w-[100px] h-[100px]">
-                  <Image
-                    alt=""
-                    src={photo.image}
-                    width={100}
-                    height={100}
-                    className="w-full h-full"
-                  ></Image>
-                </div>
+              <div className="flex flex-col items-center h-[150px] justify-center p-3 border-2 border-dashed border-red-300 rounded-lg hover:bg-gray-50">
+                {!photo.image ? (
+                  <div className="flex flex-col justify-center items-center">
+                    <span className="text-4xl text-red-600">
+                      <IoCloudUploadSharp />
+                    </span>
+                    <span className="text-sm text-gray-500">
+                      {t("add-photo")}
+                    </span>
+                  </div>
+                ) : (
+                  // 🖼️ Image Preview
+                  <div className="w-[100px] h-[100px]">
+                    <Image
+                      alt=""
+                      src={photo.image}
+                      width={100}
+                      height={100}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                )}
               </div>
             </label>
 
@@ -222,20 +219,16 @@ export default function CategoryForm() {
               <button
                 type="submit"
                 id="btn-saveCategory"
-                className="bg-red-600 py-2 px-3 text-white mt-7  hover:bg-red-800 rounded-lg  "
-                onClick={() => {
-                  addCategory();
-                }}
+                className={`"bg-red-600 py-2 px-3 text-white mt-7  hover:bg-red-800 rounded-lg ${isEditMode ? "hidden" : ""}`}
+                onClick={addCategory}
               >
                 {t("save")}
               </button>
               <button
                 type="submit"
                 id="btn-editCategory"
-                className=" hidden bg-red-600 py-2 px-3 text-white mt-7  hover:bg-red-800 rounded-lg"
-                onClick={() => {
-                  updateCategory();
-                }}
+                className={`bg-red-600 py-2 px-3 text-white mt-7  hover:bg-red-800 rounded-lg  ${isEditMode ? "" : "hidden"}`}
+                onClick={updateCategory}
               >
                 {t("save-changes")}
               </button>

@@ -13,8 +13,9 @@ export default function Orders_Details({ orderId }) {
   const [orderAddress, setOrderAddress] = useState();
   const orderItem = async () => {
     const res = await getRequest(`/api/orders/${orderId}`);
-    setOrderUser(res.user);
-    setOrderAddress(res.address);
+    const resData = res.data
+    setOrderUser(resData.user);
+    setOrderAddress(resData.address);
   };
   useEffect(() => {
     orderItem();

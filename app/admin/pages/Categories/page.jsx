@@ -1,11 +1,7 @@
-// "use client";
-import SideMenu from "../../components_admin/SideMenu";
-import Header from "../../components_admin/Header";
+"use client";
 import Table_Category from "../../components_admin/categories/CategoryTable";
-import axios from "axios";
-// import React, {  useRef, useState } from "react";
 import FormCategory from "../../components_admin/categories/CategoryForm";
-import Image from "next/image";
+import { useState } from "react";
 
 
 export default function Categorys() {
@@ -13,15 +9,18 @@ export default function Categorys() {
 // const role =
 //     typeof window !== "undefined" ? localStorage.getItem("role") : null;
 //   if(role === "ADMIN"){
+
+  const [isFormOpen, setIsFormOpen] = useState(false);
+
   return (
     <div className="h-screen bg-[#F9FAFB]">
          
 <div className=" w-full bg-[#F9FAFB]">
  <div className=" pt-5 mx-5 relative h-full  ">
           <div className="flex justify-center md:w-[80%] xs:w-full absolute items-center ">
-            <FormCategory />
+            <FormCategory isFormOpen={isFormOpen} setIsFormOpen={setIsFormOpen}/>
           </div>
-           <Table_Category />
+           <Table_Category setIsFormOpen={setIsFormOpen} />
 
           </div>
         </div>

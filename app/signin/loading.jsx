@@ -9,6 +9,7 @@ export default function Loading() {
         className="w-[100px] h-[100px]  border-t-transparent rounded-full animate-pulse"
         width={100}
         height={100}
+        priority
       />
       <h1 className="md:text-5xl xs:text-4xl  font-serif font-semibold animate-pulse bg-gradient-to-r from-[#d62828] via-color3 to-color2 bg-clip-text text-transparent "></h1>
     </div>

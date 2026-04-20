@@ -2,41 +2,42 @@
 import Image from "next/image";
 import { MdCancel } from "react-icons/md";
 import { IoCloudUploadSharp } from "react-icons/io5";
-import axios from "axios";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLanguage } from "../../../../context/LanguageContext.js";
-import { Switch } from "@headlessui/react";
 import { FaCircle, FaTimes } from "react-icons/fa";
 import {
   getCategories,
   getProductDetails,
 } from "../../../../utils/functions.jsx";
-import {
-  getRequest,
-  postRequest,
-  putRequest,
-} from "../../../../utils/requestsUtils.js";
+import { postRequest, putRequest } from "../../../../utils/requestsUtils.js";
 import { useRefresh } from "../../../../context/refreshContext.jsx";
 import { useIdContext } from "../../../../context/idContext.jsx";
 import { GoStarFill } from "react-icons/go";
 import { toast } from "react-toastify";
 
-export default function FormProduct() {
+export default function FormProduct({ isFormOpen, setIsFormOpen }) {
   const [enabledActive, setenabledActive] = useState(true);
   const [enabledFavorite, setenabledFavorite] = useState(false);
+  const [enabledAvailable, setenabledAvailable] = useState(true);
+
   const { triggerRefresh } = useRefresh();
   const { selectedProductId, setSelectedProductId } = useIdContext();
   const [loading, setLoading] = useState(false);
-
+  const images = [
+    { key: "mainImage", label: "mainImage", inputId: "fileInput-mainImage" },
+    { key: "img2", label: "img2", inputId: "fileInput-img2" },
+    { key: "img3", label: "img3", inputId: "fileInput-img3" },
+  ];
+  const isEditMode = selectedProductId !== null;
   const [product, setProduct] = useState({
     nameEn: "",
     nameAr: "",
-    price: 0,
-    oldPrice: 0,
+    price: null,
+    oldPrice: null,
     descriptionEn: "",
     descriptionAr: "",
     category: {
-      id: 0,
+      id: null,
       nameAr: "",
       nameEn: "",
     },
@@ -45,219 +46,255 @@ export default function FormProduct() {
     mainImagefile: "",
     img2: "",
     img2file: "",
+    img2ID: null,
     img3: "",
     img3file: "",
+    img3ID: null,
   });
 
   const [itemCategory, setItemCategory] = useState([]);
 
   const handelupload = (e, photoKey) => {
     const file = e.target.files[0];
-    var reader = new FileReader();
-    reader.readAsDataURL(file);
+    if (!file) return;
+
+    const reader = new FileReader();
+
     reader.onload = () => {
       setProduct((prev) => ({
         ...prev,
-        [photoKey]: reader.result,
+        [photoKey]: reader.result, // preview
+        [photoKey + "file"]: file, // file for upload
+        [photoKey + "ID"]: null, // ID for upload
       }));
     };
-    const labelUpload = document.querySelector(`#label-${photoKey}`);
-    if (labelUpload) {
-      labelUpload.classList.add("hidden");
-    }
-    const labelImg = document.querySelector(`#${photoKey}`);
-    if (labelImg) {
-      labelImg.classList.remove("hidden");
-    }
-    const deleteImg = document.querySelector(`#delete-${photoKey}`);
-    if (labelImg) {
-      deleteImg.classList.remove("hidden");
-    }
-    setProduct((prev) => ({
-      ...prev,
-      [photoKey + "file"]: file,
-    }));
-  };
 
+    reader.readAsDataURL(file);
+  };
   const showeCategories = async () => {
     const resData = await getCategories();
     setItemCategory(resData.data);
   };
 
-  // const images = () => {
-  //   console.log(product.img2file);
-  //   console.log(product.img3file);
-  //   console.log(product.mainImagefile);
-  // };
-
   const addProduct = async () => {
-    // let form = document.querySelector("#add-product-form");
-    // form.classList.add("hidden");
-
     const formData = new FormData();
-    formData.append("nameEn", product.nameEn);
-    formData.append("nameAr", product.nameAr);
-    formData.append("code", product.code);
-    formData.append("price", product.price);
-    formData.append("oldPrice", product.oldPrice);
-    formData.append("descriptionAr", product.descriptionAr);
-    formData.append("descriptionEn", product.descriptionEn);
-    formData.append("favorite", enabledFavorite);
-    formData.append("active", enabledActive);
-    formData.append("itemCategoryId", product.category.id);
-    if (product.mainImagefile) formData.append("mainImage", product.mainImagefile);
-    if (product.img2file) formData.append("itemImages", product.img2file);
-    if (product.img3file) formData.append("itemImages", product.img3file);
-    // console.log(formData);
+
+    // fields عادية
+    const fields = {
+      nameEn: product.nameEn,
+      nameAr: product.nameAr,
+      code: product.code,
+      price: product.price,
+      oldPrice: product.oldPrice,
+      descriptionAr: product.descriptionAr,
+      descriptionEn: product.descriptionEn,
+      favorite: enabledFavorite,
+      active: enabledActive,
+      available: enabledAvailable,
+      itemCategoryId: product.category.id,
+    };
+    Object.entries(fields).forEach(([key, value]) => {
+      if (value !== null && value !== "") {
+        formData.append(key, value);
+      }
+    });
+    // الصور
+    if (product.mainImagefile) {
+      formData.append("mainImage", product.mainImagefile);
+    }
+    [product.img2file, product.img3file].forEach((img) => {
+      if (img) formData.append("itemImages", img);
+    });
     setLoading(true);
+
     try {
-      await postRequest("/api/admin/items", formData, t("message_AddText"));
+      await postRequest("/api/admin/items", formData, t("message"));
       triggerRefresh();
       setSelectedProductId(null);
+      setProduct({
+        nameEn: "",
+        nameAr: "",
+        price: null,
+        oldPrice: null,
+        descriptionAr: "",
+        descriptionEn: "",
+        category: { id: null, nameAr: "", nameEn: "" },
+        code: "",
+        mainImage: "",
+        img2: "",
+        img3: "",
+      });
+      setenabledFavorite(false);
+      setenabledActive(true);
+      setenabledAvailable(true);
     } catch (err) {
       console.error("Error adding product:", err);
     } finally {
       setLoading(false);
     }
   };
-  // setProduct({
-  //   nameEn: "",
-  //   nameAr: "",
-  //   price: 0,
-  //   oldPrice: 0,
-  //   descriptionAr: "",
-  //   descriptionEn: "",
-  //   category: { id: 0, nameAr: "", nameEn: "" },
-  //   code: "",
-  //   mainImage: "",
-  //   img2: "",
-  //   img3: "",
-  // });
-  // setProduct((prev) => ({ ...prev, enabledActive: false }));
-  // setProduct((prev) => ({ ...prev, enabledActive: true }));
 
   const productData = async () => {
-    try{
-      if (selectedProductId != null) {
-      const deleteImg = document.querySelector("#delete-mainImage");
-      deleteImg.classList.remove("hidden");
-      const labelImg = document.querySelector("#mainImage");
-      labelImg.classList.remove("hidden");
-      const labelUpload = document.querySelector("#label-mainImage");
-      labelUpload.classList.add("hidden");
-      const res = await getProductDetails(selectedProductId);
+      
+    try {
+      setLoading(true);
+    
+      if (selectedProductId !== null) {
+        setProduct((prev) => ({
+          ...prev,
+          nameEn: "",
+          nameAr: "",
+          code: "",
+          price: null,
+          oldPrice: null,
+          descriptionAr: "",
+          descriptionEn: "",
+          mainImage: "",
+          img2: null,
+          img3: null,
+          img3ID: null,
+          img2ID: null,
+          category: { id: null, nameAr: "", nameEn: "" },
+        }));
+        const res = await getProductDetails(selectedProductId);
+        console.log(res);
+        const resData = res.data;
+        setProduct((prev) => ({
+          ...prev,
+          nameEn: resData.nameEn,
+          nameAr: resData.nameAr,
+          code: resData.code,
+          price: resData.price,
+          oldPrice: resData.oldPrice,
+          descriptionAr: resData.descriptionAr,
+          descriptionEn: resData.descriptionEn,
+          mainImage:
+            process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL + resData.mainImageURL ||
+            "",
+          img2:
+            resData.images.length >= 1
+              ? process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +
+                resData.images[0].imageUrl
+              : null,
+          img2ID:
+            resData.images.length >= 1 ? resData.images[0].itemImageId : null,
+          img3:
+            resData.images.length >= 2
+              ? process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +
+                resData.images[1].imageUrl
+              : null,
+          img3ID:
+            resData.images.length >= 2 ? resData.images[1].itemImageId : null,
+          category: {
+            ...prev.category,
+            id: resData.itemCategory.itemCategoryId,
+            nameAr: resData.itemCategory.nameAr,
+            nameEn: resData.itemCategory.nameEn,
+          },
+        }));
+        setenabledFavorite(resData.favorite);
+        setenabledActive(resData.active);
+        setenabledAvailable(resData.available);
+        //
+      } else {
+        setProduct((prev) => ({
+          ...prev,
+          nameEn: "",
+          nameAr: "",
+          code: "",
+          price: null,
+          oldPrice: null,
+          descriptionAr: "",
+          descriptionEn: "",
+          mainImage: "",
+          img2: "",
+          img3: "",
+          img3ID: null,
+          img2ID: null,
+          category: { id: null, nameAr: "", nameEn: "" },
+        }));
 
-      setProduct((prev) => ({
-        ...prev,
-        nameEn: res.nameEn,
-        nameAr: res.nameAr,
-        code: res.code,
-        price: res.price,
-        oldPrice: res.oldPrice,
-        descriptionAr: res.descriptionAr,
-        descriptionEn: res.descriptionEn,
-        mainImage:
-          process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL + res.mainImageURL || "",
-        img2: res.img2 || "",
-        img3: res.img3 || "",
-        category: {
-          ...prev.category,
-          id: res.itemCategory.itemCategoryId,
-          nameAr: res.itemCategory.nameAr,
-          nameEn: res.itemCategory.nameEn,
-        },
-      }));
-      setenabledFavorite(res.favorite);
-      setenabledActive(res.active);
-    } else {
-      setProduct((prev) => ({
-        ...prev,
-        nameEn: "",
-        nameAr: "",
-        code: "",
-        price: 0,
-        oldPrice: 0,
-        descriptionAr: "",
-        descriptionEn: "",
-        mainImage: "",
-        img2: "",
-        img3: "",
-        category: { id: "", nameAr: "", nameEn: "" },
-      }));
-      const labelUpload = document.querySelector(`#label-mainImage`);
-      labelUpload.classList.remove("hidden");
-      const labelImg = document.querySelector(`#mainImage`);
-      labelImg.classList.add("hidden");
-
-      const deleteImg = document.querySelector(`#delete-mainImage`);
-      deleteImg.classList.add("hidden");
-
-      setenabledFavorite(false);
-      setenabledActive(true);
-    }
-    }
-    catch(error){
-console.log(error)
-    }finally {
+        setenabledFavorite(false);
+        setenabledActive(true);
+        setenabledAvailable(true);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
       setLoading(false);
     }
-    
-  }
- 
+  };
 
   const updataProduct = async () => {
-try{
-   if (product.oldPrice > product.price || product.oldPrice ) {
-      let form = document.querySelector("#add-product-form");
-      form.classList.add("hidden");
-      const formData = new FormData();
-      formData.append("nameEn", product.nameEn);
-      formData.append("nameAr", product.nameAr);
-      formData.append("code", product.code);
-      formData.append("price", product.price);
-      formData.append("oldPrice", product.oldPrice);
-      formData.append("descriptionAr", product.descriptionAr);
-      formData.append("descriptionEn", product.descriptionEn);
-      formData.append("active", enabledActive);
-      formData.append("favorite", enabledFavorite);
-      if (product.mainImagefile)
-        formData.append("mainImage", product.mainImagefile);
-      if (product.img2file) formData.append("itemImages", product.img2file);
-      if (product.img3file) formData.append("itemImages", product.img3file);
-      formData.append("itemCategoryId", product.category.id);
-      await putRequest(
-        `/api/admin/items/${selectedProductId}`,
-        formData,
-        t("message_EditText"),
-      );
-      triggerRefresh();
-      selectedProductId === null;
+    try {
+      setLoading(true);
+      if (product.oldPrice > product.price || product.oldPrice === null) {
+        setIsFormOpen(false);
+        const formData = new FormData();
 
-      const oldPrice = document.querySelector("#oldPrice");
-      oldPrice.classList.remove("border-red-600");
-    } else {
-      const oldPrice = document.querySelector("#oldPrice");
-      oldPrice.classList.add("border-red-600");
-      toast.error(t("check_oldPrice"));
+        // fields عادية
+        const fields = {
+          nameEn: product.nameEn,
+          nameAr: product.nameAr,
+          code: product.code,
+          price: product.price,
+          oldPrice: product.oldPrice,
+          descriptionAr: product.descriptionAr,
+          descriptionEn: product.descriptionEn,
+          favorite: enabledFavorite,
+          active: enabledActive,
+          available: enabledAvailable,
+          itemCategoryId: product.category.id,
+          existingImageIdsToKeep: product.img2ID,
+          existingImageIdsToKeep: product.img3ID,
+        };
+
+        Object.entries(fields).forEach(([key, value]) => {
+          if (value !== null && value !== "") {
+            formData.append(key, value);
+          }
+        });
+
+        // الصور
+        if (product.mainImagefile) {
+          formData.append("mainImage", product.mainImagefile);
+        }
+
+        [product.img2file, product.img3file].forEach((img) => {
+          if (img) formData.append("itemImages", img);
+        });
+        await putRequest(
+          `/api/admin/items/${selectedProductId}`,
+          formData,
+          t("message"),
+        );
+        triggerRefresh();
+        setSelectedProductId(null);
+
+        const oldPrice = document.querySelector("#oldPrice");
+        oldPrice.classList.remove("border-red-600");
+      } else {
+        const oldPrice = document.querySelector("#oldPrice");
+        oldPrice.classList.add("border-red-600");
+        toast.error(t("check_oldPrice"));
+      }
+      setIsFormOpen(false);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
     }
-}catch(error){
-  console.log(error)
-}finally{
-        setLoading(false);
-
-}
-   
   };
   useEffect(() => {
     showeCategories();
     productData();
-  }, []);
+  }, [selectedProductId]);
   const { t } = useLanguage();
 
   return (
     <div
       id="add-product-form"
-      className=" absolute w-full hidden justify-end items-end h-full"
+      className={` absolute w-full justify-end items-end h-full  ${isFormOpen ? "flex" : "hidden"}`}
     >
       {loading && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
@@ -267,6 +304,7 @@ try{
             className="w-[100px] h-[100px]  border-t-transparent rounded-full animate-pulse"
             width={100}
             height={100}
+            priority
           />
         </div>
       )}
@@ -277,156 +315,83 @@ try{
         }}
       >
         <div className="h-16 flex justify-between items-center ">
-          <h1 id="nameFormProduct" className="text-xl font-semibold"></h1>
-          <span
-            className="text-xl text-gray-500  hover:text-red-800"
+          <h1 id="nameFormProduct" className="text-xl font-semibold">
+            {" "}
+            {isEditMode ? t("edit_product") : t("add_product")}
+          </h1>
+          <button
+            className="text-2xl text-gray-500  hover:text-red-800"
             onClick={() => {
-              let form = document.querySelector("#add-product-form");
-              form.classList.add("hidden");
+              setIsFormOpen(false);
             }}
           >
-            <FaTimes />
-          </span>
+            <MdCancel />
+          </button>
         </div>
         <hr className="h-1"></hr>
 
         <div className="flex flex-col text-gray-600  mt-2">
           <h1 className="text-xs">{t("product_images")}</h1>
 
-          <div className="mt-3 grid sm:grid-cols-3  xs:grid-cols-2 gap-6 ">
-            <div>
-              <div className="h-4">
-                <span
-                  id="delete-mainImage"
+          <div className="mt-3 grid sm:grid-cols-3 xs:grid-cols-2 gap-6">
+            {images.map((img) => (
+              <div key={img.key}>
+                {/* Delete button */}
+                <div className="h-4">
+                  {product[img.key] && (
+                    <div>
+                      <span
+                        onClick={() => {
+                          setProduct((prev) => ({
+                            ...prev,
+                            [img.key]: "",
+                            [img.key === "img2" || img.key === "img3"
+                              ? img.key + "File"
+                              : ""]: "",
+                            [img.key === "img3" || img.key === "img3"
+                              ? img.key + "ID"
+                              : ""]: "",
+                          }));
+                        }}
+                      >
+                        <FaTimes />
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                <label htmlFor={img.inputId}>
+                  <div className="flex flex-col items-center h-[140px] justify-center p-3 border-2 border-dashed border-red-300 rounded-lg hover:bg-gray-50">
+                    {/* Upload UI */}
+                    {!product[img.key] ? (
+                      <div className="flex flex-col items-center">
+                        <IoCloudUploadSharp className="text-4xl text-red-600" />
+                        <span className="text-xs text-gray-500">
+                          {img.key === "mainImage"
+                            ? t("photo_main")
+                            : t("add-photo")}
+                        </span>
+                      </div>
+                    ) : (
+                      <Image
+                        alt=""
+                        src={product[img.key] || "/images/no-image.png"}
+                        width={100}
+                        height={100}
+                      />
+                    )}
+                  </div>
+                </label>
+
+                <input
+                  type="file"
+                  accept="image/*"
+                  id={img.inputId}
                   className="hidden"
-                  onClick={() => {
-                    const deleteImg =
-                      document.querySelector("#delete-mainImage");
-                    deleteImg.classList.add("hidden");
-                    const labelImg = document.querySelector("#mainImage");
-                    labelImg.classList.add("hidden");
-                    const labelUpload =
-                      document.querySelector("#label-mainImage");
-                    labelUpload.classList.remove("hidden");
-                    setProduct((prev) => ({ ...prev, mainImagefile: {} }));
-                  }}
-                >
-                  <FaTimes />
-                </span>
+                  onChange={(e) => handelupload(e, img.key)}
+                />
               </div>
-
-              <label htmlFor="fileInput-mainImage">
-                <div className="flex flex-col items-center h-[140px]  justify-center p-3 border-2 border-dashed border-red-300 rounded-lg hover:bg-gray-50">
-                  <div
-                    id="label-mainImage"
-                    className="flex flex-col mt-3 justify-center items-center"
-                  >
-                    <span className="text-4xl text-red-600">
-                      <IoCloudUploadSharp />
-                    </span>
-                    <span className="text-sm text-gray-500">
-                      {t("add-photo")}
-                    </span>
-                    <span className="text-xs text-gray-500">
-                      {t("photo_main")}
-                    </span>
-                  </div>
-                  <div id="mainImage" className="hidden w-[100px] h-[100px]">
-                    <Image
-                      alt=""
-                      src={product.mainImage || "/images/no-image.png"}
-                      width={100}
-                      height={100}
-                      className="w-full h-full"
-                    ></Image>
-                  </div>
-                </div>
-              </label>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => handelupload(e, "mainImage")}
-                className="hidden"
-                id="fileInput-mainImage"
-              />
-            </div>
-            <div>
-              <div className="h-4">
-                <span id="delete-img2" className="hidden ">
-                  <FaTimes />
-                </span>
-              </div>
-              <label htmlFor="fileInput-img2">
-                <div className="flex flex-col items-center h-[140px]  justify-center p-3 border-2 border-dashed border-red-300 rounded-lg hover:bg-gray-50">
-                  <div
-                    id="label-img2"
-                    className="flex flex-col justify-center items-center"
-                  >
-                    <span className="text-4xl text-red-600">
-                      <IoCloudUploadSharp />
-                    </span>
-                    <span className="text-xs text-gray-500">
-                      {t("add-photo")}
-                    </span>
-                  </div>
-                  <div id="img2" className="hidden w-[100px] h-[100px]">
-                    <Image
-                      alt=""
-                      src={product.img2 || "/images/no-image.png"}
-                      width={100}
-                      height={100}
-                      className="w-full h-full"
-                    ></Image>
-                  </div>
-                </div>
-              </label>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => handelupload(e, "img2")}
-                className="hidden"
-                id="fileInput-img2"
-              />
-            </div>
-            <div>
-              <div className="h-4">
-                <span id="delete-img3" className="hidden ">
-                  <FaTimes />
-                </span>
-              </div>
-
-              <label htmlFor="fileInput-img3">
-                <div className="flex flex-col items-center h-[140px]   justify-center p-3 border-2 border-dashed border-red-300 rounded-lg hover:bg-gray-50">
-                  <div
-                    id="label-img3"
-                    className="flex flex-col justify-center items-center"
-                  >
-                    <span className="text-4xl text-red-600">
-                      <IoCloudUploadSharp />
-                    </span>
-                    <span className="text-xs text-gray-500">
-                      {t("add-photo")}
-                    </span>
-                  </div>
-                  <div id="img3" className="hidden w-[100px] h-[100px]">
-                    <Image
-                      alt=""
-                      src={product.img3 || "/images/no-image.png"}
-                      width={100}
-                      height={100}
-                      className="w-full h-full"
-                    ></Image>
-                  </div>
-                </div>
-              </label>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => handelupload(e, "img3")}
-                className="hidden"
-                id="fileInput-img3"
-              />
-            </div>
+            ))}
           </div>
         </div>
 
@@ -531,9 +496,12 @@ try{
               <label className="text-xs text-gray-600">{t("old_price")}</label>
               <input
                 value={product.oldPrice || ""}
-                onChange={(e) =>
-                  setProduct((prev) => ({ ...prev, oldPrice: e.target.value }))
-                }
+                onChange={(e) => {
+                  setProduct((prev) => ({
+                    ...prev,
+                    oldPrice: e.target.value === "" ? null : e.target.value,
+                  }));
+                }}
                 id="oldPrice"
                 className=" bg-[#F9FAFB] w-full outline-none  text-base  my-1  p-1 border rounded-md"
               />
@@ -574,6 +542,21 @@ try{
                   <GoStarFill />
                 </button>
               </div>
+              <div className="bg-[#F9FAFB] flex items-center justify-between h-10 w-full    px-3 my-2 border rounded-md ">
+                <h1 className="text-xs text-gray-600">
+                  {t("available_in_store")}
+                </h1>
+                <button
+                  onClick={() => {
+                    setenabledAvailable(!enabledAvailable);
+                  }}
+                  className={`${
+                    enabledAvailable ? "text-green-600" : "text-gray-300"
+                  } transition-colors duration-200`}
+                >
+                  <FaCircle />
+                </button>
+              </div>
             </div>
           </div>
           <label className="text-xs text-gray-700">
@@ -611,7 +594,7 @@ try{
               <button
                 type="submit"
                 id="btn-saveProduct"
-                className="bg-red-600 h-8  px-3 text-white w-full hover:bg-red-800 rounded-lg"
+                className={`bg-red-600 h-8  px-3 text-white w-full hover:bg-red-800 rounded-lg ${isEditMode ? "hidden" : ""}`}
                 onClick={addProduct}
               >
                 {t("save")}
@@ -619,7 +602,7 @@ try{
               <button
                 type="submit"
                 id="btn-editProduct"
-                className="bg-red-600 h-8  px-3 text-white w-full  hover:bg-red-800 rounded-lg"
+                className={`bg-red-600 h-8  px-3 text-white w-full  hover:bg-red-800 rounded-lg ${isEditMode ? "" : "hidden"}`}
                 onClick={updataProduct}
               >
                 {t("save-changes")}
@@ -627,11 +610,12 @@ try{
             </div>
 
             <button
-              type="submit"
-              className="bg-white w-full  border h-8  px-3 text-gray-700ss   hover:bg-red-800 hover:text-white rounded-lg"
+              type="button"
+              className={
+                "bg-white w-full  border h-8  px-3 text-gray-700ss   hover:bg-red-800 hover:text-white rounded-lg"
+              }
               onClick={() => {
-                let form = document.querySelector("#add-product-form");
-                form.classList.add("hidden");
+                setIsFormOpen(false);
                 setSelectedProductId(null);
               }}
             >

@@ -10,17 +10,17 @@ import { getRequest } from "../../../../utils/requestsUtils.js";
 
 export default function Dashboard_Details() {
   const { t } = useLanguage();
-  const [activeItems, setActiveItems] = useState();
+  const [activeItems, setActiveItems] = useState(0);
   const [newUsers, setNewUsers] = useState();
-  const [pendingOrders, setPendingOrders] = useState();
-  const [ordersCount, setOrdersCount] = useState();
+  const [pendingOrders, setPendingOrders] = useState(0);
+  const [ordersCount, setOrdersCount] = useState(0);
 
   const dashboardPendingOrders = async () => {
     const response = await getRequest("/api/admin/dashboard");
     setNewUsers(response.newUsers);
     setActiveItems(response.activeItems);
-    setPendingOrders(response.ordersStats[1].count);
-    setOrdersCount(response.ordersCount);
+    setPendingOrders(response.ordersStats=[] ? 0 :response.ordersStats[1].count);
+    setOrdersCount(response.ordersCount || 0);
 
     console.log(response);
   };

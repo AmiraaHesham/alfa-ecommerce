@@ -16,11 +16,12 @@ export default function OrdersItems({ orderId }) {
   const [orderTotalPrice, setOrderTotalPrice] = useState("");
   const orderItem = async () => {
     const res = await getRequest(`/api/orders/${orderId}`);
-    setOrderItems(res.orderItemLines);
-    setOrderTotalPrice(res.total);
-    setSelectedOrderState(res.state);
-    setSelectedOrderDate(res.createdDate);
-    setSelectedOrderCode(res.code);
+    const resData = res.data
+    setOrderItems(resData.orderItemLines);
+    setOrderTotalPrice(resData.total);
+    setSelectedOrderState(resData.state);
+    setSelectedOrderDate(resData.createdDate);
+    setSelectedOrderCode(resData.code);
   };
   useEffect(() => {
     orderItem();
@@ -35,7 +36,7 @@ export default function OrdersItems({ orderId }) {
           {" "}
           {t("Total")}:{" "}
           <span className="text-lg text-red-500 font-semibold">
-            {orderTotalPrice.toLocaleString("en-US")} EG
+            {orderTotalPrice.toLocaleString("en-US")} {t("currency")}
           </span>{" "}
         </span>
       </div>
@@ -82,14 +83,14 @@ export default function OrdersItems({ orderId }) {
                     </div>
                   </td>
                   <td className="text-sm font-semibold text-center text-gray-500">
-                    EG {item.item.price.toLocaleString("en-US")}
+                    {item.item.price.toLocaleString("en-US")} {t("currency")}
                   </td>
                   <td className="text-sm text-center text-gray-500">
                     {item.quantity}
                   </td>
 
                   <td className="text-sm font-semibold text-center">
-                    EG {item.totalPrice.toLocaleString("en-US")}
+                     {item.totalPrice.toLocaleString("en-US")} {t("currency")}
                   </td>
                 </tr>
               );

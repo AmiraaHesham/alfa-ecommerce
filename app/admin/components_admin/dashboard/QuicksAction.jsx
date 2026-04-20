@@ -16,10 +16,11 @@ export default function RecentOrders_table() {
       <h1 className="md:text-lg xs:text-sm font-bold">{t("quick-actions")}</h1>
       <div className="grid md:grid-cols-4 xs:grid-cols-2 gap-5 mt-3 items-center">
         <div
-          className="  bg-[#F9FAFB] py-3 rounded-md flex flex-col items-center justify-center"
+          className="  bg-[#F9FAFB] py-3 rounded-md flex flex-col items-center justify-center cursor-pointer"
           onClick={() => {
-            setSelectedNamePage("Products Management");
+            
             navigate.push("/admin/pages/Products");
+            setSelectedNamePage("Products Management");
           }}
         >
           <span className="text-xl text-blue-600   bg-blue-100 p-3 rounded-full">
@@ -29,10 +30,11 @@ export default function RecentOrders_table() {
         </div>
 
         <div
-          className="  bg-[#F9FAFB] py-3 rounded-md  flex flex-col items-center justify-center"
+          className="  bg-[#F9FAFB] py-3 rounded-md  flex flex-col items-center justify-center cursor-pointer"
           onClick={() => {
-            setSelectedNamePage("Categories Management");
+          
             navigate.push("/admin/pages/Categories");
+              setSelectedNamePage("Categories Management");
           }}
         >
           <span className="text-xl text-purple-600   bg-purple-100 p-3 rounded-full">
@@ -42,10 +44,11 @@ export default function RecentOrders_table() {
         </div>
 
         <div
-          className="  bg-[#F9FAFB]  py-3 rounded-md  flex flex-col items-center justify-center"
+          className="  bg-[#F9FAFB]  py-3 rounded-md  flex flex-col items-center justify-center cursor-pointer"
           onClick={() => {
+             navigate.push("/admin/pages/orders_page/Orders");
             setSelectedNamePage("Orders Management");
-            navigate.push("/admin/pages/orders_page/Orders");
+           
           }}
         >
           <span className="text-xl text-orange-600   bg-orange-100 p-3 rounded-full">
@@ -55,10 +58,11 @@ export default function RecentOrders_table() {
         </div>
 
         <div
-          className="  bg-[#F9FAFB]  py-3 rounded-md  flex flex-col items-center justify-center"
+          className="  bg-[#F9FAFB]  py-3 rounded-md  flex flex-col items-center justify-center cursor-pointer"
           onClick={() => {
-            setSelectedNamePage("Admins Management");
+           
             navigate.push("/admin/pages/Admins");
+             setSelectedNamePage("Admins Management");
           }}
         >
           <span className="text-xl text-green-600 bg-green-100 p-3 rounded-full">

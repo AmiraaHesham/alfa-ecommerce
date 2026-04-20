@@ -42,31 +42,32 @@ export default function UserInfo({ userId }) {
 
   const getUserInfo = async () => {
     const res = await getRequest(`/api/users/${userId}`);
+    const resData = res.data
     setUserInfo((prev) => ({
       ...prev,
-      username: res.username,
-      blocked: res.blocked,
-      active: res.active,
-      firstName: res.firstName,
-      lastName: res.lastName,
-      email: res.email,
-      phone: res.phone,
-      address: res.address,
-      birthDate: res.birthDate,
+      username: resData.username,
+      blocked: resData.blocked,
+      active: resData.active,
+      firstName: resData.firstName,
+      lastName: resData.lastName,
+      email: resData.email,
+      phone: resData.phone,
+      address: resData.address,
+      birthDate: resData.birthDate,
     }));
     setOrderState((prev) => ({
       ...prev,
-      PROCESSING: res.ordersState[0].count,
-      PENDING: res.ordersState[3].count,
-      DELIVERED: res.ordersState[1].count,
-      SHIPPED: res.ordersState[2].count,
+      PROCESSING:resData.ordersState[0]? resData.ordersState[0].count : 0,
+      PENDING:resData.ordersState[3] ? resData.ordersState[3].count : 0,
+      DELIVERED: resData.ordersState[1] ? resData.ordersState[1].count : 0,
+      SHIPPED:resData.ordersState[2] ? resData.ordersState[2].count : 0,
       totalOrders:
-        res.ordersState[0].count +
-        res.ordersState[1].count +
-        res.ordersState[2].count +
-        res.ordersState[3].count,
+        (resData.ordersState[0] ? resData.ordersState[0].count : 0) +
+        (resData.ordersState[1] ? resData.ordersState[1].count : 0) +
+        (resData.ordersState[2] ? resData.ordersState[2].count : 0) +
+        (resData.ordersState[3] ? resData.ordersState[3].count : 0),
     }));
-    console.log(res);
+    console.log(resData);
   };
 
   const addBlock = async () => {
@@ -165,7 +166,7 @@ export default function UserInfo({ userId }) {
               {t("total_orders")}
             </h1>
           </div>
-          <h1 className="text-xl font-bold text-gray-700 bg-gray-100  w-[100px] rounded-xl px-2">
+          <h1 className="text-xl font-bold text-gray-700 bg-gray-100  w-[50px] rounded-xl px-2">
             {orderState.totalOrders}
           </h1>
         </div>
@@ -177,7 +178,7 @@ export default function UserInfo({ userId }) {
               {t("pending_orders")}
             </h1>
           </div>
-          <h1 className="text-xl font-bold text-red-700 bg-red-100  w-[100px] rounded-xl px-2">
+          <h1 className="text-xl font-bold text-red-700 bg-red-100  w-[50px] rounded-xl px-2">
             {orderState.PENDING}
           </h1>
         </div>
@@ -188,7 +189,7 @@ export default function UserInfo({ userId }) {
               {t("processing_orders")}
             </h1>
           </div>
-          <h1 className="text-xl font-bold text-blue-700 bg-blue-100  w-[100px] rounded-xl px-2">
+          <h1 className="text-xl font-bold text-blue-700 bg-blue-100  w-[50px] rounded-xl px-2">
             {orderState.PROCESSING}
           </h1>
         </div>
@@ -200,7 +201,7 @@ export default function UserInfo({ userId }) {
               {t("shipped_orders")}
             </h1>
           </div>
-          <h1 className="text-xl font-bold text-yellow-700 bg-yellow-100  w-[100px] rounded-xl px-2">
+          <h1 className="text-xl font-bold text-yellow-700 bg-yellow-100  w-[50px] rounded-xl px-2">
             {orderState.SHIPPED}
           </h1>
         </div>
@@ -211,7 +212,7 @@ export default function UserInfo({ userId }) {
               {t("delivered_orders")}
             </h1>
           </div>
-          <h1 className="text-xl font-bold text-green-700 bg-green-100  w-[100px] rounded-xl px-2">
+          <h1 className="text-xl font-bold text-green-700 bg-green-100  w-[50px] rounded-xl px-2">
             {orderState.DELIVERED}
           </h1>
         </div>

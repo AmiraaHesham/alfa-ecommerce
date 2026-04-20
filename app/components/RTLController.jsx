@@ -8,7 +8,6 @@ export default function RTLController({ children }) {
   useEffect(() => {
     document.documentElement.dir = locale === "ar" ? "rtl" : "ltr";
     document.documentElement.lang = locale;
-    localStorage.setItem("lang", locale);
   }, [locale]);
 
   return <>{children}</>;

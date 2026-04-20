@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 import { useIdContext } from "../../../../context/idContext";
 import { useRefresh } from "../../../../context/refreshContext.jsx";
 
-export default function CategoryForm() {
+export default function AdminForm({ isFormOpen, setIsFormOpen }) {
   const [adminUser, setAdminUser] = useState({
     f_name: "",
     l_name: "",
@@ -18,17 +18,18 @@ export default function CategoryForm() {
     password: "",
     confirmPassword: "",
   });
-  const { t } = useLanguage();
-  const router = useRouter();
-  const { triggerRefresh } = useRefresh();
 
-  const { selectedAdminId } = useIdContext();
+  const [loading, setLoading] = useState();
+  const { t } = useLanguage();
+  const { triggerRefresh } = useRefresh();
+  const { selectedAdminId , setSelectedAdminId } = useIdContext();
+    const isEditMode = selectedAdminId !== null;
 
   const addAdminUser = async () => {
-    let form = document.querySelector("#add-admin-form");
-    form.classList.add("hidden");
 
     try {
+      setLoading(true);
+
       await postRequest(
         "/api/admin/users",
         {
@@ -38,35 +39,54 @@ export default function CategoryForm() {
           password: adminUser.password,
           repeatPassword: adminUser.confirmPassword,
         },
-        t("message_AddText")
+        t("message"),
       );
       triggerRefresh();
+      setSelectedAdminId(null)
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const AdminData = useCallback(async () => {
-    if (selectedAdminId != null) {
+  const AdminData = async () => {
+   
       try {
+         if (selectedAdminId !== null) {
+            setLoading(true);
+
         const res = await getRequest(`/api/users/${selectedAdminId}`);
+        const resData = res.data
         setAdminUser((prev) => ({
           ...prev,
-          l_name: res.lastName,
-          f_name: res.firstName,
-          username: res.username,
+          l_name: resData.lastName,
+          f_name: resData.firstName,
+          username: resData.username,
         }));
+      }else{
+        setAdminUser({
+          f_name: "",
+          l_name: "",
+          username: "",
+          password: "",
+          confirmPassword: "",
+        })
+      }
       } catch (error) {
         console.log(error);
-      }
+      }finally {
+      setLoading(false);
     }
-  }, [selectedAdminId]);
+    }
+  
 
   const updateAdmin = async () => {
-    let form = document.querySelector("#add-admin-form");
-    form.classList.add("hidden");
+  
 
     try {
+          setLoading(true);
+setIsFormOpen(false)
       await putRequest(
         `/api/admin/users/${selectedAdminId}`,
         {
@@ -76,34 +96,49 @@ export default function CategoryForm() {
           password: adminUser.password,
           repeatPassword: adminUser.confirmPassword,
         },
-        t("message_EditText")
+        t("message"),
       );
       triggerRefresh();
+      setSelectedAdminId(null)
     } catch (error) {
       console.log(error);
+    }finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     AdminData();
-  }, [AdminData]);
+  }, [selectedAdminId]);
   return (
     <div
       id="add-admin-form"
-      className=" hidden absolute justify-end  w-full h-screen "
+      className={`absolute justify-end  w-full h-screen ${isFormOpen ? "flex" : "hidden"}`}
     >
+       {loading && (
+              <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+                <Image
+                  src="/Images/logo.png"
+                  alt=""
+                  className="w-[100px] h-[100px]  border-t-transparent rounded-full animate-pulse"
+                  width={100}
+                  height={100}
+                  priority
+                />
+              </div>
+            )}
       <div className="bg-white shadow-md shadow-slate-400  xs:w-full lg:w-[500px] flex flex-col border rounded-md">
         <div className="m-4 flex justify-between items-center">
-          <h1 id="nameForm" className="text-lg font-semibold"></h1>
-          <span
-            className="text-3xl text-red-950  hover:text-red-800"
+          <h1 id="nameForm" className="text-lg font-semibold">{isEditMode ? t("edit_admin") : t("add_admin")}</h1>
+          <button
+            className="text-2xl   hover:text-red-800"
             onClick={() => {
-              let form = document.querySelector("#add-admin-form");
-              form.classList.add("hidden");
+             setIsFormOpen(false)
+             setSelectedAdminId(null)
             }}
           >
             <MdCancel />
-          </span>
+          </button>
         </div>
         <hr className="h-1 mb-3"></hr>
         <div className="flex justify-center items-center ">
@@ -128,7 +163,7 @@ export default function CategoryForm() {
                         }))
                       }
                       required
-                      className="w-full bg-[#F9FAFB] outline-none text-red-900 text-lg  p-1 border rounded-md"
+                      className="w-full bg-[#F9FAFB] outline-none  text-lg  p-1 border rounded-md"
                     />
                   </div>
                   <div>
@@ -142,7 +177,7 @@ export default function CategoryForm() {
                           l_name: e.target.value,
                         }))
                       }
-                      className="w-full bg-[#F9FAFB] outline-none text-red-900 text-lg  p-1 border rounded-md"
+                      className="w-full bg-[#F9FAFB] outline-none  text-lg  p-1 border rounded-md"
                     />
                   </div>
                 </div>
@@ -158,7 +193,7 @@ export default function CategoryForm() {
                         username: e.target.value,
                       }))
                     }
-                    className="w-full bg-[#F9FAFB] outline-none text-red-900 text-lg  p-1 border rounded-md"
+                    className="w-full bg-[#F9FAFB] outline-none  text-lg  p-1 border rounded-md"
                   />
                 </div>
                 <div className="flex gap-3">
@@ -173,7 +208,7 @@ export default function CategoryForm() {
                           password: e.target.value,
                         }))
                       }
-                      className="w-full bg-[#F9FAFB] outline-none text-red-900 text-lg  p-1 border rounded-md"
+                      className="w-full bg-[#F9FAFB] outline-none text-lg  p-1 border rounded-md"
                     />
                   </div>
                   <div>
@@ -188,7 +223,7 @@ export default function CategoryForm() {
                           confirmPassword: e.target.value,
                         }))
                       }
-                      className="w-full bg-[#F9FAFB] outline-none text-red-900 text-lg  p-1 border rounded-md"
+                      className="w-full bg-[#F9FAFB] outline-none  text-lg  p-1 border rounded-md"
                     />
                   </div>
                 </div>
@@ -200,7 +235,7 @@ export default function CategoryForm() {
                   <button
                     type="submit"
                     id="btn-save"
-                    className="bg-red-600 h-8  px-3 text-white w-full hover:bg-red-800 rounded-lg"
+                    className={`bg-red-600 h-8  px-3 text-white w-full hover:bg-red-800 rounded-lg ${isEditMode ? "hidden" : ""}`}
                     onClick={() => {
                       addAdminUser();
                     }}
@@ -210,7 +245,7 @@ export default function CategoryForm() {
                   <button
                     type="submit"
                     id="btn-edit"
-                    className="bg-red-600 h-8  px-3 text-white w-full  hover:bg-red-800 rounded-lg"
+                    className={`bg-red-600 h-8  px-3 text-white w-full  hover:bg-red-800 rounded-lg ${isEditMode ? "" : "hidden"}`}
                     onClick={() => {
                       updateAdmin();
                     }}
@@ -222,8 +257,8 @@ export default function CategoryForm() {
                   type="submit"
                   className="bg-white w-full  border h-8  px-3 text-gray-700ss   hover:bg-red-800 hover:text-white rounded-lg"
                   onClick={() => {
-                    let form = document.querySelector("#add-admin-form");
-                    form.classList.add("hidden");
+                    setIsFormOpen(false);
+                    setSelectedAdminId(null)
                   }}
                 >
                   {t("cancel")}

@@ -17,7 +17,7 @@ export default function Header() {
   const { t } = useLanguage();
   const navigate = useRouter();
   const id = typeof window !== "undefined" ? localStorage.getItem("id") : "";
-
+const [mounted, setMounted] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const divRef = useRef(null);
   const { setSelectedSearchInput } = useSearshInputContext();
@@ -26,10 +26,24 @@ export default function Header() {
   const [username, setUsername] = useState();
   const userId =
     typeof window !== "undefined" ? localStorage.getItem("id") : "";
-  const changeLanguage = async () => {
-    await postRequest(`/api/users/${userId}/langauge/${locale}`, "", "");
-  };
-  useEffect(() => {
+  const changeLanguage = async (newLang) => {
+  const validLangs = ["ar", "en"];
+
+
+  if (!validLangs.includes(newLang)) return;
+
+  try {
+    await postRequest(`/api/users/${userId}/langauge/${locale}`,"","")
+
+    setLocale(newLang);
+    localStorage.setItem("lang", newLang);
+
+  } catch (err) {
+    console.error("Failed to update language", err);
+  }
+};
+  useEffect(() => { 
+     setMounted(true);
     const username =
       typeof window !== "undefined" ? localStorage.getItem("firstName") : "";
     setUsername(username);
@@ -40,13 +54,16 @@ export default function Header() {
 
       //      document.dir = lang === 'AR' ? 'rtl' : 'ltr';
       //  setLocale(lang)
+      
+
     };
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);
+  }, []); 
+if (!mounted) return null;
 
   return (
     <header>
@@ -103,18 +120,16 @@ export default function Header() {
               value={locale}
               onChange={(e) => {
                 const newLang = e.target.value;
-                setLocale(newLang);
-                changeLanguage();
+               
+                changeLanguage(newLang);
               }}
             >
               <option
                 value="ar"
                 className="bg-white text-red-500 text-lg font-semibold "
               >
-                العربية{" "}
-                <span className="text-white md:text-2xl xs:text-lg">
-                  <MdLanguage />
-                </span>
+                العربية
+              
               </option>
               <option
                 value="en"

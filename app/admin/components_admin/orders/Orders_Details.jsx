@@ -10,7 +10,7 @@ export default function Orders_Details() {
   const [ordersState, setOrdersState] = useState([]);
   const ordersStates = async () => {
     const response = await getRequest("/api/admin/orders/states");
-    setOrdersState(response);
+    setOrdersState(response.data);
   };
   useEffect(() => {
     ordersStates();

@@ -5,11 +5,11 @@ import Image from "next/image";
 import "swiper/css";
 import "swiper/css/navigation";
 
-import { BiCategory } from "react-icons/bi";
 import { useIdContext } from "../../../../context/idContext";
 import { useRouter } from "next/navigation";
 import { IoIosArrowRoundBack, IoIosArrowRoundForward } from "react-icons/io";
 import { useLanguage } from "../../../../context/LanguageContext";
+import { useEffect, useState } from "react";
 
 export default function CategorySection({ categories }) {
   const lang =
@@ -18,16 +18,15 @@ export default function CategorySection({ categories }) {
 
   const { setSelectedCategoryId } = useIdContext();
   const navigate = useRouter();
-
+  const [mounted, setMounted] = useState(false);
+useEffect(() => {
+  setMounted(true);
+}, []);
+if (!mounted) return null;
   return (
     <div className="flex flex-col justify-center items-center mt-32">
-      <div className="w-full flex justify-center items-center text-center px-10 text-2xl font-semibold h-12 shadow-md shadow-gray-300 bg-gray-100">
-        <h1 className="flex items-center gap-2 text-gray-600">
-          <BiCategory className="text-red-600" />
-          {t("categories")}
-        </h1>
-      </div>
-      <div className="w-full mt-32  ">
+     
+      <div className="w-full   ">
         <Swiper
           key={lang}
           modules={[Navigation]}

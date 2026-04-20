@@ -49,7 +49,7 @@ export default function UsersPage() {
     await postRequest(
       `/api/admin/users/${userId}/block`,
       "",
-      t("message_AddText")
+      t("message")
     );
     getAllUsers();
   };
@@ -57,7 +57,7 @@ export default function UsersPage() {
     await postRequest(
       `/api/admin/users/${userId}/unblock`,
       "",
-      t("message_AddText")
+      t("message")
     );
     getAllUsers();
   };

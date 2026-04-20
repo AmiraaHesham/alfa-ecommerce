@@ -10,7 +10,7 @@ import { IoMdSearch } from "react-icons/io";
 
 import { useIdContext } from "../../../../context/idContext.jsx";
 import { MdOutlineDownloading } from "react-icons/md";
-export default function AdminsTable() {
+export default function AdminsTable({ setIsFormOpen }) {
   const { t } = useLanguage();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -43,24 +43,17 @@ export default function AdminsTable() {
   };
 
   const selectAdminId = (adminId) => {
-    let form = document.querySelector("#add-admin-form");
-    let nameForm = document.querySelector("#nameForm");
-    let btn_save = document.querySelector("#btn-save");
-    let btn_edit = document.querySelector("#btn-edit");
-    btn_edit.classList.remove("hidden");
-    btn_save.classList.add("hidden");
-    nameForm.innerHTML = t("edit") + " " + t("admin");
-    form.classList.remove("hidden");
-    form.classList.add("flex");
+   setIsFormOpen(true)
     setSelectedAdminId(adminId);
   };
 
   const addBlock = async (userId) => {
-    await postRequest(`/api/admin/users/${userId}/block`);
+    await postRequest(`/api/admin/users/${userId}/block`,"",t("message"));
     getAllUsers();
   };
+
   const removeBlock = async (userId) => {
-    await postRequest(`/api/admin/users/${userId}/unblock`);
+    await postRequest(`/api/admin/users/${userId}/unblock`,"",t("message"));
     getAllUsers();
   };
   useEffect(() => {
@@ -68,6 +61,7 @@ export default function AdminsTable() {
   }, []);
   return (
     <div className="w-full h-full bg-[#F9FAFB]">
+     
       <div className="w-full  bg-white mt-3 rounded-lg border flex flex-row  gap-5 justify-between  items-start  p-4 ">
         <div className="flex items-center justify-between border px-1 rounded-md w-[300px] bg-gray-100">
           <input
@@ -93,15 +87,8 @@ export default function AdminsTable() {
           <button
             className="p-2 text-white xs:text-xs md:text-sm rounded-md bg-red-500 text-center flex items-center justify-center gap-2"
             onClick={() => {
-              let form = document.querySelector("#add-admin-form");
-              form.classList.remove("hidden");
-              form.classList.add("flex");
-              let nameForm = document.querySelector("#nameForm");
-              let btn_save = document.querySelector("#btn-save");
-              let btn_edit = document.querySelector("#btn-edit");
-              btn_edit.classList.add("hidden");
-              // btn_saveProduct.classList.remove("hidden");
-              nameForm.innerHTML = t("add_new_admin");
+            setIsFormOpen(true)
+            setSelectedAdminId(null)
             }}
           >
             <span className="text-xs">
@@ -202,7 +189,7 @@ export default function AdminsTable() {
                               {user.firstName + " " + user.lastName}
                             </h1>
                             <h1 className="text-xs text-gray-400">
-                              {user.username}
+                              {user.email}
                             </h1>
                           </div>
                         </div>
@@ -214,7 +201,7 @@ export default function AdminsTable() {
                           //   navigate.push("/admin/UsersPage/UserInfo");
                         }}
                       >
-                        <h1 className=" text-gray-500">{user.email}</h1>
+                        <h1 className=" text-gray-500">{user.username}</h1>
                       </td>
                       <td
                         onClick={() => {

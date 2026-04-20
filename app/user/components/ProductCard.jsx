@@ -8,16 +8,19 @@ import { useRouter } from "next/navigation";
 import { useRefresh } from "../../../context/refreshContext";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
+import { useState } from "react";
 
 export default function ProductCard({ productInfo, favorite }) {
   const { setSelectedProductId } = useIdContext();
   const navigate = useRouter();
   const { t } = useLanguage();
   // const { triggerRefresh } = useRefresh();
+  const [loading, setLoading] = useState();
 
   const userId = localStorage.id;
   const addToCart = async (productId) => {
-    await postRequest(
+    try{
+      await postRequest(
       `/api/shopCarts/${userId}/addLine`,
       {
         itemId: productId,
@@ -44,6 +47,12 @@ export default function ProductCard({ productInfo, favorite }) {
     if (result.isConfirmed) {
       navigate.push("/user/cart");
     }
+    }catch(error){
+      console.log(error)
+    }finally {
+      setLoading(false);
+    }
+    
   };
   const addFavoriteItems = async (productId) => {
     const res = await postRequest(
@@ -55,9 +64,11 @@ export default function ProductCard({ productInfo, favorite }) {
 
   const deleteFavoriteItems = async (productId) => {
     try {
+                  setLoading(true);
+
       const res = await deleteRequest(
         `/api/users/${userId}/favoriteItems/${productId}`,
-        t("message_DeleteText")
+        t("message")
       );
       // triggerRefresh();
       console.log(res);
@@ -67,7 +78,11 @@ export default function ProductCard({ productInfo, favorite }) {
         );
         divProductId.classList.add("hidden");
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log(error)
+    }finally {
+      setLoading(false);
+    }
   };
   const describtion =
     localStorage.lang === "ar"
@@ -81,13 +96,23 @@ export default function ProductCard({ productInfo, favorite }) {
     // <div className="h-full w-full border rounded-md bg-white flex justify-center py-2  cursor-pointer duration-300 hover:scale-105 ">
     <div
       id={`div_${productInfo.itemId}`}
-      className="h-[350px] w-full bg-white border rounded-md cursor-pointer  hover:border-b-[7px] hover:border-b-red-600  hover:scale-105 duration-200   hover:shadow-lg "
+      className="h-[350px] bg-white border w-full rounded-md cursor-pointer  hover:border-b-[7px] hover:border-b-red-600  hover:scale-105 duration-200   hover:shadow-lg "
     >
-      <div className="flex flex-col justify-between items-baseline">
+      {loading && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <Image
+            src="/Images/logo.png"
+            alt=""
+            className="w-[100px] h-[100px]  border-t-transparent rounded-full animate-pulse"
+            width={100}
+            height={100}
+            priority
+          />
+        </div>
+      )}
+      <div className="flex flex-col  justify-between items-baseline">
         <Image
-          src={`${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL}${
-            productInfo.mainImageURL || ""
-          }`}
+          src={process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL + productInfo.mainImageURL}
           alt=""
           width={500}
           height={500}
@@ -98,11 +123,11 @@ export default function ProductCard({ productInfo, favorite }) {
             navigate.push(`/user/pages/productdetails/${productInfo.itemId}`);
           }}
         />
-        <div className="px-3 flex flex-col gap-3 my-2">
-          <div className="flex justify-between items-center">
+        <div className="px-3 w-full flex flex-col gap-3 my-2">
+          <div className="flex w-full justify-between items-center">
             {/* <div> */}
             <h1
-              className=" text-sm font-semibold"
+              className=" text-xs font-semibold"
               onClick={() => {
                 setSelectedProductId(productInfo.itemId);
                 navigate.push(
@@ -148,18 +173,17 @@ export default function ProductCard({ productInfo, favorite }) {
           {/* <div className="group relative inline-block"> */}
 
           <h1
-            className="text-sm text-gray-400 w-full h-16 overflow-hidden"
+            className="text-xs text-gray-400 w-full h-16 overflow-hidden"
             onClick={() => {
               setSelectedProductId(productInfo.itemId);
               navigate.push(`/user/pages/productdetails/${productInfo.itemId}`);
             }}
             // title={describtion}
           >
-            {describtion
-              ? describtion.length <= 70
-                ? describtion
-                : describtion.slice(0, 70) + " ..."
-              : ""}
+            {describtion}
+            {describtion.length <= 70
+              ? describtion
+              : describtion.slice(0, 70) + " ..."}
           </h1>
 
           {/* <div className="absolute bottom-full left-0  
@@ -174,42 +198,46 @@ export default function ProductCard({ productInfo, favorite }) {
 
         <div className="flex w-full justify-between items-center   px-3">
           <div
-            className="flex flex-col my-2"
+            className="flex flex-col "
             onClick={() => {
               setSelectedProductId(productInfo.itemId);
               navigate.push(`/user/pages/productdetails/${productInfo.itemId}`);
             }}
           >
-            {productInfo.oldPrice ? (
-              <div className="flex gap-2">
-                <span className=" font-semibold line-through text-sm flex text-gray-400">
-                  {productInfo.oldPrice} {t("currency")}
-                </span>
-              </div>
-            ) : (
-              <span className="p-[11px]"></span>
-            )}
-            <div className="flex items-center gap-2">
-              <span className=" font-bold ">
-                {productInfo.price} {t("currency")}
-              </span>
+            <div className=" my-2 h-4">
               {productInfo.oldPrice ? (
-                <span className=" font-semibold  text-center bg-green-600 text-sm p-1 text-white rounded-md">
-                  {(
-                    ((productInfo.oldPrice - productInfo.price) /
-                      productInfo.oldPrice) *
-                    100
-                  ).toFixed(0)}
+                <span className=" font-semibold  w-full text-center bg-red-600 text-xs p-[4px]  text-white rounded-md">
+                  {t("off")}
+                  {" " +
+                    (
+                      ((productInfo.oldPrice - productInfo.price) /
+                        productInfo.oldPrice) *
+                      100
+                    ).toFixed(0)}
                   %
                 </span>
               ) : (
                 ""
               )}
             </div>
+            <div className="flex items-center gap-2">
+              <span className=" font-bold ">
+                {productInfo.price.toLocaleString("en-US")} {t("currency")}
+              </span>
+              {productInfo.oldPrice ? (
+                <div className="flex gap-2">
+                  <span className=" font-semibold line-through text-sm  mt-2 flex text-gray-400">
+                    {productInfo.oldPrice.toLocaleString("en-US")} {t("currency")}
+                  </span>
+                </div>
+              ) : (
+                <span className="p-[11px]"></span>
+              )}
+            </div>
           </div>
 
           <button
-            className="text-xl text-red-700 bg-red-50 p-2 mt-2  hover:bg-red-300 duration-500 hover:scale-110 rounded-md"
+            className="text-xl text-red-700 bg-red-50 p-2 mt-5  hover:bg-red-300 duration-500 hover:scale-110 rounded-md"
             onClick={() => {
               addToCart(productInfo.itemId);
             }}

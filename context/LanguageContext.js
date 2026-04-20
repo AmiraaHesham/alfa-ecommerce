@@ -4,36 +4,46 @@ import { createContext, useContext, useState, useEffect } from 'react';
 
 const LanguageContext = createContext({
   locale: '',
-  setLocale: () => { },
+  setLocale: () => {},
   t: (key) => key,
 });
 
 export const LanguageProvider = ({ children }) => {
-  const [locale, setLocale] = useState(''); // default آمن
+  const [locale, setLocale] = useState("");
   const [messages, setMessages] = useState({});
 
-  // ✅ هنا بس نستخدم localStorage و navigator
+  // ✅ تحديد اللغة أول مرة
   useEffect(() => {
     const storedLang = localStorage.getItem("lang");
 
-    if (storedLang) {
+    if (storedLang && ["ar", "en"].includes(storedLang)) {
       setLocale(storedLang);
     } else {
-      const userLang =
-        navigator.language || navigator.userLanguage;
+      const browserLang = navigator.language?.split('-')[0];
 
-      setLocale(userLang.split('-')[0]);
+      if (["ar", "en"].includes(browserLang)) {
+        setLocale(browserLang);
+      } else {
+        setLocale("ar"); // fallback
+      }
     }
   }, []);
 
-  // تحميل الترجمة
+  // ✅ حفظ اللغة
+  useEffect(() => {
+    if (locale) {
+      localStorage.setItem("lang", locale);
+    }
+  }, [locale]);
+
+  // ✅ تحميل الترجمة
   useEffect(() => {
     if (!locale) return;
-
+console.log("Loading messages for locale:", locale);
     fetch(`/locales/${locale}.json`)
       .then((res) => res.json())
       .then((data) => setMessages(data))
-      .catch((err) => console.error('Failed to load locale:', err));
+      .catch(() => setMessages({}));
   }, [locale]);
 
   const t = (key) => messages[key] || key;
@@ -46,9 +56,5 @@ export const LanguageProvider = ({ children }) => {
 };
 
 export const useLanguage = () => {
-  const context = useContext(LanguageContext);
-  if (!context) {
-    throw new Error('useLanguage must be used within LanguageProvider');
-  }
-  return context;
+  return useContext(LanguageContext);
 };

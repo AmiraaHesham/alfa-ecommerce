@@ -18,7 +18,7 @@ export default function RecentOrders_table() {
   const navigate = useRouter();
   const dashboardPendingOrders = async () => {
     const response = await getRequest("/api/admin/dashboard");
-    setPendingOrders(response.pendingOrders);
+    setPendingOrders(response.data.pendingOrders);
     console.log(response.pendingOrders);
   };
 

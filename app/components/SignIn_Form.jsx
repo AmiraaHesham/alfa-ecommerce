@@ -65,10 +65,11 @@ export default function SignIn() {
   };
   const handleSendForgotPasswordEmail = async (e) => {
     e.preventDefault();
-    setLoading(true);
     setError(null);
 
     try {
+          setLoading(true);
+
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/forgot-password/?email=${email}`
       );
@@ -91,6 +92,7 @@ export default function SignIn() {
             className="w-[100px] h-[100px]  border-t-transparent rounded-full animate-pulse"
             width={100}
             height={100}
+            priority
           />
         </div>
       )}
@@ -142,7 +144,7 @@ export default function SignIn() {
             className="flex flex-col gap-6"
             onSubmit={handleLogin}
           >
-            <div className="flex w-full px-2 rounded-md h-10 border items-center gap-3">
+            <div className="flex w-full px-2 rounded-md h-10 border items-center gap-3 shadow-md">
               {/* <label className="text-gray-500">Email Address</label>    */}
               <input
                 className=" w-full px-3 outline-none"
@@ -155,7 +157,7 @@ export default function SignIn() {
               </span>
             </div>
 
-            <div className="flex w-full px-2 rounded-md h-10 border items-center gap-3">
+            <div className="flex w-full px-2 rounded-md h-10 border items-center gap-3 shadow-md">
               {/* <label className="text-gray-500">Email Address</label>    */}
               <input
                 ref={input_passwordRef}
@@ -165,7 +167,7 @@ export default function SignIn() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
-              <span className="text-xl text-gray-700">
+              <span className="text-xl text-gray-700 cursor-pointer">
                 <FaEyeSlash
                   id="eyeSlash"
                   // className={input_passwordRef.current.type === "text"? "hidden" : "block"
@@ -196,7 +198,7 @@ export default function SignIn() {
               </span>
             </div>
             <span
-              className="text-red-500 text-sm flex justify-start items-start "
+              className="text-red-500 text-sm flex justify-start items-start cursor-pointer"
               onClick={() => {
                 const welcome_section =
                   document.querySelector("#welcome_section");
@@ -213,10 +215,10 @@ export default function SignIn() {
             >
               {t("forgotPassword")}
             </span>
-            <hr className="h-1"></hr>
+            <hr/>
             <button
               type="submit"
-              className="bg-red-600 text-white rounded-md h-10 "
+              className="bg-red-600 hover:bg-red-700 text-white rounded-md h-10 "
             >
               {loading ? t("loggingIn") : t("login")}
             </button>

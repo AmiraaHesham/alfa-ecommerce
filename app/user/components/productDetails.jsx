@@ -6,7 +6,6 @@ import Image from "next/image";
 import { MdOutlineAddShoppingCart } from "react-icons/md";
 import { useRouter } from "next/navigation";
 import { postRequest } from "../../../utils/requestsUtils";
-import AOS from "aos";
 import "aos/dist/aos.css";
 import { useLanguage } from "../../../context/LanguageContext";
 import Swal from "sweetalert2";
@@ -15,6 +14,7 @@ export default function ProductDetails({ itemId }) {
   const { setSelectedCategoryId } = useIdContext();
   const navigate = useRouter();
   const [loading, setLoading] = useState(true);
+  const [imageShow, setImageShow] = useState("");
 
   const { t } = useLanguage();
   const [product, setProduct] = useState({
@@ -37,30 +37,34 @@ export default function ProductDetails({ itemId }) {
     img3: "",
     img3file: "",
   });
+
   const productDetails = async () => {
     try {
       const res = await getProductDetails(itemId);
+      const resData = res.data
+      console.log(resData)
       setProduct((prev) => ({
         ...prev,
-        nameEn: res.nameEn,
-        nameAr: res.nameAr,
-        code: res.code,
-        price: res.price,
-        oldPrice: res.oldPrice,
-        descriptionAr: res.descriptionAr,
-        descriptionEn: res.descriptionEn,
+        nameEn: resData.nameEn,
+        nameAr: resData.nameAr,
+        code: resData.code,
+        price: resData.price,
+        oldPrice: resData.oldPrice,
+        descriptionAr: resData.descriptionAr,
+        descriptionEn: resData.descriptionEn,
         mainImage:
-          process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL + res.mainImageURL,
-        img2: res.img2 || "",
-        img3: res.img3 || "",
+          process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL + resData.mainImageURL,
+        img2: resData.images.length >= 1 ?process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL + resData.images[0].imageUrl :"",
+        img3:  resData.images.length >= 2 ? process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +resData.images[1].imageUrl  :"",
         category: {
           ...prev.category,
-          id: res.itemCategory.itemCategoryId,
-          nameAr: res.itemCategory.nameAr,
-          nameEn: res.itemCategory.nameEn,
+          id: resData.itemCategory.itemCategoryId,
+          nameAr: resData.itemCategory.nameAr,
+          nameEn: resData.itemCategory.nameEn,
         },
       }));
       setLoading(false);
+      setImageShow(process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL + resData.mainImageURL);
     } catch (error) {
       console.log(error);
       setLoading(true);
@@ -70,7 +74,8 @@ export default function ProductDetails({ itemId }) {
   const userId = typeof window !== "undefined" ? localStorage.id : "";
 
   const addToCart = async () => {
-    await postRequest(
+    try{
+       await postRequest(
       `/api/shopCarts/${userId}/addLine`,
       {
         itemId: itemId,
@@ -97,17 +102,20 @@ export default function ProductDetails({ itemId }) {
     if (result.isConfirmed) {
       navigate.push("/user/cart");
     }
+    }catch(error){
+      console.log(error)
+    }finally {
+      setLoading(false);
+    }
+   
   };
 
   useEffect(() => {
-    AOS.init({
-      duration: 1000,
-      once: false,
-    });
     productDetails();
   }, []);
   return (
-    <div data-aos="fade-up" className=" ">
+    <div  className=" ">
+      
       {loading ? (
         // Skeleton rows
         [...Array(1)].map((_, index) => (
@@ -130,10 +138,22 @@ export default function ProductDetails({ itemId }) {
         ))
       ) : (
         <div className="flex lg:flex-row xs:flex-col  gap-10 py-10 mx-10 ">
+           {loading && (
+              <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+                <Image
+                  src="/Images/logo.png"
+                  alt=""
+                  className="w-[100px] h-[100px]  border-t-transparent rounded-full animate-pulse"
+                  width={100}
+                  height={100}
+                  priority
+                />
+              </div>
+            )}
           <div className="w-full h-[600px] ">
             <div className="w-full h-[500px] flex justify-center   rounded-md ">
               <Image
-                src={product.mainImage}
+                src={imageShow}
                 alt="mainImage"
                 width={500}
                 height={500}
@@ -141,7 +161,38 @@ export default function ProductDetails({ itemId }) {
                 className="w-full border rounded-md shadow-md"
               />
             </div>
-            <div className="flex  items-center gap-4 mt-5 ">
+            <div className="flex  items-center gap-4 mt-5 "
+          
+            >
+              
+              {
+                product.img2?
+                 <Image
+                src={product.img2}
+                alt="mainImage"
+                width={100}
+                height={100}
+                priority
+                className="w-[100px] border rounded-md h-[100px] shadow-md"
+                onClick={()=>{
+                  setImageShow(product.img2)
+                }}
+              />:""
+              }
+             
+            {
+              product.img3?<Image
+                src={product.img3}
+                alt="mainImage"
+                width={100}
+                height={100}
+                priority
+                className="w-[100px] border rounded-md h-[100px] shadow-md"
+                 onClick={()=>{
+                  setImageShow(product.img3)
+                }}
+              />:""
+            }  
               <Image
                 src={product.mainImage}
                 alt="mainImage"
@@ -149,22 +200,9 @@ export default function ProductDetails({ itemId }) {
                 height={100}
                 priority
                 className="w-[100px] border rounded-md h-[100px] shadow-md"
-              />
-              <Image
-                src={product.mainImage}
-                alt="mainImage"
-                width={100}
-                height={100}
-                priority
-                className="w-[100px] border rounded-md h-[100px] shadow-md"
-              />
-              <Image
-                src={product.mainImage}
-                alt="mainImage"
-                width={100}
-                height={100}
-                priority
-                className="w-[100px] border rounded-md h-[100px] shadow-md"
+                 onClick={()=>{
+                  setImageShow(product.mainImage)
+                }}
               />
             </div>
           </div>

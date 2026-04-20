@@ -12,7 +12,6 @@ import {
 } from "../../../utils/requestsUtils";
 import { LuLoader } from "react-icons/lu";
 
-import AOS from "aos";
 import "aos/dist/aos.css";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
@@ -24,7 +23,8 @@ export default function Cart() {
   const [totalOrder, setTotalOrder] = useState(0);
   const [totalDiscount, setTotalDiscount] = useState(0);
   const [itemNum, setItemNum] = useState(0);
-  const userId = typeof window !== "undefined" ? localStorage.id : null;
+  const userId = typeof window !== "undefined" ? localStorage.getItem("id") : null;
+  const lang = typeof window !== "undefined" ? localStorage.getItem("lang") : null;
   const shappingCost = 50;
   const [isFirstAction, setIsFirstAction] = useState(true);
   const [loading, setLoading] = useState(true);
@@ -33,10 +33,11 @@ export default function Cart() {
   const getProductInCart = async () => {
     try {
       const res = await getRequest(`/api/shopCarts/${userId}`);
-      setItems(res.itemLines);
-      setTotalOrder(res.total);
-      setItemNum(res.itemLines.length);
-      setTotalDiscount(res.totalDiscount);
+      const rseData= res.data
+      setItems(rseData.itemLines);
+      setTotalOrder(rseData.total);
+      setItemNum(rseData.itemLines.length);
+      setTotalDiscount(rseData.totalDiscount);
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -50,7 +51,7 @@ export default function Cart() {
         itemLineId: itemId,
         quantity: newQuantity,
       },
-      ""
+      "",
     );
     getProductInCart();
   };
@@ -58,39 +59,58 @@ export default function Cart() {
   const deleteItemFormCart = async (itemLineId) => {
     await deleteRequest(
       `/api/shopCarts/${userId}/deleteLine/${itemLineId}`,
-      t("message_DeleteText")
+      t("message"),
     );
     getProductInCart();
   };
 
   const placeOrder = async () => {
-    if (items.length != 0) {
-      if (isFirstAction) {
-        getProductInCart();
+    try {
+      if (items.length != 0) {
+        if (isFirstAction) {
+          setLoading(true);
+
+          getProductInCart();
+          setLoading(false);
+        } else {
+          setLoading(true);
+
+          const res = await postRequest(
+            `/api/orders/${userId}/placeOrder`,
+            "",
+            "",
+          );
+          navigate.push("/user/ordershistory");
+          console.log(res);
+        }
+        setIsFirstAction(!isFirstAction);
       } else {
-        const res = await postRequest(
-          `/api/orders/${userId}/placeOrder`,
-          "",
-          ""
-        );
-        navigate.push("/user/ordershistory");
-        console.log(res);
+        toast.error(t("noProductsInCart"));
       }
-      setIsFirstAction(!isFirstAction);
-    } else {
-      toast.error(t("noProductsInCart"));
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    AOS.init({
-      duration: 1000,
-      once: false,
-    });
     getProductInCart();
   }, []);
   return (
-    <div data-aos="fade-up" className="xl:p-10 xs:p-7  ">
+    <div className="xl:p-10 xs:p-7  ">
+       {loading && (
+              <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+                <Image
+                  src="/Images/logo.png"
+                  alt=""
+                  className="w-[100px] h-[100px]  border-t-transparent rounded-full animate-pulse"
+                  width={100}
+                  height={100}
+                  priority
+                />
+              </div>
+            )}
       <div className="flex justify-between py-5">
         <div className="">
           <h1 className="text-4xl font-bold mb-2"> {t("shoppingCart")} </h1>
@@ -104,7 +124,7 @@ export default function Cart() {
         >
           <h1>{t("continueShopping")} </h1>
           <span className="mt-2">
-            {localStorage.lang === "ar" ? <FaArrowLeft /> : <FaArrowRight />}
+            {lang === "ar" ? <FaArrowLeft /> : <FaArrowRight />}
           </span>
         </Link>
       </div>
@@ -217,7 +237,7 @@ export default function Cart() {
                             onClick={() => {
                               changeQuantity(
                                 product.itemLineId,
-                                product.quantity + 1
+                                product.quantity + 1,
                               );
                             }}
                             className="text-xl font-bold text-gray-600  hover:text-red-600"
@@ -236,7 +256,7 @@ export default function Cart() {
                               if (product.quantity > 1) {
                                 changeQuantity(
                                   product.itemLineId,
-                                  product.quantity - 1
+                                  product.quantity - 1,
                                 );
                               }
                             }}
@@ -273,7 +293,7 @@ export default function Cart() {
             </tbody>
           </table>
         </div>
-        <div className=" h-screen md:w-[40%]  xs:w-full">
+        <div className="md:w-[40%]  xs:w-full">
           {loading ? (
             // Skeleton rows
             <div className=" h-[500px] p-7  w-full bg-white rounded-lg border">
@@ -326,7 +346,7 @@ export default function Cart() {
               </div>
             </div>
           ) : (
-            <div className=" h-[500px] p-7  w-full bg-white rounded-lg border">
+            <div className="  p-7  w-full bg-white rounded-lg border">
               <h1 className="mb-10 text-2xl font-bold">{t("orderSummary")} </h1>
               <div className="flex justify-between items-center mb-5">
                 <span className="text-gray-600">
@@ -334,13 +354,17 @@ export default function Cart() {
                   {t("totalProducts") + " " + itemNum}
                 </span>
                 <span className="font-semibold">
-                  {totalOrder.toLocaleString("en-US") + " " + t("currency")}{" "}
+                  {totalOrder.toLocaleString("en-US") +
+                    " " +
+                    t("currency")}{" "}
                 </span>
               </div>
               <div className="flex justify-between items-center mb-5">
                 <span className="text-gray-600">{t("totalDiscount")} </span>
                 <span className="font-semibold">
-                  {totalDiscount.toLocaleString("en-US") + " " + t("currency")}{" "}
+                  {totalDiscount.toLocaleString("en-US") +
+                    " " +
+                    t("currency")}{" "}
                 </span>
               </div>
 

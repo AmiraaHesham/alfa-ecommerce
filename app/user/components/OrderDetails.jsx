@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { MdDelete } from "react-icons/md";
+import { MdCancel, MdDelete } from "react-icons/md";
 import { getRequest, postRequest } from "../../../utils/requestsUtils";
 import { useEffect, useState } from "react";
 import { useLanguage } from "../../../context/LanguageContext";
@@ -15,7 +15,7 @@ export default function OrderDetails({ orderId }) {
   const [itemsNum, setItemsNum] = useState();
   const [createdDate, setCreatedDate] = useState();
   const [state, setState] = useState();
-  const [netTotalOrder, setNetTotalOrder] = useState();
+  const [total, setTotal] = useState();
 
   const { setSelectedProductId } = useIdContext();
   const navigate = useRouter();
@@ -35,15 +35,16 @@ export default function OrderDetails({ orderId }) {
   const shappingCost = 50;
   const getOrder = async () => {
     const res = await getRequest(`/api/orders/${orderId}`);
-    setOrder(res.orderItemLines);
-    setTotalOrder(res.total);
-    setItemsNum(res.orderItemLines.length);
-    setState(res.state);
-    setNetTotalOrder(res.netTotal);
-    setCreatedDate(res.createdDate);
-    setTotalDiscount(res.totalDiscount);
+    const resData = res.data
+    setOrder(resData.orderItemLines);
+    setTotalOrder(resData.total);
+    setItemsNum(resData.orderItemLines.length);
+    setState(resData.state);
+    setTotal(resData.total);
+    setCreatedDate(resData.createdDate);
+    setTotalDiscount(resData.totalDiscount);
   };
- const orderCancel = async () => {
+  const orderCancel = async () => {
     try {
       if (state === "PENDING")
         await postRequest(`/api/user/orders/${orderId}/cancel`);
@@ -194,7 +195,7 @@ export default function OrderDetails({ orderId }) {
                     <td className="">
                       <div className="flex gap-5">
                         {product.oldUnitPrice ? (
-                          <span className="bg-green-600 text-sm px-2 text-white rounded-md">
+                          <span className="bg-red-600 text-sm px-2 text-white rounded-md">
                             {(
                               ((product.oldUnitPrice - product.unitPrice) /
                                 product.oldUnitPrice) *
@@ -224,8 +225,14 @@ export default function OrderDetails({ orderId }) {
           </table>
         </div>
         <div className=" md:w-[40%]  xs:w-full">
-          <div className=" h-[500px] p-7  w-full bg-white rounded-lg border">
-            <h1 className="mb-10 text-2xl font-bold">{t("orderSummary")} </h1>
+          <div className=" p-7  w-full bg-white rounded-lg border">
+            <div className="flex justify-between items-center mb-10">
+              <h1 className=" text-2xl font-bold">{t("orderSummary")} </h1>
+            {state === "CANCELLED" ?<h1 className="flex items-center gap-2 text-lg font-bold text-red-600">
+                <MdCancel />
+                { t("CANCELLED") }
+              </h1>:''}  
+            </div>
 
             <div className="flex justify-between orderss-center mb-5">
               <span className="text-gray-600"> {t("createdDate")}</span>
@@ -258,12 +265,12 @@ export default function OrderDetails({ orderId }) {
             <hr className="my-6" />
             <div className="flex justify-between orderss-center text-2xl font-semibold">
               <span>{t("grandTotal")} </span>
-              <span className="text-blue-500">
-                {netTotalOrder === 0 ? 0 : netTotalOrder + " " + t("currency")}
+              <span className="">
+                {total === 0 ? 0 : total + " " + t("currency")}
               </span>
             </div>
             <button
-              className={`w-full h-7  mt-5 rounded-md text-white ${
+              className={`w-full h-7  my-10 rounded-md text-white ${
                 state === "PENDING"
                   ? "bg-red-500 hover:bg-red-600"
                   : "bg-gray-500 cursor-not-allowed"

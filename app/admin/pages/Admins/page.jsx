@@ -1,25 +1,24 @@
-import SideMenu from "../../components_admin/SideMenu";
-import Header from "../../components_admin/Header";
-// import Form_contact from "../components_admin/contact/contactForm.jsx";
+"use client"
 import Admins_Table from "../../components_admin/admins/AdminsTable";
 import AdminForm from "../../components_admin/admins/AdminForm";
-import Image from "next/image";
+import { useState } from "react";
 
 
-export default function AdminsPage({params}) {
-    const { id } = params; 
+export default function AdminsPage() {
 
 //  const role =
 //     typeof window !== "undefined" ? localStorage.getItem("role") : null;
 //   if(role === "ADMIN"){
+  const [isFormOpen, setIsFormOpen] = useState(false);
+
   return (
     <div className="w-full h-full p-5 bg-[#F9FAFB] ">
       
 
           <div className=" h-full relative">
-            <AdminForm />
+            <AdminForm  isFormOpen={isFormOpen} setIsFormOpen={setIsFormOpen} />
 
-            <Admins_Table />
+            <Admins_Table setIsFormOpen={setIsFormOpen}/>
           </div>
         </div>
      
