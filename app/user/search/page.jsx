@@ -9,6 +9,7 @@ import { useIdContext } from "../../../context/idContext";
 import ProductCard from "../components/ProductCard";
 import { useLanguage } from "../../../context/LanguageContext";
 import { BsList } from "react-icons/bs";
+import Select from 'react-select';
 
 export default function Searchpage() {
   const { t } = useLanguage();
@@ -17,9 +18,16 @@ export default function Searchpage() {
   const [ascending, setAscending] = useState();
   const [sortBy, setSortBy] = useState();
 
+  const sortOptions = [
+    { value: "true,price", label: t("priceLowToHigh") },
+    { value: "false,price", label: t("priceHighToLow") }
+  ];
+
+  const currentValue = sortBy ? sortOptions.find(option => option.value === `${ascending},${sortBy}`) : null;
+
   const { selectedSearchInput } = useSearshInputContext();
   const { selectedCategoryId } = useIdContext();
-  const getAllProducts = useCallback(async () => {
+  const getAllProducts =async () => {
     try {
       const response = await postRequest(
         "/api/public/items/search",
@@ -41,8 +49,8 @@ export default function Searchpage() {
       console.log(error);
       setLoading(true);
     }
-  }, [selectedCategoryId, selectedSearchInput, sortBy, ascending]);
 
+  }
   useEffect(() => {
     getAllProducts(ascending, sortBy);
   }, [
@@ -50,7 +58,6 @@ export default function Searchpage() {
     selectedCategoryId,
     sortBy,
     ascending,
-    getAllProducts,
   ]);
   return (
     <div className=" ">
@@ -70,34 +77,94 @@ export default function Searchpage() {
               <BsList className="text-2xl font-bold" />
               {t("categories")}
             </span>
-            <div className="bg-white flex  gap-4 items-center w-[330px] border rounded-md  px-3 h-10  mb-5">
-              <h1 className="text-sm text-gray-500"> {t("sortBy")}: </h1>
-              <select
-                className=" h-full w-[70%] bg-none  font-semibold  rounded-md outline-none "
-                onChange={(e) => {
-                  setAscending(e.target.value.split(",")[0]);
-                  setSortBy(e.target.value.split(",")[1]);
+            <div className="bg-white flex  gap-4 items-center  border rounded-md  px-3 h-10  mb-5">
+              <Select
+                options={sortOptions}
+                value={currentValue}
+                onChange={(selectedOption) => {
+                  if (selectedOption) {
+                    setAscending(selectedOption.value.split(",")[0]);
+                    setSortBy(selectedOption.value.split(",")[1]);
+                  } else {
+                    setAscending(undefined);
+                    setSortBy(undefined);
+                  }
                 }}
-              >
-                <option
-                  value=""
-                  className="bg-red-700 rounded-md text-lg text-white font-semibold"
-                >
-                  {t("all")}
-                </option>
-                <option
-                  value="true,price"
-                  className="bg-red-700 rounded-md text-lg text-white font-semibold"
-                >
-                  {t("priceLowToHigh")}{" "}
-                </option>
-                <option
-                  value="false,price"
-                  className="bg-red-700 rounded-md text-lg text-white font-semibold"
-                >
-                  {t("priceHighToLow")}{" "}
-                </option>
-              </select>
+                placeholder={t("sortBy")}
+                className="h-full w-[200px]"
+                styles={{
+                  control: (provided) => ({
+                    ...provided,
+                    border: 'none',
+                    boxShadow: 'none',
+                    background: 'transparent',
+                    fontWeight: '600',
+                    height: '100%',
+                    width: '100%',
+                  }),
+                  option: (provided) => ({
+                    ...provided,
+                    // backgroundColor: '#b91c1c',
+                    color: 'white',
+                    fontSize: '18px',
+                    fontWeight: '600',
+                  }),
+                   input: (base) => ({
+                    ...base,
+                    color: "#374151",
+                  }),   
+                   option: (base, state) => ({
+                    ...base,
+                    backgroundColor: state.isSelected
+                      ? "#dc2626"
+                      : state.isFocused
+                        ? "#fee2e2"
+                        : "#ffffff",
+                    color: state.isSelected ? "#ffffff" : "#374151",
+                    cursor: "pointer",
+                    padding: "10px",
+                    "&:hover": {
+                      backgroundColor: state.isSelected ? "#dc2626" : "#fee2e2",
+                    },
+                  }),
+                }}
+              />
+               {/* styles={{
+                  control: (base) => ({
+                    ...base,
+                    backgroundColor: "#F9FAFB",
+                    borderColor: "#e5e7eb",
+                    border: "none",
+                    // borderRadius: "0.375rem",
+                    cursor: "pointer",
+                    outline: "none",
+                    "&:hover": {
+                      borderColor: "#e5e7eb",
+                      
+                    },
+                  }),
+                  option: (base, state) => ({
+                    ...base,
+                    backgroundColor: state.isSelected
+                      ? "#dc2626"
+                      : state.isFocused
+                        ? "#fee2e2"
+                        : "#ffffff",
+                    color: state.isSelected ? "#ffffff" : "#374151",
+                    cursor: "pointer",
+                    padding: "10px",
+                    "&:hover": {
+                      backgroundColor: state.isSelected ? "#dc2626" : "#fee2e2",
+                    },
+                  }),
+                  menu: (base) => ({
+                    ...base,
+                    backgroundColor: "#ffffff",
+                    borderRadius: "0.375rem",
+                    boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
+                  }),
+                 
+                }} */}
             </div>
           </div>
 
@@ -111,7 +178,7 @@ export default function Searchpage() {
               ))}
             </div>
           ) : products.length != 0 ? (
-            <div className="grid xl:grid-cols-4 lg:grid-cols-3  xs:grid-cols-2 gap-5">
+            <div className={`grid ${selectedSearchInput ? "xl:grid-cols-5 lg:grid-cols-4 " : "xl:grid-cols-4 lg:grid-cols-3"}  xs:grid-cols-2 gap-5`}>
               {products.map((product, index) => (
                 <div key={index}>
                   <ProductCard productInfo={product} />

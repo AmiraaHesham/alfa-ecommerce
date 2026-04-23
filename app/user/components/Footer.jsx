@@ -24,17 +24,18 @@ export default function Footer() {
   const getContact = async () => {
     const response = await getRequest(`/api/public/contact`);
     console.log(response);
+    const resData= response.data
     setContact((prev) => ({
       ...prev,
-      phone: response.phone || "",
-      email: response.email || "",
-      facebook: response.facebookURL || "",
-      instagram: response.instagramURL || "",
-      x: response.xURL || "",
-      whatsApp: response.whatsappURL || "",
-      telegram: response.telegramURL || "",
+      phone: resData.phone || "",
+      email: resData.email || "",
+      facebook: resData.facebookURL || "",
+      instagram: resData.instagramURL || "",
+      x: resData.xurl || "",
+      whatsApp: resData.whatsappURL || "",
+      telegram: resData.telegramURL || "",
     }));
-    console.log(response.facebookURL);
+    // console.log(resData.facebookURL);
   };
   useEffect(() => {
     getContact();

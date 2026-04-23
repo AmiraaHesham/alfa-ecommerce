@@ -75,9 +75,9 @@ export default function ContactForm() {
   useEffect(() => {
     getcontactInfo();
   }, []);
-  useEffect(() => {
-    console.log(contactInfo);
-  }, []);
+  // useEffect(() => {
+  //   console.log(contactInfo);
+  // }, []);
   return (
     <div className="bg-white border rounded-md px-5 h-[100%]">
        {loading && (

@@ -37,9 +37,9 @@ export default function UserInfo({ userId }) {
     PENDING: 0,
     DELIVERED: 0,
     SHIPPED: 0,
-    totalOrders: 0,
-  });
 
+  });
+const [totalOrders, setTotalOrders] = useState(0);
   const getUserInfo = async () => {
     const res = await getRequest(`/api/users/${userId}`);
     const resData = res.data
@@ -55,18 +55,14 @@ export default function UserInfo({ userId }) {
       address: resData.address,
       birthDate: resData.birthDate,
     }));
-    setOrderState((prev) => ({
-      ...prev,
-      PROCESSING:resData.ordersState[0]? resData.ordersState[0].count : 0,
-      PENDING:resData.ordersState[3] ? resData.ordersState[3].count : 0,
-      DELIVERED: resData.ordersState[1] ? resData.ordersState[1].count : 0,
-      SHIPPED:resData.ordersState[2] ? resData.ordersState[2].count : 0,
-      totalOrders:
-        (resData.ordersState[0] ? resData.ordersState[0].count : 0) +
-        (resData.ordersState[1] ? resData.ordersState[1].count : 0) +
-        (resData.ordersState[2] ? resData.ordersState[2].count : 0) +
-        (resData.ordersState[3] ? resData.ordersState[3].count : 0),
-    }));
+     resData.ordersState.map((state) => {
+      setOrderState((prevState) => ({
+        ...prevState,
+        [state.state]: state.count,
+      }));
+setTotalOrders(orderState.PROCESSING + orderState.PENDING + orderState.DELIVERED + orderState.SHIPPED)
+    });
+   
     console.log(resData);
   };
 
@@ -167,7 +163,7 @@ export default function UserInfo({ userId }) {
             </h1>
           </div>
           <h1 className="text-xl font-bold text-gray-700 bg-gray-100  w-[50px] rounded-xl px-2">
-            {orderState.totalOrders}
+            {totalOrders}
           </h1>
         </div>
 

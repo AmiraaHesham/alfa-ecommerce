@@ -10,11 +10,14 @@ import { useRouter } from "next/navigation";
 import { IoIosArrowRoundBack, IoIosArrowRoundForward } from "react-icons/io";
 import { useLanguage } from "../../../../context/LanguageContext";
 import { useEffect, useState } from "react";
+import { getThumbnailUrl } from "../../../../utils/functions";
+import { useSearshInputContext } from "../../../../context/searshInputContext";
 
 export default function CategorySection({ categories }) {
   const lang =
     typeof window !== "undefined" ? localStorage.getItem("lang") || "ar" : "ar";
   const { t } = useLanguage();
+  const { setSelectedSearchInput } = useSearshInputContext();
 
   const { setSelectedCategoryId } = useIdContext();
   const navigate = useRouter();
@@ -24,7 +27,7 @@ useEffect(() => {
 }, []);
 if (!mounted) return null;
   return (
-    <div className="flex flex-col justify-center items-center mt-32">
+    <div className="flex flex-col justify-center items-center mt-20">
      
       <div className="w-full   ">
         <Swiper
@@ -63,6 +66,7 @@ if (!mounted) return null;
               <div
                 className="  h-[270px] border-2  border-gray-200 flex justify-center items-center text-center hover:shadow-xl hover:shadow-slate-300   hover:scale-105 duration-200 cursor-pointer rounded-md  hover:border-b-red-600 hover:border-b-[7px]"
                 onClick={() => {
+                  setSelectedSearchInput("")
                   setSelectedCategoryId(category.itemCategoryId);
                   navigate.push("/user/search/");
                 }}
@@ -70,7 +74,7 @@ if (!mounted) return null;
                 <div className="py-2">
                   <Image
                     src={`${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL}${
-                      category.imageURL || ""
+                     getThumbnailUrl(category.imageURL)  || ""
                     }`}
                     alt={category.nameAr || "category"}
                     width={100}
@@ -86,7 +90,7 @@ if (!mounted) return null;
               </div>
             </SwiperSlide>
           ))}
-          <div className=" flex flex-col justify-center items-center relative my-20  ">
+          <div className=" flex flex-col justify-center items-center relative my-10  ">
             <div className=" p-1 rounded-full absolute flex gap-2 justify-center items-center  ">
               <button className="prev-btn2 p-1 rounded-full hover:bg-red-600 border-2 border-red-600  hover:text-white text-red-600 text-3xl   font-bold cursor-pointer *:">
                 {lang === "ar" ? (

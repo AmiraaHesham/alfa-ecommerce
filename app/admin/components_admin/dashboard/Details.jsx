@@ -17,17 +17,25 @@ export default function Dashboard_Details() {
 
   const dashboardPendingOrders = async () => {
     const response = await getRequest("/api/admin/dashboard");
-    setNewUsers(response.newUsers);
-    setActiveItems(response.activeItems);
-    setPendingOrders(response.ordersStats=[] ? 0 :response.ordersStats[1].count);
-    setOrdersCount(response.ordersCount || 0);
+    const resData = response.data;
+    console.log(response.data);
 
-    console.log(response);
+ resData.ordersStats.map((state) =>{
+    if(state.state === "pending"){
+      setPendingOrders(state.count)
+    }
+  }
+ )
+    setNewUsers(resData.newUsers);
+    setActiveItems(resData.activeItems);
+   
+    setOrdersCount(resData.ordersCount);
   };
 
   useEffect(() => {
     dashboardPendingOrders();
   }, []);
+
   return (
     <div className="w-full grid lg:grid-cols-4 xs:grid-cols-2 lg:gap-10 xs:gap-2 ">
       <div className="bg-white border flex flex-col gap-5 rounded-lg p-3">

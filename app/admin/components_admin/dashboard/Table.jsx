@@ -90,7 +90,7 @@ export default function RecentOrders_table() {
                     </div>
                   </td>
                   <td className="text-sm font-semibold">
-                    {order.orderTotal} {t("currency")}
+                    {order.orderTotal.toLocaleString("en-US")} {t("currency")}
                   </td>
                   <td className="text-sm font-semibold text-red-500">
                     {t(order.state)}

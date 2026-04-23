@@ -65,6 +65,20 @@ export default function CategoriesSideMenu() {
           </div>
         ) : (
           <div className="flex flex-col gap-1 text-gray-500">
+             <div
+                  className={`flex gap-4 mx-3 xs:justify-center md:justify-start  items-center p-3 rounded-md cursor-pointer hover:bg-red-100 hover:text-red-500 ${
+                    selectedCategoryId === null
+                      ? "bg-red-100 text-red-500"
+                      : ""
+                  }`}
+                  onClick={() => {
+                    setSelectedCategoryId(null);
+                  }}
+                >
+                  <h1 className=" font-semibold text-sm ">
+                    {t("all")}
+                  </h1>
+                </div>
             {categoriesList.map((category) => {
               return (
                 <div

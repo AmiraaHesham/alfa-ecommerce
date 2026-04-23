@@ -51,7 +51,7 @@ export default function UserOrders({ userId }) {
   }, [state]);
   return (
     <div>
-      <div className="w-full  bg-white mt-3 rounded-lg border flex md:flex-row xs:flex-col gap-5  items-start  p-4 ">
+      <div className="w-full  bg-white  rounded-lg border flex md:flex-row xs:flex-col gap-5  items-start  p-4 ">
         <div className="flex items-center justify-between border px-1 rounded-md w-[300px] bg-gray-100">
           <input
             type="text"

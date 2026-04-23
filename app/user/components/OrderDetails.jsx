@@ -7,15 +7,16 @@ import { useLanguage } from "../../../context/LanguageContext";
 import { useIdContext } from "../../../context/idContext";
 import { useRouter } from "next/navigation";
 import { FaBox, FaCheck, FaShoppingBag, FaTruck } from "react-icons/fa";
+import { getThumbnailUrl } from "../../../utils/functions";
 
 export default function OrderDetails({ orderId }) {
   const [order, setOrder] = useState([]);
-  const [totalOrder, setTotalOrder] = useState();
-  const [totalDiscount, setTotalDiscount] = useState();
+  const [totalOrder, setTotalOrder] = useState(0);
+  const [totalDiscount, setTotalDiscount] = useState(0);
   const [itemsNum, setItemsNum] = useState();
   const [createdDate, setCreatedDate] = useState();
   const [state, setState] = useState();
-  const [total, setTotal] = useState();
+  const [total, setTotal] = useState(0);
 
   const { setSelectedProductId } = useIdContext();
   const navigate = useRouter();
@@ -47,14 +48,14 @@ export default function OrderDetails({ orderId }) {
   const orderCancel = async () => {
     try {
       if (state === "PENDING")
-        await postRequest(`/api/user/orders/${orderId}/cancel`);
+        await postRequest(`/api/user/orders/${orderId}/cancel` ,"",t('message'));
     } catch (error) {
       console.log(error);
     }
   };
   useEffect(() => {
     getOrder();
-  }, []);
+  }, [orderCancel]);
   useEffect(() => {
     if (state === "PENDING") {
       setActiveStep(1);
@@ -159,7 +160,7 @@ export default function OrderDetails({ orderId }) {
                       <div className="flex orderss-center gap-3">
                         <Image
                           alt=""
-                          src={`${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL}${product.item.mainImageURL}`}
+                          src={`${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL}${getThumbnailUrl(product.item.mainImageURL)}`}
                           width={100}
                           height={100}
                           className="rounded-full border w-[45px] h-[45px]  "
@@ -180,12 +181,12 @@ export default function OrderDetails({ orderId }) {
                     <td className="font-semibold text-red-500">
                       <div>
                         <span>
-                          {product.unitPrice} {t("currency")}
+                          {product.unitPrice.toLocaleString("en-US")} {t("currency")}
                         </span>
 
                         {product.oldUnitPrice ? (
                           <span className="text-gray-400 line-through text-sm mx-2 opacity-90">
-                            {product.oldUnitPrice} {t("currency")}
+                            {product.oldUnitPrice.toLocaleString("en-US")} {t("currency")}
                           </span>
                         ) : (
                           ""
@@ -216,7 +217,7 @@ export default function OrderDetails({ orderId }) {
                       </div>
                     </td>
                     <td className="text-sm font-semibold">
-                      {product.totalPrice} {t("currency")}
+                      {product.totalPrice.toLocaleString("en-US")} {t("currency")}
                     </td>
                   </tr>
                 );
@@ -245,13 +246,13 @@ export default function OrderDetails({ orderId }) {
               </span>
 
               <span className="font-semibold">
-                {totalOrder + " " + t("currency")}
+                {totalOrder.toLocaleString("en-US") + " " + t("currency")}
               </span>
             </div>
             <div className="flex justify-between items-center mb-5">
               <span className="text-gray-600">{t("totalDiscount")} </span>
               <span className="font-semibold">
-                {totalDiscount + " " + t("currency")}{" "}
+                {totalDiscount.toLocaleString("en-US")+ " " + t("currency")}{" "}
               </span>
             </div>
 
@@ -266,7 +267,7 @@ export default function OrderDetails({ orderId }) {
             <div className="flex justify-between orderss-center text-2xl font-semibold">
               <span>{t("grandTotal")} </span>
               <span className="">
-                {total === 0 ? 0 : total + " " + t("currency")}
+                { total.toLocaleString("en-US") + " " + t("currency")}
               </span>
             </div>
             <button

@@ -46,7 +46,10 @@ export default function UpdateStatus({ orderId }) {
   ];
   const changeState = async (state) => {
     try {
-      const res = await postRequest(
+      if(state === "CANCELED"){
+""
+      }else{
+        const res = await postRequest(
         `/api/admin/orders/${orderId}/changeState/${state}`,
         "",
         t("message")
@@ -54,6 +57,8 @@ export default function UpdateStatus({ orderId }) {
       if (res.success === true) {
         setSelectedOrderState(state);
       }
+      }
+      
     } catch (error) {
       console.log(error);
     }

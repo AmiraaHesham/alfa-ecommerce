@@ -31,12 +31,22 @@ export const postRequest = async (endpoint, dataBody, message) => {
     }
 
     // 🟡 مع confirm
-    const result = await Swal.fire({
+const result = await Swal.fire({
       icon: "question",
       title: message,
       showCancelButton: true,
-      confirmButtonText: lang === "ar" ? "نعم" : "Yes",
+      confirmButtonText: lang === "ar" ? "نعم" : "OK",
       cancelButtonText: lang === "ar" ? "إلغاء" : "Cancel",
+      customClass: {
+        popup: "rounded-xl shadow-lg border border-gray-200 p-6",
+        title: "text-xl font-bold text-gray-800 mb-2",
+        content: "text-sm text-gray-600 mb-4",
+        confirmButton:
+          "bg-red-600 hover:bg-red-500 text-white font-medium px-6 py-2 rounded-lg",
+        cancelButton:
+          "bg-gray-300 hover:bg-gray-400 text-gray-800 font-medium px-6 py-2 rounded-lg ml-2",
+      },
+      reverseButtons: lang === "ar",
     });
 
     if (result.isConfirmed) {
@@ -140,7 +150,7 @@ export const putRequest = async (endpoint, dataBody, message) => {
     );
   }
   try {
-    const result = await Swal.fire({
+   const result = await Swal.fire({
       icon: "info",
       title: message,
       showCancelButton: true,

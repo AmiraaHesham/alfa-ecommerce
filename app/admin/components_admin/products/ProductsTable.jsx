@@ -13,18 +13,18 @@ import { deleteRequest } from "../../../../utils/requestsUtils.js";
 import { useRefresh } from "../../../../context/refreshContext.jsx";
 import { getThumbnailUrl } from "../../../../utils/functions.jsx";
 
-export default function ProductsTable({setIsFormOpen}) {
+export default function ProductsTable({ setIsFormOpen }) {
   const { t } = useLanguage();
   const [products, setProducts] = useState([]);
   const productTableRef = useRef();
   const pageNum = useRef(0);
   const { refreshKey } = useRefresh();
   const { triggerRefresh } = useRefresh();
-  const [mode, setMode] = useState("add"); 
   const { setSelectedProductId } = useIdContext();
   const searchInputRef = useRef();
-  // const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const getAllProducts = async () => {
+    setLoading(true)
     try {
       console.log(searchInputRef.current.value);
       const response = await postRequest(
@@ -34,7 +34,7 @@ export default function ProductsTable({setIsFormOpen}) {
           size: 15,
           searchText: searchInputRef.current.value,
         },
-        ""
+        "",
       );
       const resProducts = response.data || [];
       if (pageNum.current === 0) {
@@ -43,9 +43,9 @@ export default function ProductsTable({setIsFormOpen}) {
     } catch (error) {
       console.log(error);
     }
-    // finally {
-    //   setLoading(false);
-    // }
+    finally {
+      setLoading(false);
+    }
   };
   useEffect(() => {
     getAllProducts();
@@ -55,7 +55,7 @@ export default function ProductsTable({setIsFormOpen}) {
     await postRequest(
       `/api/admin/items/${productId}/favorite`,
       "",
-      t("message")
+      t("message"),
     );
     triggerRefresh();
   };
@@ -64,7 +64,7 @@ export default function ProductsTable({setIsFormOpen}) {
     await postRequest(
       `/api/admin/items/${productId}/unfavorite`,
       "",
-      t("message")
+      t("message"),
     );
     triggerRefresh();
   };
@@ -72,7 +72,7 @@ export default function ProductsTable({setIsFormOpen}) {
     await postRequest(
       `/api/admin/items/${productId}/activate`,
       "",
-      t("message")
+      t("message"),
     );
     triggerRefresh();
   };
@@ -81,21 +81,18 @@ export default function ProductsTable({setIsFormOpen}) {
     await postRequest(
       `/api/admin/items/${productId}/deactivate`,
       "",
-      t("message")
+      t("message"),
     );
     triggerRefresh();
   };
 
-const openForm = (productID) => {
-setIsFormOpen(true);
+  const openForm = (productID) => {
+    setIsFormOpen(true);
     setSelectedProductId(productID);
   };
   const deleteProduct = async (product) => {
     try {
-      await deleteRequest(
-        `/api/admin/items/${product.itemId}`,
-        t("message")
-      );
+      await deleteRequest(`/api/admin/items/${product.itemId}`, t("message"));
       getAllProducts();
     } catch (error) {
       console.log(error);
@@ -154,8 +151,7 @@ setIsFormOpen(true);
         <button
           className="p-2 text-white xs:text-xs md:text-sm rounded-md bg-red-500 text-center flex items-center justify-center gap-2"
           onClick={() => {
-            setIsFormOpen(true)
-          
+            setIsFormOpen(true);
             setSelectedProductId(null);
           }}
         >
@@ -184,7 +180,7 @@ setIsFormOpen(true);
             </tr>
           </thead>
           <tbody className="bg-white text-black text-lg w-full ">
-            {/* {loading
+            {loading
               ? // Skeleton rows
                 [...Array(9)].map((_, index) => (
                   <tr key={`skeleton-${index}`} className="border-b">
@@ -211,9 +207,9 @@ setIsFormOpen(true);
                       <div className="h-4 bg-gray-200 rounded animate-pulse w-16"></div>
                     </td>
                   </tr>
-                )) */}
-            {/* :  */}
-            {products.map((product, index) => (
+                ))
+             :  
+            products.map((product, index) => (
               <tr
                 key={index}
                 className=" border hover:bg-gray-100 cursor-pointer  "
@@ -324,10 +320,7 @@ setIsFormOpen(true);
                 </td>
               </tr>
             ))}
-
-            {/* {products.length <= 15 ? (
-              " "
-            ) : ( */}
+          
             <tr className="h-5 text-center">
               <td colSpan="6">
                 <button
@@ -341,7 +334,7 @@ setIsFormOpen(true);
                 </button>
               </td>
             </tr>
-            {/* )} */}
+       
           </tbody>
         </table>
       </div>

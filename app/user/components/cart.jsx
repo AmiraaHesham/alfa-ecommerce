@@ -16,6 +16,7 @@ import "aos/dist/aos.css";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import Link from "next/link";
+import { getThumbnailUrl } from "../../../utils/functions";
 
 export default function Cart() {
   const { t } = useLanguage();
@@ -23,8 +24,10 @@ export default function Cart() {
   const [totalOrder, setTotalOrder] = useState(0);
   const [totalDiscount, setTotalDiscount] = useState(0);
   const [itemNum, setItemNum] = useState(0);
-  const userId = typeof window !== "undefined" ? localStorage.getItem("id") : null;
-  const lang = typeof window !== "undefined" ? localStorage.getItem("lang") : null;
+  const userId =
+    typeof window !== "undefined" ? localStorage.getItem("id") : null;
+  const lang =
+    typeof window !== "undefined" ? localStorage.getItem("lang") : null;
   const shappingCost = 50;
   const [isFirstAction, setIsFirstAction] = useState(true);
   const [loading, setLoading] = useState(true);
@@ -32,16 +35,17 @@ export default function Cart() {
 
   const getProductInCart = async () => {
     try {
+      setLoading(true);
       const res = await getRequest(`/api/shopCarts/${userId}`);
-      const rseData= res.data
+      const rseData = res.data;
       setItems(rseData.itemLines);
       setTotalOrder(rseData.total);
       setItemNum(rseData.itemLines.length);
       setTotalDiscount(rseData.totalDiscount);
-      setLoading(false);
     } catch (error) {
       console.log(error);
-      setLoading(true);
+    } finally {
+      setLoading(false);
     }
   };
   const changeQuantity = async (itemId, newQuantity) => {
@@ -67,11 +71,11 @@ export default function Cart() {
   const placeOrder = async () => {
     try {
       if (items.length != 0) {
-        if (isFirstAction) {
-          setLoading(true);
 
-          getProductInCart();
-          setLoading(false);
+        if (isFirstAction) {
+         await  getProductInCart();
+
+        
         } else {
           setLoading(true);
 
@@ -99,18 +103,18 @@ export default function Cart() {
   }, []);
   return (
     <div className="xl:p-10 xs:p-7  ">
-       {loading && (
-              <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-                <Image
-                  src="/Images/logo.png"
-                  alt=""
-                  className="w-[100px] h-[100px]  border-t-transparent rounded-full animate-pulse"
-                  width={100}
-                  height={100}
-                  priority
-                />
-              </div>
-            )}
+      {loading && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <Image
+            src="/Images/logo.png"
+            alt=""
+            className="w-[100px] h-[100px]  border-t-transparent rounded-full animate-pulse"
+            width={100}
+            height={100}
+            priority
+          />
+        </div>
+      )}
       <div className="flex justify-between py-5">
         <div className="">
           <h1 className="text-4xl font-bold mb-2"> {t("shoppingCart")} </h1>
@@ -178,7 +182,7 @@ export default function Cart() {
                         <div className="flex items-center gap-3">
                           <Image
                             alt=""
-                            src={`${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL}${product.item.mainImageURL}`}
+                            src={`${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL}${getThumbnailUrl(product.item.mainImageURL)}`}
                             width={45}
                             height={45}
                             className="rounded-full border my-1 p-1"

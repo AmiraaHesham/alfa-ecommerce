@@ -1,12 +1,10 @@
 "use client";
 import Image from "next/image";
 import { MdCancel } from "react-icons/md";
-import { IoCloudUploadSharp } from "react-icons/io5";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLanguage } from "../../../../context/LanguageContext.js";
 import { postRequest, putRequest } from "../../../../utils/requestsUtils.js";
 import { getRequest } from "../../../../utils/requestsUtils.js";
-import { useRouter } from "next/navigation";
 import { useIdContext } from "../../../../context/idContext";
 import { useRefresh } from "../../../../context/refreshContext.jsx";
 
@@ -22,11 +20,10 @@ export default function AdminForm({ isFormOpen, setIsFormOpen }) {
   const [loading, setLoading] = useState();
   const { t } = useLanguage();
   const { triggerRefresh } = useRefresh();
-  const { selectedAdminId , setSelectedAdminId } = useIdContext();
-    const isEditMode = selectedAdminId !== null;
+  const { selectedAdminId, setSelectedAdminId } = useIdContext();
+  const isEditMode = selectedAdminId !== null;
 
   const addAdminUser = async () => {
-
     try {
       setLoading(true);
 
@@ -42,7 +39,7 @@ export default function AdminForm({ isFormOpen, setIsFormOpen }) {
         t("message"),
       );
       triggerRefresh();
-      setSelectedAdminId(null)
+      setSelectedAdminId(null);
     } catch (error) {
       console.log(error);
     } finally {
@@ -51,42 +48,38 @@ export default function AdminForm({ isFormOpen, setIsFormOpen }) {
   };
 
   const AdminData = async () => {
-   
-      try {
-         if (selectedAdminId !== null) {
-            setLoading(true);
+    try {
+      if (selectedAdminId !== null) {
+        setLoading(true);
 
         const res = await getRequest(`/api/users/${selectedAdminId}`);
-        const resData = res.data
+        const resData = res.data;
         setAdminUser((prev) => ({
           ...prev,
           l_name: resData.lastName,
           f_name: resData.firstName,
           username: resData.username,
         }));
-      }else{
+      } else {
         setAdminUser({
           f_name: "",
           l_name: "",
           username: "",
           password: "",
           confirmPassword: "",
-        })
+        });
       }
-      } catch (error) {
-        console.log(error);
-      }finally {
+    } catch (error) {
+      console.log(error);
+    } finally {
       setLoading(false);
     }
-    }
-  
+  };
 
   const updateAdmin = async () => {
-  
-
     try {
-          setLoading(true);
-setIsFormOpen(false)
+      setLoading(true);
+      setIsFormOpen(false);
       await putRequest(
         `/api/admin/users/${selectedAdminId}`,
         {
@@ -99,10 +92,10 @@ setIsFormOpen(false)
         t("message"),
       );
       triggerRefresh();
-      setSelectedAdminId(null)
+      setSelectedAdminId(null);
     } catch (error) {
       console.log(error);
-    }finally {
+    } finally {
       setLoading(false);
     }
   };
@@ -115,26 +108,28 @@ setIsFormOpen(false)
       id="add-admin-form"
       className={`absolute justify-end  w-full h-screen ${isFormOpen ? "flex" : "hidden"}`}
     >
-       {loading && (
-              <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-                <Image
-                  src="/Images/logo.png"
-                  alt=""
-                  className="w-[100px] h-[100px]  border-t-transparent rounded-full animate-pulse"
-                  width={100}
-                  height={100}
-                  priority
-                />
-              </div>
-            )}
+      {loading && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <Image
+            src="/Images/logo.png"
+            alt=""
+            className="w-[100px] h-[100px]  border-t-transparent rounded-full animate-pulse"
+            width={100}
+            height={100}
+            priority
+          />
+        </div>
+      )}
       <div className="bg-white shadow-md shadow-slate-400  xs:w-full lg:w-[500px] flex flex-col border rounded-md">
         <div className="m-4 flex justify-between items-center">
-          <h1 id="nameForm" className="text-lg font-semibold">{isEditMode ? t("edit_admin") : t("add_admin")}</h1>
+          <h1 id="nameForm" className="text-lg font-semibold">
+            {isEditMode ? t("edit_admin") : t("add_admin")}
+          </h1>
           <button
             className="text-2xl   hover:text-red-800"
             onClick={() => {
-             setIsFormOpen(false)
-             setSelectedAdminId(null)
+              setIsFormOpen(false);
+              setSelectedAdminId(null);
             }}
           >
             <MdCancel />
@@ -258,7 +253,7 @@ setIsFormOpen(false)
                   className="bg-white w-full  border h-8  px-3 text-gray-700ss   hover:bg-red-800 hover:text-white rounded-lg"
                   onClick={() => {
                     setIsFormOpen(false);
-                    setSelectedAdminId(null)
+                    setSelectedAdminId(null);
                   }}
                 >
                   {t("cancel")}

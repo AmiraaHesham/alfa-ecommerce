@@ -8,24 +8,10 @@ import { NamePageInAdminProvider } from "../context/namePageInAdmin";
 import { ToastContainer } from "react-toastify";
 import RTLController from './components/RTLController.jsx'
 
-import Image from "next/image";
-// import { metadata } from "../utils/functions";
-
-
-// metadata
-
-// const cairo = Cairo({
-//   subsets: ['arabic', 'latin'],
-//   weight: ['200', '300', '400', '600', '700', '800', '900'],
-//   variable: '--font-cairo',
-// });
-
 export default function RootLayout({ children }) {
    const lang = typeof window !== 'undefined'? localStorage.getItem("lang"):'ar';
 
-   
-
-  return (
+   return (
     <html lang={lang} dir={lang === "ar" ? "rtl" : "ltr"} >
       <body >
         

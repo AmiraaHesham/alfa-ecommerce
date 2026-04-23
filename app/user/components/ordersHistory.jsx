@@ -9,6 +9,7 @@ import "aos/dist/aos.css";
 import { useLanguage } from "../../../context/LanguageContext";
 import { useRouter } from "next/navigation";
 import { useIdContext } from "../../../context/idContext";
+import { getThumbnailUrl } from "../../../utils/functions";
 export default function OrdersHistory() {
   const { t } = useLanguage();
   const [orders, setOrders] = useState([]);
@@ -210,7 +211,7 @@ export default function OrdersHistory() {
                   <div className="flex items-center gap-1 mx-5">
                     <span className=" text-gray-600">{t("Total")}: </span>
                     <span className="text-xl font-semibold">
-                      {order.total} {t("currency")}
+                      {order.total.toLocaleString("en-US")} {t("currency")}
                     </span>
                   </div>
                 </div>
@@ -231,7 +232,7 @@ export default function OrdersHistory() {
                           <Image
                             src={
                               process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +
-                              itemLine.item.mainImageURL
+                             getThumbnailUrl(itemLine.item.mainImageURL)
                             }
                             alt=""
                             width={100}

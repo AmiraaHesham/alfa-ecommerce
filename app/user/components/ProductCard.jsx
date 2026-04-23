@@ -9,6 +9,7 @@ import { useRefresh } from "../../../context/refreshContext";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import { useState } from "react";
+import { getThumbnailUrl } from "../../../utils/functions";
 
 export default function ProductCard({ productInfo, favorite }) {
   const { setSelectedProductId } = useIdContext();
@@ -32,7 +33,7 @@ export default function ProductCard({ productInfo, favorite }) {
       icon: "success",
       title: t("تم إضافة المنتج الى سلة التسوق"),
       showCancelButton: true,
-      confirmButtonText: localStorage.lang === "ar" ? " إتمام  الشراء " : "Yes",
+      confirmButtonText: t("goToCart"),
       cancelButtonText: t("continueShopping"),
       customClass: {
         popup: "rounded-xl shadow-lg border border-gray-200 p-6",
@@ -112,7 +113,7 @@ export default function ProductCard({ productInfo, favorite }) {
       )}
       <div className="flex flex-col  justify-between items-baseline">
         <Image
-          src={process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL + productInfo.mainImageURL}
+          src={process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL + getThumbnailUrl(productInfo.mainImageURL)}
           alt=""
           width={500}
           height={500}

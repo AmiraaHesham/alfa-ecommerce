@@ -5,6 +5,7 @@ import Image from "next/image";
 import { getRequest } from "../../../../utils/requestsUtils.js";
 import { useEffect, useState } from "react";
 import { useOrderDetailsContext } from "../../../../context/orderDetailsContext.jsx";
+import { getThumbnailUrl } from "../../../../utils/functions.jsx";
 
 export default function OrdersItems({ orderId }) {
   const { t } = useLanguage();
@@ -63,7 +64,7 @@ export default function OrdersItems({ orderId }) {
                           alt=""
                           src={
                             process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +
-                            item.item.mainImageURL
+                           getThumbnailUrl(item.item.mainImageURL) 
                           }
                           width={55}
                           height={55}

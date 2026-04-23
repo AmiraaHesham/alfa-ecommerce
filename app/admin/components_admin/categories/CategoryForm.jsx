@@ -2,11 +2,10 @@
 import Image from "next/image";
 import { MdCancel } from "react-icons/md";
 import { IoCloudUploadSharp } from "react-icons/io5";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import {useEffect,  useState } from "react";
 import { useLanguage } from "../../../../context/LanguageContext.js";
 import { postRequest, putRequest } from "../../../../utils/requestsUtils.js";
 import { getRequest } from "../../../../utils/requestsUtils.js";
-import { useRouter } from "next/navigation";
 import { useIdContext } from "../../../../context/idContext";
 import { useRefresh } from "../../../../context/refreshContext.jsx";
 
@@ -42,9 +41,6 @@ export default function CategoryForm({ isFormOpen, setIsFormOpen }) {
   };
 
   const addCategory = async () => {
-    let form = document.querySelector("#add-category-form");
-    form.classList.add("hidden");
-
     try {
       setLoading(true);
 
@@ -54,6 +50,7 @@ export default function CategoryForm({ isFormOpen, setIsFormOpen }) {
       formData.append("imageFile", photo.imageFile);
       await postRequest("/api/admin/itemCategory", formData, t("message"));
       triggerRefresh();
+      
       setSelectedCategoryId(null);
     } catch (error) {
       console.log(error);
@@ -70,10 +67,12 @@ export default function CategoryForm({ isFormOpen, setIsFormOpen }) {
         const res = await getRequest(
           `/api/admin/itemCategory/${selectedCategoryId}`,
         );
-        (setNameAr(res.nameAr), setNameEn(res.nameEn));
+        const resData = res.data
+        setNameAr(resData.nameAr)
+         setNameEn(resData.nameEn);
         setPhoto((prev) => ({
           ...prev,
-          image: process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL + res.imageURL,
+          image: process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL + resData.imageURL,
         }));
       } else {
         (setNameAr(""), setNameEn(""));

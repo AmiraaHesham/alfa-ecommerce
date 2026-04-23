@@ -56,6 +56,8 @@ export default function SignIn() {
       if (response.data.userDetails.role === "ADMIN") {
         navigate.push("/admin/pages/Dashboard");
       } else navigate.push("/user/home");
+      setLocale(response.data.userDetails.language);
+
     } catch (error) {
       console.log(error);
       toast.error(error.message);

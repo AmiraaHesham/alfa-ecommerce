@@ -32,7 +32,7 @@
   "product_category": "CATEGORY",
   "price": "PRICE",
   "state": "STATE",
-  "product_state ": "Product State ",
+  "product_state": "Product State ",
   "state_inactive": "inactive",
   "code": "Code",
   "delete": "Delete",
@@ -177,5 +177,11 @@
   "off":"off",
   "order_cancel":"Order Cancel",
   "vailable_in_store":"Available in Store",
-  "message":"Are you sure ?"
+  "message":"Are you sure ?",
+  "no_categories":"No categories",
+  "select_category":"Select Category",
+  "edit_admin":"Edit Admin",
+  "edit_product":"Edit Product",
+  "select_state":"Select State",
+  "goToCart": "Go to cart"
 }

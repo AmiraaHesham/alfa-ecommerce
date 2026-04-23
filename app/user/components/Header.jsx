@@ -17,7 +17,7 @@ export default function Header() {
   const { t } = useLanguage();
   const navigate = useRouter();
   const id = typeof window !== "undefined" ? localStorage.getItem("id") : "";
-const [mounted, setMounted] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const divRef = useRef(null);
   const { setSelectedSearchInput } = useSearshInputContext();
@@ -27,23 +27,21 @@ const [mounted, setMounted] = useState(false);
   const userId =
     typeof window !== "undefined" ? localStorage.getItem("id") : "";
   const changeLanguage = async (newLang) => {
-  const validLangs = ["ar", "en"];
+    const validLangs = ["ar", "en"];
 
+    if (!validLangs.includes(newLang)) return;
 
-  if (!validLangs.includes(newLang)) return;
+    try {
+      await postRequest(`/api/users/${userId}/langauge/${locale}`, "", "");
 
-  try {
-    await postRequest(`/api/users/${userId}/langauge/${locale}`,"","")
-
-    setLocale(newLang);
-    localStorage.setItem("lang", newLang);
-
-  } catch (err) {
-    console.error("Failed to update language", err);
-  }
-};
-  useEffect(() => { 
-     setMounted(true);
+      setLocale(newLang);
+      localStorage.setItem("lang", newLang);
+    } catch (err) {
+      console.error("Failed to update language", err);
+    }
+  };
+  useEffect(() => {
+    setMounted(true);
     const username =
       typeof window !== "undefined" ? localStorage.getItem("firstName") : "";
     setUsername(username);
@@ -54,16 +52,14 @@ const [mounted, setMounted] = useState(false);
 
       //      document.dir = lang === 'AR' ? 'rtl' : 'ltr';
       //  setLocale(lang)
-      
-
     };
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []); 
-if (!mounted) return null;
+  }, []);
+  if (!mounted) return null;
 
   return (
     <header>
@@ -104,7 +100,9 @@ if (!mounted) return null;
               if (e.key === "Enter") {
                 e.preventDefault();
                 setSelectedSearchInput(searchInput);
-                navigate.push("/user/search/");
+                searchInput
+                  ? navigate.push("/user/search/")
+                  : navigate.push("/user/home") + setSelectedSearchInput("") ;
               }
             }}
             placeholder={t("search") + "..."}
@@ -120,7 +118,7 @@ if (!mounted) return null;
               value={locale}
               onChange={(e) => {
                 const newLang = e.target.value;
-               
+
                 changeLanguage(newLang);
               }}
             >
@@ -129,7 +127,6 @@ if (!mounted) return null;
                 className="bg-white text-red-500 text-lg font-semibold "
               >
                 العربية
-              
               </option>
               <option
                 value="en"

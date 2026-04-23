@@ -1,15 +1,14 @@
 "use client";
 import { useLanguage } from "../../../../context/LanguageContext.js";
 import { FaCircle, FaPlus } from "react-icons/fa";
-import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
+import {  useEffect, useRef, useState } from "react";
 import { postRequest } from "../../../../utils/requestsUtils.js";
 import { FaUserLarge } from "react-icons/fa6";
 import { ImBlocked } from "react-icons/im";
 import { IoMdSearch } from "react-icons/io";
-
 import { useIdContext } from "../../../../context/idContext.jsx";
 import { MdOutlineDownloading } from "react-icons/md";
+
 export default function AdminsTable({ setIsFormOpen }) {
   const { t } = useLanguage();
   const [users, setUsers] = useState([]);
