@@ -176,7 +176,7 @@
   "account_activated_successfully":"Your account has been successfully activated!",
   "off":"off",
   "order_cancel":"Order Cancel",
-  "vailable_in_store":"Available in Store",
+  "available_in_store":"Available in Store",
   "message":"Are you sure ?",
   "no_categories":"No categories",
   "select_category":"Select Category",
@@ -184,4 +184,5 @@
   "edit_product":"Edit Product",
   "select_state":"Select State",
   "goToCart": "Go to cart"
+
 }

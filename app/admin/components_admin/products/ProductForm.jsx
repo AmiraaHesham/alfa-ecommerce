@@ -8,6 +8,7 @@ import { FaCircle, FaTimes } from "react-icons/fa";
 import {
   getCategories,
   getProductDetails,
+  getThumbnailUrl,
 } from "../../../../utils/functions.jsx";
 import { postRequest, putRequest } from "../../../../utils/requestsUtils.js";
 import { useRefresh } from "../../../../context/refreshContext.jsx";
@@ -220,19 +221,19 @@ export default function FormProduct({ isFormOpen, setIsFormOpen }) {
           descriptionAr: resData.descriptionAr,
           descriptionEn: resData.descriptionEn,
           mainImage:
-            process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL + resData.mainImageURL ||
+            process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL + getThumbnailUrl(resData.mainImageURL)  ||
             "",
           img2:
             resData.images.length >= 1
               ? process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +
-                resData.images[0].imageUrl
+                getThumbnailUrl(resData.images[0].imageUrl)
               : null,
           img2ID:
             resData.images.length >= 1 ? resData.images[0].itemImageId : null,
           img3:
             resData.images.length >= 2
               ? process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +
-                resData.images[1].imageUrl
+                getThumbnailUrl(resData.images[1].imageUrl)
               : null,
           img3ID:
             resData.images.length >= 2 ? resData.images[1].itemImageId : null,

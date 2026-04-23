@@ -15,7 +15,7 @@ export default function ProductDetails({ itemId }) {
   const navigate = useRouter();
   const [loading, setLoading] = useState(true);
   const [imageShow, setImageShow] = useState("");
-const urlImage = process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL;
+  const urlImage = process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL;
   const { t } = useLanguage();
   const [product, setProduct] = useState({
     nameEn: "",
@@ -53,18 +53,9 @@ const urlImage = process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL;
         oldPrice: resData.oldPrice,
         descriptionAr: resData.descriptionAr,
         descriptionEn: resData.descriptionEn,
-        mainImage:
-          resData.mainImageURL,
-        img2:
-          resData.images.length >= 1
-            ?
-              resData.images[0].imageUrl
-            : "",
-        img3:
-          resData.images.length >= 2
-            ? 
-              resData.images[1].imageUrl
-            : "",
+        mainImage: resData.mainImageURL,
+        img2: resData.images.length >= 1 ? resData.images[0].imageUrl : "",
+        img3: resData.images.length >= 2 ? resData.images[1].imageUrl : "",
         category: {
           ...prev.category,
           id: resData.itemCategory.itemCategoryId,
@@ -73,9 +64,7 @@ const urlImage = process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL;
         },
       }));
       setLoading(false);
-      setImageShow(
-        urlImage + resData.mainImageURL,
-      );
+      setImageShow(urlImage + resData.mainImageURL);
     } catch (error) {
       console.log(error);
       setLoading(true);
@@ -96,21 +85,21 @@ const urlImage = process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL;
         "",
       );
       const result = await Swal.fire({
-           icon: "success",
-           title: t("تم إضافة المنتج الى سلة التسوق"),
-           showCancelButton: true,
-           confirmButtonText: t("goToCart"),
-           cancelButtonText: t("continueShopping"),
-           customClass: {
-             popup: "rounded-xl shadow-lg border border-gray-200 p-6",
-             title: "text-xl font-bold text-gray-800 mb-2",
-             content: "text-sm text-gray-600 mb-4",
-             confirmButton:
-               "bg-red-600 hover:bg-red-500 text-white font-medium px-6 py-2 rounded-lg",
-             cancelButton:
-               "bg-gray-500 hover:bg-gray-400 text-w  font-medium px-6 py-2 rounded-lg ml-2",
-           },
-         });
+        icon: "success",
+        title: t("تم إضافة المنتج الى سلة التسوق"),
+        showCancelButton: true,
+        confirmButtonText: t("goToCart"),
+        cancelButtonText: t("continueShopping"),
+        customClass: {
+          popup: "rounded-xl shadow-lg border border-gray-200 p-6",
+          title: "text-xl font-bold text-gray-800 mb-2",
+          content: "text-sm text-gray-600 mb-4",
+          confirmButton:
+            "bg-red-600 hover:bg-red-500 text-white font-medium px-6 py-2 rounded-lg",
+          cancelButton:
+            "bg-gray-500 hover:bg-gray-400 text-w  font-medium px-6 py-2 rounded-lg ml-2",
+        },
+      });
       if (result.isConfirmed) {
         navigate.push("/user/cart");
       }
@@ -174,7 +163,7 @@ const urlImage = process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL;
             <div className="flex  items-center gap-4 mt-5 ">
               {product.img2 ? (
                 <Image
-                  src={ urlImage +getThumbnailUrl(product.img2) }
+                  src={urlImage + getThumbnailUrl(product.img2)}
                   alt="mainImage"
                   width={100}
                   height={100}
@@ -190,14 +179,14 @@ const urlImage = process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL;
 
               {product.img3 ? (
                 <Image
-                  src={urlImage + getThumbnailUrl(product.img3) }
+                  src={urlImage + getThumbnailUrl(product.img3)}
                   alt="mainImage"
                   width={100}
                   height={100}
                   priority
                   className="w-[100px] border rounded-md h-[100px] shadow-md cursor-pointer"
                   onClick={() => {
-                    setImageShow(urlImage +product.img3);
+                    setImageShow(urlImage + product.img3);
                   }}
                 />
               ) : (
@@ -211,7 +200,7 @@ const urlImage = process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL;
                 priority
                 className="w-[100px] border rounded-md h-[100px] shadow-md cursor-pointer"
                 onClick={() => {
-                  setImageShow(urlImage +product.mainImage);
+                  setImageShow(urlImage + product.mainImage);
                 }}
               />
             </div>
@@ -255,28 +244,33 @@ const urlImage = process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL;
             </span>
             <div className="flex flex-col  gap-3">
               {product.oldPrice ? (
-                  <span className=" font-semibold mt-3 w-[80px] text-center bg-red-600 px-1 text-white rounded-md">
-                   {t("off")}  {(
-                      ((product.oldPrice - product.price) / product.oldPrice) *
-                      100
-                    ).toFixed(0)}
-                    %
-                  </span>
-                ) : (
-                  ""
-                )}
-              
+                <span className=" font-semibold mt-3 w-[80px] text-center bg-red-600 px-1 text-white rounded-md">
+                  {t("off")}{" "}
+                  {(
+                    ((product.oldPrice - product.price) / product.oldPrice) *
+                    100
+                  ).toFixed(0)}
+                  %
+                </span>
+              ) : (
+                ""
+              )}
+
               <div className="flex items-center gap-2">
                 <span className="text-3xl  font-semibold  ">
-                  {product.price.toLocaleString("en-US") + " " + t("currency")}
+                  {product.price
+                    ? product.price.toLocaleString("en-US") +
+                      " " +
+                      t("currency")
+                    : ""}
                 </span>
                 <span className="text-gray-400 text-xl line-through">
-                {product.oldPrice
-                  ? product.oldPrice.toLocaleString("en-US") +
-                    " " +
-                    t("currency")
-                  : ""}
-              </span>
+                  {product.oldPrice
+                    ? product.oldPrice.toLocaleString("en-US") +
+                      " " +
+                      t("currency")
+                    : ""}
+                </span>
               </div>
             </div>
             <div className="flex  items-center gap-4 h-10 ">

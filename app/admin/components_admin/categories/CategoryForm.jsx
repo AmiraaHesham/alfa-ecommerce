@@ -8,6 +8,7 @@ import { postRequest, putRequest } from "../../../../utils/requestsUtils.js";
 import { getRequest } from "../../../../utils/requestsUtils.js";
 import { useIdContext } from "../../../../context/idContext";
 import { useRefresh } from "../../../../context/refreshContext.jsx";
+import { getThumbnailUrl } from "../../../../utils/functions.jsx";
 
 export default function CategoryForm({ isFormOpen, setIsFormOpen }) {
   const [photo, setPhoto] = useState({
@@ -72,7 +73,7 @@ export default function CategoryForm({ isFormOpen, setIsFormOpen }) {
          setNameEn(resData.nameEn);
         setPhoto((prev) => ({
           ...prev,
-          image: process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL + resData.imageURL,
+          image: process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL + getThumbnailUrl(resData.imageURL),
         }));
       } else {
         (setNameAr(""), setNameEn(""));
