@@ -77,7 +77,7 @@ export default function FeaturedProducts() {
               }}
               className="cursor-pointer hover:shadow-md hover:scale-105 duration-200"
             >
-              <div className="h-[320px] bg-white border rounded-md">
+              <div className="h-[330px] bg-white border rounded-md">
                 <div className="">
                   <Image
                     src={`${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL}${
@@ -96,66 +96,66 @@ export default function FeaturedProducts() {
                           ? product.nameAr
                           : product.nameEn}
                       </h1>
-                      {/* <span
-                                              id={`btn_fov_${product.itemId}`}
-                                              className={`${product.favorite === true ? "text-gray-400 " : "text-red-600 "}rounded-full`}
-                                              onClick={() => {
-                                                const btn_fov = document.querySelector(
-                                                  `#btn_fov_${product.itemId}`,
-                                                );
-                                                if (favorite === true) {
-                                                  btn_fov.classList.add("text-red-600");
-                                                  deleteFavoriteItems(product.itemId);
-                                                } else {
-                                                  btn_fov.classList.remove("text-gray-400");
-                                                  addFavoriteItems(product.itemId);
-                                                  btn_fov.classList.add("text-red-600");
-                                
-                                                }
-                                                setSelectedProductId(product.itemId);
-                                              }}
-                                            >
-                                              <FaHeart />
-                                            </span> */}
+                     
                     </div>
-                    <h1 className="md:text-sm xs:text-xs text-gray-400 ">
-                      {/* {describtion.length <= 50
+                    <h1 className="md:text-sm xs:text-xs mt-2 text-gray-400 ">
+                      {describtion.length <= 50
                         ? describtion
-                        : describtion.slice(0, 50) + " ..."} */}
+                        : describtion.slice(0, 50) + " ..."}
                     </h1>
                   </div>
                 </div>
 
-                <div className="flex justify-between items-center mt-2 px-3">
-                  <div className="flex flex-col my-2">
-                    {product.oldPrice ? (
-                      <div className="flex gap-2">
-                        <span className=" font-semibold line-through text-sm flex text-gray-400">
-                          {product.oldPrice} {t("currency")}
-                        </span>
-                      </div>
-                    ) : (
-                      <span className="p-[11px]"></span>
-                    )}
-                    <div className="flex gap-2">
-                      <span className=" font-semibold text-base">
-                        {product.price} {t("currency")}
-                      </span>
-                      {product.oldPrice ? (
-                        <span className=" font-semibold flex bg-green-600 text-sm px-1 text-white rounded-md">
-                          {(
-                            ((product.oldPrice - product.price) /
-                              product.oldPrice) *
-                            100
-                          ).toFixed(0)}
-                          %
-                        </span>
-                      ) : (
-                        ""
-                      )}
-                    </div>
-                  </div>
-                </div>
+                  <div className="flex w-full justify-between items-center mt-3  px-3">
+                          {product.available ? (
+                            <div
+                              className="flex flex-col "
+                             
+                            >
+                              <div className=" my-2 h-4">
+                                {product.oldPrice ? (
+                                  <span className=" font-semibold  w-full text-center bg-red-600 text-xs p-[4px]  text-white rounded-md">
+                                    {t("off")}
+                                    {" " +
+                                      (
+                                        ((product.oldPrice - product.price) /
+                                          product.oldPrice) *
+                                        100
+                                      ).toFixed(0)}
+                                    %
+                                  </span>
+                                ) : (
+                                  ""
+                                )}
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <span className=" font-bold ">
+                                  {product.price.toLocaleString("en-US")} {t("currency")}
+                                </span>
+                                {product.oldPrice ? (
+                                  <div className="flex gap-2">
+                                    <span className=" font-semibold line-through text-sm  mt-2 flex text-gray-400">
+                                      {product.oldPrice.toLocaleString("en-US")}{" "}
+                                      {t("currency")}
+                                    </span>
+                                  </div>
+                                ) : (
+                                  <span className="p-[11px]"></span>
+                                )}
+                              </div>
+                            </div>
+                          ) : (
+                            ""
+                          )}
+                          {product.available ? (
+                            ""
+                          ) : (
+                            <span className="text-red-600 mt-8">
+                              {t("Currently_unavailable")}
+                            </span>
+                          )}
+                         
+                        </div>
               </div>
             </div>
           );
