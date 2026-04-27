@@ -9,6 +9,9 @@ import { postRequest } from "../../../utils/requestsUtils";
 import "aos/dist/aos.css";
 import { useLanguage } from "../../../context/LanguageContext";
 import Swal from "sweetalert2";
+import FeatuerProducts from "./home/FeatuerProducts";
+import { FaQuestionCircle } from "react-icons/fa";
+import { useSearshInputContext } from "../../../context/searshInputContext";
 export default function ProductDetails({ itemId }) {
   const [count, setCount] = useState(1);
   const { setSelectedCategoryId } = useIdContext();
@@ -17,6 +20,9 @@ export default function ProductDetails({ itemId }) {
   const [imageShow, setImageShow] = useState("");
   const urlImage = process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL;
   const { t } = useLanguage();
+    const { setSelectedSearchInput } = useSearshInputContext();
+  
+  const [products, setProducts] = useState([]);
   const [product, setProduct] = useState({
     nameEn: "",
     nameAr: "",
@@ -32,6 +38,7 @@ export default function ProductDetails({ itemId }) {
     code: "",
     mainImage: "",
     mainImagefile: "",
+    available: null,
     img2: "",
     img2file: "",
     img3: "",
@@ -56,6 +63,7 @@ export default function ProductDetails({ itemId }) {
         mainImage: resData.mainImageURL,
         img2: resData.images.length >= 1 ? resData.images[0].imageUrl : "",
         img3: resData.images.length >= 2 ? resData.images[1].imageUrl : "",
+        available: resData.available,
         category: {
           ...prev.category,
           id: resData.itemCategory.itemCategoryId,
@@ -65,9 +73,30 @@ export default function ProductDetails({ itemId }) {
       }));
       setLoading(false);
       setImageShow(urlImage + resData.mainImageURL);
+      getProductsByCategory(resData.itemCategory.itemCategoryId);
     } catch (error) {
       console.log(error);
       setLoading(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const getProductsByCategory = async (categoryId) => {
+    try {
+      const response = await postRequest(
+        "/api/public/items/search",
+        {
+          page: 0,
+          size: 20,
+          categoryId: categoryId,
+        },
+        "",
+      );
+      setProducts(response.data);
+      console.log(categoryId);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
     } finally {
       setLoading(false);
     }
@@ -76,7 +105,8 @@ export default function ProductDetails({ itemId }) {
 
   const addToCart = async () => {
     try {
-      await postRequest(
+      if(product.available){
+        await postRequest(
         `/api/shopCarts/${userId}/addLine`,
         {
           itemId: itemId,
@@ -84,6 +114,8 @@ export default function ProductDetails({ itemId }) {
         },
         "",
       );
+      }
+      
       const result = await Swal.fire({
         icon: "success",
         title: t("تم إضافة المنتج الى سلة التسوق"),
@@ -224,6 +256,7 @@ export default function ProductDetails({ itemId }) {
                   className="text-red-600 cursor-pointer hover:shadow-sm hover:shadow-red-700 px-4 rounded-md  "
                   onClick={() => {
                     setSelectedCategoryId(product.category.id);
+                    setSelectedSearchInput("")
                     navigate.push("/user/search");
                   }}
                 >
@@ -242,7 +275,7 @@ export default function ProductDetails({ itemId }) {
                 ? product.descriptionAr
                 : product.descriptionEn}
             </span>
-            <div className="flex flex-col  gap-3">
+           {product.available?<div className="flex flex-col  gap-3">
               {product.oldPrice ? (
                 <span className=" font-semibold mt-3 w-[80px] text-center bg-red-600 px-1 text-white rounded-md">
                   {t("off")}{" "}
@@ -255,7 +288,6 @@ export default function ProductDetails({ itemId }) {
               ) : (
                 ""
               )}
-
               <div className="flex items-center gap-2">
                 <span className="text-3xl  font-semibold  ">
                   {product.price
@@ -272,10 +304,14 @@ export default function ProductDetails({ itemId }) {
                     : ""}
                 </span>
               </div>
-            </div>
+            </div>:""} 
+            <span className="text-red-600">{product.available?"": t("Currently_unavailable")}</span>
+
             <div className="flex  items-center gap-4 h-10 ">
               <button
-                className=" w-[70%] h-full rounded-md text-white text-lg flex  justify-center items-center gap-3 bg-red-600 hover:bg-red-700 hover:scale-105 duration-200 "
+                className={`w-[70%] h-full rounded-md text-white text-lg flex  justify-center items-center gap-3  ${product.available ?"bg-red-600 hover:bg-red-700 hover:scale-105 duration-200":"cursor-not-allowed bg-gray-400 hover:bg-gray-400 hover:scale-100"
+                  }`}
+                disabled={!product.available}
                 onClick={addToCart}
               >
                 {t("addToCart")}
@@ -311,6 +347,16 @@ export default function ProductDetails({ itemId }) {
           </div>
         </div>
       )}
+
+      <div className="mt-24 ">
+        <h1 className="text-2xl flex items-center gap-3 font-bold mx-10 mb-[-90px]">
+          <FaQuestionCircle className="text-red-600" />
+          {t("You_might_like")}
+        </h1>
+        <hr />
+
+        <FeatuerProducts FeatuerProducts={products} />
+      </div>
     </div>
   );
 }

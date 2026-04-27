@@ -17,7 +17,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import Link from "next/link";
 import { getThumbnailUrl } from "../../../utils/functions";
-
+import Select from "react-select";
 export default function Cart() {
   const { t } = useLanguage();
   const [items, setItems] = useState([]);
@@ -32,7 +32,11 @@ export default function Cart() {
   const [isFirstAction, setIsFirstAction] = useState(true);
   const [loading, setLoading] = useState(true);
   const navigate = useRouter();
-
+  const [paymentMethod, setPaymentMethod] = useState();
+  const paymentMethodOptions = [
+    { value: "instapay", label: t("INSTAPAY") },
+    { value: "cash", label: t("CASH") },
+  ];
   const getProductInCart = async () => {
     try {
       setLoading(true);
@@ -71,11 +75,8 @@ export default function Cart() {
   const placeOrder = async () => {
     try {
       if (items.length != 0) {
-
         if (isFirstAction) {
-         await  getProductInCart();
-
-        
+          await getProductInCart();
         } else {
           setLoading(true);
 
@@ -372,11 +373,64 @@ export default function Cart() {
                 </span>
               </div>
 
-              <div className="flex justify-between items-center">
+              <div className="flex justify-between items-center mb-5">
                 <span className="text-gray-600">{t("shippingCost")} </span>
                 <span className="font-semibold">
                   {shappingCost + " " + t("currency")}
                 </span>
+              </div>
+              <div className="flex justify-between items-center mb-5">
+                <span className="text-gray-600">{t("payment_method")}</span>
+
+               <Select 
+                options={paymentMethodOptions}
+                value={paymentMethod}
+                onChange={(selectedOption) => {
+             
+                    setPaymentMethod(selectedOption);
+                   
+                 
+                }}
+                placeholder={t("choose")}
+                className="h-full "
+                //  onMenuOpen={() => {}}
+                styles={{
+                  control: (provided) => ({
+                    ...provided,
+                    border: 'none',
+                    boxShadow: 'none',
+                    background: 'transparent',
+                    fontWeight: '600',
+                    height: '100%',
+                    width: '100%',
+                  }),
+                  option: (provided) => ({
+                    ...provided,
+                    // backgroundColor: '#b91c1c',
+                    color: 'white',
+                    fontSize: '18px',
+                    fontWeight: '600',
+                  }),
+                   input: (base) => ({
+                    ...base,
+                    color: "#374151",
+                  }),   
+                   option: (base, state) => ({
+                    ...base,
+                    backgroundColor: state.isSelected
+                      ? "#dc2626"
+                      : state.isFocused
+                        ? "#fee2e2"
+                        : "#ffffff",
+                    color: state.isSelected ? "#ffffff" : "#374151",
+                    cursor: "pointer",
+                    padding: "10px",
+                    "&:hover": {
+                      backgroundColor: state.isSelected ? "#dc2626" : "#fee2e2",
+                    },
+                  }),
+                }}
+              />
               </div>
               <hr className="my-6" />
               <div className="flex justify-between items-center text-2xl font-semibold">

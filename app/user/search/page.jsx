@@ -55,7 +55,7 @@ export default function Searchpage() {
     getAllProducts(ascending, sortBy);
   }, [
     selectedCategoryId,
-    selectedCategoryId,
+    selectedSearchInput,
     sortBy,
     ascending,
   ]);

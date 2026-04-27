@@ -83,7 +83,7 @@ export default function OrderDetails({ orderId }) {
           className="absolute top-1/2 left-0 right-0 h-0.5"
           style={{
             background: `linear-gradient(${
-              lang === "en" ? "to right" : "to left"
+              lang === "ar" ? "to right" : "to left"
             }, red ${activeStep * orderStepPath}%, #e0e0e0 ${
               activeStep * orderStepPath
             }%)`,

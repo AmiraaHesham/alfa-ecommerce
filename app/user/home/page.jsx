@@ -11,6 +11,9 @@ import {
 } from "../../../utils/functions";
 import { useLanguage } from "../../../context/LanguageContext";
 import "aos/dist/aos.css";
+import { FcAbout } from "react-icons/fc";
+import Link from "next/link";
+import { FaHouseFlag } from "react-icons/fa6";
 
 const ImageSlider = dynamic(() => import("../components/home/ImageSlider"), {
   ssr: false,
@@ -80,6 +83,16 @@ export default function Homepage() {
           </span>
           {t("featured_products")}
         </a>
+         <Link
+         href= '/user/about'
+          className="flex justify-center items-center border-b-2 border-r gap-2 w-full font-bold hover:bg-white hover:border-b-2 hover:border-b-red-600 cursor-pointer"
+        >
+          <span className="bg-red-700 text-white rounded-full text-lg p-1">
+<FaHouseFlag />
+
+          </span>
+          {t("about_us")}
+        </Link>
         <a
           href="#footer"
           className="flex justify-center items-center border-b-2 border-r gap-2 w-full font-bold hover:bg-white hover:border-b-2 hover:border-b-red-600 cursor-pointer"
