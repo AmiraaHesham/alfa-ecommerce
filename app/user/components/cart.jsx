@@ -34,8 +34,8 @@ export default function Cart() {
   const navigate = useRouter();
   const [paymentMethod, setPaymentMethod] = useState();
   const paymentMethodOptions = [
-    { value: "instapay", label: t("INSTAPAY") },
-    { value: "cash", label: t("CASH") },
+    { value: "InstaPay", label: t("INSTAPAY") },
+    { value: "Visa", label: t("Visa") },
   ];
   const getProductInCart = async () => {
     try {

@@ -100,18 +100,18 @@ export default function SignIn() {
       )}
       <div className="flex justify-between">
         <div id="welcome_section" className="">
-          <h3 className="text-3xl my-3 font-semibold font-serif">
+          <h3 className="text-4xl my-3 font-bold">
             {t("welcomeBack")}
           </h3>
-          <h4 className="text-sm text-gray-500 font-serif">
+          <h4 className="text-sm text-gray-500">
             {t("welcomeMessage")}
           </h4>
         </div>
         <div id="forgot_password_section" className="hidden">
-          <h3 className="text-3xl my-3 font-semibold font-serif">
+          <h3 className="text-3xl my-3 font-semibold">
             {t("إعادة تعين كلمة المرور")}
           </h3>
-          <h4 className="text-xl text-gray-500 font-serif">
+          <h4 className="text-xl text-gray-500 ">
             {t(
               "سيتم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني إذا كان مسجلاً لدينا"
             )}
@@ -225,7 +225,7 @@ export default function SignIn() {
               {loading ? t("loggingIn") : t("login")}
             </button>
             <Link href="/signup">
-              <span className="flex justify-center items-center text-sm text-gray-500 font-serif">
+              <span className="flex justify-center items-center text-sm text-gray-500 ">
                 {t("createNewAccount")}
               </span>
             </Link>

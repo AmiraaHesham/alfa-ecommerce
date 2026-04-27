@@ -79,10 +79,10 @@ export default function SignUp() {
       )}
       <div className="flex justify-between">
         <div className="">
-          <h3 className="text-3xl my-3 font-semibold">
+          <h3 className="text-4xl my-3 font-bold">
             {t("create_account")}{" "}
           </h3>
-          <h4 className="text-sm font-serif text-gray-500">
+          <h4 className="text-sm  text-gray-500">
             {t("signupWelcomeMessage")}
           </h4>
         </div>
@@ -313,7 +313,7 @@ export default function SignUp() {
             </button>
           </form>
           <Link href="/signin">
-            <span className="flex justify-center items-center text-sm text-gray-500 font-serif">
+            <span className="flex justify-center items-center text-sm text-gray-500 ">
               {t("login")}
             </span>
           </Link>

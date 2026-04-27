@@ -57,6 +57,8 @@ export default function OrderDetails({ orderId }) {
     getOrder();
   }, [orderCancel]);
   useEffect(() => {
+
+
     if (state === "PENDING") {
       setActiveStep(1);
       setOrderStepPath(6);
@@ -80,15 +82,15 @@ export default function OrderDetails({ orderId }) {
     <div className="w-full h-full p-10">
       <div className="relative flex items-center h-16 px-4 my-5">
         <div
-          className="absolute top-1/2 left-0 right-0 h-0.5"
-          style={{
-            background: `linear-gradient(${
-              lang === "ar" ? "to right" : "to left"
-            }, red ${activeStep * orderStepPath}%, #e0e0e0 ${
-              activeStep * orderStepPath
-            }%)`,
-          }}
-        ></div>
+        className="absolute top-1/2 left-0 right-0 h-0.5"
+        style={{
+          background: `linear-gradient(${
+            lang === "en" ? "to right" : "to left"
+          }, red ${activeStep * orderStepPath}%, #e0e0e0 ${
+            activeStep * orderStepPath
+          }%)`,
+        }}
+      ></div>
         <div className="flex justify-between w-full relative z-10">
           {steps.map((step, index) => (
             <div

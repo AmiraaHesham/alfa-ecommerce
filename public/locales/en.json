@@ -187,7 +187,7 @@
   "about_us": "About Us",
   "You_might_like": "Products You Might Like",
   "Currently_unavailable": "Currently unavailable",
-  "INSTAPAY": "Instapay",
-  "CASH": "Cash",
+  "INSTAPAY": "InstaPay",
+  "Visa": "Visa",
   "payment_method":"Payment Method"
 }

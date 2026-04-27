@@ -78,6 +78,7 @@ export default function Searchpage() {
               {t("categories")}
             </span>
             <div className="bg-white flex  gap-4 items-center  border rounded-md  px-3 h-10  mb-5">
+              <span>{t("sortBy")}:</span>
               <Select
                 options={sortOptions}
                 value={currentValue}
@@ -90,7 +91,7 @@ export default function Searchpage() {
                     setSortBy(undefined);
                   }
                 }}
-                placeholder={t("sortBy")}
+                
                 className="h-full w-[200px]"
                 styles={{
                   control: (provided) => ({
@@ -129,42 +130,7 @@ export default function Searchpage() {
                   }),
                 }}
               />
-               {/* styles={{
-                  control: (base) => ({
-                    ...base,
-                    backgroundColor: "#F9FAFB",
-                    borderColor: "#e5e7eb",
-                    border: "none",
-                    // borderRadius: "0.375rem",
-                    cursor: "pointer",
-                    outline: "none",
-                    "&:hover": {
-                      borderColor: "#e5e7eb",
-                      
-                    },
-                  }),
-                  option: (base, state) => ({
-                    ...base,
-                    backgroundColor: state.isSelected
-                      ? "#dc2626"
-                      : state.isFocused
-                        ? "#fee2e2"
-                        : "#ffffff",
-                    color: state.isSelected ? "#ffffff" : "#374151",
-                    cursor: "pointer",
-                    padding: "10px",
-                    "&:hover": {
-                      backgroundColor: state.isSelected ? "#dc2626" : "#fee2e2",
-                    },
-                  }),
-                  menu: (base) => ({
-                    ...base,
-                    backgroundColor: "#ffffff",
-                    borderRadius: "0.375rem",
-                    boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
-                  }),
-                 
-                }} */}
+              
             </div>
           </div>
 

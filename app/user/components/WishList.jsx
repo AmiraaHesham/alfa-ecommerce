@@ -16,12 +16,16 @@ export default function WishList() {
   const lang = typeof window !== "undefined" ? localStorage.getItem("lang") : null;
   const getWishList = async () => {
     try {
+      setLoading(true)
       const response = await getRequest(`/api/users/${userId}/favoriteItems`);
       setProducts(response.data);
-      setLoading(false);
+      console.log(response.data)
+    
     } catch (error) {
       console.log(error);
-      setLoading(true);
+      
+    }finally{
+      setLoading(false)
     }
   };
 

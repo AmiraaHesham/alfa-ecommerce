@@ -24,6 +24,7 @@ export default function OrdersHistory() {
   }, [state, inputSearch]);
   const getOrders = async () => {
     try {
+      setLoading(true)
       const res = await postRequest(
         "/api/orders/search",
         {
@@ -40,10 +41,10 @@ export default function OrdersHistory() {
       setLoading(false);
     } catch (error) {
       console.log(error);
-      setLoading(true);
     }
-    // finally{
-    // }
+    finally{
+      setLoading(false)
+    }
   };
 
   useEffect(() => {
@@ -183,14 +184,16 @@ export default function OrdersHistory() {
                 key={index}
                 className="w-full bg-white   rounded-md shadow-sm p-5"
               >
-                <div className="flex justify-between">
-                  <div className="flex items-center gap-5">
+                <div className="flex justify-between items-baseline">
+                  <div className="flex md:flex-row xs:flex-col gap-5">
                     <span className="p-1 text-sm text-gray-700 rounded-md font-semibold bg-gray-100">
                       {order.code}
                     </span>
-                    <span className="p-1 text-sm text-gray-700 rounded-md font-semibold flex  items-center gap-2">
+                    <div className="flex items-center gap-2">
+                       <span className="p-1 text-sm text-gray-700 rounded-md font-semibold flex  items-center gap-2">
                       <FaRegCalendar /> {dateOnly}
                     </span>
+                    <br/>
                     <span
                       className={`flex items-center ${
                         order.state === "PROCESSING"
@@ -207,6 +210,8 @@ export default function OrdersHistory() {
                       <VscCircleFilled />
                       {t(order.state)}
                     </span>
+                    </div>
+                   
                   </div>
                   <div className="flex items-center gap-1 mx-5">
                     <span className=" text-gray-600">{t("Total")}: </span>
@@ -260,12 +265,12 @@ export default function OrdersHistory() {
                   </div>
 
                   <div
-                    className="w-[200px] mx-5 mt-10"
+                    className="w-[200px] h-[35px] flex justify-end  mt-10"
                     onClick={() => {
                       navigate.push(`/user/orderdetails/${order.orderId}`);
                     }}
                   >
-                    <button className="p-2 bg-red-600 text-white rounded-md hover:bg-red-700 lg:w-full">
+                    <button className="px-2 bg-red-600 text-white rounded-md hover:bg-red-700">
                       تفاصيل الطلب
                     </button>
                   </div>
