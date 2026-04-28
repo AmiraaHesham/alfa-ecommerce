@@ -12,13 +12,14 @@ import { useLanguage } from "../../../../context/LanguageContext";
 import ProductCard from "../../../user/components/ProductCard";
 import { AiFillStar } from "react-icons/ai";
 import { getThumbnailUrl } from "../../../../utils/functions";
+import { useNamePageInAdminContext } from "../../../../context/namePageInAdmin";
 
 export default function FeaturedProducts() {
   const [featuersProducts, setFeatuersProduct] = useState([]);
   const { setSelectedProductId } = useIdContext();
-  const { refreshKey } = useRefresh();
   const { t } = useLanguage();
-
+  const {setSelectedNamePage} = useNamePageInAdminContext()
+const [isFormOpen,setIsFormOpen] = useState(false)
   const getFeatuersProducts = async () => {
     const response = await postRequest(
       "/api/public/items/search",
@@ -36,7 +37,7 @@ export default function FeaturedProducts() {
   }, []);
   return (
     <div className="w-full h-auto relative bg-[#F9FAFB]  ">
-      <ProductForm />
+      <ProductForm  isFormOpen={isFormOpen} setIsFormOpen={setIsFormOpen}/>
 
       <div className=" flex justify-between items-center">
         <div className="flex  items-center gap-3">
@@ -50,6 +51,7 @@ export default function FeaturedProducts() {
         <Link
           href="/admin/pages/Products"
           className="md:text-4xl xs:text-3xl mx-10 text-red-700 hover:text-red-800"
+           onClick={() => setSelectedNamePage("Products Management")}
         >
           <FaCirclePlus />
         </Link>
@@ -64,18 +66,10 @@ export default function FeaturedProducts() {
             <div
               key={index}
               onClick={() => {
-                const productForm = document.querySelector("#add-product-form");
-                productForm.classList.remove("hidden");
-                productForm.classList.add("flex");
-                const btn_saveProduct =
-                  document.querySelector("#btn-saveProduct");
-                btn_saveProduct.classList.add("hidden");
-                let nameFormProduct =
-                  document.querySelector("#nameFormProduct");
-                nameFormProduct.innerHTML = "Edit Product";
+                setIsFormOpen(true)
                 setSelectedProductId(product.itemId);
               }}
-              className="cursor-pointer hover:shadow-md hover:scale-105 duration-200"
+              className="cursor-pointer hover:shadow-md "
             >
               <div className="h-[330px] bg-white border rounded-md">
                 <div className="">
