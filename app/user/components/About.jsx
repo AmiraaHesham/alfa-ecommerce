@@ -2,9 +2,7 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { AiFillSafetyCertificate } from "react-icons/ai";
-import { BiSolidBulb } from "react-icons/bi";
-import { FaHeart, FaLeaf } from "react-icons/fa";
-import { GiMoneyStack } from "react-icons/gi";
+import { FaLeaf } from "react-icons/fa";
 import { HiLightBulb } from "react-icons/hi";
 import { IoHeart, IoShieldCheckmark } from "react-icons/io5";
 import { TbTruckReturn } from "react-icons/tb";
@@ -45,10 +43,11 @@ export default function About() {
         <div className="flex md:flex-row xs:flex-col items-center justify-center gap-5">
           <Image
             src="/Images/23@4x.png"
-            alt=""
+            alt={lang === "ar" ? "صورة من نحن" : "About us image"}
             width={500}
             height={500}
             className="w-[400px] h-[400px] rounded-3xl"
+            priority
           />
           <div className="md:w-[600px] xs:w-[400px] h-full p-5">
             <div>
@@ -117,7 +116,7 @@ export default function About() {
             </span>
           </div>
           {lang === "ar" ? (
-            <span className="text-xs font-semibold text-gray-600 whitespace-pre-wrap">
+            <span className="text-xs font-semibold text-gray-600 whitespace-pre-wrap  mt-5">
               {`سياسة ضمان المنتجات الإلكترونية
 
 جميع منتجاتنا مشمولة بضمان ضد عيوب الصناعة من تاريخ الشراء المثبت بالفاتورة، وذلك وفقًا لمدة الضمان الخاصة بكل منتج:
@@ -152,7 +151,7 @@ export default function About() {
 * في حال الاستبدال، المنتج البديل يكمل مدة الضمان`}
             </span>
           ) : (
-            <span className="text-xs text-gray-600 whitespace-pre-wrap">
+            <span className="text-xs text-gray-600 whitespace-pre-wrap  mt-5">
               {`All our electronic products are covered by a manufacturer's warranty from the date of purchase (as shown on the invoice), according to each product:
 
 * Monitors: 2-year warranty
@@ -198,7 +197,7 @@ Notes:
         </div>
         </div> */}
 
-        <div className="bg-white h-fullflex  items-center gap-3 rounded-2xl p-4">
+        <div className="bg-white h-full flex flex-col rounded-2xl p-4">
                     <div className="flex  items-center gap-3">
 
           <div className="w-[40px] h-[40px] bg-red-200 rounded-full flex items-center justify-center">
@@ -209,7 +208,7 @@ Notes:
           </span>
           </div>
           {lang === "ar" ? (
-            <p className="text-xs font-semibold text-gray-600 whitespace-pre-wrap break-words">
+            <p className="text-xs font-semibold text-gray-600 whitespace-pre-wrap break-words  mt-5">
               {`نسعى لتقديم منتجات عالية الجودة ورضا كامل لعملائنا، وفي حال وجود أي مشكلة يمكن الاستفادة من سياسة الاسترجاع والاستبدال وفق الشروط التالية:
 
 1. مدة طلب الاسترجاع أو الاستبدال
@@ -247,7 +246,7 @@ Notes:
 يتم التواصل مع خدمة العملاء وإرسال رقم الطلب وسبب الاسترجاع.`}
             </p>
           ) : (
-            <p className="whitespace-pre-wrap text-sm text-gray-600">
+            <p className="whitespace-pre-wrap text-sm text-gray-600 mt-5">
               {`We strive to provide high-quality products and complete customer satisfaction.
 
 In case of any issue, you can take advantage of our return and exchange policy according to the following conditions:
@@ -367,43 +366,47 @@ Contact support with order number and reason.`}
           <div className="flex flex-col text-center">
             <Image
               src="/Images/unnamed.png"
+              alt={lang === "ar" ? "صورة الفريق" : "Team member photo"}
               width={250}
               height={350}
               className="w-full h-full rounded-xl"
             />
             <span>Julian Thorne</span>
-            <span>Chief Technology Officer</span>
+            <span className="text-sm font-semibold text-gray-400">Chief Technology Officer</span>
           </div>
 
           <div className="flex flex-col text-center">
             <Image
               src="/Images/unnamed.png"
+              alt={lang === "ar" ? "صورة الفريق" : "Team member photo"}
               width={250}
               height={350}
               className="w-full h-full rounded-xl"
             />
             <span>Julian Thorne</span>
-            <span>Chief Technology Officer</span>
+            <span className="text-sm font-semibold text-gray-400">Chief Technology Officer</span>
           </div>
           <div className="flex flex-col text-center">
             <Image
               src="/Images/unnamed.png"
+              alt={lang === "ar" ? "صورة الفريق" : "Team member photo"}
               width={250}
               height={350}
               className="w-full h-full rounded-xl"
             />
             <span>Julian Thorne</span>
-            <span>Chief Technology Officer</span>
+            <span className="text-sm font-semibold text-gray-400">Chief Technology Officer</span>
           </div>
           <div className="flex flex-col text-center">
             <Image
               src="/Images/unnamed.png"
+              alt={lang === "ar" ? "صورة الفريق" : "Team member photo"}
               width={250}
               height={350}
               className="w-full h-full rounded-xl"
             />
             <span>Julian Thorne</span>
-            <span>Chief Technology Officer</span>
+            <span className="text-sm font-semibold text-gray-400">Chief Technology Officer</span>
           </div>
         </div>
       </div>
