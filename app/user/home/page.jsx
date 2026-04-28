@@ -64,10 +64,10 @@ export default function Homepage() {
   return (
     <div className="bg-[#F9FAFB]">
       {/* Navigation Bar */}
-      <div className="w-full xs:text-xs h-10 flex justify-between text-center md:text-base  shadow-md shadow-gray-300 mb-5 text-gray-600">
+      <div className="w-full xs:text-sm grid md:grid-cols-4 xs:grid-cols-2 text-center md:text-base  shadow-md shadow-gray-300 mb-5 text-gray-600">
         <a
           href="#CategoriesSection"
-          className="flex justify-center items-center border-l border-b-2 gap-2 w-full font-bold hover:bg-white hover:border-b-2 hover:border-b-red-600 cursor-pointer"
+          className="flex justify-start p-2 items-center border border-b-2  gap-2 w-full font-bold hover:bg-white hover:border-b-2 hover:border-b-red-600 cursor-pointer"
         >
           <span className="bg-red-700 text-white rounded-full text-lg p-1">
             <BiCategory />
@@ -76,7 +76,7 @@ export default function Homepage() {
         </a>
         <a
           href="#FeaturedProducts"
-          className="flex justify-center items-center gap-2 w-full border-b-2 font-bold hover:bg-white hover:border-b-2 hover:border-b-red-600 cursor-pointer"
+          className="flex justify-start p-2 items-center gap-2 w-full border border-b-2  font-bold hover:bg-white hover:border-b-2 hover:border-b-red-600 cursor-pointer"
         >
           <span className="bg-red-700 text-white rounded-full text-sm p-1">
             <AiFillStar />
@@ -85,7 +85,7 @@ export default function Homepage() {
         </a>
          <Link
          href= '/user/about'
-          className="flex justify-center items-center border-b-2 border-r gap-2 w-full font-bold hover:bg-white hover:border-b-2 hover:border-b-red-600 cursor-pointer"
+          className="flex justify-start p-2 items-center border border-b-2 gap-2 w-full font-bold hover:bg-white hover:border-b-2 hover:border-b-red-600 cursor-pointer"
         >
           <span className="bg-red-700 text-white rounded-full text-lg p-1">
 <FaHouseFlag />
@@ -95,9 +95,9 @@ export default function Homepage() {
         </Link>
         <a
           href="#footer"
-          className="flex justify-center items-center border-b-2 border-r gap-2 w-full font-bold hover:bg-white hover:border-b-2 hover:border-b-red-600 cursor-pointer"
+          className="flex justify-start p-2 items-center  border border-b-2 gap-2 w-full font-bold hover:bg-white hover:border-b-2 hover:border-b-red-600 cursor-pointer"
         >
-          <span className="bg-red-700 text-white rounded-full text-lg p-1">
+          <span className="bg-red-700 text-white rounded-full text-base p-1">
             <MdContactSupport />
           </span>
           {t("contact_us")}

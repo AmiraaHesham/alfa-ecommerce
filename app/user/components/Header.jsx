@@ -30,11 +30,10 @@ export default function Header() {
     const validLangs = ["ar", "en"];
 
     if (!validLangs.includes(newLang)) return;
-
+    setLocale(newLang);
     try {
-      await postRequest(`/api/users/${userId}/langauge/${locale}`, "", "");
+      await postRequest(`/api/users/${userId}/langauge/${newLang}`, "", "");
 
-      setLocale(newLang);
       localStorage.setItem("lang", newLang);
     } catch (err) {
       console.error("Failed to update language", err);
@@ -102,7 +101,7 @@ export default function Header() {
                 setSelectedSearchInput(searchInput);
                 searchInput
                   ? navigate.push("/user/search/")
-                  : navigate.push("/user/home") + setSelectedSearchInput("") ;
+                  : navigate.push("/user/home") + setSelectedSearchInput("");
               }
             }}
             placeholder={t("search") + "..."}
