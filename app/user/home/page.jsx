@@ -69,7 +69,7 @@ export default function Homepage() {
           href="#CategoriesSection"
           className="flex justify-start p-2 items-center border border-b-2  gap-2 w-full font-bold hover:bg-white hover:border-b-2 hover:border-b-red-600 cursor-pointer"
         >
-          <span className="bg-red-700 text-white rounded-full text-lg p-1">
+          <span className="bg-red-600 text-white rounded-full text-lg p-1">
             <BiCategory />
           </span>
           {t("categories")}
@@ -78,7 +78,7 @@ export default function Homepage() {
           href="#FeaturedProducts"
           className="flex justify-start p-2 items-center gap-2 w-full border border-b-2  font-bold hover:bg-white hover:border-b-2 hover:border-b-red-600 cursor-pointer"
         >
-          <span className="bg-red-700 text-white rounded-full text-sm p-1">
+          <span className="bg-red-600 text-white rounded-full text-sm p-1">
             <AiFillStar />
           </span>
           {t("featured_products")}
@@ -87,7 +87,7 @@ export default function Homepage() {
          href= '/user/about'
           className="flex justify-start p-2 items-center border border-b-2 gap-2 w-full font-bold hover:bg-white hover:border-b-2 hover:border-b-red-600 cursor-pointer"
         >
-          <span className="bg-red-700 text-white rounded-full text-lg p-1">
+          <span className="bg-red-600 text-white rounded-full text-lg p-1">
 <FaHouseFlag />
 
           </span>
@@ -97,7 +97,7 @@ export default function Homepage() {
           href="#footer"
           className="flex justify-start p-2 items-center  border border-b-2 gap-2 w-full font-bold hover:bg-white hover:border-b-2 hover:border-b-red-600 cursor-pointer"
         >
-          <span className="bg-red-700 text-white rounded-full text-base p-1">
+          <span className="bg-red-600 text-white rounded-full text-base p-1">
             <MdContactSupport />
           </span>
           {t("contact_us")}

@@ -66,17 +66,7 @@ export default function Searchpage() {
 
         <div className={` xs:w-full p-5  ${selectedSearchInput ? "w-full" : "md:w-[80%]"} `}>
           <div className="flex gap-5 ">
-            <span
-              className="xs:flex md:hidden p-2 cursor-pointer gap-2 bg-red-600 h-10 text-white rounded-md items-center"
-              onClick={() => {
-                const catego_sideMenu =
-                  document.querySelector("#catego-sideMenu");
-                catego_sideMenu.classList.remove("xs:hidden");
-              }}
-            >
-              <BsList className="text-2xl font-bold" />
-              {t("categories")}
-            </span>
+           
             <div className="bg-white flex  gap-4 items-center  border rounded-md  px-3 h-10  mb-5">
               <span>{t("sortBy")}:</span>
               <Select
@@ -93,6 +83,7 @@ export default function Searchpage() {
                 }}
                 
                 className="h-full w-[200px]"
+                placeholder={t('select')}
                 styles={{
                   control: (provided) => ({
                     ...provided,
