@@ -34,8 +34,8 @@ export default function Cart() {
   const navigate = useRouter();
   const [paymentMethod, setPaymentMethod] = useState();
   const paymentMethodOptions = [
-    { value: "InstaPay", label: t("INSTAPAY") },
-    { value: "Visa", label: t("Visa") },
+    { value: "INSTAPAY", label: t("INSTAPAY") },
+    { value: "CASH_ON_DELIVERY", label: t("CASH_ON_DELIVERY") },
   ];
   const getProductInCart = async () => {
     try {
@@ -81,8 +81,10 @@ export default function Cart() {
           setLoading(true);
 
           const res = await postRequest(
-            `/api/orders/${userId}/placeOrder`,
-            "",
+            `/api/users/orders/place-order`,
+            {
+              paymentMethod: paymentMethod.value
+            },
             "",
           );
           navigate.push("/user/ordershistory");
@@ -391,7 +393,8 @@ export default function Cart() {
                    
                  
                 }}
-                placeholder={t("choose")}
+                required
+                placeholder={t("select")}
                 className="h-full "
                 //  onMenuOpen={() => {}}
                 styles={{

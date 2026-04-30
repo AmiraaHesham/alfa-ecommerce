@@ -8,16 +8,29 @@ import { useIdContext } from "../../../context/idContext";
 import { useRouter } from "next/navigation";
 import { FaBox, FaCheck, FaShoppingBag, FaTruck } from "react-icons/fa";
 import { getThumbnailUrl } from "../../../utils/functions";
+import Select from "react-select";
 
 export default function OrderDetails({ orderId }) {
   const [order, setOrder] = useState([]);
-  const [totalOrder, setTotalOrder] = useState(0);
-  const [totalDiscount, setTotalDiscount] = useState(0);
-  const [itemsNum, setItemsNum] = useState();
-  const [createdDate, setCreatedDate] = useState();
-  const [state, setState] = useState();
-  const [total, setTotal] = useState(0);
-
+  // const [totalOrder, setTotalOrder] = useState(0);
+  // const [totalDiscount, setTotalDiscount] = useState(0);
+  // const [itemsNum, setItemsNum] = useState();
+  // const [createdDate, setCreatedDate] = useState();
+  // const [state, setState] = useState();
+  // const [total, setTotal] = useState(0);
+  const [quantity, setQuantity] = useState();
+  const [reason, setReason] = useState();
+  const [orderSummary, setOrderSummary] = useState({
+    total: "",
+    state: "",
+    createdDate: "",
+    itemsNum: "",
+    totalDiscount: "",
+    totalOrder: "",
+    paymentMethod:""
+  });
+  const [reasonMessage, setReasonMessage] = useState();
+  const [isOpenPopup, setOpenPopup] = useState(false);
   const { setSelectedProductId } = useIdContext();
   const navigate = useRouter();
   const { t } = useLanguage();
@@ -32,65 +45,124 @@ export default function OrderDetails({ orderId }) {
   ];
   const [orderStepPath, setOrderStepPath] = useState();
   const [activeStep, setActiveStep] = useState();
-
+  const [productdata, setProductData] = useState({
+    id: "",
+    image: "",
+    name: "",
+    quantity: "",
+  });
   const shappingCost = 50;
   const getOrder = async () => {
     const res = await getRequest(`/api/orders/${orderId}`);
-    const resData = res.data
+    const resData = res.data;
+    console.log(resData);
     setOrder(resData.orderItemLines);
-    setTotalOrder(resData.total);
-    setItemsNum(resData.orderItemLines.length);
-    setState(resData.state);
-    setTotal(resData.total);
-    setCreatedDate(resData.createdDate);
-    setTotalDiscount(resData.totalDiscount);
+    setOrderSummary((prev) => ({
+      ...prev,
+      total: resData.total,
+      state: resData.state,
+      createdDate: resData.createdDate,
+      itemsNum: resData.orderItemLines.length,
+      totalDiscount: resData.totalDiscount,
+      totalOrder: resData.total,
+    paymentMethod:resData.paymentMethod
+
+    }));
+    // setTotalOrder(resData.total);
+    // setItemsNum(resData.orderItemLines.length);
+    // setState(resData.state);
+    // setTotal(resData.total);
+    // setCreatedDate(resData.createdDate);
+    // setTotalDiscount(resData.totalDiscount);
   };
   const orderCancel = async () => {
     try {
       if (state === "PENDING")
-        await postRequest(`/api/user/orders/${orderId}/cancel` ,"",t('message'));
+        await postRequest(
+          `/api/user/orders/${orderId}/cancel`,
+          "",
+          t("message"),
+        );
     } catch (error) {
       console.log(error);
     }
   };
+
+  const returnOrder = async () => {
+    try {
+      await postRequest("/api/users/return-orders", {
+        orderItemLineId: productdata.id,
+        quantity: quantity.value,
+        reason: reason.value,
+        reasonMessage: reasonMessage,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     getOrder();
-  }, [orderCancel]);
+  }, []);
   useEffect(() => {
-
-
-    if (state === "PENDING") {
+    if (orderSummary.state === "PENDING") {
       setActiveStep(1);
       setOrderStepPath(6);
-    } else if (state === "PROCESSING") {
+    } else if (orderSummary.state === "PROCESSING") {
       setActiveStep(2);
       setOrderStepPath(19);
-    } else if (state === "SHIPPED") {
+    } else if (orderSummary.state === "SHIPPED") {
       setActiveStep(3);
       setOrderStepPath(23);
-    } else if (state === "DELIVERED") {
+    } else if (orderSummary.state === "DELIVERED") {
       setActiveStep(4);
       setOrderStepPath(30);
     } else {
       setActiveStep(0);
       setOrderStepPath(1);
     }
-  }, [state]);
-  const date = new Date(createdDate);
+  }, [orderSummary.state]);
+  const quantityOptions = Array.from(
+    { length: productdata.quantity },
+    (_, i) => ({ value: i + 1, label: i + 1 }),
+  );
+  const reasons = [
+    "DAMAGED",
+    "DEFECTIVE",
+    "WRONG_ITEM",
+    "MISSING_ACCESSORIES",
+    "NOT_AS_DESCRIBED",
+    "PERFORMANCE_ISSUES",
+    "CONNECTIVITY_ISSUES",
+    "COMPATIBILITY_ISSUES",
+    "SOFTWARE_ISSUES",
+    "CHANGED_MIND",
+    "FOUND_BETTER_PRICE",
+    "ORDERED_BY_MISTAKE",
+    "ARRIVED_LATE",
+    "WARRANTY_CLAIM",
+    "OTHER",
+  ];
+
+  const ReasonOptions = reasons.map((reason) => ({
+    value: reason,
+    label: t(reason),
+  }));
+  const date = new Date(orderSummary.createdDate);
   const dateOnly = date.toLocaleDateString("en-US");
   return (
     <div className="w-full h-full p-10">
       <div className="relative flex items-center h-16 px-4 my-5">
         <div
-        className="absolute top-1/2 left-0 right-0 h-0.5"
-        style={{
-          background: `linear-gradient(${
-            lang === "en" ? "to right" : "to left"
-          }, red ${activeStep * orderStepPath}%, #e0e0e0 ${
-            activeStep * orderStepPath
-          }%)`,
-        }}
-      ></div>
+          className="absolute top-1/2 left-0 right-0 h-0.5"
+          style={{
+            background: `linear-gradient(${
+              lang === "en" ? "to right" : "to left"
+            }, red ${activeStep * orderStepPath}%, #e0e0e0 ${
+              activeStep * orderStepPath
+            }%)`,
+          }}
+        ></div>
         <div className="flex justify-between w-full relative z-10">
           {steps.map((step, index) => (
             <div
@@ -132,16 +204,21 @@ export default function OrderDetails({ orderId }) {
           ))}
         </div>
       </div>
-      <div className="flex md:flex-row xs:flex-col gap-7 ">
-        <div className=" rounded-xl w-full h-[400px]  border overflow-hidden overflow-x-auto md:overflow-x-hidden overflow-y-scroll ">
+      <div className="relative flex md:flex-row xs:flex-col gap-7 ">
+        <div className="re rounded-xl w-full h-[420px]  border overflow-hidden overflow-x-auto md:overflow-x-hidden overflow-y-scroll ">
           <table className="  xs:w-[200%] lg:w-full  ">
             <thead className="bg-[#F9FAFB] text-xs text-gray-500  text-justify">
               <tr className=" text-gray-500 h-12">
                 <th className="w-[30%] px-5">{t("product")} </th>
-                <th className="w-[25%]">{t("price")} </th>
-                <th className="w-[15%] ">{t("discount")} </th>
-                <th className="w-[20%] px-7 ">{t("quantity")} </th>
+                <th className="w-[20%]">{t("price")} </th>
+                <th className="w-[10%] ">{t("discount")} </th>
+                <th className="w-[15%] px-7 ">{t("quantity")} </th>
                 <th className="w-[15%] ">{t("total")} </th>
+                {orderSummary.state === "DELIVERED" ? (
+                  <th className="w-[20%] ">{t("return_order")} </th>
+                ) : (
+                  ""
+                )}
               </tr>
             </thead>
             <tbody className="bg-white text-md w-full  ">
@@ -150,15 +227,17 @@ export default function OrderDetails({ orderId }) {
                 return (
                   <tr
                     key={index}
-                    className=" text-red-950 border h-14 w-full cursor-pointer hover:bg-gray-100"
-                    onClick={() => {
-                      setSelectedProductId(product.item.itemId);
-                      navigate.push(
-                        `/user/pages/productdetails/${product.item.itemId}`,
-                      );
-                    }}
+                    className=" text-red-950 border h-14 w-full  hover:bg-gray-100"
                   >
-                    <td className="px-5">
+                    <td
+                      className="px-5 cursor-pointer"
+                      onClick={() => {
+                        setSelectedProductId(product.item.itemId);
+                        navigate.push(
+                          `/user/pages/productdetails/${product.item.itemId}`,
+                        );
+                      }}
+                    >
                       <div className="flex orderss-center gap-3">
                         <Image
                           alt=""
@@ -183,12 +262,14 @@ export default function OrderDetails({ orderId }) {
                     <td className="font-semibold text-red-500">
                       <div>
                         <span>
-                          {product.unitPrice.toLocaleString("en-US")} {t("currency")}
+                          {product.unitPrice.toLocaleString("en-US")}{" "}
+                          {t("currency")}
                         </span>
 
                         {product.oldUnitPrice ? (
                           <span className="text-gray-400 line-through text-sm mx-2 opacity-90">
-                            {product.oldUnitPrice.toLocaleString("en-US")} {t("currency")}
+                            {product.oldUnitPrice.toLocaleString("en-US")}{" "}
+                            {t("currency")}
                           </span>
                         ) : (
                           ""
@@ -219,22 +300,207 @@ export default function OrderDetails({ orderId }) {
                       </div>
                     </td>
                     <td className="text-sm font-semibold">
-                      {product.totalPrice.toLocaleString("en-US")} {t("currency")}
+                      {product.totalPrice.toLocaleString("en-US")}{" "}
+                      {t("currency")}
                     </td>
+                    {orderSummary.state  === "DELIVERED" ? (
+                      <td>
+                        <button
+                          className="bg-red-600 px-3 py-1 text-sm text-center rounded-lg text-white"
+                          onClick={() => {
+                            setOpenPopup(true);
+                            setProductData((prev) => ({
+                              ...prev,
+                              id: product.itemLineId,
+                              image:
+                                process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +
+                                getThumbnailUrl(product.item.mainImageURL),
+                              name:
+                                localStorage.lang === "ar"
+                                  ? product.item.nameAr
+                                  : product.item.nameEn,
+                              quantity: product.quantity,
+                            }));
+                          }}
+                        >
+                          {t("return")}
+                        </button>
+                      </td>
+                    ) : (
+                      ""
+                    )}
                   </tr>
                 );
               })}
             </tbody>
           </table>
         </div>
+        <div
+          className={`fixed  inset-0 bg-black/40 ${isOpenPopup ? "flex" : "hidden"} items-center justify-center z-50`}
+        >
+          <div className=" w-[450px] p-5 rounded-lg bg-white">
+            <div className="flex justify-between items-center mb-3">
+              <span className="font-semibold text-gray-600">
+                {t("return_order")}
+              </span>
+              <button
+                className="text-xl text-red-600"
+                onClick={() => {
+                  setOpenPopup(false);
+                  setQuantity("");
+                  setReason("");
+                  setReasonMessage("");
+                }}
+              >
+                <MdCancel />
+              </button>
+            </div>
+            <hr />
+            <div className="flex flex-col justify-center items-center gap-7  p-7">
+              <div className="flex flex-col justify-center items-center gap-5">
+                <Image
+                  src={productdata.image}
+                  width={200}
+                  height={200}
+                  alt=""
+                  className="w-[120px] h-[120px] border-2 rounded-md "
+                />
+                <span className="">{productdata.name} </span>
+              </div>
+
+              <div className="w-full flex justify-between items-center">
+                <label>إختر الكمية</label>
+                <Select
+                  options={quantityOptions}
+                  value={quantity}
+                  onChange={(selectedOption) => {
+                    setQuantity(selectedOption);
+                  }}
+                  placeholder={t("select")}
+                  className="h-full w-[70%] border rounded-md "
+                  //  onMenuOpen={() => {}}
+                  styles={{
+                    control: (provided) => ({
+                      ...provided,
+                      border: "none",
+                      boxShadow: "none",
+                      background: "transparent",
+                      fontWeight: "600",
+                      height: "100%",
+                      width: "100%",
+                    }),
+                    option: (provided) => ({
+                      ...provided,
+                      // backgroundColor: '#b91c1c',
+                      color: "white",
+                      fontSize: "18px",
+                      fontWeight: "600",
+                    }),
+                    input: (base) => ({
+                      ...base,
+                      color: "#374151",
+                    }),
+                    option: (base, state) => ({
+                      ...base,
+                      backgroundColor: state.isSelected
+                        ? "#dc2626"
+                        : state.isFocused
+                          ? "#fee2e2"
+                          : "#ffffff",
+                      color: state.isSelected ? "#ffffff" : "#374151",
+                      cursor: "pointer",
+                      padding: "10px",
+                      "&:hover": {
+                        backgroundColor: state.isSelected
+                          ? "#dc2626"
+                          : "#fee2e2",
+                      },
+                    }),
+                  }}
+                />
+              </div>
+              <div className="w-full flex justify-between items-center">
+                <label> {t("Reason_for_return")}</label>
+                <Select
+                  options={ReasonOptions}
+                  value={reason}
+                  onChange={(selectedOption) => {
+                    setReason(selectedOption);
+                  }}
+                  placeholder={t("select")}
+                  className="h-full w-[70%] border rounded-md"
+                  //  onMenuOpen={() => {}}
+                  styles={{
+                    control: (provided) => ({
+                      ...provided,
+                      border: "none",
+                      boxShadow: "none",
+                      background: "transparent",
+                      fontWeight: "600",
+                      height: "100%",
+                      width: "100%",
+                    }),
+                    option: (provided) => ({
+                      ...provided,
+                      // backgroundColor: '#b91c1c',
+                      color: "white",
+                      fontSize: "18px",
+                      fontWeight: "600",
+                    }),
+                    input: (base) => ({
+                      ...base,
+                      color: "#374151",
+                    }),
+                    option: (base, state) => ({
+                      ...base,
+                      backgroundColor: state.isSelected
+                        ? "#dc2626"
+                        : state.isFocused
+                          ? "#fee2e2"
+                          : "#ffffff",
+                      color: state.isSelected ? "#ffffff" : "#374151",
+                      cursor: "pointer",
+                      padding: "10px",
+                      "&:hover": {
+                        backgroundColor: state.isSelected
+                          ? "#dc2626"
+                          : "#fee2e2",
+                      },
+                    }),
+                  }}
+                />
+              </div>
+              <div className="w-full">
+                <label className="text-sm font-semibold ">
+                  {t("message_reason")}
+                </label>
+                <textarea
+                  className="w-full border p-1 rounded-md mt-2 "
+                  onChange={(e) => setReasonMessage(e.target.value)}
+                ></textarea>
+              </div>
+              <button
+                className="w-full rounded-lg py-1 text-white bg-red-500"
+                onClick={returnOrder}
+              >
+                {t("return")}
+              </button>
+            </div>
+          </div>
+        </div>
+
         <div className=" md:w-[40%]  xs:w-full">
           <div className=" p-7  w-full bg-white rounded-lg border">
             <div className="flex justify-between items-center mb-10">
               <h1 className=" text-2xl font-bold">{t("orderSummary")} </h1>
-            {state === "CANCELLED" ?<h1 className="flex items-center gap-2 text-lg font-bold text-red-600">
-                <MdCancel />
-                { t("CANCELLED") }
-              </h1>:''}  
+              {orderSummary.state === "CANCELLED" ? (
+                <h1 className="flex items-center gap-2 text-lg font-bold text-red-600">
+                  <MdCancel />
+                  {t("CANCELLED")}
+                </h1>
+              ) : (
+                ""
+              )}
             </div>
 
             <div className="flex justify-between orderss-center mb-5">
@@ -244,20 +510,25 @@ export default function OrderDetails({ orderId }) {
 
             <div className="flex justify-between orderss-center mb-5">
               <span className="text-gray-600">
-                {t("totalProducts") + " " + itemsNum}
+                {t("totalProducts") + " " + orderSummary.itemsNum}
               </span>
 
               <span className="font-semibold">
-                {totalOrder.toLocaleString("en-US") + " " + t("currency")}
+                {orderSummary.totalOrder.toLocaleString("en-US") + " " + t("currency")}
               </span>
             </div>
             <div className="flex justify-between items-center mb-5">
               <span className="text-gray-600">{t("totalDiscount")} </span>
               <span className="font-semibold">
-                {totalDiscount.toLocaleString("en-US")+ " " + t("currency")}{" "}
+                {orderSummary.totalDiscount.toLocaleString("en-US") +
+                  " " +
+                  t("currency")}{" "}
               </span>
             </div>
-
+            <div className="flex justify-between items-center mb-5">
+              <span className="text-gray-600">{t("payment_method")}</span>
+              <span>{t(orderSummary.paymentMethod)}</span>
+            </div>
             <div className="flex justify-between items-center">
               <span className="text-gray-600">{t("shippingCost")} </span>
               <span className="font-semibold">
@@ -269,12 +540,12 @@ export default function OrderDetails({ orderId }) {
             <div className="flex justify-between orderss-center text-2xl font-semibold">
               <span>{t("grandTotal")} </span>
               <span className="">
-                { total.toLocaleString("en-US") + " " + t("currency")}
+                {orderSummary.total.toLocaleString("en-US") + " " + t("currency")}
               </span>
             </div>
             <button
-              className={`w-full h-7  my-10 rounded-md text-white ${
-                state === "PENDING"
+              className={`w-full h-7  mt-7 rounded-md text-white ${
+                orderSummary.state === "PENDING"
                   ? "bg-red-500 hover:bg-red-600"
                   : "bg-gray-500 cursor-not-allowed"
               }`}

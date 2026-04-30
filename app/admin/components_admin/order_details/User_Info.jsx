@@ -10,12 +10,15 @@ import { getRequest } from "../../../../utils/requestsUtils.js";
 export default function Orders_Details({ orderId }) {
   const { t } = useLanguage();
   const [orderUser, setOrderUser] = useState([]);
-  const [orderAddress, setOrderAddress] = useState();
+  const [paymentMethod , setPaymentMethod] = useState()
+  const [orderAddress, setOrderAddress] = useState()
   const orderItem = async () => {
     const res = await getRequest(`/api/orders/${orderId}`);
     const resData = res.data
     setOrderUser(resData.user);
-    setOrderAddress(resData.address);
+    setPaymentMethod(resData.paymentMethod)
+    setOrderAddress(resData.address)
+    console.log(resData)
   };
   useEffect(() => {
     orderItem();
@@ -66,9 +69,13 @@ export default function Orders_Details({ orderId }) {
         </div>
         <hr className="my-10" />
         <div>
+          <div className="" >
+            <h1 className="font-semibold text-sm text-gray-500 ">{t("payment_method")}</h1>
+            <h2 className="text-lg mt-2 font-semibold">{t(paymentMethod)}</h2>
+          </div>
           <div>
-            <h1 className="font-semibold text-lg">{t("Shipping Address")}</h1>
-            <h2 className="texxt-sm text-gray-500 mt-5">{orderUser.address}</h2>
+            <h1 className="font-semibold text-sm text-gray-500 mt-5">{t("Shipping Address")}</h1>
+            <h2 className="text-lg mt-2 font-semibold">{orderAddress}</h2>
           </div>
         </div>
       </div>
