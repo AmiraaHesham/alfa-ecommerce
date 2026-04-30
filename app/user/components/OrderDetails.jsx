@@ -529,6 +529,7 @@ export default function OrderDetails({ orderId }) {
               <span className="text-gray-600">{t("payment_method")}</span>
               <span>{t(orderSummary.paymentMethod)}</span>
             </div>
+            
             <div className="flex justify-between items-center">
               <span className="text-gray-600">{t("shippingCost")} </span>
               <span className="font-semibold">

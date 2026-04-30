@@ -36,6 +36,7 @@ export default function Cart() {
   const paymentMethodOptions = [
     { value: "INSTAPAY", label: t("INSTAPAY") },
     { value: "CASH_ON_DELIVERY", label: t("CASH_ON_DELIVERY") },
+    
   ];
   const getProductInCart = async () => {
     try {

@@ -68,6 +68,7 @@ export default function Orders_Details({ orderId }) {
           </div>
         </div>
         <hr className="my-10" />
+        
         <div>
           <div className="" >
             <h1 className="font-semibold text-sm text-gray-500 ">{t("payment_method")}</h1>
