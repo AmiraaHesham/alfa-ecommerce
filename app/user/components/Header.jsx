@@ -114,6 +114,7 @@ export default function Header() {
             }}
             placeholder={t("search") + "..."}
             type="search"
+            enterKeyHint="search"
             className="w-full h-full text-base bg-none font-semibold outline-none rounded-e-xl placeholder:text-sm  flex items-center p-1 "
           />
         </div>
@@ -200,6 +201,7 @@ export default function Header() {
           }}
           placeholder={t("search") + "..."}
           type="search"
+          enterKeyHint="search"
           className="w-full h-full text-base  font-semibold outline-none rounded-e-lg placeholder:text-sm  flex items-center p-1"
         />
       </div>
