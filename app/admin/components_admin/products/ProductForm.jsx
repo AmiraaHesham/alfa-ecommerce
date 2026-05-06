@@ -253,7 +253,7 @@ export default function FormProduct({ isFormOpen, setIsFormOpen }) {
       }
     } catch (error) {
       console.error("Error loading product data:", error);
-      toast.error(t("error_loading_product"));
+  
     } finally {
       setLoading(false);
     }
