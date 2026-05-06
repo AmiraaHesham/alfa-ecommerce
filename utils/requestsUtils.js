@@ -93,12 +93,16 @@ export const postRequest = async (endpoint, dataBody, message) => {
         localStorage.setItem("refreshToken", newRefreshToken);
 
         // 🔁 إعادة الطلب بعد التحديث
-        const retryResponse = await request(newAccessToken);
+         try {
+          const retryResponse = await request(newAccessToken);
 
-        toast.success(retryResponse.data.message);
+          toast.success(retryResponse.data.message);
 
-        return retryResponse.data;
+          return retryResponse.data;
+        } catch (error) {
+          toast.error(error.response.data.error.message)
 
+        }
       } catch (refreshError) {
         console.log("Refresh failed", refreshError);
       }
@@ -154,10 +158,16 @@ export const getRequest = async (endpoint) => {
         localStorage.setItem("refreshToken", newRefreshToken);
 
         // 🔁 إعادة الطلب بعد التحديث
-        const retryResponse = await request(newAccessToken);
-        toast.success(retryResponse.data.message);
+        try {
+          const retryResponse = await request(newAccessToken);
 
-        return retryResponse.data;
+          toast.success(retryResponse.data.message);
+
+          return retryResponse.data;
+        } catch (error) {
+          toast.error(error.response.data.error.message)
+
+        }
 
       } catch (refreshError) {
         console.log("Refresh failed", refreshError);
@@ -212,7 +222,7 @@ export const putRequest = async (endpoint, dataBody, message) => {
   } catch (error) {
     // 🔥 refresh token handling
 
-    if (error.response?.status === 403) {
+    if (error.response.status === 403) {
       const refreshToken = localStorage.getItem('refreshToken')
 
       try {
@@ -231,17 +241,22 @@ export const putRequest = async (endpoint, dataBody, message) => {
         localStorage.setItem("refreshToken", newRefreshToken);
 
         // 🔁 إعادة الطلب بعد التحديث
-        const retryResponse = await request(newAccessToken);
+        try {
+          const retryResponse = await request(newAccessToken);
 
-        toast.success(retryResponse.data.message);
+          toast.success(retryResponse.data.message);
 
-        return retryResponse.data;
+          return retryResponse.data;
+        } catch (error) {
+          toast.error(error.response.data.error.message)
+
+        }
+
 
       } catch (refreshError) {
         console.log("Refresh failed", refreshError);
       }
     } else {
-      // toast.error(error.data.message);
       toast.error(error.response.data.error.message)
     }
 
@@ -294,7 +309,7 @@ export const deleteRequest = async (endpoint, message) => {
   } catch (error) {
     const refreshToken = localStorage.getItem('refreshToken')
     // 🔥 refresh token handling
-    if (error.response?.status === 403) {
+    if (error.response.status === 403) {
 
 
       try {
@@ -314,11 +329,16 @@ export const deleteRequest = async (endpoint, message) => {
         localStorage.setItem("refreshToken", newRefreshToken);
 
         // 🔁 إعادة الطلب بعد التحديث
-        const retryResponse = await request(newAccessToken);
+         try {
+          const retryResponse = await request(newAccessToken);
 
-        toast.success(retryResponse.data.message);
+          toast.success(retryResponse.data.message);
 
-        return retryResponse.data;
+          return retryResponse.data;
+        } catch (error) {
+          toast.error(error.response.data.error.message)
+
+        }
 
       } catch (refreshError) {
         console.log("Refresh failed", refreshError);
