@@ -195,7 +195,7 @@ export default function FormProduct({ isFormOpen, setIsFormOpen }) {
       setIsFormOpen(false);
     } catch (err) {
       console.error("Error adding product:", err);
-      toast.error(t("error_adding_product"));
+  
     } finally {
       setLoading(false);
     }
@@ -284,7 +284,7 @@ export default function FormProduct({ isFormOpen, setIsFormOpen }) {
       setIsFormOpen(false);
     } catch (error) {
       console.error("Error updating product:", error);
-      toast.error(t("error_updating_product"));
+
     } finally {
       setLoading(false);
     }
