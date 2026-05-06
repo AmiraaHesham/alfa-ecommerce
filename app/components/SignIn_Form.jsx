@@ -44,6 +44,7 @@ export default function SignIn() {
 
       console.log(response.data);
       localStorage.setItem("accessToken", response.data.accessToken);
+      localStorage.setItem("refreshToken", response.data.refreshToken);
       localStorage.setItem("id", response.data.userDetails.userId);
       localStorage.setItem("firstName", response.data.userDetails.firstName);
       localStorage.setItem("lastName", response.data.userDetails.lastName);
