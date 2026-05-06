@@ -62,7 +62,7 @@ export default function Header() {
 
   return (
     <header>
-      <div className="w-full h-[60px] lg:px-10 xs:px-0 flex items-center border-b  justify-between bg-red-700">
+      <div className="w-full h-[60px] xl:px-10 xs:px-0 flex items-center border-b  justify-between bg-red-700">
         <Link href="/user/home">
           <div className="flex  items-center  ">
             <span className="xs:w-10 xs:h-10 md:w-12 md:h-12 ">
@@ -113,7 +113,7 @@ export default function Header() {
               }
             }}
             placeholder={t("search") + "..."}
-            type="text"
+            type="search"
             className="w-full h-full text-base bg-none font-semibold outline-none rounded-e-xl placeholder:text-sm  flex items-center p-1 "
           />
         </div>
@@ -171,13 +171,13 @@ export default function Header() {
 
       <div
         ref={divRef}
-        className={`xs:flex md:hidden items-center justify-start border w-full bg-none  my-1 rounded-lg
+        className={`xs:flex md:hidden bg-[#F9FAFBs] items-center justify-start border-2 w-full bg-none  rounded-lg
  ${isFocused ? "border-[3px] border-red-400 rounded-lg " : ""}`}
         onClick={() => setIsFocused(true)}
         tabIndex={0}
       >
         <button
-          className="text-white h-full border-2 rounded-s-lg text-2xl bg-red-600 p-1 "
+          className="text-white h-full borde rounded-s-lg text-2xl bg-red-600 p-1 "
           onClick={() => {
             setSelectedSearchInput(searchInput);
             searchInput
@@ -199,8 +199,8 @@ export default function Header() {
             }
           }}
           placeholder={t("search") + "..."}
-          type="text"
-          className="w-full h-full text-base bg-white font-semibold outline-none rounded-e-lg placeholder:text-sm  flex items-center p-1"
+          type="search"
+          className="w-full h-full text-base  font-semibold outline-none rounded-e-lg placeholder:text-sm  flex items-center p-1"
         />
       </div>
     </header>
