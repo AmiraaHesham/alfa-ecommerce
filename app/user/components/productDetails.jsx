@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { useIdContext } from "../../../context/idContext";
 import { getProductDetails, getThumbnailUrl } from "../../../utils/functions";
 import Image from "next/image";
@@ -105,7 +105,8 @@ export default function ProductDetails({ itemId }) {
 
   const addToCart = async () => {
     try {
-      if(product.available){
+      if(userId){
+         if(product.available){
         await postRequest(
         `/api/shopCarts/${userId}/addLine`,
         {
@@ -135,6 +136,10 @@ export default function ProductDetails({ itemId }) {
       if (result.isConfirmed) {
         navigate.push("/user/cart");
       }
+      }
+     else{
+       navigate.push("/signin");
+     }
     } catch (error) {
       console.log(error);
     } finally {
@@ -238,7 +243,7 @@ export default function ProductDetails({ itemId }) {
             </div>
           </div>
 
-          <div className="flex py-5 flex-col w-full h-[500px] justify-between bg-white  px-5 border rounded-md shadow-md">
+          <div className="flex py-5 flex-col w-full md:h-[500px] xs:h-[570px] justify-between bg-white  px-5 border rounded-md shadow-md">
             <div>
               <div className="flex justify-between items-start">
                 <span>

@@ -21,7 +21,8 @@ export default function ProductCard({ productInfo, favorite }) {
   const userId = localStorage.id;
   const addToCart = async (productId) => {
     try {
-      if (productInfo.available) {
+      if(userId){
+        if (productInfo.available) {
         await postRequest(
           `/api/shopCarts/${userId}/addLine`,
           {
@@ -31,8 +32,7 @@ export default function ProductCard({ productInfo, favorite }) {
           "",
         );
       }
-
-      const result = await Swal.fire({
+       const result = await Swal.fire({
         icon: "success",
         title: t("تم إضافة المنتج الى سلة التسوق"),
         showCancelButton: true,
@@ -51,6 +51,12 @@ export default function ProductCard({ productInfo, favorite }) {
       if (result.isConfirmed) {
         navigate.push("/user/cart");
       }
+      }else{
+         navigate.push("/signin");
+      }
+      
+
+     
     } catch (error) {
       console.log(error);
     } finally {
@@ -58,11 +64,16 @@ export default function ProductCard({ productInfo, favorite }) {
     }
   };
   const addFavoriteItems = async (productId) => {
-    const res = await postRequest(
+    if(userId){
+       const res = await postRequest(
       `/api/users/${userId}/favoriteItems/${productId}`,
       "",
       "",
     );
+    }else{
+       navigate.push("/signin");
+    }
+   
   };
 
   const deleteFavoriteItems = async (productId) => {

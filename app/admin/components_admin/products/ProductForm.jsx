@@ -83,8 +83,6 @@ export default function FormProduct({ isFormOpen, setIsFormOpen }) {
       const resData = await getCategories();
       setItemCategory(resData.data || []);
     } catch (error) {
-      console.error("Error fetching categories:", error);
-      toast.error(t("error_loading_categories"));
     }
   };
 
