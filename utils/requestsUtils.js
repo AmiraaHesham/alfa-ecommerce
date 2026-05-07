@@ -165,7 +165,7 @@ export const getRequest = async (endpoint) => {
 
           return retryResponse.data;
         } catch (error) {
-          toast.error(error.response.data.error.message)
+          // toast.error(error.response.data.error.message)
 
         }
 

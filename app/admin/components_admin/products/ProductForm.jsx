@@ -82,8 +82,7 @@ export default function FormProduct({ isFormOpen, setIsFormOpen }) {
     try {
       const resData = await getCategories();
       setItemCategory(resData.data || []);
-    } catch (error) {
-    }
+    } catch (error) {}
   };
 
   // التحقق من صحة البيانات
@@ -192,8 +191,6 @@ export default function FormProduct({ isFormOpen, setIsFormOpen }) {
       setSelectedProductId(null);
       setIsFormOpen(false);
     } catch (err) {
-      console.error("Error adding product:", err);
-  
     } finally {
       setLoading(false);
     }
@@ -219,8 +216,8 @@ export default function FormProduct({ isFormOpen, setIsFormOpen }) {
           descriptionAr: resData.descriptionAr,
           descriptionEn: resData.descriptionEn,
           mainImage:
-            process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL + getThumbnailUrl(resData.mainImageURL)  ||
-            "",
+            process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +
+              getThumbnailUrl(resData.mainImageURL) || "",
           img2:
             resData.images.length >= 1
               ? process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +
@@ -250,8 +247,6 @@ export default function FormProduct({ isFormOpen, setIsFormOpen }) {
         resetFormState();
       }
     } catch (error) {
-      console.error("Error loading product data:", error);
-  
     } finally {
       setLoading(false);
     }
@@ -281,8 +276,6 @@ export default function FormProduct({ isFormOpen, setIsFormOpen }) {
       triggerRefresh();
       setIsFormOpen(false);
     } catch (error) {
-      console.error("Error updating product:", error);
-
     } finally {
       setLoading(false);
     }
@@ -445,7 +438,6 @@ export default function FormProduct({ isFormOpen, setIsFormOpen }) {
                 {t("Category")}*
               </label>
               <Select
-                isSearchable
                 isClearable
                 options={itemCategory.map((category) => ({
                   value: category.itemCategoryId,
@@ -487,6 +479,7 @@ export default function FormProduct({ isFormOpen, setIsFormOpen }) {
                     }));
                   }
                 }}
+                isSearchable={false}
                 placeholder={t("select_category")}
                 noOptionsMessage={() => t("no_categories")}
                 styles={{

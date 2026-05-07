@@ -71,16 +71,18 @@ if (!mounted) return null;
                   navigate.push("/user/search/");
                 }}
               >
-                <div className="py-2">
+                <div className=" py-2 rounded-lg">
+                  <div className="relative h-[150px] w-[150px]">
+
                   <Image
                     src={`${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL}${
                      getThumbnailUrl(category.imageURL)  || ""
                     }`}
                     alt={category.nameAr || "category"}
-                    width={100}
-                    height={100}
-                    className="rounded-lg h-[150px] w-[150px]"
+                    fill
+                    className="object-contain"
                   />
+                  </div>
                   <h1 className="font-semibold  mt-10">
                     {localStorage.lang === "ar"
                       ? category.nameAr

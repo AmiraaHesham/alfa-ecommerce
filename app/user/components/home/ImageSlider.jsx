@@ -19,7 +19,7 @@ export default function ImageSlider({ sliderImages }) {
         loop={true}
         autoplay={true}
         modules={[Pagination, Navigation, Autoplay]}
-        className="w-full h-[450px]"
+        className="w-full h-[500px]"
       >
         {sliderImages.map((img, index) => (
           <SwiperSlide key={img.sliderImageId} className="relative w-full h-full flex justify-center items-center rounded-lg  ">

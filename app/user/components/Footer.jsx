@@ -172,7 +172,7 @@ export default function Footer() {
             </div>
           </div>
         </div>
-        <div className="grid grid-cols-3 md:gap-x-10 xs:gap-x-2 gap-y-1 md:text-base xs:text-xs  text-gray-600 font-semibold">
+        <div className="grid grid-cols-3 md:gap-x-10 xs:gap-x-2 gap-y-1 lg:text-sm xs:text-xs  text-gray-600 font-semibold">
           <Link href={"/user/home"} className="hover:[text-shadow:2px_2px_5px_rgba(0,0,0,0.25)]">{t("homepage")}</Link>
 
           <Link href={"/user/home#FeaturedProducts"} className="hover:[text-shadow:2px_2px_5px_rgba(0,0,0,0.25)]">

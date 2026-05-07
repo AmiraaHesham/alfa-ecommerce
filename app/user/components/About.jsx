@@ -106,7 +106,10 @@ export default function About() {
         </div>
       </div>
       <div className="w-full bg-[#eff1ef] md:p-28 xs:p-10 flex flex-col gap-5 ">
-        <div className="bg-white h-full flex flex-col rounded-2xl p-4">
+        <div
+          id="Guarantee_Policy"
+          className="bg-white h-full flex flex-col rounded-2xl p-4"
+        >
           <div className="flex  items-center gap-3">
             <div className="w-[40px] h-[40px] bg-red-200 rounded-full flex items-center justify-center">
               <AiFillSafetyCertificate className="text-2xl text-red-700" />
@@ -197,15 +200,17 @@ Notes:
         </div>
         </div> */}
 
-        <div className="bg-white h-full flex flex-col rounded-2xl p-4">
-                    <div className="flex  items-center gap-3">
-
-          <div className="w-[40px] h-[40px] bg-red-200 rounded-full flex items-center justify-center">
-            <TbTruckReturn className="text-2xl text-red-700" />
-          </div>{" "}
-          <span className="font-semibold">
-            {lang === "ar" ? "سياسة الاسترجاع" : "Return Policy"}
-          </span>
+        <div
+          id="Return_Policy"
+          className="bg-white h-full flex flex-col rounded-2xl p-4"
+        >
+          <div className="flex  items-center gap-3">
+            <div className="w-[40px] h-[40px] bg-red-200 rounded-full flex items-center justify-center">
+              <TbTruckReturn className="text-2xl text-red-700" />
+            </div>{" "}
+            <span className="font-semibold">
+              {lang === "ar" ? "سياسة الاسترجاع" : "Return Policy"}
+            </span>
           </div>
           {lang === "ar" ? (
             <p className="text-xs font-semibold text-gray-600 whitespace-pre-wrap break-words  mt-5">
@@ -372,7 +377,9 @@ Contact support with order number and reason.`}
               className="w-full h-full rounded-xl"
             />
             <span>Julian Thorne</span>
-            <span className="text-sm font-semibold text-gray-400">Chief Technology Officer</span>
+            <span className="text-sm font-semibold text-gray-400">
+              Chief Technology Officer
+            </span>
           </div>
 
           <div className="flex flex-col text-center">
@@ -384,7 +391,9 @@ Contact support with order number and reason.`}
               className="w-full h-full rounded-xl"
             />
             <span>Julian Thorne</span>
-            <span className="text-sm font-semibold text-gray-400">Chief Technology Officer</span>
+            <span className="text-sm font-semibold text-gray-400">
+              Chief Technology Officer
+            </span>
           </div>
           <div className="flex flex-col text-center">
             <Image
@@ -395,7 +404,9 @@ Contact support with order number and reason.`}
               className="w-full h-full rounded-xl"
             />
             <span>Julian Thorne</span>
-            <span className="text-sm font-semibold text-gray-400">Chief Technology Officer</span>
+            <span className="text-sm font-semibold text-gray-400">
+              Chief Technology Officer
+            </span>
           </div>
           <div className="flex flex-col text-center">
             <Image
@@ -406,7 +417,9 @@ Contact support with order number and reason.`}
               className="w-full h-full rounded-xl"
             />
             <span>Julian Thorne</span>
-            <span className="text-sm font-semibold text-gray-400">Chief Technology Officer</span>
+            <span className="text-sm font-semibold text-gray-400">
+              Chief Technology Officer
+            </span>
           </div>
         </div>
       </div>

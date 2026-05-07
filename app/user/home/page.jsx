@@ -126,16 +126,13 @@ export default function Homepage() {
         {loading ? (
           <div className="w-full h-full">
             <div className="w-full h-[320px] grid xl:grid-cols-6 lg:grid-cols-4 md:grid-cols-3 xs:grid-cols-2 gap-5 mt-32">
-              {Array(6)
-                .fill(0)
-                .map((_, i) => (
-                  <div
-                    key={i}
-                    className="bg-gray-200 rounded animate-pulse w-full"
-                  />
-                ))}
+              <div className="bg-gray-200 rounded animate-pulse w-full" />
+              <div className="bg-gray-200 rounded animate-pulse w-full" />
+              <div className="bg-gray-200 xs:hidden md:block rounded animate-pulse w-full" />
+              <div className="bg-gray-200 xs:hidden xl:block rounded animate-pulse w-full" />
+              <div className="bg-gray-200 xs:hidden xl:block rounded animate-pulse w-full" />
             </div>
-          </div>
+            </div>
         ) : (
           <CategoriesSection categories={categories} />
         )}

@@ -29,6 +29,8 @@ export default function Searchpage() {
   const { selectedCategoryId } = useIdContext();
   const getAllProducts =async () => {
     try {
+            setLoading(true);
+
       const response = await postRequest(
         "/api/public/items/search",
         {
@@ -44,10 +46,11 @@ export default function Searchpage() {
       setProducts(response.data);
       // console.log(response.data);
       // console.log(categoryId);
-      setLoading(false);
     } catch (error) {
       console.log(error);
-      setLoading(true);
+    }finally{
+            setLoading(false);
+
     }
 
   }
@@ -70,6 +73,8 @@ export default function Searchpage() {
             <div className="bg-white flex  gap-4 items-center  border rounded-md  px-3 h-10  mb-5">
               <span>{t("sortBy")}:</span>
               <Select
+                isSearchable={false}
+
                 options={sortOptions}
                 value={currentValue}
                 onChange={(selectedOption) => {
@@ -83,6 +88,7 @@ export default function Searchpage() {
                 }}
                 
                 className="h-full w-[200px]"
+
                 placeholder={t('select')}
                 styles={{
                   control: (provided) => ({
