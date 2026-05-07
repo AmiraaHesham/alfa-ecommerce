@@ -18,12 +18,13 @@ export default function CategoriesSideMenu() {
   const [loading, setLoading] = useState([]);
   const categories = async () => {
     try {
+      setLoading(true);
+
       const res = await getCategories();
       setCategoriesList(res.data);
-      setLoading(false);
     } catch (error) {
       console.log(error);
-      setLoading(true);
+      setLoading(false);
     }
   };
 
