@@ -4,19 +4,26 @@ import Header from "./components/Header";
 import Footer from './components/Footer'
 import { FaSquareWhatsapp } from "react-icons/fa6";
 import { getRequest } from "../../utils/requestsUtils";
+import { useEffect, useState } from "react";
 
 
-export default async function UserLayout  ({ children }) {
-
+export default  function UserLayout  ({ children }) {
+  const [whatsAppUrl , setWhatsAppUrl] = useState()
+const getWhatsappUrl = async ()=>{
   const response = await getRequest("/api/public/contact");
-  const whatsappUrl = response?.data?.whatsappURL;
+ setWhatsAppUrl(response?.data?.whatsappURL) ;
+}
+useEffect(()=>{
+  getWhatsappUrl()
+},[])
+  
   return (
     <div >
         <Header />
         <main  className=" bg-[#F9FAFB] ">
           {children} 
           <a
-      href={whatsappUrl}
+      href={whatsAppUrl}
       target="_blank"
       rel="noopener noreferrer"
       className="fixed bottom-5 right-5 z-50"
