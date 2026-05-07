@@ -1,37 +1,34 @@
-'use client'
+
+"use client"
 import Header from "./components/Header";
 import Footer from './components/Footer'
-// import Image from "next/image";
-// import { useEffect, useState } from "react";
+import { FaSquareWhatsapp } from "react-icons/fa6";
+import { getRequest } from "../../utils/requestsUtils";
 
-export default function UserLayout({ children }) {
-//       const [loading, setLoading] = useState(true);
-//  useEffect(() => {
-//     const timer = setTimeout(() => {
-//       setLoading(false);
-//     }, 2000);
-//     return () => clearTimeout(timer);
-//   }, []);
-//   if (loading) {
-//     return (
 
-//     <div className="flex flex-col gap-10 justify-center items-center h-screen bg-color1">
-//         <Image src="/Images/logo.png" alt="" className="w-[100px] h-[100px]  border-t-transparent rounded-full animate-pulse"  width={200} height={200}/>
-//         <h1 className="md:text-5xl xs:text-4xl  font-serif font-semibold animate-pulse bg-gradient-to-r from-[#d62828] via-color3 to-color2 bg-clip-text text-transparent "></h1>
+export default async function UserLayout  ({ children }) {
 
-//       </div>
-
-//     );
-//   }
-
+  const response = await getRequest("/api/public/contact");
+  const whatsappUrl = response?.data?.whatsappURL;
   return (
     <div >
         <Header />
         <main  className=" bg-[#F9FAFB] ">
-          {children}
+          {children} 
+          <a
+      href={whatsappUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="fixed bottom-5 right-5 z-50"
+    >
+      <FaSquareWhatsapp
+        className="text-green-500 text-5xl drop-shadow-lg hover:scale-110 duration-300"
+      />
+    </a>
         </main>
-        <footer id="footer" className="w-full h-[200px]  flex items-center bg-white border-t-2">
+        <footer id="footer" className="w-full   flex items-center bg-white border-t-2">
               <Footer/>
         </footer>
+       
     </div>
   );}

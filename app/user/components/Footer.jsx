@@ -6,12 +6,16 @@ import {
   FaFacebookSquare,
   FaInstagramSquare,
   FaTelegram,
+  FaYoutube,
 } from "react-icons/fa";
 import { FaSquarePhone, FaSquareWhatsapp, FaXTwitter } from "react-icons/fa6";
 import { MdEmail } from "react-icons/md";
 import { getRequest } from "../../../utils/requestsUtils";
+import { useLanguage } from "../../../context/LanguageContext";
 
 export default function Footer() {
+  const { t } = useLanguage();
+
   const [contact, setContact] = useState({
     phone: "",
     email: "",
@@ -20,11 +24,12 @@ export default function Footer() {
     x: "",
     whatsApp: "",
     telegram: "",
+    youtube: "",
   });
   const getContact = async () => {
     const response = await getRequest(`/api/public/contact`);
     console.log(response);
-    const resData= response.data
+    const resData = response.data;
     setContact((prev) => ({
       ...prev,
       phone: resData.phone || "",
@@ -34,6 +39,7 @@ export default function Footer() {
       x: resData.xurl || "",
       whatsApp: resData.whatsappURL || "",
       telegram: resData.telegramURL || "",
+      youtube: resData.youtubeURL || "",
     }));
     // console.log(resData.facebookURL);
   };
@@ -41,89 +47,147 @@ export default function Footer() {
     getContact();
   }, []);
   return (
-    <div className="flex justify-center gap-10 items-center w-full">
-      <Link href="/">
-        <div className="flex  items-center xs:justify-center md:justify-start ">
-          <span className="  ">
-            <Image
-              src="/Images/logo.png"
-              alt="logo"
-              width={100}
-              height={100}
-              priority
-            />
-          </span>
-        </div>
-      </Link>
-      <hr className="w-[2px]  h-32 bg-red-600 "></hr>
-
-      <div className="flex flex-col  gap-5  justify-center items-start  ">
-        <div className="flex  justify-between gap-5">
-          <Link
-            href={contact.facebook}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <span
-              className={`w-8 h-8 text-blue-600 ${
-                contact.facebook === "" ? "hidden" : "block"
-              }`}
-            >
-              <FaFacebookSquare className="w-full h-full" />
+    <div className="flex px-3 py-5 gap-7 items-center w-full">
+      <div className="flex items-center gap-5">
+        <Link href="/user/home">
+          <div className="flex items-center xs:justify-center md:justify-start ">
+            <span className=" relative w-[130px] h-[130px]">
+              <Image
+                src="/Images/logo.png"
+                alt="logo"
+                fill
+                priority
+                className="object-contain"
+              />
             </span>
+          </div>
+        </Link>
+        <hr className="w-[2px]  h-36 bg-red-600 "></hr>
+      </div>
+      <div className="flex md:flex-row xs:flex-col gap-5 justify-between w-full ">
+        <div className="flex flex-col  gap-5  justify-center items-start  ">
+          <div className="flex  justify-between gap-5">
+            <Link
+              href={contact.facebook}
+              target="_blank"
+              rel="noopener noreferrer" 
+               className={`w-8 h-8 text-blue-600 ${
+                  contact.facebook === "" ? "hidden" : "block"
+                }`}
+            >
+              <span
+              
+              >
+                <FaFacebookSquare className="w-full h-full" />
+              </span>
+            </Link>
+            <Link
+              href={contact.whatsApp}
+              target="_blank"
+              rel="noopener noreferrer"
+               className={` w-8 h-8 text-green-600 ${
+                  contact.whatsApp === "" ? "hidden" : "block"
+                } `}
+            >
+              <span
+               
+              >
+                <FaSquareWhatsapp className="w-full h-full" />
+              </span>
+            </Link>
+            <Link
+              href={contact.telegram}
+              target="_blank"
+              rel="noopener noreferrer"
+               className={` w-8 h-8  text-blue-600 ${
+                  contact.telegram === "" ? "hidden" : "block"
+                }`}
+            >
+              <span
+               
+              >
+                <FaTelegram className="w-full h-full" />
+              </span>
+            </Link>
+
+            <Link
+              href={contact.instagram}
+              target="_blank"
+              rel="noopener noreferrer" 
+              className={` w-8 h-8 text-pink-600 ${
+                  contact.instagram === "" ? "hidden" : "block"
+                }`}
+            >
+              <span
+               
+              >
+                <FaInstagramSquare className="w-full h-full" />
+              </span>
+            </Link>
+
+            <Link href={contact.x} target="_blank" rel="noopener noreferrer" className={` w-8 h-8 text-black ${
+                  contact.x === "" ? "hidden" : "block"
+                }`}>
+              <span
+                
+              >
+                <FaXTwitter className="w-full h-full" />
+              </span>
+            </Link>
+            <Link
+              href={contact.youtube}
+              target="_blank"
+              rel="noopener noreferrer" 
+              className={` w-8 h-8 text-red-600 ${
+                  contact.youtube === "" ? "hidden" : "block"
+                }`}
+            >
+              <span
+               
+              >
+                <FaYoutube className="w-full h-full" />
+              </span>
+            </Link>
+          </div>
+          <div className="flex flex-col items-start justify-start gap-2">
+            <div className="flex items-center gap-2">
+              <span
+                className={`text-2xl text-gray-700 ${
+                  contact.email === "" ? "hidden" : "block"
+                }`}
+              >
+                <MdEmail />
+              </span>
+              <span className="text-lg">{contact.email}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span
+                className={`text-2xl text-gray-700 ${
+                  contact.phone === "" ? "hidden" : "block"
+                }`}
+              >
+                <FaSquarePhone />
+              </span>
+              <span className="text-lg">{contact.phone}</span>
+            </div>
+          </div>
+        </div>
+        <div className="grid grid-cols-3 md:gap-x-10 xs:gap-x-2 gap-y-1 md:text-base xs:text-xs  text-gray-600 font-semibold">
+          <Link href={"/user/home"} className="hover:[text-shadow:2px_2px_5px_rgba(0,0,0,0.25)]">{t("homepage")}</Link>
+
+          <Link href={"/user/home#FeaturedProducts"} className="hover:[text-shadow:2px_2px_5px_rgba(0,0,0,0.25)]">
+            {t("featured_products")}
           </Link>
+                    <Link href={"/user/wishlist"} className="hover:[text-shadow:2px_2px_5px_rgba(0,0,0,0.25)]"> {t("wishlist")} </Link>
+          <Link href={"/user/pages/profile"} className="hover:[text-shadow:2px_2px_5px_rgba(0,0,0,0.25)]">{t("view_profile")} </Link>
+          <Link href={"/user/returnorders"} className="hover:[text-shadow:2px_2px_5px_rgba(0,0,0,0.25)]">{t("returns")} </Link>
+          <Link href={"/user/cart"} className="hover:[text-shadow:2px_2px_5px_rgba(0,0,0,0.25)]"> {t("shoppingCart")} </Link>
 
-          <span
-            className={` w-8 h-8 text-green-600 ${
-              contact.whatsApp === "" ? "hidden" : "block"
-            } `}
-          >
-            <FaSquareWhatsapp className="w-full h-full" />
-          </span>
-          <span
-            className={` w-8 h-8  text-blue-600 ${
-              contact.telegram === "" ? "hidden" : "block"
-            }`}
-          >
-            <FaTelegram className="w-full h-full" />
-          </span>
-
-          <span
-            className={` w-8 h-8 text-pink-600 ${
-              contact.instagram === "" ? "hidden" : "block"
-            }`}
-          >
-            <FaInstagramSquare className="w-full h-full" />
-          </span>
-          <span
-            className={` w-8 h-8 text-black ${
-              contact.x === "" ? "hidden" : "block"
-            }`}
-          >
-            <FaXTwitter className="w-full h-full" />
-          </span>
-        </div>
-        <div className="flex flex-col items-start justify-start gap-2">
-          <div className="flex items-center gap-2">
-            <span
-              className={`text-2xl text-gray-700 ${
-                contact.email === "" ? "hidden" : "block"
-              }`}
-            >
-              <MdEmail />
-            </span>
-            <span className="text-lg">{contact.email}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span
-              className={`text-2xl text-gray-700 ${
-                contact.phone === "" ? "hidden" : "block"
-              }`}
-            >
-              <FaSquarePhone />
-            </span>
-            <span className="text-lg">{contact.phone}</span>
-          </div>
+          <Link href={"/user/home#CategoriesSection"} className="hover:[text-shadow:2px_2px_5px_rgba(0,0,0,0.25)]">{t("categories")} </Link>
+          <Link href={"/user/ordershistory"} className="hover:[text-shadow:2px_2px_5px_rgba(0,0,0,0.25)]"> {t("orders")} </Link>
+          <Link href={"/user/about#Return_Policy"} className="hover:[text-shadow:2px_2px_5px_rgba(0,0,0,0.25)]">{t("Return_Policy")}</Link>
+          <Link href={"/user/about#Guarantee_Policy"} className="hover:[text-shadow:2px_2px_5px_rgba(0,0,0,0.25)]">{t("Guarantee_Policy")}</Link>
+          <Link href={"/user/about"} className="hover:[text-shadow:2px_2px_5px_rgba(0,0,0,0.25)]">{t("about_us")}</Link>
         </div>
       </div>
     </div>
