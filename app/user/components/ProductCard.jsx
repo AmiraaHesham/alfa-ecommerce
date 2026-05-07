@@ -21,42 +21,39 @@ export default function ProductCard({ productInfo, favorite }) {
   const userId = localStorage.id;
   const addToCart = async (productId) => {
     try {
-      if(userId){
+      if (userId) {
         if (productInfo.available) {
-        await postRequest(
-          `/api/shopCarts/${userId}/addLine`,
-          {
-            itemId: productId,
-            quantity: 1,
+          await postRequest(
+            `/api/shopCarts/${userId}/addLine`,
+            {
+              itemId: productId,
+              quantity: 1,
+            },
+            "",
+          );
+        }
+        const result = await Swal.fire({
+          icon: "success",
+          title: t("تم إضافة المنتج الى سلة التسوق"),
+          showCancelButton: true,
+          confirmButtonText: t("goToCart"),
+          cancelButtonText: t("continueShopping"),
+          customClass: {
+            popup: "rounded-xl shadow-lg border border-gray-200 p-6",
+            title: "text-xl font-bold text-gray-800 mb-2",
+            content: "text-sm text-gray-600 mb-4",
+            confirmButton:
+              "bg-red-600 hover:bg-red-500 text-white font-medium px-6 py-2 rounded-lg",
+            cancelButton:
+              "bg-gray-500 hover:bg-gray-400 text-w  font-medium px-6 py-2 rounded-lg ml-2",
           },
-          "",
-        );
+        });
+        if (result.isConfirmed) {
+          navigate.push("/user/cart");
+        }
+      } else {
+        navigate.push("/signin");
       }
-       const result = await Swal.fire({
-        icon: "success",
-        title: t("تم إضافة المنتج الى سلة التسوق"),
-        showCancelButton: true,
-        confirmButtonText: t("goToCart"),
-        cancelButtonText: t("continueShopping"),
-        customClass: {
-          popup: "rounded-xl shadow-lg border border-gray-200 p-6",
-          title: "text-xl font-bold text-gray-800 mb-2",
-          content: "text-sm text-gray-600 mb-4",
-          confirmButton:
-            "bg-red-600 hover:bg-red-500 text-white font-medium px-6 py-2 rounded-lg",
-          cancelButton:
-            "bg-gray-500 hover:bg-gray-400 text-w  font-medium px-6 py-2 rounded-lg ml-2",
-        },
-      });
-      if (result.isConfirmed) {
-        navigate.push("/user/cart");
-      }
-      }else{
-         navigate.push("/signin");
-      }
-      
-
-     
     } catch (error) {
       console.log(error);
     } finally {
@@ -64,16 +61,15 @@ export default function ProductCard({ productInfo, favorite }) {
     }
   };
   const addFavoriteItems = async (productId) => {
-    if(userId){
-       const res = await postRequest(
-      `/api/users/${userId}/favoriteItems/${productId}`,
-      "",
-      "",
-    );
-    }else{
-       navigate.push("/signin");
+    if (userId) {
+      const res = await postRequest(
+        `/api/users/${userId}/favoriteItems/${productId}`,
+        "",
+        "",
+      );
+    } else {
+      navigate.push("/signin");
     }
-   
   };
 
   const deleteFavoriteItems = async (productId) => {
@@ -125,21 +121,23 @@ export default function ProductCard({ productInfo, favorite }) {
         </div>
       )}
       <div className="flex flex-col  justify-between items-baseline">
-        <Image
-          src={
-            process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +
-            getThumbnailUrl(productInfo.mainImageURL)
-          }
-          alt=""
-          width={500}
-          height={500}
-          priority
-          className="h-[160px]  w-full rounded-t-lg"
-          onClick={() => {
-            setSelectedProductId(productInfo.itemId);
-            navigate.push(`/user/pages/productdetails/${productInfo.itemId}`);
-          }}
-        />
+        <div className="relative h-[160px]  w-full rounded-t-lg">
+          <Image
+            src={
+              process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +
+              getThumbnailUrl(productInfo.mainImageURL)
+            }
+            alt=""
+            fill
+            priority
+            className="object-contain "
+            onClick={() => {
+              setSelectedProductId(productInfo.itemId);
+              navigate.push(`/user/pages/productdetails/${productInfo.itemId}`);
+            }}
+          />
+        </div>
+
         <div className="px-3 w-full flex flex-col gap-3 my-2">
           <div className="flex w-full justify-between items-center">
             {/* <div> */}

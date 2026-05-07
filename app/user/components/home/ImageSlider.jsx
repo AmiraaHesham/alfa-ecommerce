@@ -19,22 +19,19 @@ export default function ImageSlider({ sliderImages }) {
         loop={true}
         autoplay={true}
         modules={[Pagination, Navigation, Autoplay]}
-        className="w-full md:h-[550px] xs:h-[450px] md:px-32 xs:px-0"
+        className="w-full h-[450px]"
       >
         {sliderImages.map((img, index) => (
-          <SwiperSlide key={img.sliderImageId}>
-            <div className="h-full w-full flex justify-center items-center  relative ">
+          <SwiperSlide key={img.sliderImageId} className="relative w-full h-full flex justify-center items-center rounded-lg  ">
               <Image
                 src={`${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL}${
                   img.imageUrl || ""
                 }`}
                 alt={`Slide ${index + 1}`}
-                width={1000}
-                height={1000}
+                fill
                 priority
-                className="md:h-full xs:h-[90%] w-[80%]  rounded-md"
+                className="object-contain rounded-lg "
               />
-            </div>
           </SwiperSlide>
         ))}
       </Swiper>

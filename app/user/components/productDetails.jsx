@@ -20,8 +20,8 @@ export default function ProductDetails({ itemId }) {
   const [imageShow, setImageShow] = useState("");
   const urlImage = process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL;
   const { t } = useLanguage();
-    const { setSelectedSearchInput } = useSearshInputContext();
-  
+  const { setSelectedSearchInput } = useSearshInputContext();
+
   const [products, setProducts] = useState([]);
   const [product, setProduct] = useState({
     nameEn: "",
@@ -105,41 +105,40 @@ export default function ProductDetails({ itemId }) {
 
   const addToCart = async () => {
     try {
-      if(userId){
-         if(product.available){
-        await postRequest(
-        `/api/shopCarts/${userId}/addLine`,
-        {
-          itemId: itemId,
-          quantity: count,
-        },
-        "",
-      );
+      if (userId) {
+        if (product.available) {
+          await postRequest(
+            `/api/shopCarts/${userId}/addLine`,
+            {
+              itemId: itemId,
+              quantity: count,
+            },
+            "",
+          );
+        }
+
+        const result = await Swal.fire({
+          icon: "success",
+          title: t("تم إضافة المنتج الى سلة التسوق"),
+          showCancelButton: true,
+          confirmButtonText: t("goToCart"),
+          cancelButtonText: t("continueShopping"),
+          customClass: {
+            popup: "rounded-xl shadow-lg border border-gray-200 p-6",
+            title: "text-xl font-bold text-gray-800 mb-2",
+            content: "text-sm text-gray-600 mb-4",
+            confirmButton:
+              "bg-red-600 hover:bg-red-500 text-white font-medium px-6 py-2 rounded-lg",
+            cancelButton:
+              "bg-gray-500 hover:bg-gray-400 text-w  font-medium px-6 py-2 rounded-lg ml-2",
+          },
+        });
+        if (result.isConfirmed) {
+          navigate.push("/user/cart");
+        }
+      } else {
+        navigate.push("/signin");
       }
-      
-      const result = await Swal.fire({
-        icon: "success",
-        title: t("تم إضافة المنتج الى سلة التسوق"),
-        showCancelButton: true,
-        confirmButtonText: t("goToCart"),
-        cancelButtonText: t("continueShopping"),
-        customClass: {
-          popup: "rounded-xl shadow-lg border border-gray-200 p-6",
-          title: "text-xl font-bold text-gray-800 mb-2",
-          content: "text-sm text-gray-600 mb-4",
-          confirmButton:
-            "bg-red-600 hover:bg-red-500 text-white font-medium px-6 py-2 rounded-lg",
-          cancelButton:
-            "bg-gray-500 hover:bg-gray-400 text-w  font-medium px-6 py-2 rounded-lg ml-2",
-        },
-      });
-      if (result.isConfirmed) {
-        navigate.push("/user/cart");
-      }
-      }
-     else{
-       navigate.push("/signin");
-     }
     } catch (error) {
       console.log(error);
     } finally {
@@ -187,59 +186,61 @@ export default function ProductDetails({ itemId }) {
             </div>
           )}
           <div className="w-full h-[600px] ">
-            <div className="w-full h-[500px] flex justify-center   rounded-md ">
+            <div className="w-full h-[500px] relative  flex justify-center border rounded-md shadow-md  ">
               <Image
                 src={imageShow}
                 alt="mainImage"
-                width={500}
-                height={500}
+                fill
                 priority
-                className="w-full border rounded-md shadow-md"
+                className="object-contain"
               />
             </div>
-            <div className="flex  items-center gap-4 mt-5 ">
+            <div className="flex items-center gap-4 mt-5 ">
               {product.img2 ? (
-                <Image
-                  src={urlImage + getThumbnailUrl(product.img2)}
-                  alt="mainImage"
-                  width={100}
-                  height={100}
-                  priority
-                  className="w-[100px] border rounded-md h-[100px] shadow-md cursor-pointer"
-                  onClick={() => {
-                    setImageShow(urlImage + product.img2);
-                  }}
-                />
+                <diV className="relative w-[100px] h-[100px] border rounded-md  shadow-md cursor-pointe">
+                  <Image
+                    src={urlImage + getThumbnailUrl(product.img2)}
+                    alt="mainImage"
+                    fill
+                    priority
+                    className="object-containr cursor-pointe"
+                    onClick={() => {
+                      setImageShow(urlImage + product.img2);
+                    }}
+                  />
+                </diV>
               ) : (
                 ""
               )}
 
               {product.img3 ? (
-                <Image
-                  src={urlImage + getThumbnailUrl(product.img3)}
-                  alt="mainImage"
-                  width={100}
-                  height={100}
-                  priority
-                  className="w-[100px] border rounded-md h-[100px] shadow-md cursor-pointer"
-                  onClick={() => {
-                    setImageShow(urlImage + product.img3);
-                  }}
-                />
+                <diV className="relative w-[100px] h-[100px] border rounded-md  shadow-md cursor-pointe">
+                  <Image
+                    src={urlImage + getThumbnailUrl(product.img3)}
+                    alt="mainImage"
+                    fill
+                    priority
+                    className="object-contain cursor-pointe"
+                    onClick={() => {
+                      setImageShow(urlImage + product.img3);
+                    }}
+                  />
+                </diV>
               ) : (
                 ""
               )}
-              <Image
-                src={urlImage + getThumbnailUrl(product.mainImage)}
-                alt="mainImage"
-                width={100}
-                height={100}
-                priority
-                className="w-[100px] border rounded-md h-[100px] shadow-md cursor-pointer"
-                onClick={() => {
-                  setImageShow(urlImage + product.mainImage);
-                }}
-              />
+              <diV className="relative w-[100px] h-[100px] border rounded-md  shadow-md cursor-pointe">
+                <Image
+                  src={urlImage + getThumbnailUrl(product.mainImage)}
+                  alt="mainImage"
+                  fill
+                  priority
+                  className="object-contain cursor-pointe "
+                  onClick={() => {
+                    setImageShow(urlImage + product.mainImage);
+                  }}
+                />
+              </diV>
             </div>
           </div>
 
@@ -261,7 +262,7 @@ export default function ProductDetails({ itemId }) {
                   className="text-red-600 cursor-pointer hover:shadow-sm hover:shadow-red-700 px-4 rounded-md  "
                   onClick={() => {
                     setSelectedCategoryId(product.category.id);
-                    setSelectedSearchInput("")
+                    setSelectedSearchInput("");
                     navigate.push("/user/search");
                   }}
                 >
@@ -280,42 +281,51 @@ export default function ProductDetails({ itemId }) {
                 ? product.descriptionAr
                 : product.descriptionEn}
             </span>
-           {product.available?<div className="flex flex-col  gap-3">
-              {product.oldPrice ? (
-                <span className=" font-semibold mt-3 w-[80px] text-center bg-red-600 px-1 text-white rounded-md">
-                  {t("off")}{" "}
-                  {(
-                    ((product.oldPrice - product.price) / product.oldPrice) *
-                    100
-                  ).toFixed(0)}
-                  %
-                </span>
-              ) : (
-                ""
-              )}
-              <div className="flex items-center gap-2">
-                <span className="text-3xl  font-semibold  ">
-                  {product.price
-                    ? product.price.toLocaleString("en-US") +
-                      " " +
-                      t("currency")
-                    : ""}
-                </span>
-                <span className="text-gray-400 text-xl line-through">
-                  {product.oldPrice
-                    ? product.oldPrice.toLocaleString("en-US") +
-                      " " +
-                      t("currency")
-                    : ""}
-                </span>
+            {product.available ? (
+              <div className="flex flex-col  gap-3">
+                {product.oldPrice ? (
+                  <span className=" font-semibold mt-3 w-[80px] text-center bg-red-600 px-1 text-white rounded-md">
+                    {t("off")}{" "}
+                    {(
+                      ((product.oldPrice - product.price) / product.oldPrice) *
+                      100
+                    ).toFixed(0)}
+                    %
+                  </span>
+                ) : (
+                  ""
+                )}
+                <div className="flex items-center gap-2">
+                  <span className="text-3xl  font-semibold  ">
+                    {product.price
+                      ? product.price.toLocaleString("en-US") +
+                        " " +
+                        t("currency")
+                      : ""}
+                  </span>
+                  <span className="text-gray-400 text-xl line-through">
+                    {product.oldPrice
+                      ? product.oldPrice.toLocaleString("en-US") +
+                        " " +
+                        t("currency")
+                      : ""}
+                  </span>
+                </div>
               </div>
-            </div>:""} 
-            <span className="text-red-600">{product.available?"": t("Currently_unavailable")}</span>
+            ) : (
+              ""
+            )}
+            <span className="text-red-600">
+              {product.available ? "" : t("Currently_unavailable")}
+            </span>
 
             <div className="flex  items-center gap-4 h-10 ">
               <button
-                className={`w-[70%] h-full rounded-md text-white text-lg flex  justify-center items-center gap-3  ${product.available ?"bg-red-600 hover:bg-red-700 hover:scale-105 duration-200":"cursor-not-allowed bg-gray-400 hover:bg-gray-400 hover:scale-100"
-                  }`}
+                className={`w-[70%] h-full rounded-md text-white text-lg flex  justify-center items-center gap-3  ${
+                  product.available
+                    ? "bg-red-600 hover:bg-red-700 hover:scale-105 duration-200"
+                    : "cursor-not-allowed bg-gray-400 hover:bg-gray-400 hover:scale-100"
+                }`}
                 disabled={!product.available}
                 onClick={addToCart}
               >
