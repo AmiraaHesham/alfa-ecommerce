@@ -137,7 +137,41 @@ export default function ProductDetails({ itemId }) {
           navigate.push("/user/cart");
         }
       } else {
-        navigate.push("/signin");
+        const product = {
+          id: itemId,
+          quantity: count,
+        };
+
+        let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+
+        const existingItem = cart.find((item) => item.id === itemId);
+
+        if (existingItem) {
+          existingItem.quantity += 1;
+        } else {
+          cart.push(product);
+        }
+
+        localStorage.setItem("cart", JSON.stringify(cart));
+          const result = await Swal.fire({
+          icon: "success",
+          title: t("تم إضافة المنتج الى سلة التسوق"),
+          showCancelButton: true,
+          confirmButtonText: t("goToCart"),
+          cancelButtonText: t("continueShopping"),
+          customClass: {
+            popup: "rounded-xl shadow-lg border border-gray-200 p-6",
+            title: "text-xl font-bold text-gray-800 mb-2",
+            content: "text-sm text-gray-600 mb-4",
+            confirmButton:
+              "bg-red-600 hover:bg-red-500 text-white font-medium px-6 py-2 rounded-lg",
+            cancelButton:
+              "bg-gray-500 hover:bg-gray-400 text-w  font-medium px-6 py-2 rounded-lg ml-2",
+          },
+        });
+        if (result.isConfirmed) {
+          navigate.push("/user/cart");
+        }
       }
     } catch (error) {
       console.log(error);

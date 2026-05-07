@@ -2,7 +2,7 @@
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { useLanguage } from "../../../context/LanguageContext";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MdDelete } from "react-icons/md";
 import { AiFillSafetyCertificate } from "react-icons/ai";
 import {
@@ -36,64 +36,160 @@ export default function Cart() {
   const paymentMethodOptions = [
     { value: "INSTAPAY", label: t("INSTAPAY") },
     { value: "CASH_ON_DELIVERY", label: t("CASH_ON_DELIVERY") },
-    
   ];
+ const synced = useRef(false);
+
+useEffect(() => {
+  const syncCart = async () => {
+    try {
+
+      if (!userId) return;
+      if (synced.current) return;
+
+      const cart = JSON.parse(
+        localStorage.getItem("cart") || "[]"
+      );
+
+      if (!cart.length) return;
+
+      await Promise.all(
+        cart.map((item) =>
+          postRequest(
+            `/api/shopCarts/${userId}/addLine`,
+            {
+              itemId: item.id,
+              quantity: item.quantity,
+            },
+            ""
+          )
+        )
+      );
+getProductInCart()
+      localStorage.removeItem("cart");
+
+      synced.current = true; // 👈 بعد النجاح
+
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  syncCart();
+
+}, [userId]);
   const getProductInCart = async () => {
     try {
-      setLoading(true);
-      const res = await getRequest(`/api/shopCarts/${userId}`);
-      const rseData = res.data;
-      setItems(rseData.itemLines);
-      setTotalOrder(rseData.total);
-      setItemNum(rseData.itemLines.length);
-      setTotalDiscount(rseData.totalDiscount);
+      if (userId) {
+        setLoading(true);
+
+        const res = await getRequest(`/api/shopCarts/${userId}`);
+        const rseData = res.data;
+        console.log(rseData);
+        setItems(rseData.itemLines);
+        setTotalOrder(rseData.total);
+        setItemNum(rseData.itemLines.length);
+        setTotalDiscount(rseData.totalDiscount);
+      } else {
+        const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+
+        const items = await Promise.all(
+          cart.map(async (item) => {
+            const res = await getRequest(`/api/public/items/${item.id}`);
+
+            return {
+              ...res.data, // 👈 مهم جدًا
+              quantity: item.quantity,
+            };
+          }),
+        );
+        console.log(items);
+        setItems(items); // 👈 مهم
+        setItemNum(items.length);
+        const total = items.reduce((acc, item) => {
+          console.log(typeof item.price);
+          const totalPrice = Number(item.price) * Number(item.quantity || 0);
+
+          return acc + totalPrice;
+        }, 0);
+        const totalDiscount = items.reduce((acc, item) => {
+          return acc + Number(item.oldPrice || 0);
+        }, 0);
+        setTotalOrder(total);
+        setTotalDiscount(totalDiscount);
+      }
     } catch (error) {
       console.log(error);
     } finally {
       setLoading(false);
     }
   };
-  const changeQuantity = async (itemId, newQuantity) => {
-    await postRequest(
-      `/api/shopCarts/${userId}/changeQuantity`,
-      {
-        itemLineId: itemId,
-        quantity: newQuantity,
-      },
-      "",
-    );
-    getProductInCart();
+  const changeQuantity = async (itemLineId, itemId, newQuantity) => {
+    if (userId) {
+      await postRequest(
+        `/api/shopCarts/${userId}/changeQuantity`,
+        {
+          itemLineId: itemLineId,
+          quantity: newQuantity,
+        },
+        "",
+      );
+      getProductInCart();
+    } else {
+      let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+
+      cart = cart.map((item) =>
+        Number(item.id) === Number(itemId)
+          ? { ...item, quantity: newQuantity }
+          : item,
+      );
+
+      localStorage.setItem("cart", JSON.stringify(cart));
+      getProductInCart();
+    }
   };
 
-  const deleteItemFormCart = async (itemLineId) => {
-    await deleteRequest(
-      `/api/shopCarts/${userId}/deleteLine/${itemLineId}`,
-      t("message"),
-    );
-    getProductInCart();
+  const deleteItemFormCart = async (itemLineId, productID) => {
+    if (userId) {
+      await deleteRequest(
+        `/api/shopCarts/${userId}/deleteLine/${itemLineId}`,
+        t("message"),
+      );
+      getProductInCart();
+    } else {
+      let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+
+      cart = cart.filter((item) => Number(item.id) !== Number(productID));
+
+      localStorage.setItem("cart", JSON.stringify(cart));
+      getProductInCart();
+    }
   };
 
   const placeOrder = async () => {
     try {
-      if (items.length != 0) {
-        if (isFirstAction) {
-          await getProductInCart();
-        } else {
-          setLoading(true);
+      if (userId) {
+        if (items.length != 0) {
+          if (isFirstAction) {
+            await getProductInCart();
+          } else {
+            setLoading(true);
 
-          const res = await postRequest(
-            `/api/users/orders/place-order`,
-            {
-              paymentMethod: paymentMethod.value
-            },
-            "",
-          );
-          navigate.push("/user/ordershistory");
-          console.log(res);
+            const res = await postRequest(
+              `/api/users/orders/place-order`,
+              {
+                paymentMethod: paymentMethod.value,
+              },
+              "",
+            );
+            navigate.push("/user/ordershistory");
+            console.log(res);
+          }
+          setIsFirstAction(!isFirstAction);
+        } else {
+          toast.error(t("noProductsInCart"));
         }
-        setIsFirstAction(!isFirstAction);
       } else {
-        toast.error(t("noProductsInCart"));
+        navigate.push("/signin");
       }
     } catch (error) {
       console.log(error);
@@ -179,14 +275,15 @@ export default function Cart() {
                   </tr>
                 ))
               ) : items.length != 0 ? (
-                items.map((product, index) => {
+                items.map((item, index) => {
+                  const product = userId ? item.item : item;
                   return (
                     <tr key={index} className=" text-red-950 border w-full">
                       <td className="px-5">
                         <div className="flex items-center gap-3">
                           <Image
                             alt=""
-                            src={`${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL}${getThumbnailUrl(product.item.mainImageURL)}`}
+                            src={`${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL}${getThumbnailUrl(product.mainImageURL)}`}
                             width={45}
                             height={45}
                             className="rounded-full border my-1 p-1"
@@ -195,11 +292,11 @@ export default function Cart() {
                           <div>
                             <h1 className="font-semibold text-sm">
                               {localStorage.lang === "ar"
-                                ? product.item.nameAr
-                                : product.item.nameEn}
+                                ? product.nameAr
+                                : product.nameEn}
                             </h1>
                             <h1 className="text-xs  text-gray-500">
-                              {product.item.code}
+                              {product.code}
                             </h1>
                           </div>
                         </div>
@@ -208,13 +305,20 @@ export default function Cart() {
                         <div>
                           <span>
                             {" "}
-                            {product.unitPrice.toLocaleString("en-US")}{" "}
+                            {product.unitPrice
+                              ? product.unitPrice.toLocaleString("en-US")
+                              : product.price}{" "}
                             {t("currency")}{" "}
                           </span>
 
                           {product.oldUnitPrice ? (
                             <span className="text-gray-400 line-through text-sm mx-2 opacity-90">
                               {product.oldUnitPrice.toLocaleString("en-US")}{" "}
+                              {t("currency")}
+                            </span>
+                          ) : product.oldPrice ? (
+                            <span className="text-gray-400 line-through text-sm mx-2 opacity-90">
+                              {product.oldPrice.toLocaleString("en-US")}{" "}
                               {t("currency")}
                             </span>
                           ) : (
@@ -225,10 +329,19 @@ export default function Cart() {
                       <td className="">
                         <div className="flex gap-5">
                           {product.oldUnitPrice ? (
-                            <span className="bg-green-600 text-sm px-2 text-white rounded-md">
+                            <span className="bg-red-600 text-sm px-2 text-white rounded-md">
                               {(
                                 ((product.oldUnitPrice - product.unitPrice) /
                                   product.oldUnitPrice) *
+                                100
+                              ).toFixed()}
+                              %
+                            </span>
+                          ) : product.oldPrice ? (
+                            <span className="bg-red-600 text-sm px-2 text-white rounded-md">
+                              {(
+                                ((product.oldPrice - product.price) /
+                                  product.oldPrice) *
                                 100
                               ).toFixed()}
                               %
@@ -244,8 +357,9 @@ export default function Cart() {
                           <button
                             onClick={() => {
                               changeQuantity(
-                                product.itemLineId,
-                                product.quantity + 1,
+                                item.itemLineId,
+                                product.itemId,
+                                item.quantity + 1,
                               );
                             }}
                             className="text-xl font-bold text-gray-600  hover:text-red-600"
@@ -255,16 +369,17 @@ export default function Cart() {
 
                           {/* الرقم */}
                           <span className="font-medium text-sm w-16 text-center">
-                            {product.quantity}
+                            {item.quantity}
                           </span>
 
                           {/* زر الزيادة */}
                           <button
                             onClick={() => {
-                              if (product.quantity > 1) {
+                              if (item.quantity > 1) {
                                 changeQuantity(
-                                  product.itemLineId,
-                                  product.quantity - 1,
+                                  item.itemLineId,
+                                  product.itemId,
+                                  item.quantity - 1,
                                 );
                               }
                             }}
@@ -275,14 +390,18 @@ export default function Cart() {
                         </div>
                       </td>
                       <td className="text-sm font-semibold">
-                        {product.totalPrice.toLocaleString("en-US")}{" "}
+                        {item.totalPrice
+                          ? item.totalPrice.toLocaleString("en-US")
+                          : item.price
+                            ? item.price * item.quantity
+                            : ""}{" "}
                         {t("currency")}
                       </td>
                       <td className=" font-semibold text-lg text-gray-600 px-5 cursor-pointer">
                         <button
                           className=""
                           onClick={() => {
-                            deleteItemFormCart(product.itemLineId);
+                            deleteItemFormCart(item.itemLineId, product.itemId);
                           }}
                         >
                           <MdDelete />
@@ -385,56 +504,56 @@ export default function Cart() {
               <div className="flex justify-between items-center mb-5">
                 <span className="text-gray-600">{t("payment_method")}</span>
 
-               <Select 
-                options={paymentMethodOptions}
-                value={paymentMethod}
-                onChange={(selectedOption) => {
-             
+                <Select
+                  options={paymentMethodOptions}
+                  value={paymentMethod}
+                  onChange={(selectedOption) => {
                     setPaymentMethod(selectedOption);
-                   
-                 
-                }}
-                required
-                placeholder={t("select")}
-                className="h-full "
-                //  onMenuOpen={() => {}}
-                styles={{
-                  control: (provided) => ({
-                    ...provided,
-                    border: 'none',
-                    boxShadow: 'none',
-                    background: 'transparent',
-                    fontWeight: '600',
-                    height: '100%',
-                    width: '100%',
-                  }),
-                  option: (provided) => ({
-                    ...provided,
-                    // backgroundColor: '#b91c1c',
-                    color: 'white',
-                    fontSize: '18px',
-                    fontWeight: '600',
-                  }),
-                   input: (base) => ({
-                    ...base,
-                    color: "#374151",
-                  }),   
-                   option: (base, state) => ({
-                    ...base,
-                    backgroundColor: state.isSelected
-                      ? "#dc2626"
-                      : state.isFocused
-                        ? "#fee2e2"
-                        : "#ffffff",
-                    color: state.isSelected ? "#ffffff" : "#374151",
-                    cursor: "pointer",
-                    padding: "10px",
-                    "&:hover": {
-                      backgroundColor: state.isSelected ? "#dc2626" : "#fee2e2",
-                    },
-                  }),
-                }}
-              />
+                  }}
+                  required
+                  placeholder={t("select")}
+                  className="h-full "
+                  //  onMenuOpen={() => {}}
+                  isSearchable={false}
+                  styles={{
+                    control: (provided) => ({
+                      ...provided,
+                      border: "none",
+                      boxShadow: "none",
+                      background: "transparent",
+                      fontWeight: "600",
+                      height: "100%",
+                      width: "100%",
+                    }),
+                    option: (provided) => ({
+                      ...provided,
+                      // backgroundColor: '#b91c1c',
+                      color: "white",
+                      fontSize: "18px",
+                      fontWeight: "600",
+                    }),
+                    input: (base) => ({
+                      ...base,
+                      color: "#374151",
+                    }),
+                    option: (base, state) => ({
+                      ...base,
+                      backgroundColor: state.isSelected
+                        ? "#dc2626"
+                        : state.isFocused
+                          ? "#fee2e2"
+                          : "#ffffff",
+                      color: state.isSelected ? "#ffffff" : "#374151",
+                      cursor: "pointer",
+                      padding: "10px",
+                      "&:hover": {
+                        backgroundColor: state.isSelected
+                          ? "#dc2626"
+                          : "#fee2e2",
+                      },
+                    }),
+                  }}
+                />
               </div>
               <hr className="my-6" />
               <div className="flex justify-between items-center text-2xl font-semibold">
