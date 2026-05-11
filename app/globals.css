@@ -36,6 +36,8 @@ body {
 .swiper-button-next {
   color: rgb(201, 2, 2) !important;
   font-size: 50px !important;
+  margin-left: 20px !important;
+  margin-right: 20px !important;
   
 }
 
@@ -44,5 +46,5 @@ body {
 .swiper-button-next::after {
   font-family: inherit;
   font-weight: bold;
-  left: 10px;
+
 }

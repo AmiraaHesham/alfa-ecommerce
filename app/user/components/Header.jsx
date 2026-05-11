@@ -65,18 +65,18 @@ export default function Header() {
       <div className="w-full h-[60px] xl:px-10 xs:px-0 flex items-center border-b  justify-between bg-red-700">
         <Link href="/user/home">
           <div className="flex  items-center  ">
-            <span className="xs:w-10 xs:h-10 md:w-12 md:h-12 ">
+            <span className="relative xs:w-9 xs:h-9 md:w-12 md:h-12 ">
               <Image
                 src="/Images/logo.png"
                 alt="logo"
-                width={50}
-                height={50}
+                
+                fill
                 priority
-                className="w-full h-full"
+                className="object-contain"
               />
             </span>
-            <div className="cursor-default">
-              <h1 className="lg:text-xl  xs:text-lg w-[120px] text-white font-bold font-sans">
+            <div className="cursor-pointer">
+              <h1 className="lg:text-xl  xs:text-sm  text-white font-bold ">
                 {t("alfa_group")}
               </h1>
             </div>
@@ -119,10 +119,10 @@ export default function Header() {
           />
         </div>
 
-        <div className="flex items-center   md:gap-5 xs:gap-3 mx-2">
+        <div className="flex items-center md:gap-5 xs:gap-1 ">
           <div className="flex items-center   cursor-pointer ">
             <select
-              className=" rounded text-white xs:text-sm md:text-base outline-none bg-red-700 px-1 py-0.5 text-center cursor-pointer"
+              className=" rounded text-white xs:text-xs md:text-base outline-none bg-red-700 px-1 py-0.5 text-center cursor-pointer"
               value={locale}
               onChange={(e) => {
                 const newLang = e.target.value;
@@ -145,24 +145,23 @@ export default function Header() {
             </select>
           </div>
 
-          <div className="flex items-center xs:gap-3 md:gap-5 text-white">
+          <div className="flex items-center xs:gap-2 md:gap-5 text-white">
             <Link href="/user/ordershistory">
-              <RiShoppingBag4Fill className="w-7 h-7" />
+              <RiShoppingBag4Fill className="xs:w-5 xs:h-5 md:w-7 md:h-7" />
             </Link>
             <Link href="/user/wishlist">
-              <FaHeart className="w-6 h-6" />
+              <FaHeart className="xs:w-4 xs:h-4 md:w-6 md:h-6" />
             </Link>
             <Link href="/user/cart">
-              <IoMdCart className="w-7 h-7" />
+              <IoMdCart className="xs:w-5 xs:h-5 md:w-7 md:h-7" />
             </Link>
-            <hr className="w- h-10 bg-white"></hr>
             <Link href={id ? "/user/pages/profile" : "/signin"}>
               <div className="flex items-center gap-1  ">
-                <span className="w-9 h-9">
+                <span className="w-6 h-6">
                   <FaRegCircleUser className="w-full h-full" />
                 </span>
                 <span className="md:text-sm xs:text-xs font-semibold text-center ">
-                  {username ? t("hello") + ", " + username : t("login")}
+                  {username ?  username : t("login")}
                 </span>
               </div>
             </Link>

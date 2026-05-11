@@ -12,7 +12,7 @@ export default function About() {
   const [lang, setLang] = useState(null);
   const { locale } = useLanguage();
   useEffect(() => {
-    setLang(localStorage.getItem("lang"));
+    setLang(locale);
   }, [locale]);
   return (
     <div className="w-full bg-white">
@@ -251,7 +251,7 @@ Notes:
 يتم التواصل مع خدمة العملاء وإرسال رقم الطلب وسبب الاسترجاع.`}
             </p>
           ) : (
-            <p className="whitespace-pre-wrap text-sm text-gray-600 mt-5">
+            <p className="whitespace-pre-wrap text-xs text-gray-600 mt-5">
               {`We strive to provide high-quality products and complete customer satisfaction.
 
 In case of any issue, you can take advantage of our return and exchange policy according to the following conditions:
@@ -302,10 +302,10 @@ Contact support with order number and reason.`}
             <div className="w-[50px] h-[50px] bg-red-200 rounded-full flex items-center justify-center">
               <IoShieldCheckmark className="text-2xl text-red-700" />
             </div>
-            <h1 className="font-semibold">
+            <h1 className="font-semibold md:text-base xs:text-sm">
               {lang === "ar" ? "الجودة" : "Quality"}
             </h1>
-            <h1 className="font-semibold text-sm text-gray-600">
+            <h1 className="font-semibold md:text-sm xs:text-[10px] text-gray-600">
               {lang === "ar"
                 ? "معايير لا تقبل المساومة."
                 : "Uncompromising standards ."}
@@ -316,10 +316,10 @@ Contact support with order number and reason.`}
             <div className="w-[50px] h-[50px] bg-red-200 rounded-full flex items-center justify-center">
               <HiLightBulb className="text-3xl text-red-700" />
             </div>
-            <h1 className="font-semibold">
+            <h1 className="font-semibold  md:text-base xs:text-sm ">
               {lang === "ar" ? "ابتكار" : "Innovation"}
             </h1>
-            <h1 className="font-semibold text-sm text-gray-600">
+            <h1 className="font-semibold  md:text-sm xs:text-[10px] text-gray-600">
               {lang === "ar"
                 ? "تجاوز الحدود لحل تحديات الغد."
                 : "Pushing boundaries to solve tomorrow's challenges."}
@@ -330,10 +330,10 @@ Contact support with order number and reason.`}
             <div className="w-[50px] h-[50px] bg-red-200 rounded-full flex items-center justify-center">
               <IoHeart className="text-2xl text-red-700" />
             </div>
-            <h1 className="font-semibold">
+            <h1 className="font-semibold md:text-base xs:text-sm">
               {lang === "ar" ? "العميل أولاً" : "Customer First"}
             </h1>
-            <h1 className="font-semibold text-sm text-gray-600">
+            <h1 className="font-semibold  md:text-sm xs:text-[10px] text-gray-600">
               {lang === "ar"
                 ? "إن تجربتكم هي بوصلة قراراتنا."
                 : "Your experience is the compass for our decisions."}
@@ -344,10 +344,10 @@ Contact support with order number and reason.`}
             <div className="w-[50px] h-[50px] bg-red-200 rounded-full flex items-center justify-center">
               <FaLeaf className="text-2xl text-red-700" />
             </div>
-            <h1 className="font-semibold">
+            <h1 className="font-semibold  md:text-base xs:text-sm">
               {lang === "ar" ? "الاستدامة" : "Sustainability"}
             </h1>
-            <h1 className="font-semibold text-sm text-gray-600">
+            <h1 className="font-semibold  md:text-sm xs:text-[10px] text-gray-600">
               {lang === "ar"
                 ? "الابتكار مع احترام مستقبل كوكبنا."
                 : "Innovating with respect for our planet’s future."}

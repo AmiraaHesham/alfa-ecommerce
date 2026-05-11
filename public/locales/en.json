@@ -191,12 +191,13 @@
   "INSTAPAY": "InstaPay",
   "Visa": "Visa",
     "CASH_ON_DELIVERY":"Cash",
-
   "payment_method":"Payment Method",
   "select":"Select",
   "return_order":"Product return",
   "return":"Return",
   "returns" : "Returns",
+    "Returned_quantity":"Returned quantity",
+
   "Reason_for_return":"Reason for return?",
   "item":"Item",
  "DAMAGED": "Damaged",
@@ -218,6 +219,8 @@
   "returnsHistory": "Returns History",
    "allReturns": "All returns",
   "approved": "Approved",
-  "returned": "Returned"
+  "returned": "Returned",
+  "Guarantee_Policy": "Guarantee Policy",
+  "Return_Policy": "Return Policy"
 
 }

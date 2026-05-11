@@ -64,7 +64,7 @@ export default function Homepage() {
   return (
     <div className="bg-[#F9FAFB]">
       {/* Navigation Bar */}
-      <div className="w-full xs:text-sm grid md:grid-cols-4 xs:grid-cols-2 text-center md:text-base  shadow-md shadow-gray-300 mb-5 text-gray-600">
+      <div className="w-full xs:text-xs grid md:grid-cols-4 xs:grid-cols-2 text-center md:text-base  shadow-md shadow-gray-300 mb-5 text-gray-600">
         <a
           href="#CategoriesSection"
           className="flex justify-start p-2 items-center border border-b-2  gap-2 w-full font-bold hover:bg-white hover:border-b-2 hover:border-b-red-600 cursor-pointer"
@@ -112,6 +112,7 @@ export default function Homepage() {
           </div>
         ) : (
           <ImageSlider sliderImages={imagesSliders} />
+          
         )}
       </section>
 

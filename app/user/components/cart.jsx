@@ -238,11 +238,11 @@ getProductInCart()
             <thead className="bg-[#F9FAFB] text-xs text-gray-500  text-justify">
               <tr className=" text-gray-500 h-12">
                 <th className="w-[30%] px-5">{t("product")} </th>
-                <th className="w-[25%]">{t("price")} </th>
-                <th className="w-[15%] ">{t("discount")} </th>
-                <th className="w-[20%] px-7 ">{t("quantity")} </th>
-                <th className="w-[15%] ">{t("total")} </th>
-                <th className="w-[10%] px-3">{t("delete")} </th>
+                <th className="w-[20%]">{t("price")} </th>
+                <th className="w-[12%] ">{t("discount")} </th>
+                <th className="w-[16%] px-7 ">{t("quantity")} </th>
+                <th className="w-[14%] ">{t("total")} </th>
+                <th className="w-[15%] px-3"> </th>
               </tr>
             </thead>
             <tbody className="bg-white text-md w-full  ">

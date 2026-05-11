@@ -194,6 +194,7 @@
   "select": "إختر",
   "return_order": "إسترجاع المنتج",
   "return": "إسترجاع",
+  "Returned_quantity":"الكمية المرتجعة",
   "returns": " المرتجعات ",
   "Reason_for_return": "سبب الإرجاع؟",
   "item": "المنتج",
@@ -217,6 +218,6 @@
   "allReturns": "جميع المرتجعات",
   "approved": "تم الموافقة",
   "returned": "تم الارجاع",
-  "": "",
-  "": ""
+  "Guarantee_Policy": "سياسة الضمان",
+  "Return_Policy": "سياسة الاسترجاع"
 }

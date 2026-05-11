@@ -8,10 +8,11 @@ import { FaHeart, FaShoppingBag, FaUser } from "react-icons/fa";
 import { FaBoxArchive } from "react-icons/fa6";
 import { IoLocationSharp } from "react-icons/io5";
 import { MdEmail, MdLock, MdPhoneEnabled } from "react-icons/md";
-import { PiSignOutBold } from "react-icons/pi";
+import { PiKeyReturnThin, PiSignOutBold } from "react-icons/pi";
 import "aos/dist/aos.css";
 import { useLanguage } from "../../../context/LanguageContext";
 import { RiShoppingBag4Fill } from "react-icons/ri";
+import { TbTruckReturn } from "react-icons/tb";
 export default function Profile() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -40,13 +41,13 @@ export default function Profile() {
 
   return (
     <div  className="p-10">
-      <div className="flex h-full gap-10 justify-between">
-        <div className="bg-white w-[30%] h-[400px] md:flex xs:hidden flex-col gap-3   p-10 rounded-md shadow-md">
+      <div className="flex xs:flex-col md:flex-row  h-full gap-10 justify-between">
+        <div className="bg-white md:w-[50%] xl:w-[30%] h-[400px] flex   flex-col gap-3   p-7 rounded-md shadow-md">
           <div className="flex items-center bg-red-600 p-2 rounded-md text-white gap-3 cursor-pointer">
             <span className="text-xl">
               <FaUser />
             </span>
-            <span>{t("personalAccount")} </span>
+            <span className="">{t("personalAccount")} </span>
           </div>
           <Link href="/user/ordershistory">
             <div className="flex items-center hover:bg-red-600 p-2 rounded-md hover:text-white text-gray-600 gap-3 cursor-pointer">
@@ -54,6 +55,14 @@ export default function Profile() {
                 <RiShoppingBag4Fill />
               </span>
               <span> {t("orderHistory")} </span>
+            </div>
+          </Link>
+           <Link href="/user/returnorders">
+            <div className="flex items-center hover:bg-red-600 p-2 rounded-md hover:text-white text-gray-600 gap-3 cursor-pointer">
+              <span className="text-2xl">
+                <TbTruckReturn />
+              </span>
+              <span> {t("returns")} </span>
             </div>
           </Link>
           <Link href="/user/wishlist">
