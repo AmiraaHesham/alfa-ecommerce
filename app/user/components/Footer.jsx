@@ -64,7 +64,7 @@ export default function Footer() {
         </Link>
         <hr className="xs:w-full md:w-[2px] xs:h-2 md:h-36 bg-red-600 "></hr>
       </div>
-      <div className="flex md:flex-row xs:flex-col gap-7 md:justify-between xs:justify-center items-center w-full ">
+      <div className="flex md:flex-row xs:flex-col gap-10 md:justify-between xs:justify-center items-center w-full ">
         <div className="flex flex-col  gap-5  justify-center items-start  ">
           <div className="flex  justify-between gap-5">
             <Link
@@ -165,7 +165,8 @@ export default function Footer() {
             </div>
           </div>
         </div>
-        <div className="grid grid-cols-3   gap-x-6 gap-y-2 lg:text-xs xs:text-xs  text-gray-600 font-semibold">
+        <div className="flex xs:justify-center md:justify-end md:items-start xs:items-center xs:text-center md:text-start  w-full">
+          <div className="lg:w-[60%] xs:w-full  grid grid-cols-3   sm:gap-x-6 xs:gap-x-4 gap-y-2 sm:text-sm  xs:text-xs  text-gray-600 font-semibold">
           <Link
             href={"/user/home"}
             className="hover:[text-shadow:2px_2px_5px_rgba(0,0,0,0.25)]"
@@ -239,6 +240,8 @@ export default function Footer() {
             {t("about_us")}
           </Link>
         </div>
+        </div>
+        
       </div>
     </div>
   );

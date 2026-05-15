@@ -14,8 +14,8 @@ import { getThumbnailUrl } from "../../../../utils/functions";
 import { useSearshInputContext } from "../../../../context/searshInputContext";
 
 export default function CategorySection({ categories }) {
-  const lang =
-    typeof window !== "undefined" ? localStorage.getItem("lang") || "ar" : "ar";
+  const { locale } = useLanguage();
+
   const { t } = useLanguage();
   const { setSelectedSearchInput } = useSearshInputContext();
 
@@ -31,7 +31,7 @@ if (!mounted) return null;
      
       <div className="w-full   ">
         <Swiper
-          key={lang}
+          key={locale}
           modules={[Navigation]}
           breakpoints={{
             300: {
@@ -50,7 +50,7 @@ if (!mounted) return null;
               slidesPerView: 6,
             },
           }}
-          dir={lang === "ar" ? "rtl" : "ltr"}
+          dir={locale === "ar" ? "rtl" : "ltr"}
           spaceBetween={20}
           navigation={{
             nextEl: ".next-btn2",
@@ -84,7 +84,7 @@ if (!mounted) return null;
                   />
                   </div>
                   <h1 className="font-semibold  mt-10">
-                    {localStorage.lang === "ar"
+                    {locale === "ar"
                       ? category.nameAr
                       : category.nameEn}
                   </h1>
@@ -95,14 +95,14 @@ if (!mounted) return null;
           <div className=" flex flex-col justify-center items-center relative my-10  ">
             <div className=" p-1 rounded-full absolute flex gap-2 justify-center items-center  ">
               <button className="prev-btn2 p-1 rounded-full hover:bg-red-600 border-2 border-red-600  hover:text-white text-red-600 text-3xl   font-bold cursor-pointer *:">
-                {lang === "ar" ? (
+                {locale === "ar" ? (
                   <IoIosArrowRoundForward className="text-3xl font-bold" />
                 ) : (
                   <IoIosArrowRoundBack />
                 )}
               </button>
               <button className="next-btn2 p-1 rounded-full hover:bg-red-600  border-2  border-red-600   hover:text-white text-red-600 text-3xl cursor-pointer font-bold">
-                {lang === "ar" ? (
+                {locale === "ar" ? (
                   <IoIosArrowRoundBack className="text-3xl font-bold" />
                 ) : (
                   <IoIosArrowRoundForward />

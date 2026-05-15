@@ -132,6 +132,7 @@ export default function Homepage() {
               <div className="bg-gray-200 xs:hidden md:block rounded animate-pulse w-full" />
               <div className="bg-gray-200 xs:hidden xl:block rounded animate-pulse w-full" />
               <div className="bg-gray-200 xs:hidden xl:block rounded animate-pulse w-full" />
+              <div className="bg-gray-200 xs:hidden xl:block rounded animate-pulse w-full" />
             </div>
             </div>
         ) : (

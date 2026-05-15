@@ -12,9 +12,8 @@ import ProductCard from "../../components/ProductCard";
 import { useEffect, useState } from "react";
 
 export default function FeatuerProducts({ FeatuerProducts }) {
-  const lang =
-    typeof window !== "undefined" ? localStorage.getItem("lang") || "ar" : "ar";
-  const { t } = useLanguage();
+  const { locale } = useLanguage();
+
 const [mounted, setMounted] = useState(false);
 
 useEffect(() => {
@@ -26,7 +25,7 @@ if (!mounted) return null;
       
       <div className=" w-full">
         <Swiper
-          key={lang}
+          key={locale}
           breakpoints={{
             300: {
               slidesPerView: 2,
@@ -49,7 +48,7 @@ if (!mounted) return null;
             nextEl: ".next-btn1",
             prevEl: ".prev-btn1",
           }}
-          dir={lang === "ar" ? "rtl" : "ltr"}
+          dir={locale === "ar" ? "rtl" : "ltr"}
           spaceBetween={15}
           className="w-full h-full rounded-xl   "
         >
@@ -65,14 +64,14 @@ if (!mounted) return null;
           <div className=" flex flex-col justify-center items-center relative my-10 ">
             <div className=" p-1 rounded-full absolute flex gap-2 justify-center items-center  ">
               <button className="prev-btn1 p-1 rounded-full border-2 hover:bg-red-600 border-red-600   hover:text-white text-red-600 text-3xl   font-bold">
-                {lang === "ar" ? (
+                {locale === "ar" ? (
                   <IoIosArrowRoundForward className="text-3xl font-bold" />
                 ) : (
                   <IoIosArrowRoundBack />
                 )}
               </button>
               <button className="next-btn1 p-1 rounded-full border-2 hover:bg-red-600 border-red-600   hover:text-white text-red-600 text-3xl   font-bold">
-                {lang === "ar" ? (
+                {locale === "ar" ? (
                   <IoIosArrowRoundBack className="text-3xl font-bold" />
                 ) : (
                   <IoIosArrowRoundForward />

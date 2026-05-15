@@ -5,15 +5,16 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import Image from "next/image";
+import { useLanguage } from "../../../../context/LanguageContext";
 
 export default function ImageSlider({ sliderImages }) {
-  const lang =
-    typeof window !== "undefined" ? localStorage.getItem("lang") : "ar";
+  const { locale } = useLanguage();
+
   return (
     <div className=" my-10 md:px-10 xs:px-0">
       <Swiper
-        key={lang}
-        dir={lang === "ar" ? "rtl" : "ltr"}
+        key={locale}
+        dir={locale === "ar" ? "rtl" : "ltr"}
         navigation={true}
         slidesPerView={1}
         loop={true}

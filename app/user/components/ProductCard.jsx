@@ -17,12 +17,11 @@ export default function ProductCard({ productInfo, favorite }) {
   const { t } = useLanguage();
   // const { triggerRefresh } = useRefresh();
   const [loading, setLoading] = useState();
+  const { locale } = useLanguage();
 
-const userId =
-  typeof window !== "undefined"
-    ? localStorage.getItem("id")
-    : null;  
-    const addToCart = async (productId) => {
+  const userId =
+    typeof window !== "undefined" ? localStorage.getItem("id") : null;
+  const addToCart = async (productId) => {
     try {
       if (userId) {
         if (productInfo.available) {
@@ -55,42 +54,42 @@ const userId =
           navigate.push("/user/cart");
         }
       } else {
-  const product = {
-    id: productId,
-    quantity: 1,
-  };
+        const product = {
+          id: productId,
+          quantity: 1,
+        };
 
-  let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+        let cart = JSON.parse(localStorage.getItem("cart") || "[]");
 
-  const existingItem = cart.find(item => item.id === productId);
+        const existingItem = cart.find((item) => item.id === productId);
 
-  if (existingItem) {
-    existingItem.quantity += 1;
-  } else {
-    cart.push(product);
-  }
+        if (existingItem) {
+          existingItem.quantity += 1;
+        } else {
+          cart.push(product);
+        }
 
-  localStorage.setItem("cart", JSON.stringify(cart));
-    const result = await Swal.fire({
-            icon: "success",
-            title: t("تم إضافة المنتج الى سلة التسوق"),
-            showCancelButton: true,
-            confirmButtonText: t("goToCart"),
-            cancelButtonText: t("continueShopping"),
-            customClass: {
-              popup: "rounded-xl shadow-lg border border-gray-200 p-6",
-              title: "text-xl font-bold text-gray-800 mb-2",
-              content: "text-sm text-gray-600 mb-4",
-              confirmButton:
-                "bg-red-600 hover:bg-red-500 text-white font-medium px-6 py-2 rounded-lg",
-              cancelButton:
-                "bg-gray-500 hover:bg-gray-400 text-w  font-medium px-6 py-2 rounded-lg ml-2",
-            },
-          });
-          if (result.isConfirmed) {
-            navigate.push("/user/cart");
-          }
-}
+        localStorage.setItem("cart", JSON.stringify(cart));
+        const result = await Swal.fire({
+          icon: "success",
+          title: t("تم إضافة المنتج الى سلة التسوق"),
+          showCancelButton: true,
+          confirmButtonText: t("goToCart"),
+          cancelButtonText: t("continueShopping"),
+          customClass: {
+            popup: "rounded-xl shadow-lg border border-gray-200 p-6",
+            title: "text-xl font-bold text-gray-800 mb-2",
+            content: "text-sm text-gray-600 mb-4",
+            confirmButton:
+              "bg-red-600 hover:bg-red-500 text-white font-medium px-6 py-2 rounded-lg",
+            cancelButton:
+              "bg-gray-500 hover:bg-gray-400 text-w  font-medium px-6 py-2 rounded-lg ml-2",
+          },
+        });
+        if (result.isConfirmed) {
+          navigate.push("/user/cart");
+        }
+      }
     } catch (error) {
       console.log(error);
     } finally {
@@ -99,13 +98,28 @@ const userId =
   };
   const addFavoriteItems = async (productId) => {
     if (userId) {
-      const res = await postRequest(
+     await postRequest(
         `/api/users/${userId}/favoriteItems/${productId}`,
         "",
         "",
       );
     } else {
-      navigate.push("/signin");
+      const product = {
+        id: productId
+      };
+
+      let favoriteItems = JSON.parse(localStorage.getItem("favoriteItems") || "[]");
+
+      const existingItem = favoriteItems.find((item) => item.id === productId);
+
+      if (existingItem) {
+
+      } else {
+        favoriteItems.push(product);
+        toast.success("تم اضافة المنتج بنجاح")
+      }
+
+      localStorage.setItem("favoriteItems", JSON.stringify(favoriteItems));
     }
   };
 
@@ -132,12 +146,12 @@ const userId =
     }
   };
   const describtion =
-    localStorage.lang === "ar"
+   locale === "ar"
       ? productInfo.descriptionAr
       : productInfo.descriptionEn;
 
   const productName =
-    localStorage.lang === "ar" ? productInfo.nameAr : productInfo.nameEn;
+    locale === "ar" ? productInfo.nameAr : productInfo.nameEn;
 
   return (
     // <div className="h-full w-full border rounded-md bg-white flex justify-center py-2  cursor-pointer duration-300 hover:scale-105 ">

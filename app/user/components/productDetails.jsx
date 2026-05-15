@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useId, useState } from "react";
+import { useEffect, useState } from "react";
 import { useIdContext } from "../../../context/idContext";
 import { getProductDetails, getThumbnailUrl } from "../../../utils/functions";
 import Image from "next/image";
@@ -21,6 +21,7 @@ export default function ProductDetails({ itemId }) {
   const urlImage = process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL;
   const { t } = useLanguage();
   const { setSelectedSearchInput } = useSearshInputContext();
+  const { locale } = useLanguage();
 
   const [products, setProducts] = useState([]);
   const [product, setProduct] = useState({
@@ -61,8 +62,8 @@ export default function ProductDetails({ itemId }) {
         descriptionAr: resData.descriptionAr,
         descriptionEn: resData.descriptionEn,
         mainImage: resData.mainImageURL,
-        img2: resData.images.length >= 1 ? resData.images[0].imageUrl : "",
-        img3: resData.images.length >= 2 ? resData.images[1].imageUrl : "",
+img2: resData.images?.[0]?.imageUrl || "",
+        img3: resData.images?.[1]?.imageUrl || "",
         available: resData.available,
         category: {
           ...prev.category,
@@ -283,8 +284,7 @@ export default function ProductDetails({ itemId }) {
               <div className="flex justify-between items-start">
                 <span>
                   <h1 className="text-xl font-semibold">
-                    {typeof localStorage.lang !== "undefined" &&
-                    localStorage.lang === "ar"
+                    {locale === "ar"
                       ? product.nameAr
                       : product.nameEn}
                   </h1>
@@ -300,8 +300,7 @@ export default function ProductDetails({ itemId }) {
                     navigate.push("/user/search");
                   }}
                 >
-                  {typeof localStorage.lang !== "undefined" &&
-                  localStorage.lang === "ar"
+                  {locale === "ar"
                     ? product.category.nameAr
                     : product.category.nameEn}
                 </span>
@@ -310,8 +309,7 @@ export default function ProductDetails({ itemId }) {
               <hr className="w-full  my-5"></hr>
             </div>
             <span className="text-gray-500">
-              {typeof localStorage.lang !== "undefined" &&
-              localStorage.lang === "ar"
+              {locale === "ar"
                 ? product.descriptionAr
                 : product.descriptionEn}
             </span>

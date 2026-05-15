@@ -9,7 +9,7 @@ const LanguageContext = createContext({
 });
 const lang = typeof window !== "undefined" ? localStorage.getItem("lang") : "ar";
 
-const  CurrentTranslation = lang === "undefined"|| lang === null ? navigator.language.split('-')[0] : lang;
+const  CurrentTranslation = lang ? lang : navigator.language.split('-')[0]  ;
 export const LanguageProvider = ({ children }) => {
   const [locale, setLocale] = useState(CurrentTranslation);
   const [messages, setMessages] = useState({});
