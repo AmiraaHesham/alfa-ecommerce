@@ -15,9 +15,9 @@ export default function ProductCard({ productInfo, favorite }) {
   const { setSelectedProductId } = useIdContext();
   const navigate = useRouter();
   const { t } = useLanguage();
-  // const { triggerRefresh } = useRefresh();
   const [loading, setLoading] = useState();
   const { locale } = useLanguage();
+  const { triggerRefresh } = useRefresh();
 
   const userId =
     typeof window !== "undefined" ? localStorage.getItem("id") : null;
@@ -34,6 +34,7 @@ export default function ProductCard({ productInfo, favorite }) {
             "",
           );
         }
+        triggerRefresh();
         const result = await Swal.fire({
           icon: "success",
           title: t("تم إضافة المنتج الى سلة التسوق"),
@@ -68,7 +69,7 @@ export default function ProductCard({ productInfo, favorite }) {
         } else {
           cart.push(product);
         }
-
+        triggerRefresh();
         localStorage.setItem("cart", JSON.stringify(cart));
         const result = await Swal.fire({
           icon: "success",
@@ -98,25 +99,26 @@ export default function ProductCard({ productInfo, favorite }) {
   };
   const addFavoriteItems = async (productId) => {
     if (userId) {
-     await postRequest(
+      await postRequest(
         `/api/users/${userId}/favoriteItems/${productId}`,
         "",
         "",
       );
     } else {
       const product = {
-        id: productId
+        id: productId,
       };
 
-      let favoriteItems = JSON.parse(localStorage.getItem("favoriteItems") || "[]");
+      let favoriteItems = JSON.parse(
+        localStorage.getItem("favoriteItems") || "[]",
+      );
 
       const existingItem = favoriteItems.find((item) => item.id === productId);
 
       if (existingItem) {
-
       } else {
         favoriteItems.push(product);
-        toast.success("تم اضافة المنتج بنجاح")
+        toast.success("تم اضافة المنتج بنجاح");
       }
 
       localStorage.setItem("favoriteItems", JSON.stringify(favoriteItems));
@@ -146,12 +148,8 @@ export default function ProductCard({ productInfo, favorite }) {
     }
   };
   const describtion =
-   locale === "ar"
-      ? productInfo.descriptionAr
-      : productInfo.descriptionEn;
-
-  const productName =
-    locale === "ar" ? productInfo.nameAr : productInfo.nameEn;
+    productInfo?.[locale === "ar" ? "descriptionAr" : "descriptionEn"] || "";
+  const productName = locale === "ar" ? productInfo.nameAr : productInfo.nameEn;
 
   return (
     // <div className="h-full w-full border rounded-md bg-white flex justify-center py-2  cursor-pointer duration-300 hover:scale-105 ">
@@ -181,6 +179,7 @@ export default function ProductCard({ productInfo, favorite }) {
             alt=""
             fill
             priority
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             className="object-contain "
             onClick={() => {
               setSelectedProductId(productInfo.itemId);

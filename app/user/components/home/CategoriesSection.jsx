@@ -22,13 +22,12 @@ export default function CategorySection({ categories }) {
   const { setSelectedCategoryId } = useIdContext();
   const navigate = useRouter();
   const [mounted, setMounted] = useState(false);
-useEffect(() => {
-  setMounted(true);
-}, []);
-if (!mounted) return null;
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  if (!mounted) return null;
   return (
     <div className="flex flex-col justify-center items-center mt-20">
-     
       <div className="w-full   ">
         <Swiper
           key={locale}
@@ -66,27 +65,25 @@ if (!mounted) return null;
               <div
                 className="  h-[270px] border-2  border-gray-200 flex justify-center items-center text-center hover:shadow-xl hover:shadow-slate-300   hover:scale-105 duration-200 cursor-pointer rounded-md  hover:border-b-red-600 hover:border-b-[7px]"
                 onClick={() => {
-                  setSelectedSearchInput("")
+                  setSelectedSearchInput("");
                   setSelectedCategoryId(category.itemCategoryId);
                   navigate.push("/user/search/");
                 }}
               >
                 <div className=" py-2 rounded-lg">
                   <div className="relative h-[150px] w-[150px]">
-
-                  <Image
-                    src={`${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL}${
-                     getThumbnailUrl(category.imageURL)  || ""
-                    }`}
-                    alt={category.nameAr || "category"}
-                    fill
-                    className="object-contain"
-                  />
+                    <Image
+                      src={`${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL}${
+                        getThumbnailUrl(category.imageURL) || ""
+                      }`}
+                      alt={category.nameAr || "category"}
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      className="object-contain"
+                    />
                   </div>
                   <h1 className="font-semibold  mt-10">
-                    {locale === "ar"
-                      ? category.nameAr
-                      : category.nameEn}
+                    {locale === "ar" ? category.nameAr : category.nameEn}
                   </h1>
                 </div>
               </div>

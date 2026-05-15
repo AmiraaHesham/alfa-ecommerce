@@ -11,12 +11,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { FaHeart } from "react-icons/fa";
 import { RiShoppingBag4Fill } from "react-icons/ri";
-import { postRequest } from "../../../utils/requestsUtils";
+import { getRequest, postRequest } from "../../../utils/requestsUtils";
+import { useRefresh } from "../../../context/refreshContext";
 
 export default function Header() {
   const { t } = useLanguage();
   const navigate = useRouter();
-  const id = typeof window !== "undefined" ? localStorage.getItem("id") : "";
   const [mounted, setMounted] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const divRef = useRef(null);
@@ -24,6 +24,9 @@ export default function Header() {
   const [searchInput, setSearchInput] = useState();
   const { locale, setLocale } = useLanguage();
   const [username, setUsername] = useState();
+  const [itemNum, setItemNum] = useState(0);
+  const { refreshKey } = useRefresh();
+
   const userId =
     typeof window !== "undefined" ? localStorage.getItem("id") : "";
   const changeLanguage = async (newLang) => {
@@ -33,12 +36,34 @@ export default function Header() {
     setLocale(newLang);
     try {
       await postRequest(`/api/users/${userId}/langauge/${newLang}`, "", "");
+      setLocale(newLang);
 
       localStorage.setItem("lang", newLang);
     } catch (err) {
       console.error("Failed to update language", err);
     }
   };
+  const getProductInCart = async () => {
+    try {
+      if (userId) {
+        const res = await getRequest(`/api/shopCarts/${userId}`);
+        const rseData = res.data;
+        // console.log(rseData.itemLines.length);
+        // setItems(rseData.itemLines);
+        // setTotalOrder(rseData.total);
+        setItemNum(rseData.itemLines.length);
+        // setTotalDiscount(rseData.totalDiscount);
+      } else {
+        const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+        setItemNum(cart.length);
+      }
+    } catch (err) {
+      console.error("Failed to get product in cart", err);
+    }
+  };
+  useEffect(() => {
+    getProductInCart();
+  }, [refreshKey]);
   useEffect(() => {
     setMounted(true);
     const username =
@@ -69,14 +94,14 @@ export default function Header() {
               <Image
                 src="/Images/logo.png"
                 alt="logo"
-                
                 fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 priority
                 className="object-contain"
               />
             </span>
             <div className="cursor-pointer">
-              <h1 className="lg:text-xl  xs:text-sm  text-white font-bold ">
+              <h1 className="lg:text-xl  xs:text-base  text-white font-bold ">
                 {t("alfa_group")}
               </h1>
             </div>
@@ -122,7 +147,7 @@ export default function Header() {
         <div className="flex items-center md:gap-5 xs:gap-1 ">
           <div className="flex items-center   cursor-pointer ">
             <select
-              className=" rounded text-white xs:text-xs md:text-base outline-none bg-red-700 px-1 py-0.5 text-center cursor-pointer"
+              className=" rounded text-white xs:text-sm md:text-base outline-none bg-red-700 px-1 py-0.5 text-center cursor-pointer"
               value={locale}
               onChange={(e) => {
                 const newLang = e.target.value;
@@ -147,21 +172,24 @@ export default function Header() {
 
           <div className="flex items-center xs:gap-2 md:gap-5 text-white">
             <Link href="/user/ordershistory">
-              <RiShoppingBag4Fill className="xs:w-5 xs:h-5 md:w-7 md:h-7" />
+              <RiShoppingBag4Fill className="xs:w-6 xs:h-6 md:w-7 md:h-7" />
             </Link>
             <Link href="/user/wishlist">
-              <FaHeart className="xs:w-4 xs:h-4 md:w-6 md:h-6" />
+              <FaHeart className="xs:w-5 xs:h-5 md:w-6 md:h-6" />
             </Link>
-            <Link href="/user/cart">
-              <IoMdCart className="xs:w-5 xs:h-5 md:w-7 md:h-7" />
+            <Link href="/user/cart" className="relative ">
+              <span className="absolute  text-red-700 text-center [-webkit-text-stroke:1px_orange] md:text-lg xs:text-sm font-extrabold   right-0 xs:top-[-4px] md:top-[-10px] left-0 bottom-0">
+                {itemNum}{" "}
+              </span>
+              <IoMdCart className="xs:w-7 xs:h-7 md:w-8 md:h-8" />
             </Link>
-            <Link href={id ? "/user/pages/profile" : "/signin"}>
+            <Link href={userId ? "/user/pages/profile" : "/signin"}>
               <div className="flex items-center gap-1  ">
-                <span className="w-6 h-6">
+                <span className="w-8 h-8">
                   <FaRegCircleUser className="w-full h-full" />
                 </span>
                 <span className="md:text-sm xs:text-xs font-semibold text-center ">
-                  {username ?  username : t("login")}
+                  {username ? username : t("login")}
                 </span>
               </div>
             </Link>

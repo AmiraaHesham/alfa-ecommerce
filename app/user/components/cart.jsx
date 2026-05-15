@@ -26,8 +26,8 @@ export default function Cart() {
   const [itemNum, setItemNum] = useState(0);
   const userId =
     typeof window !== "undefined" ? localStorage.getItem("id") : null;
-  const lang =
-    typeof window !== "undefined" ? localStorage.getItem("lang") : null;
+  const { locale } = useLanguage();
+
   const shappingCost = 50;
   const [isFirstAction, setIsFirstAction] = useState(true);
   const [loading, setLoading] = useState(true);
@@ -228,7 +228,7 @@ getProductInCart()
         >
           <h1>{t("continueShopping")} </h1>
           <span className="mt-2">
-            {lang === "ar" ? <FaArrowLeft /> : <FaArrowRight />}
+            {locale === "ar" ? <FaArrowLeft /> : <FaArrowRight />}
           </span>
         </Link>
       </div>
@@ -291,7 +291,7 @@ getProductInCart()
 
                           <div>
                             <h1 className="font-semibold text-sm">
-                              {localStorage.lang === "ar"
+                              {locale === "ar"
                                 ? product.nameAr
                                 : product.nameEn}
                             </h1>

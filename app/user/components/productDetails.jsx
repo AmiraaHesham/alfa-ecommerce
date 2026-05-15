@@ -22,6 +22,7 @@ export default function ProductDetails({ itemId }) {
   const { t } = useLanguage();
   const { setSelectedSearchInput } = useSearshInputContext();
   const { locale } = useLanguage();
+  const { triggerRefresh } = useRefresh();
 
   const [products, setProducts] = useState([]);
   const [product, setProduct] = useState({
@@ -62,7 +63,7 @@ export default function ProductDetails({ itemId }) {
         descriptionAr: resData.descriptionAr,
         descriptionEn: resData.descriptionEn,
         mainImage: resData.mainImageURL,
-img2: resData.images?.[0]?.imageUrl || "",
+        img2: resData.images?.[0]?.imageUrl || "",
         img3: resData.images?.[1]?.imageUrl || "",
         available: resData.available,
         category: {
@@ -117,7 +118,7 @@ img2: resData.images?.[0]?.imageUrl || "",
             "",
           );
         }
-
+        triggerRefresh();
         const result = await Swal.fire({
           icon: "success",
           title: t("تم إضافة المنتج الى سلة التسوق"),
@@ -152,9 +153,9 @@ img2: resData.images?.[0]?.imageUrl || "",
         } else {
           cart.push(product);
         }
-
+        triggerRefresh();
         localStorage.setItem("cart", JSON.stringify(cart));
-          const result = await Swal.fire({
+        const result = await Swal.fire({
           icon: "success",
           title: t("تم إضافة المنتج الى سلة التسوق"),
           showCancelButton: true,
@@ -216,7 +217,6 @@ img2: resData.images?.[0]?.imageUrl || "",
                 className="w-[100px] h-[100px]  border-t-transparent rounded-full animate-pulse"
                 width={100}
                 height={100}
-                priority
               />
             </div>
           )}
@@ -227,55 +227,59 @@ img2: resData.images?.[0]?.imageUrl || "",
                 alt="mainImage"
                 fill
                 priority
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 className="object-contain"
               />
             </div>
             <div className="flex items-center gap-4 mt-5 ">
               {product.img2 ? (
-                <diV className="relative w-[100px] h-[100px] border rounded-md  shadow-md cursor-pointe">
+                <div className="relative w-[100px] h-[100px] border rounded-md  shadow-md cursor-pointe">
                   <Image
                     src={urlImage + getThumbnailUrl(product.img2)}
                     alt="mainImage"
                     fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     priority
                     className="object-containr cursor-pointe"
                     onClick={() => {
                       setImageShow(urlImage + product.img2);
                     }}
                   />
-                </diV>
+                </div>
               ) : (
                 ""
               )}
 
               {product.img3 ? (
-                <diV className="relative w-[100px] h-[100px] border rounded-md  shadow-md cursor-pointe">
+                <div className="relative w-[100px] h-[100px] border rounded-md  shadow-md cursor-pointe">
                   <Image
                     src={urlImage + getThumbnailUrl(product.img3)}
                     alt="mainImage"
                     fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     priority
                     className="object-contain cursor-pointe"
                     onClick={() => {
                       setImageShow(urlImage + product.img3);
                     }}
                   />
-                </diV>
+                </div>
               ) : (
                 ""
               )}
-              <diV className="relative w-[100px] h-[100px] border rounded-md  shadow-md cursor-pointe">
+              <div className="relative w-[100px] h-[100px] border rounded-md  shadow-md cursor-pointe">
                 <Image
                   src={urlImage + getThumbnailUrl(product.mainImage)}
                   alt="mainImage"
                   fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   priority
                   className="object-contain cursor-pointe "
                   onClick={() => {
                     setImageShow(urlImage + product.mainImage);
                   }}
                 />
-              </diV>
+              </div>
             </div>
           </div>
 
@@ -284,9 +288,7 @@ img2: resData.images?.[0]?.imageUrl || "",
               <div className="flex justify-between items-start">
                 <span>
                   <h1 className="text-xl font-semibold">
-                    {locale === "ar"
-                      ? product.nameAr
-                      : product.nameEn}
+                    {locale === "ar" ? product.nameAr : product.nameEn}
                   </h1>
                   <h1 className=" text-gray-500 mt-2  text-sm">
                     {t("code")}: {product.code}
@@ -309,9 +311,7 @@ img2: resData.images?.[0]?.imageUrl || "",
               <hr className="w-full  my-5"></hr>
             </div>
             <span className="text-gray-500">
-              {locale === "ar"
-                ? product.descriptionAr
-                : product.descriptionEn}
+              {locale === "ar" ? product.descriptionAr : product.descriptionEn}
             </span>
             {product.available ? (
               <div className="flex flex-col  gap-3">
