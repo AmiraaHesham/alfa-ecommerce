@@ -12,6 +12,7 @@ import Swal from "sweetalert2";
 import FeatuerProducts from "./home/FeatuerProducts";
 import { FaQuestionCircle } from "react-icons/fa";
 import { useSearshInputContext } from "../../../context/searshInputContext";
+import { useRefresh } from "../../../context/refreshContext";
 export default function ProductDetails({ itemId }) {
   const [count, setCount] = useState(1);
   const { setSelectedCategoryId } = useIdContext();
