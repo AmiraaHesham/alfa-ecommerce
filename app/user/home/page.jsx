@@ -22,13 +22,13 @@ const CategoriesSection = dynamic(
   () => import("../components/home/CategoriesSection"),
   {
     ssr: false,
-  }
+  },
 );
 const FeaturedProducts = dynamic(
   () => import("../components/home/FeatuerProducts"),
   {
     ssr: false,
-  }
+  },
 );
 
 export default function Homepage() {
@@ -83,13 +83,12 @@ export default function Homepage() {
           </span>
           {t("featured_products")}
         </a>
-         <Link
-         href= '/user/about'
+        <Link
+          href="/user/about"
           className="flex justify-start p-2 items-center border border-b-2 gap-2 w-full font-bold hover:bg-white hover:border-b-2 hover:border-b-red-600 cursor-pointer"
         >
           <span className="bg-red-600 text-white rounded-full text-lg p-1">
-<FaHouseFlag />
-
+            <FaHouseFlag />
           </span>
           {t("about_us")}
         </Link>
@@ -112,14 +111,16 @@ export default function Homepage() {
           </div>
         ) : (
           <ImageSlider sliderImages={imagesSliders} />
-          
         )}
       </section>
 
       {/* Categories Section */}
-      <section id="CategoriesSection" className="h-[500px] justify-center items-center">
+      <section
+        id="CategoriesSection"
+        className="h-[500px] justify-center items-center"
+      >
         <div className="w-full flex justify-center items-center text-center px-10 text-2xl font-semibold h-12 shadow-md shadow-gray-300 bg-gray-100">
-          <h1 className="flex items-center gap-2 text-gray-600">
+          <h1 className="flex items-center gap-2 xs:text-xl md:text-2xl text-gray-600">
             <BiCategory className="text-red-600" />
             {t("categories")}
           </h1>
@@ -134,9 +135,12 @@ export default function Homepage() {
               <div className="bg-gray-200 xs:hidden xl:block rounded animate-pulse w-full" />
               <div className="bg-gray-200 xs:hidden xl:block rounded animate-pulse w-full" />
             </div>
-            </div>
+          </div>
         ) : (
+          <div className="xs:p-7 sm:p-0">
           <CategoriesSection categories={categories} />
+
+          </div>
         )}
       </section>
 
@@ -146,7 +150,7 @@ export default function Homepage() {
           <span className="text-red-600 rounded-full p-1">
             <AiFillStar />
           </span>
-          <h1 className="flex items-center gap-2 text-gray-600">
+          <h1 className="flex items-center xs:text-xl md:text-2xl  gap-2 text-gray-600">
             {t("featured_products")}
           </h1>
         </div>
@@ -161,7 +165,10 @@ export default function Homepage() {
             </div>
           </div>
         ) : (
+                    <div className="xs:p-7 sm:p-0">
+
           <FeaturedProducts FeatuerProducts={featuredProducts} />
+          </div>
         )}
       </section>
     </div>

@@ -21,13 +21,16 @@ useEffect(() => {
 }, []);
 if (!mounted) return null;
   return (
-    <div className="flex flex-col justify-center items-center  relative mt-28">
+    <div className="flex flex-col justify-center items-center  relative mt-28 ">
       
       <div className=" w-full">
         <Swiper
           key={locale}
           breakpoints={{
-            300: {
+            320: {
+              slidesPerView: 1,
+            },
+             500: {
               slidesPerView: 2,
             },
             700: {

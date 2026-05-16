@@ -209,7 +209,7 @@ export default function ProductDetails({ itemId }) {
           </div>
         ))
       ) : (
-        <div className="flex lg:flex-row xs:flex-col  gap-10 py-10 mx-10 ">
+        <div className="flex lg:flex-row xs:flex-col  gap-10 md:p-10 xs:p-2 ">
           {loading && (
             <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
               <Image
@@ -221,8 +221,8 @@ export default function ProductDetails({ itemId }) {
               />
             </div>
           )}
-          <div className="w-full h-[600px] ">
-            <div className="w-full h-[500px] relative  flex justify-center border rounded-md shadow-md  ">
+          <div className="w-full h-[550px] ">
+            <div className="w-full h-[450px] relative  flex justify-center border rounded-md shadow-md  ">
               <Image
                 src={imageShow}
                 alt="mainImage"
@@ -284,19 +284,19 @@ export default function ProductDetails({ itemId }) {
             </div>
           </div>
 
-          <div className="flex py-5 flex-col w-full md:h-[500px] xs:h-[570px] justify-between bg-white  px-5 border rounded-md shadow-md">
+          <div className="flex py-5 flex-col xs:gap-10 md:gap-0 w-full md:h-[550px] xs:h-auto  justify-between bg-white  px-5 border rounded-md shadow-md">
             <div>
               <div className="flex justify-between items-start">
                 <span>
-                  <h1 className="text-xl font-semibold">
+                  <h1 className="md:text-xl xs:text-base font-semibold">
                     {locale === "ar" ? product.nameAr : product.nameEn}
                   </h1>
-                  <h1 className=" text-gray-500 mt-2  text-sm">
+                  <h1 className=" text-gray-500 mt-2  md:text-sm xs:text-xs">
                     {t("code")}: {product.code}
                   </h1>
                 </span>
                 <span
-                  className="text-red-600 cursor-pointer hover:shadow-sm hover:shadow-red-700 px-4 rounded-md  "
+                  className="text-red-600 cursor-pointer md:text-base xs:text-xs hover:shadow-sm hover:shadow-red-700 px-4 rounded-md  "
                   onClick={() => {
                     setSelectedCategoryId(product.category.id);
                     setSelectedSearchInput("");
@@ -329,14 +329,14 @@ export default function ProductDetails({ itemId }) {
                   ""
                 )}
                 <div className="flex items-center gap-2">
-                  <span className="text-3xl  font-semibold  ">
+                  <span className="md:text-3xl xs:text-2xl  font-semibold  ">
                     {product.price
                       ? product.price.toLocaleString("en-US") +
                         " " +
                         t("currency")
                       : ""}
                   </span>
-                  <span className="text-gray-400 text-xl line-through">
+                  <span className="text-gray-400 md:text-xl xs:text-base line-through">
                     {product.oldPrice
                       ? product.oldPrice.toLocaleString("en-US") +
                         " " +
@@ -352,7 +352,7 @@ export default function ProductDetails({ itemId }) {
               {product.available ? "" : t("Currently_unavailable")}
             </span>
 
-            <div className="flex  items-center gap-4 h-10 ">
+            <div className="flex w-full  items-center gap-4 h-10 ">
               <button
                 className={`w-[70%] h-full rounded-md text-white text-lg flex  justify-center items-center gap-3  ${
                   product.available
@@ -365,7 +365,7 @@ export default function ProductDetails({ itemId }) {
                 {t("addToCart")}
                 <MdOutlineAddShoppingCart />
               </button>
-              <div className="flex items-center gap-3 rounded-lg px-4 h-full border text-gray-600 bg-white">
+              <div className="flex items-center text-center justify-center gap-3 w-[30%] rounded-lg px-4 h-full border text-gray-600 bg-white">
                 {/* زر النقصان */}
                 <button
                   onClick={() => {
@@ -395,15 +395,17 @@ export default function ProductDetails({ itemId }) {
           </div>
         </div>
       )}
-
+  <hr />
       <div className="mt-24 ">
-        <h1 className="text-2xl flex items-center gap-3 font-bold mx-10 mb-[-90px]">
+        <h1 className="md:text-2xl xs:text-lg flex items-center gap-3 font-bold mx-10 mb-[-90px]">
           <FaQuestionCircle className="text-red-600" />
           {t("You_might_like")}
         </h1>
-        <hr />
-
+      
+<div className="xs:px-10 md:px-0">
         <FeatuerProducts FeatuerProducts={products} />
+
+</div>
       </div>
     </div>
   );

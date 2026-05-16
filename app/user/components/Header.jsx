@@ -87,10 +87,10 @@ export default function Header() {
 
   return (
     <header>
-      <div className="w-full h-[60px] xl:px-10 xs:px-0 flex items-center border-b  justify-between bg-red-700">
+      <div className="w-full h-[60px] xl:px-10 xs:px-2 flex items-center border-b  justify-between bg-red-700">
         <Link href="/user/home">
           <div className="flex  items-center  ">
-            <span className="relative xs:w-9 xs:h-9 md:w-12 md:h-12 ">
+            <span className="relative xs:w-8 xs:h-8 md:w-12 md:h-12 ">
               <Image
                 src="/Images/logo.png"
                 alt="logo"
@@ -101,7 +101,7 @@ export default function Header() {
               />
             </span>
             <div className="cursor-pointer">
-              <h1 className="lg:text-xl  xs:text-base  text-white font-bold ">
+              <h1 className="lg:text-xl  xs:text-xs  text-white font-bold ">
                 {t("alfa_group")}
               </h1>
             </div>
@@ -147,7 +147,7 @@ export default function Header() {
         <div className="flex items-center md:gap-5 xs:gap-1 ">
           <div className="flex items-center   cursor-pointer ">
             <select
-              className=" rounded text-white xs:text-sm md:text-base outline-none bg-red-700 px-1 py-0.5 text-center cursor-pointer"
+              className=" rounded text-white xs:text-[10px] md:text-base outline-none bg-red-700 px-1 py-0.5 text-center cursor-pointer"
               value={locale}
               onChange={(e) => {
                 const newLang = e.target.value;
@@ -172,7 +172,7 @@ export default function Header() {
 
           <div className="flex items-center xs:gap-2 md:gap-5 text-white">
             <Link href="/user/ordershistory">
-              <RiShoppingBag4Fill className="xs:w-6 xs:h-6 md:w-7 md:h-7" />
+              <RiShoppingBag4Fill className="xs:w-5 xs:h-5 md:w-7 md:h-7" />
             </Link>
             <Link href="/user/wishlist">
               <FaHeart className="xs:w-5 xs:h-5 md:w-6 md:h-6" />
@@ -181,14 +181,14 @@ export default function Header() {
               <span className="absolute  text-red-700 text-center [-webkit-text-stroke:1px_orange] md:text-lg xs:text-sm font-extrabold   right-0 xs:top-[-4px] md:top-[-10px] left-0 bottom-0">
                 {itemNum}{" "}
               </span>
-              <IoMdCart className="xs:w-7 xs:h-7 md:w-8 md:h-8" />
+              <IoMdCart className="xs:w-6 xs:h-6 md:w-8 md:h-8" />
             </Link>
             <Link href={userId ? "/user/pages/profile" : "/signin"}>
               <div className="flex items-center gap-1  ">
-                <span className="w-8 h-8">
+                <span className="xs:w-7 xs:h-7 md:w-8 md:h-8">
                   <FaRegCircleUser className="w-full h-full" />
                 </span>
-                <span className="md:text-sm xs:text-xs font-semibold text-center ">
+                <span className="md:text-sm xs:text-[10px] font-semibold text-center ">
                   {username ? username : t("login")}
                 </span>
               </div>

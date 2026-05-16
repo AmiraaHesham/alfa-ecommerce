@@ -245,8 +245,8 @@ export default function ProductCard({ productInfo, favorite }) {
             }}
             // title={describtion}
           >
-            {describtion}
-            {describtion.length <= 70
+            {/* {describtion} */}
+            {describtion?.length <= 70
               ? describtion
               : describtion.slice(0, 70) + " ..."}
           </h1>
@@ -279,13 +279,13 @@ export default function ProductCard({ productInfo, favorite }) {
                   ""
                 )}
               </div>
-              <div className="flex items-center gap-2">
-                <span className=" font-bold ">
+              <div className="flex items-center gap-2 mt-2">
+                <span className="xs:text-base sm:text-sm  md:text-base  font-bold ">
                   {productInfo.price.toLocaleString("en-US")} {t("currency")}
                 </span>
                 {productInfo.oldPrice ? (
                   <div className="flex gap-2">
-                    <span className=" font-semibold line-through text-sm  mt-2 flex text-gray-400">
+                    <span className=" font-semibold line-through xs:text-base sm:text-xs md:text-sm  flex text-gray-400">
                       {productInfo.oldPrice.toLocaleString("en-US")}{" "}
                       {t("currency")}
                     </span>

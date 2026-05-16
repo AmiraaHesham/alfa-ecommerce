@@ -33,7 +33,10 @@ export default function CategorySection({ categories }) {
           key={locale}
           modules={[Navigation]}
           breakpoints={{
-            300: {
+              320: {
+              slidesPerView: 1,
+            },
+             500: {
               slidesPerView: 2,
             },
             700: {
