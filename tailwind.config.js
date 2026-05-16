@@ -8,7 +8,9 @@ module.exports = {
   theme: {
     extend: {
      screens:{
-      'xs':'300px'
+      'xs':'320px',
+      'sm':'500px',
+      'md':"700px"
      },
       fontFamily: {
         sans: ['var(--font-cairo)', 'sans-serif'],
