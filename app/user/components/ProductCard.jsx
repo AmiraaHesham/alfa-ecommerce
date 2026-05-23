@@ -157,7 +157,7 @@ export default function ProductCard({ productInfo, favorite }) {
       id={`div_${productInfo.itemId}`}
       className="h-[350px] bg-white border w-full rounded-md cursor-pointer  hover:border-b-[7px] hover:border-b-red-600  hover:scale-105 duration-200   hover:shadow-lg "
     >
-      {loading && (
+      {/* {loading && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
           <Image
             src="/Images/logo.png"
@@ -168,8 +168,8 @@ export default function ProductCard({ productInfo, favorite }) {
             priority
           />
         </div>
-      )}
-      <div className="flex flex-col  justify-between items-baseline">
+      )} */}
+      <div className="flex flex-col h-full justify-between items-baseline">
         <div className="relative h-[160px]  w-full rounded-t-lg">
           <Image
             src={
@@ -189,32 +189,9 @@ export default function ProductCard({ productInfo, favorite }) {
         </div>
 
         <div className="px-3 w-full flex flex-col gap-3 my-2">
-          <div className="flex w-full justify-between items-center">
-            {/* <div> */}
-            <h1
-              className=" text-xs font-semibold"
-              onClick={() => {
-                setSelectedProductId(productInfo.itemId);
-                navigate.push(
-                  `/user/pages/productdetails/${productInfo.itemId}`,
-                );
-              }}
-            >
-              {productName.length <= 29
-                ? productName
-                : productName.slice(0, 29) + " ..."}
-            </h1>
-            {/* <div className="absolute bottom-full left-0  
-                  hidden group-hover:block 
-                  bg-white text-gray-800 text-sm rounded-lg 
-                  shadow-lg border border-gray-200
-                  p-3 w-64
-                  z-50">
-{describtion}  </div> */}
-            {/* </div> */}
-            <span
+                   <span
               id={`btn_fov_${productInfo.itemId}`}
-              className={`hover:text-red-600 hover:scale-110 duration-200 ${
+              className={`hover:text-red-600 flex justify-end items-end  ${
                 favorite === true ? "text-red-600" : "text-gray-400"
               } rounded-full`}
               onClick={() => {
@@ -234,25 +211,28 @@ export default function ProductCard({ productInfo, favorite }) {
             >
               <FaHeart />
             </span>
+          <div className="flex w-full justify-between items-center">
+            {/* <div> */}
+            <h1
+              className=" text-sm font-semibold"
+              onClick={() => {
+                setSelectedProductId(productInfo.itemId);
+                navigate.push(
+                  `/user/pages/productdetails/${productInfo.itemId}`,
+                );
+              }}
+            >
+              {productName.length <= 29
+                ? productName
+                : productName.slice(0, 29) + " ..."}
+            </h1>
+          
+   
           </div>
-          {/* <div className="group relative inline-block"> */}
-
-          <h1
-            className="text-xs text-gray-400 w-full h-16 overflow-hidden"
-            onClick={() => {
-              setSelectedProductId(productInfo.itemId);
-              navigate.push(`/user/pages/productdetails/${productInfo.itemId}`);
-            }}
-            // title={describtion}
-          >
-            {/* {describtion} */}
-            {describtion?.length <= 70
-              ? describtion
-              : describtion.slice(0, 70) + " ..."}
-          </h1>
+         
         </div>
-
-        <div className="flex w-full justify-between items-center   px-3">
+<div className="w-full">
+   <div className="flex w-full justify-between items-center  px-3">
           {productInfo.available ? (
             <div
               className="flex flex-col "
@@ -263,7 +243,7 @@ export default function ProductCard({ productInfo, favorite }) {
                 );
               }}
             >
-              <div className=" my-2 h-4">
+              <div className="my-2 h-4">
                 {productInfo.oldPrice ? (
                   <span className=" font-semibold  w-full text-center bg-red-600 text-xs p-[4px]  text-white rounded-md">
                     {t("off")}
@@ -279,13 +259,13 @@ export default function ProductCard({ productInfo, favorite }) {
                   ""
                 )}
               </div>
-              <div className="flex items-center gap-2 mt-2">
-                <span className="xs:text-base sm:text-sm  md:text-base  font-bold ">
+              <div className="flex w-full xs:justify-between md:justify-start items-center gap-2 mt-2">
+                <span className="xs:text-xs  md:text-base  font-bold ">
                   {productInfo.price.toLocaleString("en-US")} {t("currency")}
                 </span>
                 {productInfo.oldPrice ? (
                   <div className="flex gap-2">
-                    <span className=" font-semibold line-through xs:text-base sm:text-xs md:text-sm  flex text-gray-400">
+                    <span className=" font-semibold line-through xs:text-[10px]  md:text-sm  flex text-gray-400">
                       {productInfo.oldPrice.toLocaleString("en-US")}{" "}
                       {t("currency")}
                     </span>
@@ -305,19 +285,25 @@ export default function ProductCard({ productInfo, favorite }) {
               {t("Currently_unavailable")}
             </span>
           )}
-          {productInfo.available ? (
-            <button
-              className="text-xl text-red-700 bg-red-50 p-2 mt-5  hover:bg-red-300 duration-500 hover:scale-110 rounded-md"
+         
+        </div>
+         {productInfo.available ? (
+          <div className="flex justify-end items-end w-full p-2">
+             <button
+              className="text-xl  text-red-700 bg-red-50 p-2   hover:bg-red-300 duration-500 hover:scale-110 rounded-md"
               onClick={() => {
                 addToCart(productInfo.itemId);
               }}
             >
               <MdOutlineAddShoppingCart />
             </button>
+          </div>
+           
           ) : (
             ""
           )}
-        </div>
+</div>
+       
       </div>
     </div>
     // </div>

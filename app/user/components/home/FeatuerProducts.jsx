@@ -27,10 +27,10 @@ if (!mounted) return null;
         <Swiper
           key={locale}
           breakpoints={{
-            320: {
+            300: {
               slidesPerView: 1,
             },
-             500: {
+             400: {
               slidesPerView: 2,
             },
             700: {

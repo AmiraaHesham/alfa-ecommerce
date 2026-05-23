@@ -21,14 +21,18 @@ import Select from "react-select";
 export default function Cart() {
   const { t } = useLanguage();
   const [items, setItems] = useState([]);
-  const [totalOrder, setTotalOrder] = useState(0);
-  const [totalDiscount, setTotalDiscount] = useState(0);
+  const [summery, setSummery] = useState({
+    totalOrder: "",
+    totalDiscount: "",
+    shappingCost: "",
+    netTotal: "",
+  });
+
   const [itemNum, setItemNum] = useState(0);
   const userId =
     typeof window !== "undefined" ? localStorage.getItem("id") : null;
   const { locale } = useLanguage();
 
-  const shappingCost = 50;
   const [isFirstAction, setIsFirstAction] = useState(true);
   const [loading, setLoading] = useState(true);
   const navigate = useRouter();
@@ -37,46 +41,41 @@ export default function Cart() {
     { value: "INSTAPAY", label: t("INSTAPAY") },
     { value: "CASH_ON_DELIVERY", label: t("CASH_ON_DELIVERY") },
   ];
- const synced = useRef(false);
+  const synced = useRef(false);
 
-useEffect(() => {
-  const syncCart = async () => {
-    try {
+  useEffect(() => {
+    const syncCart = async () => {
+      try {
+        if (!userId) return;
+        if (synced.current) return;
 
-      if (!userId) return;
-      if (synced.current) return;
+        const cart = JSON.parse(localStorage.getItem("cart") || "[]");
 
-      const cart = JSON.parse(
-        localStorage.getItem("cart") || "[]"
-      );
+        if (!cart.length) return;
 
-      if (!cart.length) return;
+        await Promise.all(
+          cart.map((item) =>
+            postRequest(
+              `/api/shopCarts/${userId}/addLine`,
+              {
+                itemId: item.id,
+                quantity: item.quantity,
+              },
+              "",
+            ),
+          ),
+        );
+        getProductInCart();
+        localStorage.removeItem("cart");
 
-      await Promise.all(
-        cart.map((item) =>
-          postRequest(
-            `/api/shopCarts/${userId}/addLine`,
-            {
-              itemId: item.id,
-              quantity: item.quantity,
-            },
-            ""
-          )
-        )
-      );
-getProductInCart()
-      localStorage.removeItem("cart");
+        synced.current = true; // 👈 بعد النجاح
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
-      synced.current = true; // 👈 بعد النجاح
-
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  syncCart();
-
-}, [userId]);
+    syncCart();
+  }, [userId]);
   const getProductInCart = async () => {
     try {
       if (userId) {
@@ -86,9 +85,14 @@ getProductInCart()
         const rseData = res.data;
         console.log(rseData);
         setItems(rseData.itemLines);
-        setTotalOrder(rseData.total);
         setItemNum(rseData.itemLines.length);
-        setTotalDiscount(rseData.totalDiscount);
+        setSummery((prev) => ({
+          ...prev,
+          totalOrder: rseData.total,
+          totalDiscount: rseData.totalDiscount,
+          shappingCost: rseData.shippingCost,
+          netTotal: rseData.netTotal,
+        }));
       } else {
         const cart = JSON.parse(localStorage.getItem("cart") || "[]");
 
@@ -478,10 +482,10 @@ getProductInCart()
               <div className="flex justify-between items-center mb-5">
                 <span className="text-gray-600">
                   {" "}
-                  {t("totalProducts") + " " + itemNum}
+                  {t("totalProducts") + " " +` [${itemNum}]`}
                 </span>
                 <span className="font-semibold">
-                  {totalOrder.toLocaleString("en-US") +
+                  {summery.totalOrder.toLocaleString("en-US") +
                     " " +
                     t("currency")}{" "}
                 </span>
@@ -489,7 +493,7 @@ getProductInCart()
               <div className="flex justify-between items-center mb-5">
                 <span className="text-gray-600">{t("totalDiscount")} </span>
                 <span className="font-semibold">
-                  {totalDiscount.toLocaleString("en-US") +
+                  {summery.totalDiscount.toLocaleString("en-US") +
                     " " +
                     t("currency")}{" "}
                 </span>
@@ -498,7 +502,7 @@ getProductInCart()
               <div className="flex justify-between items-center mb-5">
                 <span className="text-gray-600">{t("shippingCost")} </span>
                 <span className="font-semibold">
-                  {shappingCost + " " + t("currency")}
+                  {summery.shappingCost + " " + t("currency")}
                 </span>
               </div>
               <div className="flex justify-between items-center mb-5">
@@ -559,11 +563,7 @@ getProductInCart()
               <div className="flex justify-between items-center text-2xl font-semibold">
                 <span>{t("grandTotal")} </span>
                 <span className="text-red-500">
-                  {totalOrder === 0
-                    ? 0
-                    : (totalOrder + shappingCost).toLocaleString("en-US") +
-                      " " +
-                      t("currency")}
+                  {summery.netTotal + " " + t("currency")}
                 </span>
               </div>
               <button

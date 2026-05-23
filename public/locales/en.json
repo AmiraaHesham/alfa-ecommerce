@@ -221,6 +221,8 @@
   "approved": "Approved",
   "returned": "Returned",
   "Guarantee_Policy": "Guarantee Policy",
-  "Return_Policy": "Return Policy"
+  "Return_Policy": "Return Policy",
+  "orderDetails": "Order Details"
+
 
 }

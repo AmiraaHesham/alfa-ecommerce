@@ -219,5 +219,6 @@
   "approved": "تم الموافقة",
   "returned": "تم الارجاع",
   "Guarantee_Policy": "سياسة الضمان",
-  "Return_Policy": "سياسة الاسترجاع"
+  "Return_Policy": "سياسة الاسترجاع",
+  "orderDetails": "تفاصيل الطلب"
 }

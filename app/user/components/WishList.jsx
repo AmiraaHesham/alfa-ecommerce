@@ -12,20 +12,71 @@ export default function WishList() {
   const [loading, setLoading] = useState(true);
 
   const { t } = useLanguage();
-  const userId = typeof window !== "undefined" ? localStorage.getItem("id") : null;
-  const lang = typeof window !== "undefined" ? localStorage.getItem("lang") : null;
+  const userId =
+    typeof window !== "undefined" ? localStorage.getItem("id") : null;
+  const { locale } = useLanguage();
+
+  useEffect(() => {
+    const syncFavorite = async () => {
+      try {
+        if (!userId) return;
+        if (synced.current) return;
+
+        const favoriteItems = JSON.parse(
+          localStorage.getItem("favoriteItems") || "[]",
+        );
+
+        if (!favoriteItems.length) return;
+
+        await Promise.all(
+          favoriteItems.map((item) =>
+            postRequest(
+              `/api/users/${userId}/favoriteItems/${item.id}`,
+              "",
+              "",
+            ),
+          ),
+        );
+        getWishList();
+        localStorage.removeItem("favoriteItems");
+
+        synced.current = true; // 👈 بعد النجاح
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    syncFavorite();
+  }, []);
+
   const getWishList = async () => {
     try {
-      setLoading(true)
-      const response = await getRequest(`/api/users/${userId}/favoriteItems`);
-      setProducts(response.data);
-      console.log(response.data)
-    
+      if (userId) {
+        setLoading(true);
+        const response = await getRequest(`/api/users/${userId}/favoriteItems`);
+        setProducts(response.data);
+        console.log(response.data);
+      } else {
+        const favoriteItems = JSON.parse(
+          localStorage.getItem("favoriteItems") || "[]",
+        );
+
+        const items = await Promise.all(
+          favoriteItems.map(async (item) => {
+            const res = await getRequest(`/api/public/items/${item.id}`);
+
+            return {
+              ...res.data, // 👈 مهم جدًا
+            };
+          }),
+        );
+        console.log(items);
+        setProducts(items);
+      }
     } catch (error) {
       console.log(error);
-      
-    }finally{
-      setLoading(false)
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -47,7 +98,7 @@ export default function WishList() {
         >
           <h1>{t("continueShopping")} </h1>
           <span className="mt-2">
-            {lang === "ar" ? <FaArrowLeft /> : <FaArrowRight />}
+            {locale === "ar" ? <FaArrowLeft /> : <FaArrowRight />}
           </span>
         </Link>
       </div>
@@ -65,10 +116,11 @@ export default function WishList() {
       ) : (
         <div className="grid xl:grid-cols-6 lg:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 gap-5 ">
           {products.map((product, index) => {
+            const productInfo = userId ? product.item : product;
             return (
               <ProductCard
                 key={index}
-                productInfo={product.item}
+                productInfo={productInfo}
                 favorite={true}
               />
             );

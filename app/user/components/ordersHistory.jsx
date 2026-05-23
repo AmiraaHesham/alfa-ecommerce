@@ -15,6 +15,8 @@ export default function OrdersHistory() {
   const [orders, setOrders] = useState([]);
   const [inputSearch, setInputSearch] = useState(null);
   const [state, setState] = useState("");
+    const { locale } = useLanguage();
+
   const [loading, setLoading] = useState(true);
   const navigate = useRouter();
   const { setSelectedProductId } = useIdContext();
@@ -246,7 +248,7 @@ export default function OrdersHistory() {
                           />
                           <div className="flex flex-col text-sm ">
                             <span className="">
-                              {localStorage.lang === "ar"
+                              {locale === "ar"
                                 ? itemLine.item.nameAr
                                 : itemLine.item.nameEn}
                             </span>
@@ -271,8 +273,8 @@ export default function OrdersHistory() {
                     }}
                   >
                     <button className="px-2 bg-red-600 text-white rounded-md hover:bg-red-700">
-                      تفاصيل الطلب
-                    </button>
+                {t("orderDetails")}
+                    </button    >
                   </div>
                 </div>
               </div>

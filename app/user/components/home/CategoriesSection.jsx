@@ -33,10 +33,10 @@ export default function CategorySection({ categories }) {
           key={locale}
           modules={[Navigation]}
           breakpoints={{
-              320: {
+              300: {
               slidesPerView: 1,
             },
-             500: {
+             400: {
               slidesPerView: 2,
             },
             700: {
@@ -68,9 +68,7 @@ export default function CategorySection({ categories }) {
               <div
                 className="  h-[270px] border-2  border-gray-200 flex justify-center items-center text-center hover:shadow-xl hover:shadow-slate-300   hover:scale-105 duration-200 cursor-pointer rounded-md  hover:border-b-red-600 hover:border-b-[7px]"
                 onClick={() => {
-                  setSelectedSearchInput("");
-                  setSelectedCategoryId(category.itemCategoryId);
-                  navigate.push("/user/search/");
+                  navigate.push("/user/products/"+category.nameEn + "/" + category.itemCategoryId);
                 }}
               >
                 <div className=" py-2 rounded-lg">

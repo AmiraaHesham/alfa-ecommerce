@@ -117,10 +117,10 @@ export default function Header() {
           <button
             className="text-white h-full border-2 rounded-s-lg text-2xl bg-red-600 p-1 "
             onClick={() => {
-              setSelectedSearchInput(searchInput);
-              searchInput
-                ? navigate.push("/user/search/")
-                : navigate.push("/user/home") + setSelectedSearchInput("");
+              // setSelectedSearchInput(searchInput);
+               searchInput
+                  ? navigate.push('/user/search/' + searchInput)
+                  : navigate.push("/user/home") ;
             }}
           >
             <IoMdSearch />
@@ -131,10 +131,10 @@ export default function Header() {
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 e.preventDefault();
-                setSelectedSearchInput(searchInput);
+                // setSelectedSearchInput(searchInput);
                 searchInput
-                  ? navigate.push("/user/search/")
-                  : navigate.push("/user/home") + setSelectedSearchInput("");
+                  ? navigate.push('/user/search/' + searchInput)
+                  : navigate.push("/user/home") ;
               }
             }}
             placeholder={t("search") + "..."}
@@ -207,10 +207,9 @@ export default function Header() {
         <button
           className="text-white h-full borde rounded-s-lg text-2xl bg-red-600 p-1 "
           onClick={() => {
-            setSelectedSearchInput(searchInput);
-            searchInput
-              ? navigate.push("/user/search/")
-              : navigate.push("/user/home") + setSelectedSearchInput("");
+              searchInput
+                  ? navigate.push('/user/search/' + searchInput)
+                  : navigate.push("/user/home") ;
           }}
         >
           {" "}
@@ -222,8 +221,10 @@ export default function Header() {
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               e.preventDefault();
-              setSelectedSearchInput(searchInput);
-              navigate.push("/user/search");
+              // setSelectedSearchInput(searchInput);
+              searchInput
+                ? navigate.push('/user/search/' + searchInput)
+                : navigate.push("/user/home") ;
             }
           }}
           placeholder={t("search") + "..."}

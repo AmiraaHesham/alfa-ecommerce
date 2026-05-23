@@ -7,9 +7,10 @@ const LanguageContext = createContext({
   setLocale: () => {},
   t: (key) => key,
 });
-const lang = typeof window !== "undefined" ? localStorage.getItem("lang") : "ar";
+const lang = typeof window !== "undefined" ? localStorage.getItem("lang") : "null";
 
 const  CurrentTranslation = lang ? lang : navigator.language.split('-')[0]  ;
+console.log(lang)
 export const LanguageProvider = ({ children }) => {
   const [locale, setLocale] = useState(CurrentTranslation);
   const [messages, setMessages] = useState({});

@@ -402,7 +402,7 @@ export default function ProductDetails({ itemId }) {
           {t("You_might_like")}
         </h1>
       
-<div className="xs:px-10 md:px-0">
+<div className="xs:px-10 sm:px-0">
         <FeatuerProducts FeatuerProducts={products} />
 
 </div>

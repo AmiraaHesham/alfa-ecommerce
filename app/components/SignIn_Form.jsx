@@ -55,8 +55,8 @@ export default function SignIn() {
       localStorage.setItem("lang", response.data.userDetails.language);
       localStorage.setItem("role", response.data.userDetails.role);
       if (response.data.userDetails.role === "ADMIN") {
-        navigate.push("/admin/pages/Dashboard");
-      } else navigate.push("/user/home");
+        navigate.replace("/admin/pages/Dashboard");
+      } else navigate.replace("/user/home");
       setLocale(response.data.userDetails.language);
 
     } catch (error) {
