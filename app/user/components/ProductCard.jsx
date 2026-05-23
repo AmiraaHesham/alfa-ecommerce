@@ -155,7 +155,7 @@ export default function ProductCard({ productInfo, favorite }) {
     // <div className="h-full w-full border rounded-md bg-white flex justify-center py-2  cursor-pointer duration-300 hover:scale-105 ">
     <div
       id={`div_${productInfo.itemId}`}
-      className="h-[350px] bg-white border w-full rounded-md cursor-pointer  hover:border-b-[7px] hover:border-b-red-600  hover:scale-105 duration-200   hover:shadow-lg "
+      className="h-[320px] bg-white border w-full rounded-md cursor-pointer  hover:border-b-[7px] hover:border-b-red-600  hover:scale-105 duration-200   hover:shadow-lg "
     >
       {/* {loading && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
@@ -169,7 +169,7 @@ export default function ProductCard({ productInfo, favorite }) {
           />
         </div>
       )} */}
-      <div className="flex flex-col h-full justify-between items-baseline">
+      <div className="flex flex-col h-full justify-between ">
         <div className="relative h-[160px]  w-full rounded-t-lg">
           <Image
             src={
@@ -188,7 +188,7 @@ export default function ProductCard({ productInfo, favorite }) {
           />
         </div>
 
-        <div className="px-3 w-full flex flex-col gap-3 my-2">
+        <div className="px-3 w-full flex flex-col gap-2 my-2">
           <div className="w-full flex justify-end items-end">
              <span
               id={`btn_fov_${productInfo.itemId}`}
@@ -214,7 +214,7 @@ export default function ProductCard({ productInfo, favorite }) {
             </span>
           </div>
                   
-          <div className="flex w-full justify-between items-center">
+          <div className="w-full ">
             {/* <div> */}
             <h1
               className=" text-sm font-semibold"
@@ -246,7 +246,7 @@ export default function ProductCard({ productInfo, favorite }) {
                 );
               }}
             >
-              <div className="my-2 h-4 flex justify-start items-center gap-3">
+              <div className="mt-2 h-4 flex justify-start items-center gap-3">
                 {productInfo.oldPrice ? (
                   <div className="flex gap-2">
                     <span className=" font-semibold line-through text-sm  flex text-gray-400">
@@ -258,7 +258,7 @@ export default function ProductCard({ productInfo, favorite }) {
                   <span className="p-[11px]"></span>
                 )}
                 {productInfo.oldPrice ? (
-                  <span className="font-semibold  text-center bg-red-600 text-xs p-[4px]  text-white rounded-md">
+                  <span className="font-semibold  text-center bg-red-600 text-xs p-[2px]  text-white rounded-md">
                     {t("off")}
                     {" " +
                       (

@@ -79,7 +79,7 @@ export default function CategoriesSideMenu({ category }) {
                   <div
                     key={item.itemCategoryId}
                     className={`flex gap-4 mx-3 items-center p-3 rounded-md cursor-pointer hover:bg-red-100 hover:text-red-500 ${
-                      category === item.nameEn ? "bg-red-100 text-red-500" : ""
+                      decodeURIComponent(category) === item.nameEn ? "bg-red-100 text-red-500" : ""
                     }`}
                     onClick={() => {
                       // setSelectedCategoryId(item.itemCategoryId);
