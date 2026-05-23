@@ -36,14 +36,14 @@ export default function CategoriesSideMenu({ category }) {
   return (
     <div id="catego-sideMenu" className="w-full bg-[#ffffff]">
       <div className="w-full h-full">
-        <div className="p-3 items-center ">
+        <div className="p-2 items-center ">
           <span className="flex items-center  gap-2 text-lg">
             <h1 className=" font-semibold">{t("categories")} </h1>
           </span>
         </div>
-        <hr className="h-3  mt-2 text-red-400 w-full"></hr>
+        <hr className="h-3 text-red-400 w-full"></hr>
         {loading ? (
-          <div className=" flex gap-2  px-3 ">
+          <div className=" flex gap-2 my-2  px-3 ">
             {[...Array(7)].map((_, index) => (
               <div
                 key={`skeleton-${index}`}
@@ -52,7 +52,7 @@ export default function CategoriesSideMenu({ category }) {
             ))}
           </div>
         ) : (
-          <div className=" w-full gap-1 text-gray-500">
+          <div className=" w-full gap-1 my-2  text-gray-500">
             <Swiper
               slidesPerView={"auto"}
               spaceBetween={7}

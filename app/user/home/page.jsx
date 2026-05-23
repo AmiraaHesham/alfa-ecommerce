@@ -144,7 +144,7 @@ export default function Homepage() {
       </section>
 
       {/* Featured Products Section */}
-      <section id="FeaturedProducts" className="h-[500px] ">
+      <section id="FeaturedProducts" className="h-[530px] ">
         <div className="w-full flex justify-center items-center gap-2 text-center px-10 text-2xl shadow-md shadow-gray-300 font-semibold bg-gray-100 h-12">
           <span className="text-red-600 rounded-full p-1">
             <AiFillStar />

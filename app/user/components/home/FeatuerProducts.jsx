@@ -64,7 +64,7 @@ if (!mounted) return null;
               </SwiperSlide>
             );
           })}
-          <div className=" flex flex-col justify-center items-center relative my-5 ">
+          <div className=" flex flex-col justify-center items-center relative my-7 ">
             <div className=" p-1 rounded-full absolute flex gap-2 justify-center items-center  ">
               <button className="prev-btn1 p-1 rounded-full border-2 hover:bg-red-600 border-red-600   hover:text-white text-red-600 text-3xl   font-bold">
                 {locale === "ar" ? (
