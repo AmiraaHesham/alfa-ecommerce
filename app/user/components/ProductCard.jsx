@@ -155,7 +155,7 @@ export default function ProductCard({ productInfo, favorite }) {
     // <div className="h-full w-full border rounded-md bg-white flex justify-center py-2  cursor-pointer duration-300 hover:scale-105 ">
     <div
       id={`div_${productInfo.itemId}`}
-      className="h-[320px] bg-white border w-full rounded-md cursor-pointer  hover:border-b-[7px] hover:border-b-red-600  hover:scale-105 duration-200   hover:shadow-lg "
+      className="h-[260px] bg-white border w-full rounded-md cursor-pointer  hover:border-b-[7px] hover:border-b-red-600  hover:scale-105 duration-200   hover:shadow-lg "
     >
       {/* {loading && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
@@ -169,8 +169,8 @@ export default function ProductCard({ productInfo, favorite }) {
           />
         </div>
       )} */}
-      <div className="flex flex-col h-full justify-between ">
-        <div className="relative h-[160px]  w-full rounded-t-lg">
+      <div className="flex flex-col h-full gap-2 ">
+        <div className="relative h-[160px] w-full rounded-t-lg">
           <Image
             src={
               process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +
@@ -188,9 +188,28 @@ export default function ProductCard({ productInfo, favorite }) {
           />
         </div>
 
-        <div className="px-3 w-full flex flex-col gap-2 my-2">
-          <div className="w-full flex justify-end items-end">
-             <span
+        <div className="px-2 w-full flex items-center flex-col ">
+          {/* <div className="w-full flex justify-end items-end">
+            
+          </div> */}
+                  
+          <div className="w-full flex justify-between items-center">
+            {/* <div> */}
+            <h1
+              className="text-sm font-semibold"
+              onClick={() => {
+                setSelectedProductId(productInfo.itemId);
+                navigate.push(
+                  `/user/pages/productdetails/${productInfo.itemId}`,
+                );
+              }}
+            >
+              {productName.length <= 29
+                ? productName
+                : productName.slice(0, 29) + " ..."}
+            </h1>
+          
+    <span
               id={`btn_fov_${productInfo.itemId}`}
               className={`hover:text-red-600     ${
                 favorite === true ? "text-red-600" : "text-gray-400"
@@ -213,25 +232,6 @@ export default function ProductCard({ productInfo, favorite }) {
               <FaHeart />
             </span>
           </div>
-                  
-          <div className="w-full ">
-            {/* <div> */}
-            <h1
-              className=" text-sm font-semibold"
-              onClick={() => {
-                setSelectedProductId(productInfo.itemId);
-                navigate.push(
-                  `/user/pages/productdetails/${productInfo.itemId}`,
-                );
-              }}
-            >
-              {productName.length <= 29
-                ? productName
-                : productName.slice(0, 29) + " ..."}
-            </h1>
-          
-   
-          </div>
          
         </div>
 <div className="w-full">
@@ -246,7 +246,12 @@ export default function ProductCard({ productInfo, favorite }) {
                 );
               }}
             >
-              <div className="mt-2 h-4 flex justify-start items-center gap-3">
+              <div className=" h-4 flex justify-start items-center gap-1 pt-4"
+                onClick={() => {
+              setSelectedProductId(productInfo.itemId);
+              navigate.push(`/user/pages/productdetails/${productInfo.itemId}`);
+            }}
+              >
                 {productInfo.oldPrice ? (
                   <div className="flex gap-2">
                     <span className=" font-semibold line-through text-sm  flex text-gray-400">
@@ -300,7 +305,7 @@ export default function ProductCard({ productInfo, favorite }) {
           {productInfo.available ? (
             ""
           ) : (
-            <span className="text-red-600 ">
+            <span className="text-red-600 py-5 ">
               {t("Currently_unavailable")}
             </span>
           )}

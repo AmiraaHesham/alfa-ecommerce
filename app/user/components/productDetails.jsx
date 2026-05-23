@@ -234,14 +234,14 @@ export default function ProductDetails({ itemId }) {
             </div>
             <div className="flex items-center gap-4 mt-5 ">
               {product.img2 ? (
-                <div className="relative w-[100px] h-[100px] border rounded-md  shadow-md cursor-pointe">
+                <div className="relative w-[100px] h-[100px] border rounded-md  shadow-md cursor-pointer">
                   <Image
                     src={urlImage + getThumbnailUrl(product.img2)}
                     alt="mainImage"
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     priority
-                    className="object-containr cursor-pointe"
+                    className="object-containr cursor-pointer"
                     onClick={() => {
                       setImageShow(urlImage + product.img2);
                     }}
@@ -252,14 +252,14 @@ export default function ProductDetails({ itemId }) {
               )}
 
               {product.img3 ? (
-                <div className="relative w-[100px] h-[100px] border rounded-md  shadow-md cursor-pointe">
+                <div className="relative w-[100px] h-[100px] border rounded-md  shadow-md cursor-pointer">
                   <Image
                     src={urlImage + getThumbnailUrl(product.img3)}
                     alt="mainImage"
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     priority
-                    className="object-contain cursor-pointe"
+                    className="object-contain cursor-pointer"
                     onClick={() => {
                       setImageShow(urlImage + product.img3);
                     }}
@@ -268,14 +268,14 @@ export default function ProductDetails({ itemId }) {
               ) : (
                 ""
               )}
-              <div className="relative w-[100px] h-[100px] border rounded-md  shadow-md cursor-pointe">
+              <div className="relative w-[100px] h-[100px] border rounded-md  shadow-md cursor-pointerr">
                 <Image
                   src={urlImage + getThumbnailUrl(product.mainImage)}
                   alt="mainImage"
                   fill
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   priority
-                  className="object-contain cursor-pointe "
+                  className="object-contain cursor-pointer "
                   onClick={() => {
                     setImageShow(urlImage + product.mainImage);
                   }}
@@ -284,7 +284,7 @@ export default function ProductDetails({ itemId }) {
             </div>
           </div>
 
-          <div className="flex py-5 flex-col xs:gap-10 md:gap-0 w-full md:h-[550px] xs:h-auto  justify-between bg-white  px-5 border rounded-md shadow-md">
+          <div className="flex py-5 flex-col w-full h-auto  justify-between gap-5 bg-white  px-5 border rounded-md shadow-md">
             <div>
               <div className="flex justify-between items-start">
                 <span>
@@ -296,7 +296,7 @@ export default function ProductDetails({ itemId }) {
                   </h1>
                 </span>
                 <span
-                  className="text-red-600 cursor-pointer md:text-base xs:text-xs hover:shadow-sm hover:shadow-red-700 px-4 rounded-md  "
+                  className="text-red-600 cursor-pointerr md:text-base xs:text-xs hover:shadow-sm hover:shadow-red-700 px-4 rounded-md  "
                   onClick={() => {
                     setSelectedCategoryId(product.category.id);
                     setSelectedSearchInput("");
@@ -397,12 +397,12 @@ export default function ProductDetails({ itemId }) {
       )}
   <hr />
       <div className="mt-24 ">
-        <h1 className="md:text-2xl xs:text-lg flex items-center gap-3 font-bold mx-10 mb-[-90px]">
+        <h1 className="md:text-2xl xs:text-lg flex items-center gap-3 font-bold mx-10 ">
           <FaQuestionCircle className="text-red-600" />
           {t("You_might_like")}
         </h1>
       
-<div className="xs:px-10 sm:px-0">
+<div className="xs:px-5 md:px-0">
         <FeatuerProducts FeatuerProducts={products} />
 
 </div>

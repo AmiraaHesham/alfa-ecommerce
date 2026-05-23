@@ -15,6 +15,7 @@ export const postRequest = async (endpoint, dataBody, message) => {
     typeof window !== "undefined" ? localStorage.getItem("lang") : null;
   const request = async (token) => {
 
+
     return axios.post(
       process.env.NEXT_PUBLIC_API_BASE_URL + endpoint,
       dataBody,
@@ -93,7 +94,7 @@ export const postRequest = async (endpoint, dataBody, message) => {
         localStorage.setItem("refreshToken", newRefreshToken);
 
         // 🔁 إعادة الطلب بعد التحديث
-         try {
+        try {
           const retryResponse = await request(newAccessToken);
 
           toast.success(retryResponse.data.message);
@@ -104,7 +105,10 @@ export const postRequest = async (endpoint, dataBody, message) => {
 
         }
       } catch (refreshError) {
-        console.log("Refresh failed", refreshError);
+        if (error.response?.status === 500) {
+          window.location.href = "/signin";
+
+        }
       }
     }
     else {
@@ -165,12 +169,17 @@ export const getRequest = async (endpoint) => {
 
           return retryResponse.data;
         } catch (error) {
-          // toast.error(error.response.data.error.message)
+          toast.error(error.response.data.error.message)
+
+
 
         }
 
       } catch (refreshError) {
-        console.log("Refresh failed", refreshError);
+        if (error.response?.status === 500) {
+          window.location.href = "/signin";
+
+        }
       }
     }
     throw error;
@@ -254,8 +263,10 @@ export const putRequest = async (endpoint, dataBody, message) => {
 
 
       } catch (refreshError) {
-        console.log("Refresh failed", refreshError);
-      }
+if (error.response?.status === 500) {
+            window.location.href = "/signin";
+
+          }      }
     } else {
       toast.error(error.response.data.error.message)
     }
@@ -329,7 +340,7 @@ export const deleteRequest = async (endpoint, message) => {
         localStorage.setItem("refreshToken", newRefreshToken);
 
         // 🔁 إعادة الطلب بعد التحديث
-         try {
+        try {
           const retryResponse = await request(newAccessToken);
 
           toast.success(retryResponse.data.message);
@@ -341,8 +352,10 @@ export const deleteRequest = async (endpoint, message) => {
         }
 
       } catch (refreshError) {
-        console.log("Refresh failed", refreshError);
-      }
+if (error.response?.status === 500) {
+            window.location.href = "/signin";
+
+          }      }
     }
     else {
       // toast.error(error.data.message);

@@ -27,7 +27,7 @@ export default function CategorySection({ categories }) {
   }, []);
   if (!mounted) return null;
   return (
-    <div className="flex flex-col justify-center items-center xs:mt-10 md:mt-20">
+    <div className="flex flex-col justify-center items-center xs:mt-6 md:mt-20">
       <div className="w-full   ">
         <Swiper
           key={locale}
@@ -63,10 +63,10 @@ export default function CategorySection({ categories }) {
           {categories.map((category) => (
             <SwiperSlide
               key={category.itemCategoryId}
-              className="mt-5   rounded-lg "
+              className="rounded-lg "
             >
               <div
-                className="  h-[270px] border-2  border-gray-200 flex justify-center items-center text-center hover:shadow-xl hover:shadow-slate-300   hover:scale-105 duration-200 cursor-pointer rounded-md  hover:border-b-red-600 hover:border-b-[7px]"
+                className="h-[270px] border-2  border-gray-200 flex justify-center items-center text-center hover:shadow-xl hover:shadow-slate-300   hover:scale-105 duration-200 cursor-pointer rounded-md  hover:border-b-red-600 hover:border-b-[7px]"
                 onClick={() => {
                   navigate.push("/user/products/"+category.nameEn + "/" + category.itemCategoryId);
                 }}

@@ -21,7 +21,7 @@ useEffect(() => {
 }, []);
 if (!mounted) return null;
   return (
-    <div className="flex flex-col justify-center items-center  relative xs:mt-10 md:mt-20 ">
+    <div className="flex flex-col justify-center items-center  relative  ">
       
       <div className=" w-full">
         <Swiper
@@ -57,14 +57,14 @@ if (!mounted) return null;
         >
           {FeatuerProducts.map((product) => {
             return (
-              <SwiperSlide key={product.itemId} className=" mt-5   rounded-lg ">
+              <SwiperSlide key={product.itemId} className=" mt-7  rounded-lg ">
                 <div className="rounded-lg h-[350px]  flex justify-center  cursor-pointer  ">
                   <ProductCard productInfo={product} favorite={false} />
                 </div>
               </SwiperSlide>
             );
           })}
-          <div className=" flex flex-col justify-center items-center relative my-10 ">
+          <div className=" flex flex-col justify-center items-center relative my-5 ">
             <div className=" p-1 rounded-full absolute flex gap-2 justify-center items-center  ">
               <button className="prev-btn1 p-1 rounded-full border-2 hover:bg-red-600 border-red-600   hover:text-white text-red-600 text-3xl   font-bold">
                 {locale === "ar" ? (

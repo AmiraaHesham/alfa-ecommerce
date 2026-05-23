@@ -101,7 +101,7 @@ export default function Header() {
               />
             </span>
             <div className="cursor-pointer">
-              <h1 className="lg:text-xl  xs:text-xs  text-white font-bold ">
+              <h1 className="lg:text-xl  xs:text-base  text-white font-bold ">
                 {t("alfa_group")}
               </h1>
             </div>
@@ -147,7 +147,7 @@ export default function Header() {
         <div className="flex items-center md:gap-5 xs:gap-1 ">
           <div className="flex items-center   cursor-pointer ">
             <select
-              className=" rounded text-white xs:text-[10px] md:text-base outline-none bg-red-700 px-1 py-0.5 text-center cursor-pointer"
+              className=" rounded text-white xs:text-xs md:text-base outline-none bg-red-700 px-1 py-0.5 text-center cursor-pointer"
               value={locale}
               onChange={(e) => {
                 const newLang = e.target.value;
@@ -188,7 +188,7 @@ export default function Header() {
                 <span className="xs:w-7 xs:h-7 md:w-8 md:h-8">
                   <FaRegCircleUser className="w-full h-full" />
                 </span>
-                <span className="md:text-sm xs:text-[10px] font-semibold text-center ">
+                <span className="md:text-sm xs:text-xs font-semibold text-center ">
                   {username ? username : t("login")}
                 </span>
               </div>

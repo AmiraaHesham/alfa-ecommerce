@@ -64,7 +64,7 @@ export default function Homepage() {
   return (
     <div className="bg-[#F9FAFB]">
       {/* Navigation Bar */}
-      <div className="w-full xs:text-xs grid md:grid-cols-4 xs:grid-cols-2 text-center md:text-base  shadow-md shadow-gray-300 mb-5 text-gray-600">
+      <div className="w-full xs:text-xs grid md:grid-cols-4 xs:grid-cols-2 text-center md:text-base  shadow-md shadow-gray-300  text-gray-600">
         <a
           href="#CategoriesSection"
           className="flex justify-start p-2 items-center border border-b-2  gap-2 w-full font-bold hover:bg-white hover:border-b-2 hover:border-b-red-600 cursor-pointer"
@@ -138,14 +138,13 @@ export default function Homepage() {
           </div>
         ) : (
           <div className="xs:p-7 sm:p-0">
-          <CategoriesSection categories={categories} />
-
+            <CategoriesSection categories={categories} />
           </div>
         )}
       </section>
 
       {/* Featured Products Section */}
-      <section id="FeaturedProducts" className="h-[700px] mt-12">
+      <section id="FeaturedProducts" className="h-[500px] ">
         <div className="w-full flex justify-center items-center gap-2 text-center px-10 text-2xl shadow-md shadow-gray-300 font-semibold bg-gray-100 h-12">
           <span className="text-red-600 rounded-full p-1">
             <AiFillStar />
@@ -156,18 +155,18 @@ export default function Homepage() {
         </div>
         {loading ? (
           <div className="w-full h-full">
-            <div className="w-full h-[350px] grid xl:grid-cols-6 md:grid-cols-3 xs:grid-cols-2 gap-5 mt-28">
+            <div className="w-full h-[320px] grid xl:grid-cols-6 md:grid-cols-3 xs:grid-cols-2 gap-5 mt-28">
               <div className="bg-gray-200 rounded animate-pulse w-full" />
               <div className="bg-gray-200 rounded animate-pulse w-full" />
               <div className="bg-gray-200 xs:hidden md:block rounded animate-pulse w-full" />
               <div className="bg-gray-200 xs:hidden xl:block rounded animate-pulse w-full" />
               <div className="bg-gray-200 xs:hidden xl:block rounded animate-pulse w-full" />
+              <div className="bg-gray-200 xs:hidden xl:block rounded animate-pulse w-full" />
             </div>
           </div>
         ) : (
-                    <div className="xs:p-7 sm:p-0">
-
-          <FeaturedProducts FeatuerProducts={featuredProducts} />
+          <div className="xs:mt-6 md:mt-10 px-5">
+            <FeaturedProducts FeatuerProducts={featuredProducts} />
           </div>
         )}
       </section>
