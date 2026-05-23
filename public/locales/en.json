@@ -222,7 +222,8 @@
   "returned": "Returned",
   "Guarantee_Policy": "Guarantee Policy",
   "Return_Policy": "Return Policy",
-  "orderDetails": "Order Details"
+  "orderDetails": "Order Details",
+  "no_more_products": "No more products"
 
 
 }

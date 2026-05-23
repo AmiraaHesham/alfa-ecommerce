@@ -21,7 +21,7 @@ useEffect(() => {
 }, []);
 if (!mounted) return null;
   return (
-    <div className="flex flex-col justify-center items-center  relative mt-28 ">
+    <div className="flex flex-col justify-center items-center  relative xs:mt-10 md:mt-20 ">
       
       <div className=" w-full">
         <Swiper
@@ -43,7 +43,7 @@ if (!mounted) return null;
               slidesPerView: 5,
             },
             1487: {
-              slidesPerView: 5,
+              slidesPerView: 6,
             },
           }}
           modules={[Navigation, Autoplay]}
@@ -52,7 +52,7 @@ if (!mounted) return null;
             prevEl: ".prev-btn1",
           }}
           dir={locale === "ar" ? "rtl" : "ltr"}
-          spaceBetween={15}
+          spaceBetween={20}
           className="w-full h-full rounded-xl   "
         >
           {FeatuerProducts.map((product) => {

@@ -11,14 +11,15 @@ import { BsList } from "react-icons/bs";
 import Select from "react-select";
 import { MdOutlineDownloading } from "react-icons/md";
 
-export default function Searchpage({params}) {
-    const { category, id } = params; 
+export default function ProductsByCategory({ params }) {
+  const { category, id } = params;
 
   const { t } = useLanguage();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [ascending, setAscending] = useState();
   const [sortBy, setSortBy] = useState();
+  const [hasMore, setHasMore] = useState(true);
   const pageNum = useRef(0);
 
   const sortOptions = [
@@ -39,16 +40,22 @@ export default function Searchpage({params}) {
         {
           page: pageNum.current,
           size: 10,
-          categoryId: id ,
+          categoryId: id,
           sortBy: sortBy || null,
           ascending: ascending || true,
         },
         "",
       );
-      const resProducts = response.data || [];
+      if(response.data.length === 0){
+        setHasMore(false);
+      }
+      else{
+         const resProducts = response.data || [];
       if (pageNum.current === 0) {
         setProducts(resProducts);
       } else setProducts((prev) => [...prev, ...resProducts]);
+      }
+     
     } catch (error) {
       console.log(error);
     } finally {
@@ -58,16 +65,13 @@ export default function Searchpage({params}) {
   useEffect(() => {
     getAllProducts(true);
   }, [id, sortBy, ascending]);
-  
+
   return (
     <div className=" w-full ">
-  
       <div className="flex flex-col items-start justify-end gap-5 ">
-      <CategoriesSideManu category={category} />
+        <CategoriesSideManu category={category} />
 
-        <div
-          className={`p-5 w-full `}
-        >
+        <div className={`p-5 w-full `}>
           <div className="flex gap-5 ">
             <div className="bg-white flex  gap-4 items-center  border rounded-md  px-3 h-10  mb-5">
               <span>{t("sortBy")}:</span>
@@ -127,7 +131,7 @@ export default function Searchpage({params}) {
           </div>
 
           {loading ? (
-            <div className="grid xl:grid-cols-4 lg:grid-cols-4 md:grid-cols-3 xs:grid-cols-1 gap-5 ">
+            <div className="grid xl:grid-cols-6 lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-1 gap-5 ">
               {[...Array(8)].map((_, index) => (
                 <div
                   key={`skeleton-${index}`}
@@ -137,17 +141,21 @@ export default function Searchpage({params}) {
             </div>
           ) : products.length != 0 ? (
             <div>
-                <div
-              className={`grid xl:grid-cols-5 lg:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 p-2 gap-4`}
-            >
-              {products.map((product, index) => (
-                <div key={index}>
-                  <ProductCard productInfo={product} />
-                </div>
-              ))}
-            </div>
-            <div className={`w-full  justify-center items-center ${products.length < 10 ? "hidden" : "flex"}`}>
-               <button
+              <div
+                className={`grid xl:grid-cols-6 lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 p-2 gap-4`}
+              >
+                {products.map((product, index) => (
+                  <div key={index}>
+                    <ProductCard productInfo={product} />
+                  </div>
+                ))}
+              </div>
+              <div
+                className={`w-full  justify-center items-center ${products.length < 10 ? "hidden" : "flex"}`}
+              >
+                {
+                  hasMore ? (
+                     <button
                   className=" text-red-600 px-5 py-1 shadow-md  my-3 rounded-lg"
                   onClick={() => {
                     pageNum.current += 1;
@@ -156,17 +164,19 @@ export default function Searchpage({params}) {
                 >
                   <MdOutlineDownloading className="text-4xl" />
                 </button>
+                  ):(
+                    <span className="text-gray-500 my-3">{t("no_more_products")}</span>
+                  )
+                }
+               
+              </div>
             </div>
-            
-            </div>
-          
           ) : (
             <div className="h-screen w-full">
-               <div className="h-10 w-full bg-white flex justify-center py-2  ">
-              {t("no_data")}
-            </div>
+              <div className="h-10 w-full bg-white flex justify-center py-2  ">
+                {t("no_data")}
               </div>
-           
+            </div>
           )}
         </div>
       </div>

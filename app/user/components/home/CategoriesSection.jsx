@@ -27,7 +27,7 @@ export default function CategorySection({ categories }) {
   }, []);
   if (!mounted) return null;
   return (
-    <div className="flex flex-col justify-center items-center mt-20">
+    <div className="flex flex-col justify-center items-center xs:mt-10 md:mt-20">
       <div className="w-full   ">
         <Swiper
           key={locale}

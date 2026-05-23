@@ -12,8 +12,9 @@ import { BsList } from "react-icons/bs";
 import Select from "react-select";
 import { MdOutlineDownloading } from "react-icons/md";
 
-export default function Searchpage(params) {
+export default function Searchpage({params}) {
     const { searchInput } = params; 
+  const [hasMore, setHasMore] = useState(true);
 
   const { t } = useLanguage();
   const [products, setProducts] = useState([]);
@@ -47,10 +48,15 @@ export default function Searchpage(params) {
         },
         "",
       );
-      const resProducts = response.data || [];
+    if(response.data.length === 0){
+        setHasMore(false);
+      }
+      else{
+         const resProducts = response.data || [];
       if (pageNum.current === 0) {
         setProducts(resProducts);
       } else setProducts((prev) => [...prev, ...resProducts]);
+      }
     } catch (error) {
       console.log(error);
     } finally {
@@ -137,7 +143,7 @@ export default function Searchpage(params) {
           ) : products.length != 0 ? (
             <div>
                 <div
-              className={`grid xl:grid-cols-5 lg:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 p-2 gap-4`}
+              className={`grid xl:grid-cols-6 lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 p-2 gap-4`}
             >
               {products.map((product, index) => (
                 <div key={index}>
@@ -146,7 +152,9 @@ export default function Searchpage(params) {
               ))}
             </div>
             <div className={`w-full  justify-center items-center ${products.length < 10 ? "hidden" : "flex"}`}>
-               <button
+              {
+                  hasMore ? (
+                     <button
                   className=" text-red-600 px-5 py-1 shadow-md  my-3 rounded-lg"
                   onClick={() => {
                     pageNum.current += 1;
@@ -155,6 +163,10 @@ export default function Searchpage(params) {
                 >
                   <MdOutlineDownloading className="text-4xl" />
                 </button>
+                  ):(
+                    <span className="text-gray-500 my-3">{t("no_more_products")}</span>
+                  )
+                }
             </div>
             
             </div>

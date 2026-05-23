@@ -147,8 +147,8 @@ export default function ProductCard({ productInfo, favorite }) {
       setLoading(false);
     }
   };
-  const describtion =
-    productInfo?.[locale === "ar" ? "descriptionAr" : "descriptionEn"] || "";
+  // const describtion =
+    // productInfo?.[locale === "ar" ? "descriptionAr" : "descriptionEn"] || "";
   const productName = locale === "ar" ? productInfo.nameAr : productInfo.nameEn;
 
   return (
@@ -189,9 +189,10 @@ export default function ProductCard({ productInfo, favorite }) {
         </div>
 
         <div className="px-3 w-full flex flex-col gap-3 my-2">
-                   <span
+          <div className="w-full flex justify-end items-end">
+             <span
               id={`btn_fov_${productInfo.itemId}`}
-              className={`hover:text-red-600 flex justify-end items-end  ${
+              className={`hover:text-red-600     ${
                 favorite === true ? "text-red-600" : "text-gray-400"
               } rounded-full`}
               onClick={() => {
@@ -211,6 +212,8 @@ export default function ProductCard({ productInfo, favorite }) {
             >
               <FaHeart />
             </span>
+          </div>
+                  
           <div className="flex w-full justify-between items-center">
             {/* <div> */}
             <h1
@@ -232,10 +235,10 @@ export default function ProductCard({ productInfo, favorite }) {
          
         </div>
 <div className="w-full">
-   <div className="flex w-full justify-between items-center  px-3">
+   <div className="flex w-full justify-between items-center  px-2">
           {productInfo.available ? (
             <div
-              className="flex flex-col "
+              className="flex flex-col w-full"
               onClick={() => {
                 setSelectedProductId(productInfo.itemId);
                 navigate.push(
@@ -243,9 +246,19 @@ export default function ProductCard({ productInfo, favorite }) {
                 );
               }}
             >
-              <div className="my-2 h-4">
+              <div className="my-2 h-4 flex justify-start items-center gap-3">
                 {productInfo.oldPrice ? (
-                  <span className=" font-semibold  w-full text-center bg-red-600 text-xs p-[4px]  text-white rounded-md">
+                  <div className="flex gap-2">
+                    <span className=" font-semibold line-through text-sm  flex text-gray-400">
+                      {productInfo.oldPrice.toLocaleString("en-US")}{" "}
+                      {t("currency")}
+                    </span>
+                  </div>
+                ) : (
+                  <span className="p-[11px]"></span>
+                )}
+                {productInfo.oldPrice ? (
+                  <span className="font-semibold  text-center bg-red-600 text-xs p-[4px]  text-white rounded-md">
                     {t("off")}
                     {" " +
                       (
@@ -258,37 +271,14 @@ export default function ProductCard({ productInfo, favorite }) {
                 ) : (
                   ""
                 )}
+                   
               </div>
-              <div className="flex w-full xs:justify-between md:justify-start items-center gap-2 mt-2">
-                <span className="xs:text-xs  md:text-base  font-bold ">
+              <div className="flex  justify-between  items-center ">
+                <span className="text-base  font-bold ">
                   {productInfo.price.toLocaleString("en-US")} {t("currency")}
                 </span>
-                {productInfo.oldPrice ? (
-                  <div className="flex gap-2">
-                    <span className=" font-semibold line-through xs:text-[10px]  md:text-sm  flex text-gray-400">
-                      {productInfo.oldPrice.toLocaleString("en-US")}{" "}
-                      {t("currency")}
-                    </span>
-                  </div>
-                ) : (
-                  <span className="p-[11px]"></span>
-                )}
-              </div>
-            </div>
-          ) : (
-            ""
-          )}
-          {productInfo.available ? (
-            ""
-          ) : (
-            <span className="text-red-600 mt-8">
-              {t("Currently_unavailable")}
-            </span>
-          )}
-         
-        </div>
-         {productInfo.available ? (
-          <div className="flex justify-end items-end w-full p-2">
+              {productInfo.available ? (
+          <div className="my-1">
              <button
               className="text-xl  text-red-700 bg-red-50 p-2   hover:bg-red-300 duration-500 hover:scale-110 rounded-md"
               onClick={() => {
@@ -302,6 +292,21 @@ export default function ProductCard({ productInfo, favorite }) {
           ) : (
             ""
           )}
+              </div>
+            </div>
+          ) : (
+            ""
+          )}
+          {productInfo.available ? (
+            ""
+          ) : (
+            <span className="text-red-600 ">
+              {t("Currently_unavailable")}
+            </span>
+          )}
+         
+        </div>
+        
 </div>
        
       </div>

@@ -252,7 +252,7 @@ export default function OrdersHistory() {
                                 ? itemLine.item.nameAr
                                 : itemLine.item.nameEn}
                             </span>
-                            <div className="flex gap-3 mt-2 lg:text-sm xs:text-xs">
+                            <div className="flex xs:flex-col lg:flex-row gap-3 mt-2 lg:text-sm xs:text-xs">
                               <span className="text-gray-500  ">
                                 {t("code")} : {itemLine.item.code}
                               </span>
@@ -267,7 +267,7 @@ export default function OrdersHistory() {
                   </div>
 
                   <div
-                    className="w-[200px] h-[35px] flex justify-end  mt-10"
+                    className="w-[200px] h-[35px] flex justify-end xs:text-sm md:text-base  mt-10"
                     onClick={() => {
                       navigate.push(`/user/orderdetails/${order.orderId}`);
                     }}

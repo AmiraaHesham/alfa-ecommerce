@@ -220,5 +220,6 @@
   "returned": "تم الارجاع",
   "Guarantee_Policy": "سياسة الضمان",
   "Return_Policy": "سياسة الاسترجاع",
-  "orderDetails": "تفاصيل الطلب"
+  "orderDetails": "تفاصيل الطلب",
+  "no_more_products": "لا توجد منتجات أخرى"
 }

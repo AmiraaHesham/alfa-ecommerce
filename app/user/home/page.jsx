@@ -156,7 +156,7 @@ export default function Homepage() {
         </div>
         {loading ? (
           <div className="w-full h-full">
-            <div className="w-full h-[350px] grid xl:grid-cols-5 md:grid-cols-3 xs:grid-cols-2 gap-5 mt-28">
+            <div className="w-full h-[350px] grid xl:grid-cols-6 md:grid-cols-3 xs:grid-cols-2 gap-5 mt-28">
               <div className="bg-gray-200 rounded animate-pulse w-full" />
               <div className="bg-gray-200 rounded animate-pulse w-full" />
               <div className="bg-gray-200 xs:hidden md:block rounded animate-pulse w-full" />
