@@ -117,7 +117,7 @@ export default function Homepage() {
       {/* Categories Section */}
       <section
         id="CategoriesSection"
-        className="h-[500px] justify-center items-center"
+        className="h-[480px] justify-center items-center"
       >
         <div className="w-full flex justify-center items-center text-center px-10 text-2xl font-semibold h-12 shadow-md shadow-gray-300 bg-gray-100">
           <h1 className="flex items-center gap-2 xs:text-xl md:text-2xl text-gray-600">
@@ -127,7 +127,7 @@ export default function Homepage() {
         </div>
         {loading ? (
           <div className="w-full h-full">
-            <div className="w-full h-[320px] grid xl:grid-cols-6 lg:grid-cols-4 md:grid-cols-3 xs:grid-cols-2 gap-5 mt-32">
+            <div className="w-full h-[220px] grid xl:grid-cols-6 lg:grid-cols-4 md:grid-cols-3 xs:grid-cols-2 gap-5 mt-16">
               <div className="bg-gray-200 rounded animate-pulse w-full" />
               <div className="bg-gray-200 rounded animate-pulse w-full" />
               <div className="bg-gray-200 xs:hidden md:block rounded animate-pulse w-full" />
@@ -137,14 +137,14 @@ export default function Homepage() {
             </div>
           </div>
         ) : (
-          <div className="xs:p-7 sm:p-0">
+          <div className="">
             <CategoriesSection categories={categories} />
           </div>
         )}
       </section>
 
       {/* Featured Products Section */}
-      <section id="FeaturedProducts" className="h-[530px] ">
+      <section id="FeaturedProducts" className="h-[520px] ">
         <div className="w-full flex justify-center items-center gap-2 text-center px-10 text-2xl shadow-md shadow-gray-300 font-semibold bg-gray-100 h-12">
           <span className="text-red-600 rounded-full p-1">
             <AiFillStar />
@@ -155,7 +155,7 @@ export default function Homepage() {
         </div>
         {loading ? (
           <div className="w-full h-full">
-            <div className="w-full h-[320px] grid xl:grid-cols-6 md:grid-cols-3 xs:grid-cols-2 gap-5 mt-28">
+            <div className="w-full h-[260px] grid xl:grid-cols-6 md:grid-cols-3 xs:grid-cols-2 gap-5 mt-28">
               <div className="bg-gray-200 rounded animate-pulse w-full" />
               <div className="bg-gray-200 rounded animate-pulse w-full" />
               <div className="bg-gray-200 xs:hidden md:block rounded animate-pulse w-full" />
@@ -165,7 +165,7 @@ export default function Homepage() {
             </div>
           </div>
         ) : (
-          <div className="xs:mt-6 md:mt-10 px-5">
+          <div className="xs:mt-6 md:mt-10 ">
             <FeaturedProducts FeatuerProducts={featuredProducts} />
           </div>
         )}

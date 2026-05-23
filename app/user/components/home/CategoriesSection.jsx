@@ -27,31 +27,14 @@ export default function CategorySection({ categories }) {
   }, []);
   if (!mounted) return null;
   return (
-    <div className="flex flex-col justify-center items-center xs:mt-6 md:mt-20">
-      <div className="w-full   ">
+    <div className="flex w-full justify-center items-center  xs:mt-6 md:mt-10 ">
+      <div className="w-full">
         <Swiper
           key={locale}
           modules={[Navigation]}
-          breakpoints={{
-              300: {
-              slidesPerView: 1,
-            },
-             400: {
-              slidesPerView: 2,
-            },
-            700: {
-              slidesPerView: 3,
-            },
-            900: {
-              slidesPerView: 4,
-            },
-            1172: {
-              slidesPerView: 5,
-            },
-            1487: {
-              slidesPerView: 6,
-            },
-          }}
+          slidesPerView={"auto"}
+          slidesOffsetBefore={16}
+          slidesOffsetAfter={16}
           dir={locale === "ar" ? "rtl" : "ltr"}
           spaceBetween={20}
           navigation={{
@@ -63,16 +46,21 @@ export default function CategorySection({ categories }) {
           {categories.map((category) => (
             <SwiperSlide
               key={category.itemCategoryId}
-              className="rounded-lg "
+              className="rounded-lg !w-[250px]"
             >
               <div
-                className="h-[270px] border-2  border-gray-200 flex justify-center items-center text-center hover:shadow-xl hover:shadow-slate-300   hover:scale-105 duration-200 cursor-pointer rounded-md  hover:border-b-red-600 hover:border-b-[7px]"
+                className="h-[220px] border-2 mt-4  border-gray-200 flex justify-center items-center text-center hover:shadow-xl hover:shadow-slate-300   hover:scale-105 duration-200 cursor-pointer rounded-md  hover:border-b-red-600 hover:border-b-[7px]"
                 onClick={() => {
-                  navigate.push("/user/products/"+category.nameEn + "/" + category.itemCategoryId);
+                  navigate.push(
+                    "/user/products/" +
+                      category.nameEn +
+                      "/" +
+                      category.itemCategoryId,
+                  );
                 }}
               >
                 <div className=" py-2 rounded-lg">
-                  <div className="relative h-[150px] w-[150px]">
+                  <div className="relative h-[120px] w-[120px]">
                     <Image
                       src={`${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL}${
                         getThumbnailUrl(category.imageURL) || ""
@@ -83,14 +71,14 @@ export default function CategorySection({ categories }) {
                       className="object-contain"
                     />
                   </div>
-                  <h1 className="font-semibold  mt-10">
+                  <h1 className="font-semibold  mt-6">
                     {locale === "ar" ? category.nameAr : category.nameEn}
                   </h1>
                 </div>
               </div>
             </SwiperSlide>
           ))}
-          <div className=" flex flex-col justify-center items-center relative my-10  ">
+          <div className=" flex flex-col justify-center items-center relative my-16 ">
             <div className=" p-1 rounded-full absolute flex gap-2 justify-center items-center  ">
               <button className="prev-btn2 p-1 rounded-full hover:bg-red-600 border-2 border-red-600  hover:text-white text-red-600 text-3xl   font-bold cursor-pointer *:">
                 {locale === "ar" ? (

@@ -298,9 +298,9 @@ export default function ProductDetails({ itemId }) {
                 <span
                   className="text-red-600 cursor-pointerr md:text-base xs:text-xs hover:shadow-sm hover:shadow-red-700 px-4 rounded-md  "
                   onClick={() => {
-                    setSelectedCategoryId(product.category.id);
-                    setSelectedSearchInput("");
-                    navigate.push("/user/search");
+                    // setSelectedCategoryId();
+                    // setSelectedSearchInput("");
+                  navigate.push("/user/products/"+product.category.nameEn + "/" + product.category.id);
                   }}
                 >
                   {locale === "ar"

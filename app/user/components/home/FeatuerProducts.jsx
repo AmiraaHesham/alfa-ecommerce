@@ -1,5 +1,5 @@
 // components/ImageSlider.jsx
-"use client"
+"use client";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation } from "swiper/modules";
 import "swiper/css";
@@ -14,38 +14,20 @@ import { useEffect, useState } from "react";
 export default function FeatuerProducts({ FeatuerProducts }) {
   const { locale } = useLanguage();
 
-const [mounted, setMounted] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
-useEffect(() => {
-  setMounted(true);
-}, []);
-if (!mounted) return null;
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  if (!mounted) return null;
   return (
-    <div className="flex flex-col justify-center items-center  relative  ">
-      
+    <div className="flex  justify-center items-center  relative  ">
       <div className=" w-full">
         <Swiper
           key={locale}
-          breakpoints={{
-            300: {
-              slidesPerView: 1,
-            },
-             400: {
-              slidesPerView: 2,
-            },
-            700: {
-              slidesPerView: 3,
-            },
-            900: {
-              slidesPerView: 4,
-            },
-            1172: {
-              slidesPerView: 5,
-            },
-            1487: {
-              slidesPerView: 6,
-            },
-          }}
+          slidesPerView={"auto"}
+          slidesOffsetBefore={16}
+          slidesOffsetAfter={16}
           modules={[Navigation, Autoplay]}
           navigation={{
             nextEl: ".next-btn1",
@@ -53,18 +35,21 @@ if (!mounted) return null;
           }}
           dir={locale === "ar" ? "rtl" : "ltr"}
           spaceBetween={20}
-          className="w-full h-full rounded-xl   "
+          className="w-full h-full rounded-xl flex   "
         >
           {FeatuerProducts.map((product) => {
             return (
-              <SwiperSlide key={product.itemId} className=" mt-7  rounded-lg ">
-                <div className="rounded-lg h-[350px]  flex justify-center  cursor-pointer  ">
+              <SwiperSlide
+                key={product.itemId}
+                className=" mt-4 !w-[250px] rounded-lg "
+              >
+                <div className="rounded-lg h-[350px] flex justify-center  cursor-pointer">
                   <ProductCard productInfo={product} favorite={false} />
                 </div>
               </SwiperSlide>
             );
           })}
-          <div className=" flex flex-col justify-center items-center relative my-7 ">
+          <div className=" flex flex-col justify-center items-center relative mb-10">
             <div className=" p-1 rounded-full absolute flex gap-2 justify-center items-center  ">
               <button className="prev-btn1 p-1 rounded-full border-2 hover:bg-red-600 border-red-600   hover:text-white text-red-600 text-3xl   font-bold">
                 {locale === "ar" ? (

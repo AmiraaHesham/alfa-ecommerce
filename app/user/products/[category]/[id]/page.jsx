@@ -68,7 +68,7 @@ export default function ProductsByCategory({ params }) {
 
   return (
     <div className=" w-full ">
-      <div className="flex flex-col items-start justify-end gap-5 ">
+      <div className="flex flex-col items-start justify-start  ">
         <CategoriesSideManu category={category} />
 
         <div className={`p-5 w-full `}>
@@ -132,17 +132,17 @@ export default function ProductsByCategory({ params }) {
 
           {loading ? (
             <div className="grid xl:grid-cols-6 lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-1 gap-5 ">
-              {[...Array(8)].map((_, index) => (
+              {[...Array(6)].map((_, index) => (
                 <div
                   key={`skeleton-${index}`}
-                  className="h-[320px] bg-gray-100 rounded animate-pulse w-full"
+                  className="h-[280px] bg-gray-100 rounded animate-pulse w-full"
                 ></div>
               ))}
             </div>
           ) : products.length != 0 ? (
             <div>
               <div
-                className={`grid xl:grid-cols-6 lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 p-2 gap-4`}
+                className={`grid xl:grid-cols-6 lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 p-2 gap-5`}
               >
                 {products.map((product, index) => (
                   <div key={index}>

@@ -155,7 +155,7 @@ export default function ProductCard({ productInfo, favorite }) {
     // <div className="h-full w-full border rounded-md bg-white flex justify-center py-2  cursor-pointer duration-300 hover:scale-105 ">
     <div
       id={`div_${productInfo.itemId}`}
-      className="h-[260px] bg-white border border-gray-300 shadow shadow-md w-full rounded-md cursor-pointer  hover:border-b-[7px] hover:border-b-red-600  hover:scale-105 duration-200   hover:shadow-lg "
+      className="h-[260px] bg-white border border-gray-300 shadow-md w-full rounded-md cursor-pointer  hover:border-b-[7px] hover:border-b-red-600  hover:scale-105 duration-200   hover:shadow-lg "
     >
       {/* {loading && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">

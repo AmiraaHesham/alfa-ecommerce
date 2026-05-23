@@ -48,10 +48,10 @@ export default function UserLayout({ children }) {
                 href={whatsAppUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="fixed bottom-5 right-5 z-50"
+                className="fixed bottom-14 right-5 z-50"
               >
                 <FaSquareWhatsapp
-                  className="text-green-500 text-5xl drop-shadow-lg hover:scale-110 duration-300"
+                  className="text-green-500 bg-white rounded-xl text-5xl drop-shadow-lg hover:scale-110 duration-300"
                 />
               </a>
             </main>

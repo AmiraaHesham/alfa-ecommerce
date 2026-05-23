@@ -516,7 +516,7 @@ export default function Cart() {
                   }}
                   required
                   placeholder={t("select")}
-                  className="h-full "
+                  className="h-full w-[170px] rounded-md border"
                   //  onMenuOpen={() => {}}
                   isSearchable={false}
                   styles={{
