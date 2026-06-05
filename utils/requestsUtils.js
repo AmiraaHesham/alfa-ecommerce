@@ -105,7 +105,7 @@ export const postRequest = async (endpoint, dataBody, message) => {
 
         }
       } catch (refreshError) {
-        if (error.response?.status === 500) {
+        if (refreshError.response?.status === 500) {
           window.location.href = "/signin";
 
         }
@@ -176,7 +176,7 @@ export const getRequest = async (endpoint) => {
         }
 
       } catch (refreshError) {
-        if (error.response?.status === 500) {
+        if (refreshError.response?.status === 500) {
           window.location.href = "/signin";
 
         }
@@ -263,10 +263,11 @@ export const putRequest = async (endpoint, dataBody, message) => {
 
 
       } catch (refreshError) {
-if (error.response?.status === 500) {
+if (refreshError.response?.status === 500) {
             window.location.href = "/signin";
 
           }      }
+
     } else {
       toast.error(error.response.data.error.message)
     }
@@ -352,7 +353,7 @@ export const deleteRequest = async (endpoint, message) => {
         }
 
       } catch (refreshError) {
-if (error.response?.status === 500) {
+if (refreshError.response?.status === 500) {
             window.location.href = "/signin";
 
           }      }

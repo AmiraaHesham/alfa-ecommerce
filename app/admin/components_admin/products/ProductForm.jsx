@@ -77,7 +77,7 @@ export default function FormProduct({ isFormOpen, setIsFormOpen }) {
     reader.readAsDataURL(file);
   };
 
-  // جلب الفئات
+  // جلب الأقسام
   const showCategories = async () => {
     try {
       const resData = await getCategories();
@@ -257,13 +257,13 @@ export default function FormProduct({ isFormOpen, setIsFormOpen }) {
     // if (!validateForm()) return;
 
     // التحقق من السعر
-    if (product.oldPrice !== null && product.oldPrice < product.price) {
+    if (product.oldPrice !== null &&   Number(product.oldPrice) < Number(product.price)) {
+      console.log("Old Price:",product.oldPrice !== null, "Current Price:",product.oldPrice < product.price);
       toast.error(t("check_oldPrice"));
       return;
     }
 
     const formData = createFormData();
-    console.log(formData);
     setLoading(true);
     try {
       await putRequest(
@@ -376,7 +376,7 @@ export default function FormProduct({ isFormOpen, setIsFormOpen }) {
 
                 <input
                   type="file"
-                  accept="image/*"
+      
                   id={img.inputId}
                   className="hidden"
                   onChange={(e) => handleUpload(e, img.key)}

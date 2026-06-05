@@ -25,17 +25,16 @@ export default function SignUp() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
   const { locale, setLocale } = useLanguage("ar");
   const input_passwordRef = useRef();
   const input_confirmPasswordRef = useRef();
 
   const handleSignUp = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setError(null);
 
     try {
+          setLoading(true);
+
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/signup`,
         {
