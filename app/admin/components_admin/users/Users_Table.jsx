@@ -117,7 +117,7 @@ export default function UsersPage() {
           <tbody className="bg-white text-md ">
             {users.map((user, index) => {
               const date = new Date(user.registrationDate);
-              const dateOnly = date.toLocaleDateString("en-US");
+              const dateOnly = date.toLocaleDateString("en-GB");
               return (
                 <tr
                   key={index}

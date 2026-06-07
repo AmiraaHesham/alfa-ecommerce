@@ -223,7 +223,14 @@
   "Guarantee_Policy": "Guarantee Policy",
   "Return_Policy": "Return Policy",
   "orderDetails": "Order Details",
-  "no_more_products": "No more products"
+  "no_more_products": "No more products",
+  "selectGovernorate":"Select Governorate",
+  "governorate":"Governorate",
+  "shippingcost":"Shipping Cost",
+  "ShippingCost_management":"Shipping Cost Management",
+  "EditShippingCost":"Edit Shipping Cost",
+    "reasonMessage":"Reason Message",
+  "reason":"Reason for Return"
 
 
 }

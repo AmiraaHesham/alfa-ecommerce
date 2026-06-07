@@ -5,7 +5,7 @@ import { MdOutlineShoppingCart } from "react-icons/md";
 import { ImUsers } from "react-icons/im";
 import { MdContactSupport } from "react-icons/md";
 import { MdAdminPanelSettings } from "react-icons/md";
-import { RiPagesFill } from "react-icons/ri";
+import { RiMoneyDollarCircleLine, RiPagesFill } from "react-icons/ri";
 import { MdElectricBolt } from "react-icons/md";
 import { MdCategory } from "react-icons/md";
 import Link from "next/link";
@@ -16,6 +16,7 @@ import { PiSignOutBold } from "react-icons/pi";
 
 import { useNamePageInAdminContext } from "../../../context/namePageInAdmin.jsx";
 import { useRouter } from "next/navigation.js";
+import { TbTruckReturn } from "react-icons/tb";
 export default function SideMenu() {
   const navigate = useRouter();
 
@@ -38,6 +39,8 @@ export default function SideMenu() {
         ? "Users Management"
         : window.location.pathname.includes("Order")
         ? "Orders Management"
+        : window.location.pathname.includes("returnorderdetails")
+        ? "Returns Management"
         : lastPort + " " + "Management"
     );
   }, []);
@@ -179,6 +182,25 @@ export default function SideMenu() {
           </Link>
 
           <Link
+            href="/admin/pages/Returns"
+            onClick={() => setSelectedNamePage("Returns Management")}
+          >
+            <div
+              className={`flex gap-4 mx-3 xs:justify-center md:justify-start items-center p-3 rounded-md  cursor-pointer hover:bg-red-100 hover:text-red-500
+                 ${
+                   selectedNamePage === "returns_management"
+                     ? "bg-red-100 text-red-500"
+                     : ""
+                 }`}
+            >
+              <span className="text-2xl ">
+                <TbTruckReturn  />
+              </span>
+              <h1 className="text-md xs:hidden md:block">{t("returns")}</h1>
+            </div>
+          </Link>
+
+          <Link
             href="/admin/UsersPage/Users"
             onClick={() => setSelectedNamePage("Users Management")}
           >
@@ -235,12 +257,32 @@ export default function SideMenu() {
               <h1 className="text-md xs:hidden md:block">{t("contact")}</h1>
             </div>
           </Link>
+
+           <Link
+            href="/admin/pages/ShippingCost"
+            onClick={() => setSelectedNamePage("ShippingCost Management")}
+          >
+            <div
+              className={`flex gap-4 mx-3 xs:justify-center md:justify-start items-center p-3 rounded-md cursor-pointer hover:bg-red-100 hover:text-red-500
+                 ${
+                   selectedNamePage === "ShippingCost_management"
+                     ? "bg-red-100 text-red-500"
+                     : ""
+                 }`}
+            >
+              <span className="text-2xl">
+                <RiMoneyDollarCircleLine  />
+              </span>
+              <h1 className="text-md xs:hidden md:block">{t("shippingcost")}</h1>
+            </div>
+          </Link>
           <hr className="my-10"></hr>
           <div
-            className={`flex gap-4 mx-3 mt-5 xs:justify-center md:justify-start items-center p-3 rounded-md cursor-pointer text-red-500 `}
+            className={`flex gap-4 mx-3  xs:justify-center md:justify-start items-center rounded-md cursor-pointer text-red-500 `}
             onClick={() => {
               localStorage.setItem("id", "");
               localStorage.setItem("accessToken", "");
+              localStorage.setItem("refreshToken", "");
               localStorage.setItem("address", "");
               localStorage.setItem("email", "");
               localStorage.setItem("firstName", "");
@@ -257,9 +299,7 @@ export default function SideMenu() {
             <h1 className="text-md xs:hidden md:block"> {t("logout")}</h1>
           </div>
         </div>
-        {/* <div className="flex justify-center ">
-        <button>Logout</button>
-       </div> */}
+     
       </div>
     </div>
   );

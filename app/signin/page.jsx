@@ -5,7 +5,7 @@ export default function SignIn() {
   return (
     <div className="h-screen">
        <div className="w-full h-full flex md:flex-row xs:flex-col ">
-          <SignInForm />
+          <SignInForm  popUp={false}  />
             <div className="h-full w-full md:order-2 xs:order-1">
             <Image
               src="/Images/imageSignUp.png"

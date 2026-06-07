@@ -11,9 +11,11 @@ import { useLanguage } from "../../context/LanguageContext";
 import { IoLocationOutline } from "react-icons/io5";
 import { FaEye, FaPhone } from "react-icons/fa";
 import Link from "next/link";
-import { postRequest } from "../../utils/requestsUtils";
+import { getRequest, postRequest } from "../../utils/requestsUtils";
+import Select from "react-select";
+import { toast } from "react-toastify";
 
-export default function SignUp() {
+export default function SignUp({ popUp, setShowSignIn }) {
   const navigate = useRouter();
   const { t } = useLanguage();
   const [username, setUsername] = useState("");
@@ -28,34 +30,95 @@ export default function SignUp() {
   const { locale, setLocale } = useLanguage("ar");
   const input_passwordRef = useRef();
   const input_confirmPasswordRef = useRef();
+  const [governorates, setGovernorates] = useState([]);
+  const [value, setValue] = useState(null);
 
+  const getGovernorate = async () => {
+    const res = await getRequest("/api/public/governorates");
+    const formatted = res.data.map((item) => ({
+      value: item.governorateId,
+      label: locale === "ar" ? item.nameAr : item.nameEn,
+    }));
+    setGovernorates(formatted);
+  };
+  useEffect(() => {
+    getGovernorate();
+  }, []);
   const handleSignUp = async (e) => {
     e.preventDefault();
+    const egyptianPhoneRegex = /^01[0125][0-9]{8}$/;
 
     try {
-          setLoading(true);
-
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/signup`,
-        {
-          username: username,
-          password: password,
-          email: email,
-          firstName: firstName,
-          lastName: lastName,
-          repeatPassword: confirmPassword,
-          address: address,
-          phone: phoneNumber,
-          language: locale,
-        },
-        ""
-      );
-      localStorage.setItem("accessToken", response.data.accessToken);
-      console.log("accessToken", response.data.accessToken);
-      console.log(response);
-      navigate.push("/signin");
+      setLoading(true);
+      if (popUp) {
+        const response = await axios.post(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/signup`,
+          {
+            username: username,
+            password: password,
+            email: email,
+            firstName: firstName,
+            lastName: lastName,
+            repeatPassword: confirmPassword,
+            address: address,
+            phone: phoneNumber,
+            language: locale,
+          governorateId: value ? value.value : null,
+          },
+          "",
+        );
+        // localStorage.setItem("accessToken", response.data.accessToken);
+        // console.log("accessToken", response.data.accessToken);
+        console.log(response);
+        if (response.data.success) {
+          const response = await axios.post(
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/login`,
+            {
+              username: username,
+              password: password,
+            },
+            "",
+          );
+          localStorage.setItem("accessToken", response.data.accessToken);
+          localStorage.setItem("refreshToken", response.data.refreshToken);
+          localStorage.setItem("id", response.data.userDetails.userId);
+          localStorage.setItem(
+            "firstName",
+            response.data.userDetails.firstName,
+          );
+          localStorage.setItem("lastName", response.data.userDetails.lastName);
+          localStorage.setItem("address", response.data.userDetails.address);
+          localStorage.setItem("phone", response.data.userDetails.phone);
+          localStorage.setItem("email", response.data.userDetails.email);
+          localStorage.setItem("username", response.data.userDetails.username);
+          localStorage.setItem("lang", response.data.userDetails.language);
+          localStorage.setItem("role", response.data.userDetails.role);
+          window.location.reload();
+        }
+      } else {
+        const response = await axios.post(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/signup`,
+          {
+            username: username,
+            password: password,
+            email: email,
+            firstName: firstName,
+            lastName: lastName,
+            repeatPassword: confirmPassword,
+            address: address,
+            phone: phoneNumber,
+            language: locale,
+          },
+          "",
+        );
+        localStorage.setItem("accessToken", response.data.accessToken);
+        console.log("accessToken", response.data.accessToken);
+        console.log(response);
+        navigate.push("/signin");
+      }
     } catch (err) {
       console.log(err);
+      toast.error(err.response?.data?.error.message || "");
     } finally {
       setLoading(false);
     }
@@ -78,9 +141,7 @@ export default function SignUp() {
       )}
       <div className="flex justify-between">
         <div className="">
-          <h3 className="text-4xl my-3 font-bold">
-            {t("create_account")}{" "}
-          </h3>
+          <h3 className="text-4xl my-3 font-bold">{t("create_account")} </h3>
           <h4 className="text-sm  text-gray-500">
             {t("signupWelcomeMessage")}
           </h4>
@@ -170,6 +231,7 @@ export default function SignUp() {
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     required
+                    type="text"
                   />
                   <span className="text-sm text-gray-600">
                     <FaUserLarge />
@@ -185,9 +247,14 @@ export default function SignUp() {
                   <input
                     className=" w-full px-3 outline-none"
                     value={phoneNumber}
-                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/\D/g, "");
+                      setPhoneNumber(value);
+                    }}
                     required
-                    placeholder="01000000000"
+                    placeholder="01XXXXXXXXX"
+                    pattern="^01[0125][0-9]{8}$"
+                    type="tel"
                   />
                   <span className="text-sm text-gray-600">
                     <FaPhone />
@@ -195,7 +262,72 @@ export default function SignUp() {
                 </div>
               </div>
             </div>
-            <div className="flex flex-col gap-2">
+            <div className="flex gap-5">
+              <div className="flex flex-col gap-3 w-full">
+                <label className="text-xs font-semibold text-gray-500">
+                  {t("governorate")}
+                </label>
+                <Select
+                  options={governorates}
+                  value={value}
+                  onChange={setValue}
+                  placeholder={t("selectGovernorate")}
+                  styles={{
+                    control: (provided) => ({
+                      ...provided,
+                      border: "1px solid #d1d5db",
+                      boxShadow: "none",
+                      background: "transparent",
+                      fontWeight: "600",
+                      height: "100%",
+                      width: "100%",
+                    }),
+                    option: (provided) => ({
+                      ...provided,
+                      // backgroundColor: '#b91c1c',
+                      color: "white",
+                      fontSize: "18px",
+                      fontWeight: "600",
+                    }),
+                    input: (base) => ({
+                      ...base,
+                      color: "#374151",
+                    }),
+                    option: (base, state) => ({
+                      ...base,
+                      backgroundColor: state.isSelected
+                        ? "#dc2626"
+                        : state.isFocused
+                          ? "#fee2e2"
+                          : "#ffffff",
+                      color: state.isSelected ? "#ffffff" : "#374151",
+                      cursor: "pointer",
+                      padding: "10px",
+                      "&:hover": {
+                        backgroundColor: state.isSelected
+                          ? "#dc2626"
+                          : "#fee2e2",
+                      },
+                    }),
+                  }}
+                />
+              </div>
+              <div className="flex flex-col gap-2 w-full">
+                <label className="text-gray-500 text-sm">{t("address")}</label>
+                <div className=" flex w-full px-2 rounded-md  border h-10 items-center gap-3 shadow-md">
+                  <input
+                    className=" w-full px-3 outline-none"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    required
+                  />
+                  <span className="text-base  text-gray-600">
+                    <FaLocationDot />
+                  </span>
+                </div>
+              </div>
+            </div>
+            {/* <div className="flex flex-col gap-2">
               <label className="text-gray-500 text-sm"> {t("address")} </label>
               <div className=" flex w-full px-2 rounded-md  border h-10 items-center gap-3 shadow-md">
                 <input
@@ -209,7 +341,7 @@ export default function SignUp() {
                   <FaLocationDot />
                 </span>
               </div>
-            </div>
+            </div> */}
             <div className=" flex items-center gap-5">
               <div className="flex flex-col gap-2 w-full">
                 <label className="text-gray-500 text-sm">{t("password")}</label>
@@ -311,10 +443,13 @@ export default function SignUp() {
               {loading ? t("loggingIn") : t("create_account")}
             </button>
           </form>
-          <Link href="/signin">
-            <span className="flex justify-center items-center text-sm text-gray-500 ">
+          <Link href={popUp ? "" : "/signin"}>
+            <button
+              className="flex justify-center items-center text-sm text-gray-500 "
+              onClick={() => (popUp ? setShowSignIn(true) : "")}
+            >
               {t("login")}
-            </span>
+            </button>
           </Link>
         </div>
       </div>

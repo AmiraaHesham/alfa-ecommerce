@@ -137,7 +137,7 @@ export default function AdminsTable({ setIsFormOpen }) {
                 ))
               : users.map((user, index) => {
                   const date = new Date(user.lastLoginDate);
-                  const fullDateTime = date.toLocaleString("en-US");
+                  const fullDateTime = date.toLocaleDateString("en-GB");
 
                   return (
                     <tr

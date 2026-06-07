@@ -1,5 +1,5 @@
 "use client";
-import { MdDelete, MdOutlineDownloading, MdStar } from "react-icons/md";
+import { MdBlock, MdDelete, MdOutlineDownloading, MdStar } from "react-icons/md";
 import { FaCircle } from "react-icons/fa";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useLanguage } from "../../../../context/LanguageContext.js";
@@ -12,6 +12,8 @@ import { IoMdSearch } from "react-icons/io";
 import { deleteRequest } from "../../../../utils/requestsUtils.js";
 import { useRefresh } from "../../../../context/refreshContext.jsx";
 import { getThumbnailUrl } from "../../../../utils/functions.jsx";
+import { CgUnavailable } from "react-icons/cg";
+import { ImBlocked } from "react-icons/im";
 
 export default function ProductsTable({ setIsFormOpen }) {
   const { t } = useLanguage();
@@ -31,7 +33,7 @@ export default function ProductsTable({ setIsFormOpen }) {
         "/api/public/items/search",
         {
           page: pageNum.current,
-          size: 15,
+          size: 10,
           searchText: searchInputRef.current.value,
         },
         "",
@@ -51,40 +53,48 @@ export default function ProductsTable({ setIsFormOpen }) {
     getAllProducts();
   }, [refreshKey]);
 
-  const productFavorite = async (productId) => {
+  const productFavorite = async (productId , favorite) => {
     await postRequest(
-      `/api/admin/items/${productId}/favorite`,
+      `/api/admin/items/${productId}/favorite/${favorite}`,
       "",
       t("message"),
     );
     triggerRefresh();
   };
 
-  const productUnfavorite = async (productId) => {
+  // const productUnfavorite = async (productId) => {
+  //   await postRequest(
+  //     `/api/admin/items/${productId}/unfavorite`,
+  //     "",
+  //     t("message"),
+  //   );
+  //   triggerRefresh();
+  // };
+  const productActive = async (productId,active) => {
     await postRequest(
-      `/api/admin/items/${productId}/unfavorite`,
-      "",
-      t("message"),
-    );
-    triggerRefresh();
-  };
-  const productActive = async (productId) => {
-    await postRequest(
-      `/api/admin/items/${productId}/activate`,
+      `/api/admin/items/${productId}/activate/${active}`,
       "",
       t("message"),
     );
     triggerRefresh();
   };
 
-  const productDeaactive = async (productId) => {
+    const productAvailable = async (productId,available) => {
     await postRequest(
-      `/api/admin/items/${productId}/deactivate`,
+      `/api/admin/items/${productId}/availability/${available}`,
       "",
       t("message"),
     );
     triggerRefresh();
   };
+  // const productDeaactive = async (productId) => {
+  //   await postRequest(
+  //     `/api/admin/items/${productId}/deactivate`,
+  //     "",
+  //     t("message"),
+  //   );
+  //   triggerRefresh();
+  // };
 
   const openForm = (productID) => {
     setIsFormOpen(true);
@@ -167,7 +177,7 @@ export default function ProductsTable({ setIsFormOpen }) {
         className=" rounded-xl w-full border h-[600px] mt-3 overflow-hidden xs:overflow-x-scroll lg:overflow-x-auto overflow-y-scroll "
       >
         <table className=" xs:w-[200%] lg:w-full">
-          <thead className="bg-[#F9FAFB] text-xs text-justify">
+          <thead className="bg-[#F9FAFB] text-xs text-justify sticky top-0  z-10">
             <tr className=" text-gray-500 h-12  ">
               <th className="w-[10%]"></th>
               <th className="w-[30%]">{t("PRODUCT_NAME")}</th>
@@ -223,9 +233,9 @@ export default function ProductsTable({ setIsFormOpen }) {
                       }
                       onClick={() => {
                         if (product.active === false) {
-                          productActive(product.itemId);
+                          productActive(product.itemId , true);
                         } else {
-                          productDeaactive(product.itemId);
+                          productActive(product.itemId , false);
                         }
                       }}
                     >
@@ -241,13 +251,31 @@ export default function ProductsTable({ setIsFormOpen }) {
                       onClick={async () => {
                         console.log(product.favorite);
                         if (product.favorite === false) {
-                          await productFavorite(product.itemId);
+                          await productFavorite(product.itemId , true);
                         } else {
-                          await productUnfavorite(product.itemId);
+                          await productFavorite(product.itemId , false);
                         }
                       }}
                     >
                       <GoStarFill />
+                    </button>
+                      <button
+                      className={
+                        "flex items-center justify-center " +
+                        (product.available
+                          ? " text-green-500"
+                          : " text-red-500")
+                      }
+                      onClick={async () => {
+                        console.log(product.available);
+                        if (product.available === false) {
+                          await productAvailable(product.itemId , true);
+                        } else {
+                          await productAvailable(product.itemId , false);
+                        }
+                      }}
+                    >
+                      <MdBlock />
                     </button>
                   </div>
                 </td>

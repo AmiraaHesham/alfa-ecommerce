@@ -14,7 +14,6 @@ import Select from "react-select";
 export default function Orders_Table() {
   const { t } = useLanguage();
   const navigate = useRouter();
-  const [inputSearch, setInputSearch] = useState(null);
   const [state, setState] = useState("");
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -31,7 +30,7 @@ export default function Orders_Table() {
           searchText: searchInputRef.current.value,
           orderState: state,
         },
-        ""
+        "",
       );
       const resOrders = response.data || [];
 
@@ -42,9 +41,39 @@ export default function Orders_Table() {
       console.log(error);
     } finally {
       setLoading(false);
-    }  
-    }  
+    }
+  };
+  const nextStatus = {
+    PENDING: [{ value: "PROCESSING", label: t("PROCESSING") }],
+    PROCESSING: [{ value: "SHIPPED", label: t("SHIPPED") }],
+    SHIPPED: [{ value: "DELIVERED", label: t("DELIVERED") }],
+    DELIVERED: [],
+  };
+  const updateOrderState = async (orderId, newState) => {
+    try {
+      if (newState === "CANCELED") {
+        ("");
+      } else {
+        const res = await postRequest(
+          `/api/admin/orders/${orderId}/changeState/${newState}`,
+          "",
+          t("message"),
+        );
+        if (res.success === true) {
+          setOrders((prev) => {
+            const updated = prev.map((item) =>
+              item.orderId === orderId ? { ...item, state: newState } : item,
+            );
 
+            console.log(updated);
+            return updated;
+          });
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   useEffect(() => {
     getAllOrders();
   }, [state]);
@@ -97,6 +126,7 @@ export default function Orders_Table() {
               ]}
               placeholder={t("all_statuses")}
               isClearable
+              isSearchable={false}
               className="w-[200px] text-sm font-semibold"
               styles={{
                 control: (base) => ({
@@ -121,8 +151,8 @@ export default function Orders_Table() {
                   backgroundColor: state.isSelected
                     ? "#dc2626"
                     : state.isFocused
-                    ? "#fee2e2"
-                    : "#ffffff",
+                      ? "#fee2e2"
+                      : "#ffffff",
                   color: state.isSelected ? "#ffffff" : "#374151",
                   cursor: "pointer",
                   // padding: "8px 12px",
@@ -208,22 +238,30 @@ export default function Orders_Table() {
                 ))
               : orders.map((order, index) => {
                   const date = new Date(order.createdDate);
-                  const dateOnly = date.toLocaleDateString("en-US");
+                  const dateOnly = date.toLocaleDateString("en-GB");
                   return (
                     <tr
                       key={index}
                       className=" text-red-950 border w-full hover:bg-gray-50 cursor-pointer"
-                      onClick={() =>
-                        navigate.push(
-                          `/admin/pages/orders_page/OrderDetailsPage/${order.orderId}`
-                        )
-                      }
                     >
-                      <td className="font-semibold text-red-500 px-5">
+                      <td
+                        className="font-semibold text-red-500 px-5"
+                        onClick={() =>
+                          navigate.push(
+                            `/admin/pages/orders_page/OrderDetailsPage/${order.orderId}`,
+                          )
+                        }
+                      >
                         {order.code}
                       </td>
                       <td className="text-sm">{dateOnly}</td>
-                      <td>
+                      <td
+                        onClick={() =>
+                          navigate.push(
+                            `/admin/pages/orders_page/OrderDetailsPage/${order.orderId}`,
+                          )
+                        }
+                      >
                         <div className="flex items-center gap-3">
                           <span className="w-[40px] h-[40px] text-gray-600 my-2  bg-gray-50 flex justify-center items-center p-2 rounded-full border ">
                             <FaUserLarge />
@@ -239,7 +277,14 @@ export default function Orders_Table() {
                         </div>
                       </td>
 
-                      <td className="text-sm ">
+                      <td
+                        className="text-sm "
+                        onClick={() =>
+                          navigate.push(
+                            `/admin/pages/orders_page/OrderDetailsPage/${order.orderId}`,
+                          )
+                        }
+                      >
                         <span className="py-2 px-5 font-semibold rounded-full   bg-red-100 text-red-600">
                           {order.orderItemLines.length}
                         </span>
@@ -247,20 +292,88 @@ export default function Orders_Table() {
                       <td className="text-sm font-bold">
                         {order.total.toLocaleString("en-US")} {t("currency")}
                       </td>
-                      <td
-                        className={`text-xs font-semibold ${
-                          order.state === "PROCESSING"
-                            ? "text-blue-500"
-                            : order.state === "SHIPPED"
-                            ? "text-yellow-500"
-                            : order.state === "PENDING"
-                            ? "text-orange-700":
-                              order.state === "CANCELLED" ? 
-                              "text-red-500"
-                            : "text-green-500"
-                        }`}
-                      >
-                        {t(order.state)}
+                      <td>
+                        <Select
+                          value={{
+                            value: order.state,
+                            label: t(order.state),
+                          }}
+                          onChange={(option) =>
+                            updateOrderState(order.orderId, option.value)
+                          }
+                          options={nextStatus[order.state] || []}
+                          isSearchable={false}
+                          className="w-[200px] text-sm font-semibold"
+                          styles={{
+                            control: (base) => ({
+                              ...base,
+
+                              backgroundColor: "#f3f4f6",
+                              border: "none",
+                              borderRadius: "0.375rem",
+                              minHeight: "36px",
+                              cursor: "pointer",
+                              boxShadow: "none",
+                              "&:hover": {
+                                borderColor: "#dc2626",
+                              },
+                              "&:focus": {
+                                borderColor: "#b91c1c",
+                                boxShadow: "0 0 0 3px rgba(185, 28, 28, 0.2)",
+                                // outline: "none",
+                              },
+                            }),
+                            option: (base, state) => ({
+                              ...base,
+                              backgroundColor: state.isSelected
+                                ? "#dc2626"
+                                : state.isFocused
+                                  ? "#fee2e2"
+                                  : "#ffffff",
+                              color: state.isSelected ? "#ffffff" : "#374151",
+                              cursor: "pointer",
+                              // padding: "8px 12px",
+                              fontSize: "14px",
+                              "&:hover": {
+                                backgroundColor: state.isSelected
+                                  ? "#dc2626"
+                                  : "#fee2e2",
+                              },
+                            }),
+                            menu: (base) => ({
+                              ...base,
+                              backgroundColor: "#ffffff",
+                              borderRadius: "0.375rem",
+                              boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
+                              zIndex: 9999,
+                            }),
+                            placeholder: (base) => ({
+                              ...base,
+                              color: "#374151",
+                              fontSize: "14px",
+                              fontWeight: "600",
+                            }),
+                            singleValue: (base) => ({
+                              ...base,
+                              color:
+                                order.state === "PROCESSING"
+                                  ? "#3b82f6"
+                                  : order.state === "SHIPPED"
+                                    ? "#eab308"
+                                    : order.state === "PENDING"
+                                      ? "#c2410c"
+                                      : order.state === "CANCELLED"
+                                        ? "#f21818"
+                                        : "#22c55e",
+                              fontSize: "14px",
+                              fontWeight: "600",
+                            }),
+                            input: (base) => ({
+                              ...base,
+                              color: "#374151",
+                            }),
+                          }}
+                        />
                       </td>
                     </tr>
                   );
@@ -288,9 +401,3 @@ export default function Orders_Table() {
     </div>
   );
 }
-
-
-
-
-
-

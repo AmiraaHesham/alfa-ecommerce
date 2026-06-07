@@ -9,7 +9,7 @@ export default function Header({ page_title }) {
   const { selectedNamePage, setSelectedNamePage } = useNamePageInAdminContext();
   const { t } = useLanguage();
 
-   switch (selectedNamePage) {
+  switch (selectedNamePage) {
     case "Categories Management":
       setSelectedNamePage("categories_management");
       break;
@@ -35,15 +35,20 @@ export default function Header({ page_title }) {
     case "Contact Management":
       setSelectedNamePage("contact_management");
       break;
+    case "Returns Management":
+      setSelectedNamePage("returns_management");
+      break;
+       case "ShippingCost Management":
+      setSelectedNamePage("ShippingCost_management");
+      break;
   }
 
- 
-const userId = typeof window !== "undefined" ? localStorage.getItem("id") : "";
+  const userId =
+    typeof window !== "undefined" ? localStorage.getItem("id") : "";
 
-  const changeLanguage =async()=>{
-    await postRequest(`/api/users/${userId}/langauge/${locale}`,"","")
-
-  }
+  const changeLanguage = async () => {
+    await postRequest(`/api/users/${userId}/langauge/${locale}`, "", "");
+  };
   const lang =
     typeof window !== "undefined" ? localStorage.getItem("lang") : "";
   useEffect(() => {
@@ -75,7 +80,7 @@ const userId = typeof window !== "undefined" ? localStorage.getItem("id") : "";
           className=" p-2 rounded-md text-white"
           onClick={() => {
             setLocale("en");
-            changeLanguage()
+            changeLanguage();
           }}
         >
           English
@@ -85,7 +90,7 @@ const userId = typeof window !== "undefined" ? localStorage.getItem("id") : "";
           className=" p-2 rounded-md text-white "
           onClick={() => {
             setLocale("ar");
-            changeLanguage()
+            changeLanguage();
           }}
         >
           العربية

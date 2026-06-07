@@ -239,12 +239,7 @@ export default function ProductCard({ productInfo, favorite }) {
           {productInfo.available ? (
             <div
               className="flex flex-col w-full"
-              onClick={() => {
-                setSelectedProductId(productInfo.itemId);
-                navigate.push(
-                  `/user/pages/productdetails/${productInfo.itemId}`,
-                );
-              }}
+              
             >
               <div className=" h-4 flex justify-start items-center gap-1 pt-4"
                 onClick={() => {

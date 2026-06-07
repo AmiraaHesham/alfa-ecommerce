@@ -55,7 +55,7 @@ export default function RecentOrders_table() {
           <tbody className="bg-white text-md w-full ">
             {pendingOrders.map((order, index) => {
               const date = new Date(order.createdDate);
-              const dateOnly = date.toLocaleDateString("en-US");
+              const dateOnly = date.toLocaleDateString("en-GB");
               return (
                 <tr
                   key={index}

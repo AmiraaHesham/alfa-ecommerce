@@ -10,25 +10,20 @@ import { useLanguage } from "../../../context/LanguageContext";
 import { useRouter } from "next/navigation";
 import { useIdContext } from "../../../context/idContext";
 import { getThumbnailUrl } from "../../../utils/functions";
-export default function OrdersHistory() {
+export default function ReturnOrders() {
   const { t } = useLanguage();
   const [orders, setOrders] = useState([]);
   const [inputSearch, setInputSearch] = useState(null);
   const [state, setState] = useState("");
-    const { locale } = useLanguage();
-
   const [loading, setLoading] = useState(true);
   const navigate = useRouter();
   const { setSelectedProductId } = useIdContext();
-  useEffect(() => {
-  
-    getOrders();
-  }, [state, inputSearch]);
-  const getOrders = async () => {
+
+  const getReturnOrders = async () => {
     try {
       setLoading(true)
       const res = await postRequest(
-        "/api/orders/search",
+        "/api/return-orders/search",
         {
           page: 0,
           size: 100,
@@ -51,13 +46,13 @@ export default function OrdersHistory() {
 
   useEffect(() => {
   
-    getOrders();
+    getReturnOrders();
   }, [state, inputSearch]);
   return (
     <div >
       <div className="md:flex xs:block justify-between  items-center  mb-16">
         <div className="flex flex-col gap-2">
-          <span className="text-3xl font-bold">{t("orderHistory")} </span>
+          <span className="text-3xl font-bold">{t("returnsHistory")} </span>
           <span className=" text-gray-500 opacity-90">
             {t("trackAndManage")}
           </span>
@@ -89,7 +84,7 @@ export default function OrdersHistory() {
               setState("");
             }}
           >
-            {t("allOrders")}
+            {t("allReturns")}
           </span>
           <span
             className={`border-b hover:text-red-600 hover:border-red-600 py-4 cursor-pointer
@@ -117,7 +112,7 @@ export default function OrdersHistory() {
               setState("PROCESSING");
             }}
           >
-            {t("PROCESSING")}
+            {t("approved")}
           </span>
           <span
             className={`border-b hover:text-red-600 hover:border-red-600 py-4 cursor-pointer
@@ -131,9 +126,9 @@ export default function OrdersHistory() {
               setState("SHIPPED");
             }}
           >
-            {t("SHIPPED")}
+            {t("returned")}
           </span>
-          <span
+          {/* <span
             className={` border-b hover:text-red-600 hover:border-red-600 py-4 cursor-pointer 
               ${
                 state === "DELIVERED"
@@ -146,7 +141,7 @@ export default function OrdersHistory() {
             }}
           >
             {t("DELIVERED")}
-          </span>
+          </span> */}
         </div>
         <hr className=""></hr>
       </div>
@@ -181,6 +176,7 @@ export default function OrdersHistory() {
           {orders.map((order, index) => {
             const date = new Date(order.createdDate);
             const dateOnly = date.toLocaleDateString("en-GB");
+            console.log(order.item)
             return (
               <div
                 key={index}
@@ -218,28 +214,26 @@ export default function OrdersHistory() {
                   <div className="flex items-center gap-1 mx-5">
                     <span className=" text-gray-600">{t("Total")}: </span>
                     <span className="text-xl font-semibold">
-                      {order.total.toLocaleString("en-US")} {t("currency")}
+                      {order.refundAmount.toLocaleString("en-US")} {t("currency")}
                     </span>
                   </div>
                 </div>
                 <div className="flex justify-between  ">
                   <div className="mt-10 grid xl:grid-cols-3 md:grid-cols-2 gap-x-3 gap-y-3 lg:w-[80%] xs:w-full">
-                    {order.orderItemLines.map((itemLine, index) => {
-                      return (
                         <div
                           className="bg-gray-50 p-2 rounded-md flex items-center gap-3 cursor-pointer"
                           key={index}
                           onClick={() => {
-                            setSelectedProductId(itemLine.item.itemId);
+                            setSelectedProductId(order.item.itemId);
                             navigate.push(
-                              `/user/pages/productdetails/${itemLine.item.itemId}`
+                              `/user/pages/productdetails/${order.item.itemId}`
                             );
                           }}
                         >
                           <Image
                             src={
                               process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +
-                             getThumbnailUrl(itemLine.item.mainImageURL)
+                             getThumbnailUrl(order.item?.mainImageURL)
                             }
                             alt=""
                             width={100}
@@ -248,33 +242,32 @@ export default function OrdersHistory() {
                           />
                           <div className="flex flex-col text-sm ">
                             <span className="">
-                              {locale === "ar"
-                                ? itemLine.item.nameAr
-                                : itemLine.item.nameEn}
+                              {localStorage.lang === "ar"
+                                ? order.item?.nameAr
+                                : order.item?.nameEn}
                             </span>
-                            <div className="flex xs:flex-col lg:flex-row gap-3 mt-2 lg:text-sm xs:text-xs">
+                            <div className="flex gap-3 mt-2 lg:text-sm xs:text-xs">
                               <span className="text-gray-500  ">
-                                {t("code")} : {itemLine.item.code}
+                                {t("code")} : {order.item?.code}
                               </span>
                               <span className="text-gray-500 ">
-                                {t("quantity")} : {itemLine.quantity}
+                                {t("quantity")} : {order.quantity}
                               </span>
                             </div>
                           </div>
                         </div>
-                      );
-                    })}
+              
                   </div>
 
                   <div
-                    className="w-[200px] h-[35px] flex justify-end xs:text-sm md:text-base  mt-10"
+                    className="w-[200px] h-[35px] flex justify-end  mt-10"
                     onClick={() => {
-                      navigate.push(`/user/orderdetails/${order.orderId}`);
+                      navigate.push(`/user/returnorderdetails/${order.returnOrderId}`);
                     }}
                   >
                     <button className="px-2 bg-red-600 text-white rounded-md hover:bg-red-700">
-                {t("orderDetails")}
-                    </button    >
+              {t("orderDetails")}
+                    </button>
                   </div>
                 </div>
               </div>

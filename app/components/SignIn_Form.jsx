@@ -13,7 +13,7 @@ import { FaEye } from "react-icons/fa";
 import { postRequest } from "../../utils/requestsUtils";
 import { toast } from "react-toastify";
 
-export default function SignIn() {
+export default function SignIn({ popUp, setShowSignUp, setShowSignIn }) {
   const navigate = useRouter();
 
   const [username, setUsername] = useState("");
@@ -37,7 +37,7 @@ export default function SignIn() {
           username: username,
           password: password,
         },
-        ""
+        "",
       );
       // console.log(response.data);
       toast.success(response.data.message);
@@ -54,11 +54,15 @@ export default function SignIn() {
       localStorage.setItem("username", response.data.userDetails.username);
       localStorage.setItem("lang", response.data.userDetails.language);
       localStorage.setItem("role", response.data.userDetails.role);
+
       if (response.data.userDetails.role === "ADMIN") {
         navigate.replace("/admin/pages/Dashboard");
-      } else navigate.replace("/user/home");
+      } else if (popUp) {
+        window.location.reload();
+      } else {
+        navigate.replace("/user/home");
+      }
       setLocale(response.data.userDetails.language);
-
     } catch (error) {
       console.log(error);
       toast.error(error.message);
@@ -71,10 +75,10 @@ export default function SignIn() {
     setError(null);
 
     try {
-          setLoading(true);
+      setLoading(true);
 
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/forgot-password/?email=${email}`
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/forgot-password/?email=${email}`,
       );
 
       console.log(response.data);
@@ -101,12 +105,8 @@ export default function SignIn() {
       )}
       <div className="flex justify-between">
         <div id="welcome_section" className="">
-          <h3 className="text-4xl my-3 font-bold">
-            {t("welcomeBack")}
-          </h3>
-          <h4 className="text-sm text-gray-500">
-            {t("welcomeMessage")}
-          </h4>
+          <h3 className="text-4xl my-3 font-bold">{t("welcomeBack")}</h3>
+          <h4 className="text-sm text-gray-500">{t("welcomeMessage")}</h4>
         </div>
         <div id="forgot_password_section" className="hidden">
           <h3 className="text-3xl my-3 font-semibold">
@@ -114,7 +114,7 @@ export default function SignIn() {
           </h3>
           <h4 className="text-xl text-gray-500 ">
             {t(
-              "سيتم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني إذا كان مسجلاً لدينا"
+              "سيتم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني إذا كان مسجلاً لدينا",
             )}
           </h4>
         </div>
@@ -206,7 +206,7 @@ export default function SignIn() {
                 const welcome_section =
                   document.querySelector("#welcome_section");
                 const forgot_password_section = document.querySelector(
-                  "#forgot_password_section"
+                  "#forgot_password_section",
                 );
                 const form_email = document.querySelector("#form_email");
                 const form_login = document.querySelector("#form_login");
@@ -218,18 +218,25 @@ export default function SignIn() {
             >
               {t("forgotPassword")}
             </span>
-            <hr/>
+            <hr />
             <button
               type="submit"
               className="bg-red-600 hover:bg-red-700 text-white rounded-md h-10 "
             >
               {loading ? t("loggingIn") : t("login")}
             </button>
-            <Link href="/signup">
-              <span className="flex justify-center items-center text-sm text-gray-500 ">
-                {t("createNewAccount")}
-              </span>
-            </Link>
+            <div>
+              <Link href={popUp ? "" : "/signup"}>
+                <button
+                  className="text-center w-full text-sm text-gray-500 "
+                  onClick={() =>
+                    popUp ? (setShowSignUp(true), setShowSignIn(false)) : ""
+                  }
+                >
+                  {t("createNewAccount")}
+                </button>
+              </Link>
+            </div>
           </form>
           <form
             id="form_email"
@@ -262,7 +269,7 @@ export default function SignIn() {
                   const welcome_section =
                     document.querySelector("#welcome_section");
                   const forgot_password_section = document.querySelector(
-                    "#forgot_password_section"
+                    "#forgot_password_section",
                   );
                   const form_email = document.querySelector("#form_email");
                   const form_login = document.querySelector("#form_login");

@@ -11,6 +11,7 @@ import { FaUserLarge } from "react-icons/fa6";
 import { IoReloadCircle } from "react-icons/io5";
 import { IoMdSearch } from "react-icons/io";
 import { useNamePageInAdminContext } from "../../../../context/namePageInAdmin.jsx";
+import Select from "react-select";
 
 export default function UserOrders({ userId }) {
   const { t } = useLanguage();
@@ -77,19 +78,88 @@ export default function UserOrders({ userId }) {
             <span className="text-gray-400 text-lg ">
               <MdFilterList />
             </span>
-            <select
-              type="text"
-              onChange={(e) => {
-                setState(e.target.value);
-              }}
-              className="bg-none outline-none text-gray-700  w-[200px] h-9 text-sm font-semibold bg-gray-100 p-2 rounded-lg "
-            >
-              <option value="">{t("all_statuses")}</option>
-              <option value="PENDING">{t("PENDING")}</option>
-              <option value="PROCESSING">{t("PROCESSING")}</option>
-              <option value="SHIPPED">{t("SHIPPED")}</option>
-              <option value="DELIVERED">{t("DELIVERED")}</option>
-            </select>
+       <Select
+                 value={
+                   state
+                     ? {
+                         value: state,
+                         label: t(state),
+                       }
+                     : null
+                 }
+                 onChange={(option) => {
+                   setState(option ? option.value : "");
+                 }}
+                 options={[
+                   { value: "", label: t("all_statuses") },
+                   { value: "PENDING", label: t("PENDING") },
+                   { value: "PROCESSING", label: t("PROCESSING") },
+                   { value: "SHIPPED", label: t("SHIPPED") },
+                   { value: "DELIVERED", label: t("DELIVERED") },
+                 ]}
+                 placeholder={t("all_statuses")}
+                 isClearable
+                   isSearchable={false}
+
+                 className="w-[200px] text-sm font-semibold"
+                 styles={{
+                   control: (base) => ({
+                     ...base,
+                     backgroundColor: "#f3f4f6",
+                     border: "none",
+                     borderRadius: "0.375rem",
+                     minHeight: "36px",
+                     cursor: "pointer",
+                     boxShadow: "none",
+                     "&:hover": {
+                       borderColor: "#dc2626",
+                     },
+                     "&:focus": {
+                       borderColor: "#b91c1c",
+                       boxShadow: "0 0 0 3px rgba(185, 28, 28, 0.2)",
+                       // outline: "none",
+                     },
+                   }),
+                   option: (base, state) => ({
+                     ...base,
+                     backgroundColor: state.isSelected
+                       ? "#dc2626"
+                       : state.isFocused
+                       ? "#fee2e2"
+                       : "#ffffff",
+                     color: state.isSelected ? "#ffffff" : "#374151",
+                     cursor: "pointer",
+                     // padding: "8px 12px",
+                     fontSize: "14px",
+                     "&:hover": {
+                       backgroundColor: state.isSelected ? "#dc2626" : "#fee2e2",
+                     },
+                   }),
+                   menu: (base) => ({
+                     ...base,
+                     backgroundColor: "#ffffff",
+                     borderRadius: "0.375rem",
+                     boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
+                     zIndex: 9999,
+                   }),
+                   placeholder: (base) => ({
+                     ...base,
+                     color: "#374151",
+                     fontSize: "14px",
+                     fontWeight: "600",
+                   }),
+                   singleValue: (base) => ({
+                     ...base,
+                     color: "#374151",
+                     fontSize: "14px",
+                     fontWeight: "600",
+                   }),
+                   input: (base) => ({
+                     ...base,
+                     color: "#374151",
+                   }),
+                 }}
+               />
           </div>
         </div>
       </div>
@@ -142,7 +212,7 @@ export default function UserOrders({ userId }) {
                 ))
               : orders.map((order, index) => {
                   const date = new Date(order.createdDate);
-                  const dateOnly = date.toLocaleDateString("en-US");
+                  const dateOnly = date.toLocaleDateString("en-GB");
                   return (
                     <tr
                       key={index}

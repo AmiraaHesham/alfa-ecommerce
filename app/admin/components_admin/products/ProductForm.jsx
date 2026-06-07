@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { MdCancel } from "react-icons/md";
+import { MdBlock, MdCancel } from "react-icons/md";
 import { IoCloudUploadSharp } from "react-icons/io5";
 import React, { useEffect, useState } from "react";
 import { useLanguage } from "../../../../context/LanguageContext.js";
@@ -16,6 +16,7 @@ import { useIdContext } from "../../../../context/idContext.jsx";
 import { GoStarFill } from "react-icons/go";
 import { toast } from "react-toastify";
 import Select from "react-select";
+import { ImBlocked } from "react-icons/im";
 
 export default function FormProduct({ isFormOpen, setIsFormOpen }) {
   const [enabledActive, setEnabledActive] = useState(true);
@@ -376,7 +377,6 @@ export default function FormProduct({ isFormOpen, setIsFormOpen }) {
 
                 <input
                   type="file"
-      
                   id={img.inputId}
                   className="hidden"
                   onChange={(e) => handleUpload(e, img.key)}
@@ -606,10 +606,12 @@ export default function FormProduct({ isFormOpen, setIsFormOpen }) {
                     setEnabledAvailable(!enabledAvailable);
                   }}
                   className={`transition-colors duration-200 ${
-                    enabledAvailable ? "text-green-600" : "text-gray-300"
+                    enabledAvailable ? "text-green-600" : "text-red-300"
                   }`}
                 >
-                  <FaCircle />
+                  <ImBlocked />
+
+                
                 </button>
               </div>
             </div>

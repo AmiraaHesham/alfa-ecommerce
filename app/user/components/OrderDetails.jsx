@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { FaBox, FaCheck, FaShoppingBag, FaTruck } from "react-icons/fa";
 import { getThumbnailUrl } from "../../../utils/functions";
 import Select from "react-select";
+import { TfiTimer } from "react-icons/tfi";
 
 export default function OrderDetails({ orderId }) {
   const [order, setOrder] = useState([]);
@@ -27,7 +28,8 @@ export default function OrderDetails({ orderId }) {
     itemsNum: "",
     totalDiscount: "",
     totalOrder: "",
-    paymentMethod:""
+    paymentMethod: "",
+    shippingCost: "",
   });
   const [reasonMessage, setReasonMessage] = useState();
   const [isOpenPopup, setOpenPopup] = useState(false);
@@ -38,7 +40,7 @@ export default function OrderDetails({ orderId }) {
   const lang =
     typeof window !== "undefined" ? localStorage.getItem("lang") : null;
   const steps = [
-    { icon: <FaShoppingBag size={20} />, label: t("PENDING") },
+    { icon: <TfiTimer size={20} />, label: t("PENDING") },
     { icon: <FaBox size={20} />, label: t("PROCESSING") },
     { icon: <FaTruck size={20} />, label: t("SHIPPED") },
     { icon: <FaCheck size={20} />, label: t("DELIVERED") },
@@ -65,15 +67,9 @@ export default function OrderDetails({ orderId }) {
       itemsNum: resData.orderItemLines.length,
       totalDiscount: resData.totalDiscount,
       totalOrder: resData.total,
-    paymentMethod:resData.paymentMethod
-
+      paymentMethod: resData.paymentMethod,
+      shippingCost: resData.shippingCost,
     }));
-    // setTotalOrder(resData.total);
-    // setItemsNum(resData.orderItemLines.length);
-    // setState(resData.state);
-    // setTotal(resData.total);
-    // setCreatedDate(resData.createdDate);
-    // setTotalDiscount(resData.totalDiscount);
   };
   const orderCancel = async () => {
     try {
@@ -149,7 +145,7 @@ export default function OrderDetails({ orderId }) {
     label: t(reason),
   }));
   const date = new Date(orderSummary.createdDate);
-  const dateOnly = date.toLocaleDateString("en-US");
+  const dateOnly = date.toLocaleDateString("en-GB");
   return (
     <div className="w-full h-full p-10">
       <div className="relative flex items-center h-16 px-4 my-5">
@@ -212,8 +208,13 @@ export default function OrderDetails({ orderId }) {
                 <th className="w-[30%] px-5">{t("product")} </th>
                 <th className="w-[20%]">{t("price")} </th>
                 <th className="w-[10%] ">{t("discount")} </th>
-                <th className="w-[15%] px-7 ">{t("quantity")} </th>
-                <th className="w-[15%] ">{t("total")} </th>
+                <th className="w-[10%] px-2 ">{t("quantity")} </th>
+                {orderSummary.state === "DELIVERED" ? (
+                  <th className="w-[10%] ">{t("Returned_quantity")} </th>
+                ) : (
+                  ""
+                )}
+                <th className="w-[10%] ">{t("total")} </th>
                 {orderSummary.state === "DELIVERED" ? (
                   <th className="w-[20%] ">{t("return_order")} </th>
                 ) : (
@@ -293,34 +294,47 @@ export default function OrderDetails({ orderId }) {
                       </div>
                     </td>
                     <td className="text-sm">
-                      <div className="  gap-3 rounded-lg h-full text-center w-[100px] border text-gray-600 bg-white">
-                        <span className="font-medium  text-sm w-16 text-center">
+                      <div className="  gap-3 rounded-lg h-full text-center w-[50px] border text-gray-600 bg-white">
+                        <span className="font-medium  text-sm w-10 text-center">
                           {product.quantity}
                         </span>
                       </div>
                     </td>
+                    {orderSummary.state === "DELIVERED" ? (
+                      <td className="text-sm">
+                        <div className="  gap-3 rounded-lg h-full text-center w-[50px] border text-gray-600 bg-white">
+                          <span className="font-medium  text-sm w-10 text-center">
+                            {product.returnedQuantity}
+                          </span>
+                        </div>
+                      </td>
+                    ) : (
+                      ""
+                    )}
                     <td className="text-sm font-semibold">
                       {product.totalPrice.toLocaleString("en-US")}{" "}
                       {t("currency")}
                     </td>
-                    {orderSummary.state  === "DELIVERED" ? (
+                    {orderSummary.state === "DELIVERED" ? (
                       <td>
                         <button
-                          className="bg-red-600 px-3 py-1 text-sm text-center rounded-lg text-white"
+                          className={`${product.returnedQuantity !== product.quantity ? "bg-red-600" : "bg-gray-500 cursor-not-allowed"} px-3 py-1 text-sm text-center rounded-lg text-white`}
                           onClick={() => {
-                            setOpenPopup(true);
-                            setProductData((prev) => ({
-                              ...prev,
-                              id: product.itemLineId,
-                              image:
-                                process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +
-                                getThumbnailUrl(product.item.mainImageURL),
-                              name:
-                                localStorage.lang === "ar"
-                                  ? product.item.nameAr
-                                  : product.item.nameEn,
-                              quantity: product.quantity,
-                            }));
+                            if (product.returnedQuantity !== product.quantity) {
+                              setOpenPopup(true);
+                              setProductData((prev) => ({
+                                ...prev,
+                                id: product.itemLineId,
+                                image:
+                                  process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +
+                                  getThumbnailUrl(product.item.mainImageURL),
+                                name:
+                                  localStorage.lang === "ar"
+                                    ? product.item.nameAr
+                                    : product.item.nameEn,
+                                quantity: product.quantity,
+                              }));
+                            }
                           }}
                         >
                           {t("return")}
@@ -372,6 +386,7 @@ export default function OrderDetails({ orderId }) {
                 <label>إختر الكمية</label>
                 <Select
                   options={quantityOptions}
+                  isSearchable={false}
                   value={quantity}
                   onChange={(selectedOption) => {
                     setQuantity(selectedOption);
@@ -422,6 +437,7 @@ export default function OrderDetails({ orderId }) {
               <div className="w-full flex justify-between items-center">
                 <label> {t("Reason_for_return")}</label>
                 <Select
+                  isSearchable={false}
                   options={ReasonOptions}
                   value={reason}
                   onChange={(selectedOption) => {
@@ -510,11 +526,13 @@ export default function OrderDetails({ orderId }) {
 
             <div className="flex justify-between orderss-center mb-5">
               <span className="text-gray-600">
-                {t("totalProducts") + " " + orderSummary.itemsNum}
+                {t("totalProducts") + " " + `[${orderSummary.itemsNum}]`}
               </span>
 
               <span className="font-semibold">
-                {orderSummary.totalOrder.toLocaleString("en-US") + " " + t("currency")}
+                {orderSummary.totalOrder.toLocaleString("en-US") +
+                  " " +
+                  t("currency")}
               </span>
             </div>
             <div className="flex justify-between items-center mb-5">
@@ -529,7 +547,7 @@ export default function OrderDetails({ orderId }) {
               <span className="text-gray-600">{t("payment_method")}</span>
               <span>{t(orderSummary.paymentMethod)}</span>
             </div>
-            
+
             <div className="flex justify-between items-center">
               <span className="text-gray-600">{t("shippingCost")} </span>
               <span className="font-semibold">
@@ -541,7 +559,9 @@ export default function OrderDetails({ orderId }) {
             <div className="flex justify-between orderss-center text-2xl font-semibold">
               <span>{t("grandTotal")} </span>
               <span className="">
-                {orderSummary.total.toLocaleString("en-US") + " " + t("currency")}
+                {orderSummary.total.toLocaleString("en-US") +
+                  " " +
+                  t("currency")}
               </span>
             </div>
             <button

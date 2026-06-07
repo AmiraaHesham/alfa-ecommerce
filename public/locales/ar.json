@@ -221,5 +221,15 @@
   "Guarantee_Policy": "سياسة الضمان",
   "Return_Policy": "سياسة الاسترجاع",
   "orderDetails": "تفاصيل الطلب",
-  "no_more_products": "لا توجد منتجات أخرى"
+  "no_more_products": "لا توجد منتجات أخرى",
+  "selectGovernorate": "اختر المحافظة",
+  "governorate": "المحافظة",
+  "shippingcost":"تكلفة الشحن",
+  "ShippingCost_management":"إدارة تكلفة الشحن",
+  "EditShippingCost":"تعديل تكلفة الشحن",
+  "reasonMessage":"تفصيل سبب الإرجاع",
+  "reason":"سبب الإرجاع",
+  "APPROVED":"تم الموافقة",
+  "REFUNDED":"تم استرداد المبلغ",
+  "REJECTED":"تم الرفض"
 }

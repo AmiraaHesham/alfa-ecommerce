@@ -1,6 +1,6 @@
 "use client";
-import { useContext, useEffect, useState } from "react";
-import { deleteRequest, getRequest } from "../../../utils/requestsUtils";
+import { useContext, useEffect, useRef, useState } from "react";
+import { deleteRequest, getRequest, postRequest } from "../../../utils/requestsUtils";
 import ProductCard from "./ProductCard";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { useRefresh } from "../../../context/refreshContext";
@@ -15,6 +15,7 @@ export default function WishList() {
   const userId =
     typeof window !== "undefined" ? localStorage.getItem("id") : null;
   const { locale } = useLanguage();
+  const synced = useRef(false);
 
   useEffect(() => {
     const syncFavorite = async () => {

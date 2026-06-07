@@ -5,7 +5,7 @@ import { getRequest } from "../../../../utils/requestsUtils.js";
 import { useEffect, useState } from "react";
 import { useOrderDetailsContext } from "../../../../context/orderDetailsContext.jsx";
 
-export default function Orders_Details({ orderId }) {
+export default function Orders_Details({ orderId , orderType }) {
   const { t } = useLanguage();
   const [orderCode, setOrderCode] = useState("");
   const { selectedOrderState } = useOrderDetailsContext();
@@ -13,15 +13,15 @@ export default function Orders_Details({ orderId }) {
   const { selectedOrderDate } = useOrderDetailsContext();
 
   const date = new Date(selectedOrderDate);
-  const fullDateTime = date.toLocaleString("en-US");
+  const fullDateTime = date.toLocaleDateString("en-GB");
 
-  //  const orderItem = async () => {
-  //     const res = await getRequest(`/api/orders/${orderId}`);
-  //     setOrderCode(res.code)
-  //   };
-  // useEffect(() => {
-  //   orderItem();
-  // }, []);
+   const orderItem = async () => {
+      const res = await getRequest(`/api/${orderType}/${orderId}`);
+      setOrderCode(res.code)
+    };
+  useEffect(() => {
+    orderItem();
+  }, []);
   return (
     <div className="w-full">
       <div className="flex items-center justify-between w-full gap-3">

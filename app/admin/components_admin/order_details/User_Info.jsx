@@ -7,13 +7,13 @@ import { MdLocalPhone } from "react-icons/md";
 import { PiUserListFill } from "react-icons/pi";
 import { getRequest } from "../../../../utils/requestsUtils.js";
 
-export default function Orders_Details({ orderId }) {
+export default function Orders_Details({ orderId , orderType }) {
   const { t } = useLanguage();
   const [orderUser, setOrderUser] = useState([]);
   const [paymentMethod , setPaymentMethod] = useState()
   const [orderAddress, setOrderAddress] = useState()
   const orderItem = async () => {
-    const res = await getRequest(`/api/orders/${orderId}`);
+   const res= await getRequest(`/api/${orderType}/${orderId}`)
     const resData = res.data
     setOrderUser(resData.user);
     setPaymentMethod(resData.paymentMethod)

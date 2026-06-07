@@ -5,7 +5,7 @@ import { postRequest } from "../../../../utils/requestsUtils";
 import { useOrderDetailsContext } from "../../../../context/orderDetailsContext";
 import { useLanguage } from "../../../../context/LanguageContext";
 
-export default function UpdateStatus({ orderId }) {
+export default function UpdateStatus({ orderId , orderType  }) {
   const [activeStep, setActiveStep] = useState();
   const { t } = useLanguage();
   const { selectedOrderState, setSelectedOrderState } =
@@ -16,14 +16,14 @@ export default function UpdateStatus({ orderId }) {
   useEffect(() => {
     if (selectedOrderState === "PENDING") {
       setActiveStep(1);
-      setOrderStepPath(6);
-    } else if (selectedOrderState === "PROCESSING") {
+      setOrderStepPath(8);
+    } else if (selectedOrderState === "PROCESSING" || selectedOrderState === "APPROVED") {
       setActiveStep(2);
-      setOrderStepPath(19);
-    } else if (selectedOrderState === "SHIPPED") {
+      setOrderStepPath(orderType === "orders"? 19 : 27);
+    } else if (selectedOrderState === "SHIPPED" || selectedOrderState === "REJECTED") {
       setActiveStep(3);
       setOrderStepPath(23);
-    } else if (selectedOrderState === "DELIVERED") {
+    } else if (selectedOrderState === "DELIVERED" || selectedOrderState === "REFUNDED") {
       setActiveStep(4);
       setOrderStepPath(30);
     } else {
@@ -34,23 +34,32 @@ export default function UpdateStatus({ orderId }) {
 
   const lang =
     typeof window !== "undefined" ? localStorage.getItem("lang") : null;
-  const steps = [
+  const returnOrderSteps = [
     {
-      icon: <FaShoppingBag size={20} />,
+      icon: <TfiTimer size={20} />,
       label: t("PENDING"),
       value: "PENDING",
     },
-    { icon: <FaBox size={20} />, label: t("PROCESSING"), value: "PROCESSING" },
-    { icon: <FaTruck size={20} />, label: t("SHIPPED"), value: "SHIPPED" },
-    { icon: <FaCheck size={20} />, label: t("DELIVERED"), value: "DELIVERED" },
+    { icon: <FaBox size={20} />, label: t("APPROVED"), value: "APPROVED" },
+    // { icon: <FaTruck size={20} />, label: t("REJECTED"), value: "REJECTED" },
+    { icon: <FaCheck size={20} />, label: t("REFUNDED"), value: "REFUNDED" },
   ];
+  const orderSteps = [
+    {
+      icon: <TfiTimer size={20} />,
+      label: t("PENDING"),
+      value: "PENDING",
+    },
+    { icon: <FaBox size={20} />, label: orderType === "orders"? t("PROCESSING"):t("APPROVED"), value: orderType === "orders"? "PROCESSING":"APPROVED" },
+    { icon: <FaTruck size={20} />, label: orderType === "orders"? t("SHIPPED") :t("REFUNDED") , value: orderType === "orders"? "SHIPPED" :"REFUNDED" },
+{ icon: <FaCheck size={20} />, label: t("DELIVERED"), value: "DELIVERED" }, ];
   const changeState = async (state) => {
     try {
       if(state === "CANCELED"){
 ""
       }else{
         const res = await postRequest(
-        `/api/admin/orders/${orderId}/changeState/${state}`,
+        `/api/admin/${orderType}/${orderId}/changeState/${state}`,
         "",
         t("message")
       );
@@ -76,7 +85,44 @@ export default function UpdateStatus({ orderId }) {
         }}
       ></div>
       <div className="flex justify-between w-full relative z-10">
-        {steps.map((step, index) => (
+        {orderType !== 'orders'?returnOrderSteps.map((step, index) => (
+          <div
+            key={index}
+            className="flex flex-col items-center cursor-pointer"
+            onClick={() => {
+              // console.log(step.l);
+              changeState(step.value);
+            }}
+          >
+            {/* الدائرة المحيطة بالأيقونة */}
+            <div
+              className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${
+                index + 1 <= activeStep
+                  ? "bg-red-100 border-2 border-red-300"
+                  : "bg-gray-100 border-2 border-gray-300"
+              }`}
+            >
+              {/* الأيقونة (ملونة حسب المرحلة النشطة) */}
+              <div
+                className={
+                  index + 1 <= activeStep ? "text-red-600" : "text-gray-400"
+                }
+              >
+                {step.icon}
+              </div>
+            </div>
+            {/* العنوان تحت الأيقونة */}
+            <span
+              className={`text-xs mt-1 font-medium transition-opacity ${
+                index + 1 <= activeStep
+                  ? "text-red-600 opacity-100"
+                  : "text-gray-500 opacity-70"
+              }`}
+            >
+              {step.label}
+            </span>
+          </div>
+        )):orderSteps.map((step, index) => (
           <div
             key={index}
             className="flex flex-col items-center cursor-pointer"

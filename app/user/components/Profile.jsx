@@ -13,6 +13,8 @@ import "aos/dist/aos.css";
 import { useLanguage } from "../../../context/LanguageContext";
 import { RiShoppingBag4Fill } from "react-icons/ri";
 import { TbTruckReturn } from "react-icons/tb";
+import Select from "react-select";
+import { getRequest } from "../../../utils/requestsUtils";
 export default function Profile() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -22,9 +24,20 @@ export default function Profile() {
   const [phone, setPhone] = useState("");
   const navigate = useRouter();
   const { t } = useLanguage();
-
+ const [governorates, setGovernorates] = useState([]);
+  const [value, setValue] = useState(null);
+   const getGovernorate = async () => {
+    const res = await getRequest("/api/public/governorates");
+    console.log(res.data)
+    const formatted = res.data.map((item) => ({
+      value: item.governorateId,
+      label: localStorage.getItem("lang") === "ar" ? item.nameAr : item.nameEn,
+    }));
+    setGovernorates(formatted);
+  };
   useEffect(() => {
-  
+      getGovernorate();
+
     const firstName = localStorage.getItem("firstName");
     setFirstName(firstName);
     const lastName = localStorage.getItem("lastName");
@@ -38,7 +51,7 @@ export default function Profile() {
     const emailAdress = localStorage.getItem("email");
     setEmail(emailAdress);
   }, []);
-
+ 
   return (
     <div  className="p-10">
       <div className="flex xs:flex-col md:flex-row  h-full gap-10 justify-between">
@@ -184,6 +197,33 @@ export default function Profile() {
                     value={address}
                     className="bg-slate-50  outline-none p-2 rounded-lg border "
                     onChange={(e) => setAddress(e.target.value)}
+                  />
+                </div>
+                 <div className="flex flex-col gap-3">
+                  <label className="text-xs font-semibold text-gray-500">
+                    {t("governorate")}
+                  </label>
+                  <Select
+                    options={governorates}
+                    value={value}
+                    onChange={setValue}
+                    placeholder={t("selectGovernorate")}
+                    classNames={{
+                      control: () =>
+                        "bg-slate-50 border  rounded-lg h-10  hover:border-indigo-500",
+                      menu: () =>
+                        "bg-slate-900 border border-slate-700 rounded-xl mt-2",
+                      option: ({ isFocused, isSelected }) =>
+                        `px-3 py-2 cursor-pointer ${
+                          isSelected
+                            ? "bg-indigo-600 text-white"
+                            : isFocused
+                            ? "bg-indigo-500 text-white"
+                            : "text-gray-300"
+                        }`,
+                      placeholder: () => "text-slate-400",
+                      singleValue: () => "text-white",
+                    }}
                   />
                 </div>
               </div>

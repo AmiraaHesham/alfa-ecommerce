@@ -17,6 +17,8 @@ import { useNamePageInAdminContext } from "../../../../context/namePageInAdmin";
 export default function FeaturedProducts() {
   const [featuersProducts, setFeatuersProduct] = useState([]);
   const { setSelectedProductId } = useIdContext();
+    const { locale } = useLanguage();
+
   const { t } = useLanguage();
   const {setSelectedNamePage} = useNamePageInAdminContext()
 const [isFormOpen,setIsFormOpen] = useState(false)
@@ -59,7 +61,7 @@ const [isFormOpen,setIsFormOpen] = useState(false)
       <div className="my-5 grid lg:grid-cols-5 md:grid-cols-3 xs:grid-cols-2 gap-5 w-full">
         {featuersProducts.map((product, index) => {
           const describtion =
-            localStorage.lang === "ar"
+            locale === "ar"
               ? product.descriptionAr
               : product.descriptionEn;
           return (
@@ -86,7 +88,7 @@ const [isFormOpen,setIsFormOpen] = useState(false)
                   <div className="px-3">
                     <div className="flex justify-between items-center">
                       <h1 className="my-3 text-sm font-semibold">
-                        {localStorage.lang === "ar"
+                        {locale === "ar"
                           ? product.nameAr
                           : product.nameEn}
                       </h1>

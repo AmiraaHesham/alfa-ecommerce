@@ -18,7 +18,7 @@ import { toast } from "react-toastify";
 import Link from "next/link";
 import { getThumbnailUrl } from "../../../utils/functions";
 import Select from "react-select";
-export default function Cart() {
+export default function Cart({ setShowSignUp }) {
   const { t } = useLanguage();
   const [items, setItems] = useState([]);
   const [summery, setSummery] = useState({
@@ -110,16 +110,20 @@ export default function Cart() {
         setItems(items); // 👈 مهم
         setItemNum(items.length);
         const total = items.reduce((acc, item) => {
-          console.log(typeof item.price);
-          const totalPrice = Number(item.price) * Number(item.quantity || 0);
+          console.log(typeof item.oldPrice);
+          const totalPrice = Number(item.oldPrice) * Number(item.quantity || 0);
 
           return acc + totalPrice;
         }, 0);
         const totalDiscount = items.reduce((acc, item) => {
-          return acc + Number(item.oldPrice || 0);
+          return acc + Number(item.oldPrice - item.price || 0);
         }, 0);
-        setTotalOrder(total);
-        setTotalDiscount(totalDiscount);
+        setSummery((prev) => ({
+          ...prev,
+          totalOrder: total,
+          totalDiscount: totalDiscount,
+          netTotal: total - totalDiscount,
+        }));
       }
     } catch (error) {
       console.log(error);
@@ -173,6 +177,10 @@ export default function Cart() {
     try {
       if (userId) {
         if (items.length != 0) {
+          if(!paymentMethod){
+            toast.error(t("selectPaymentMethod"));
+            return;
+          }
           if (isFirstAction) {
             await getProductInCart();
           } else {
@@ -193,7 +201,7 @@ export default function Cart() {
           toast.error(t("noProductsInCart"));
         }
       } else {
-        navigate.push("/signin");
+        setShowSignUp(true);
       }
     } catch (error) {
       console.log(error);
@@ -482,7 +490,7 @@ export default function Cart() {
               <div className="flex justify-between items-center mb-5">
                 <span className="text-gray-600">
                   {" "}
-                  {t("totalProducts") + " " +` [${itemNum}]`}
+                  {t("totalProducts") + " " + ` [${itemNum}]`}
                 </span>
                 <span className="font-semibold">
                   {summery.totalOrder.toLocaleString("en-US") +
@@ -498,13 +506,26 @@ export default function Cart() {
                     t("currency")}{" "}
                 </span>
               </div>
-
+              {
+                userId?
+                (<div>
+                  <div className="flex justify-between items-center mb-5">
+                <span className="text-gray-600">{t("address")} </span>
+                <span className="font-semibold">{} </span>
+              </div>
               <div className="flex justify-between items-center mb-5">
                 <span className="text-gray-600">{t("shippingCost")} </span>
                 <span className="font-semibold">
                   {summery.shappingCost + " " + t("currency")}
                 </span>
               </div>
+                </div>
+                  
+                ):(
+                  ""
+                )
+              }
+              
               <div className="flex justify-between items-center mb-5">
                 <span className="text-gray-600">{t("payment_method")}</span>
 
@@ -559,6 +580,7 @@ export default function Cart() {
                   }}
                 />
               </div>
+
               <hr className="my-6" />
               <div className="flex justify-between items-center text-2xl font-semibold">
                 <span>{t("grandTotal")} </span>
@@ -582,7 +604,7 @@ export default function Cart() {
                   t("confirmOrder")
                 )}
               </button>
-              <div className="flex gap-4 p-2 w-full bg-red-50 mt-5 rounded-md">
+              {/* <div className="flex gap-4 p-2 w-full bg-red-50 mt-5 rounded-md">
                 <span className="text-2xl text-red-600 mt-1">
                   <AiFillSafetyCertificate />
                 </span>
@@ -594,7 +616,7 @@ export default function Cart() {
                     {t("protectedData")}
                   </h2>
                 </div>
-              </div>
+              </div> */}
             </div>
           )}
         </div>
