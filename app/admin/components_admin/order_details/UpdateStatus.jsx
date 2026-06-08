@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { postRequest } from "../../../../utils/requestsUtils";
 import { useOrderDetailsContext } from "../../../../context/orderDetailsContext";
 import { useLanguage } from "../../../../context/LanguageContext";
+import { TfiTimer } from "react-icons/tfi";
 
 export default function UpdateStatus({ orderId , orderType  }) {
   const [activeStep, setActiveStep] = useState();
