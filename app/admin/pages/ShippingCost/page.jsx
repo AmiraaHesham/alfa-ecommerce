@@ -8,11 +8,16 @@ export default function ShippingCost() {
     const [showForm , setShowForm] = useState(false);
  
   return (
-    <div className="bg-[#F9FAFB] flex justify-center items-center w-full h-full">
-        {showForm && (
+<div className=" bg-[#F9FAFB]">
+         
+<div className=" w-full bg-[#F9FAFB]">
+ <div className=" pt-5 mx-5 relative ">    
+      {showForm && (
           <ShippingCostForm govName={governorate} govId={governorateId} setShowForm={setShowForm} />
         )}
       <Table setGovernorate={setGovernorate} setGovernorateId={setGovernorateId} setShowForm={setShowForm} />
+    </div>
+    </div>
     </div>
   );
 }

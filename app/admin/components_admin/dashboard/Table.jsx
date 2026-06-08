@@ -43,7 +43,7 @@ export default function RecentOrders_table() {
       </div>
       <div className=" rounded-b-xl w-full h-[370px] border-s border-b overflow-y-scroll ">
         <table className=" xs:w-[220%] lg:w-full   ">
-          <thead className="bg-[#F9FAFB] text-xs text-gray-500 w-full  text-justify">
+          <thead className="bg-[#F9FAFB] text-xs text-gray-500 w-full  text-justify sticky top-0  z-10">
             <tr className=" text-gray-500 h-12  ">
               <th className="w-[25%] px-5">{t("order_id")}</th>
               <th className="w-[20%] ">{t("date")}</th>

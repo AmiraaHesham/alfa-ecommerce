@@ -66,7 +66,7 @@ export default function UsersPage() {
   }, []);
   return (
     <div>
-      <div className="w-full h-full bg-white mt-3 rounded-lg border flex md:flex-row xs:flex-col gap-5  items-start  p-4 ">
+      <div className="w-full h-full bg-white mt-3 rounded-lg border flex md:flex-row xs:flex-col gap-5  items-start  p-3 ">
         <div className="flex items-center justify-between border px-1 rounded-md w-[300px] bg-gray-100">
           <input
             ref={searchInput}
@@ -101,9 +101,9 @@ export default function UsersPage() {
           </div>
         </div> */}
       </div>
-      <div className=" rounded-xl w-full h-screen   border  mt-3 overflow-hidden overflow-x-scroll overflow-y-scroll ">
+      <div className=" rounded-xl w-full h-[500px]   border  mt-3 overflow-hidden overflow-x-scroll overflow-y-scroll ">
         <table className="  xs:w-[220%] lg:w-full   ">
-          <thead className="bg-[#F9FAFB] text-xs text-justify">
+          <thead className="bg-[#F9FAFB] text-xs text-justify sticky top-0  z-10">
             <tr className=" text-gray-500 h-12  ">
               {/* <th className="w-[5%]"></th> */}
               <th className="w-[1%] px-4">{t("status")}</th>

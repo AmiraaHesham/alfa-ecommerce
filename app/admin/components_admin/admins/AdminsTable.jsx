@@ -97,9 +97,9 @@ export default function AdminsTable({ setIsFormOpen }) {
           </button>
         </div>
       </div>
-      <div className="rounded-xl w-full h-[550px]  border  mt-3 overflow-hidden overflow-y-scroll ">
+      <div className="rounded-xl w-full h-[600px]  border  mt-3 overflow-hidden overflow-y-scroll ">
         <table className="xs:w-[220%] lg:w-full">
-          <thead className="bg-[#F9FAFB] text-xs text-justify">
+          <thead className="bg-[#F9FAFB] text-xs text-justify sticky top-0  z-10">
             <tr className=" text-gray-500 h-12  ">
               {/* <th className="w-[5%]"></th> */}
               <th className="w-[1%] px-4">{t("status")}</th>

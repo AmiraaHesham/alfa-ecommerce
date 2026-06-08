@@ -67,9 +67,9 @@ export default function CategorysTable({ setIsFormOpen }) {
           <h1>{t("add_category")}</h1>
         </button>
       </div>
-      <div className=" rounded-xl w-full h-[600px] border  mt-3 overflow-hidden overflow-y-scroll ">
+      <div className=" rounded-xl w-full h-[530px] border  mt-3 overflow-hidden overflow-y-scroll ">
         <table className=" w-full  rounded-lg  ">
-          <thead className="bg-[#F9FAFB]  text-justify">
+          <thead className="bg-[#F9FAFB]  text-justify sticky top-0  z-10">
             <tr className=" text-gray-500 h-12 md:text-xs  xs:text-[10px]">
               <th className="w-[30%] px-5">{t("image")}</th>
               <th className="w-[25%]">{t("category_name_capetal")}</th>
@@ -127,7 +127,11 @@ export default function CategorysTable({ setIsFormOpen }) {
                       </span>
                     </td>
 
-                    <td onClick={() => openForm(category.itemCategoryId)}>
+                    <td onClick={() => {openForm(category.itemCategoryId)
+
+                    }
+                      
+                    }>
                       <div>
                         <h1 className="md:text-sm xs:text-xs font-semibold">
                           {localStorage.lang === "ar"

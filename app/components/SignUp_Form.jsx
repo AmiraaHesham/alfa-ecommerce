@@ -46,7 +46,6 @@ export default function SignUp({ popUp, setShowSignIn }) {
   }, []);
   const handleSignUp = async (e) => {
     e.preventDefault();
-    const egyptianPhoneRegex = /^01[0125][0-9]{8}$/;
 
     try {
       setLoading(true);
@@ -63,7 +62,7 @@ export default function SignUp({ popUp, setShowSignIn }) {
             address: address,
             phone: phoneNumber,
             language: locale,
-          governorateId: value ? value.value : null,
+            governorateId: value ? value.value : null,
           },
           "",
         );
@@ -93,6 +92,11 @@ export default function SignUp({ popUp, setShowSignIn }) {
           localStorage.setItem("username", response.data.userDetails.username);
           localStorage.setItem("lang", response.data.userDetails.language);
           localStorage.setItem("role", response.data.userDetails.role);
+          localStorage.setItem(
+            "governorateId",
+            response.data.userDetails.governorate.governorateId,
+          );
+
           window.location.reload();
         }
       } else {
@@ -267,50 +271,53 @@ export default function SignUp({ popUp, setShowSignIn }) {
                 <label className="text-xs font-semibold text-gray-500">
                   {t("governorate")}
                 </label>
-                <Select
-                  options={governorates}
-                  value={value}
-                  onChange={setValue}
-                  placeholder={t("selectGovernorate")}
-                  styles={{
-                    control: (provided) => ({
-                      ...provided,
-                      border: "1px solid #d1d5db",
-                      boxShadow: "none",
-                      background: "transparent",
-                      fontWeight: "600",
-                      height: "100%",
-                      width: "100%",
-                    }),
-                    option: (provided) => ({
-                      ...provided,
-                      // backgroundColor: '#b91c1c',
-                      color: "white",
-                      fontSize: "18px",
-                      fontWeight: "600",
-                    }),
-                    input: (base) => ({
-                      ...base,
-                      color: "#374151",
-                    }),
-                    option: (base, state) => ({
-                      ...base,
-                      backgroundColor: state.isSelected
-                        ? "#dc2626"
-                        : state.isFocused
-                          ? "#fee2e2"
-                          : "#ffffff",
-                      color: state.isSelected ? "#ffffff" : "#374151",
-                      cursor: "pointer",
-                      padding: "10px",
-                      "&:hover": {
+                <div className="rounded-md  border h-10 items-center gap-3 shadow-md">
+                  <Select
+                    options={governorates}
+                    value={value}
+                    onChange={setValue}
+                    isSearchable={false}
+                    placeholder={t("selectGovernorate")}
+                    styles={{
+                      control: (provided) => ({
+                        ...provided,
+                        border: "none",
+                        boxShadow: "none",
+                        background: "transparent",
+                        fontWeight: "600",
+                        height: "100%",
+                        width: "100%",
+                      }),
+                      option: (provided) => ({
+                        ...provided,
+                        // backgroundColor: '#b91c1c',
+                        color: "white",
+                        fontSize: "18px",
+                        fontWeight: "600",
+                      }),
+                      input: (base) => ({
+                        ...base,
+                        color: "#374151",
+                      }),
+                      option: (base, state) => ({
+                        ...base,
                         backgroundColor: state.isSelected
                           ? "#dc2626"
-                          : "#fee2e2",
-                      },
-                    }),
-                  }}
-                />
+                          : state.isFocused
+                            ? "#fee2e2"
+                            : "#ffffff",
+                        color: state.isSelected ? "#ffffff" : "#374151",
+                        cursor: "pointer",
+                        padding: "10px",
+                        "&:hover": {
+                          backgroundColor: state.isSelected
+                            ? "#dc2626"
+                            : "#fee2e2",
+                        },
+                      }),
+                    }}
+                  />
+                </div>
               </div>
               <div className="flex flex-col gap-2 w-full">
                 <label className="text-gray-500 text-sm">{t("address")}</label>

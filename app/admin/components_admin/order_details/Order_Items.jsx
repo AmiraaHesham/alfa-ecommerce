@@ -10,6 +10,7 @@ import { getThumbnailUrl } from "../../../../utils/functions.jsx";
 export default function OrdersItems({ orderId, orderType }) {
   const { t } = useLanguage();
   const [orderItems, setOrderItems] = useState([]);
+  const [reasonMessage, setReasonMessage] = useState();
   const [itemPrice, setItemPrice] = useState();
   const [itemQuantity, setItemQuantity] = useState();
   const { setSelectedOrderState } = useOrderDetailsContext();
@@ -25,6 +26,7 @@ export default function OrdersItems({ orderId, orderType }) {
     setOrderTotalPrice(
       orderType === "orders" ? resData.total : resData.refundAmount,
     );
+    setReasonMessage(resData.reasonMessage)
     setItemPrice(orderType === "orders" ? "": resData.unitPrice);
     setItemQuantity(orderType === "orders" ? "": resData.quantity);
     setSelectedOrderState(resData.state);
@@ -39,17 +41,17 @@ export default function OrdersItems({ orderId, orderType }) {
     <div className="w-full ">
       <div className="h-16 flex border-t  border-l border-r rounded-t-lg items-center justify-between  px-6 bg-white">
         <h1 className="text-lg">
-          {/* {t("order_items")} ({orderItems.length}) */}
+          {t("reasonMessage")}: {reasonMessage}
         </h1>
         <span className="text-gray-600">
           {" "}
-          {t("Total")}:{" "}
+          {t("grandTotal")}:  { "  "}
           <span className="text-lg text-red-500 font-semibold">
             {orderTotalPrice.toLocaleString("en-US")} {t("currency")}
           </span>{" "}
         </span>
       </div>
-      <div className=" rounded-b-lg  w-full h-[435px]  border overflow-hidden overflow-y-scroll ">
+      <div className={`rounded-b-lg  w-full ${orderType === 'orders'? "h-[435px] overflow-hidden overflow-y-scroll" : '' }  border  `}>
         <table className=" w-full  rounded-lg  ">
           <thead className="bg-[#F9FAFB] text-xs text-gray-500  text-justify">
             <tr className=" text-gray-500 h-12  ">
@@ -57,7 +59,8 @@ export default function OrdersItems({ orderId, orderType }) {
               <th className="w-[30%]">{t("product")}</th>
               <th className="w-[10%] text-center    ">{t("price")}</th>
               <th className="w-[20%] text-center">{t("quantity")}</th>
-              {/* <th className="w-[15%] text-center ">{t("total")}</th> */}
+              
+              {orderType === 'orders' ? <th className="w-[15%] text-center ">{t("total")}</th> : null}
             </tr>
           </thead>
           <tbody className="bg-white text-md w-full ">

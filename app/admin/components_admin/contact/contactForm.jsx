@@ -191,7 +191,7 @@ export default function ContactForm() {
             </div>
           </div>
         </div>
-        <div className="flex items-center gap-3 mt-9 p-4">
+        <div className="flex items-center gap-3 mt-4 p-4">
           <span className="text-2xl text-red-700">
             <IoMdShare />
           </span>

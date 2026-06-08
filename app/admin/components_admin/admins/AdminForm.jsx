@@ -106,7 +106,7 @@ export default function AdminForm({ isFormOpen, setIsFormOpen }) {
   return (
     <div
       id="add-admin-form"
-      className={`absolute justify-end  w-full h-screen ${isFormOpen ? "flex" : "hidden"}`}
+      className={`fixed inset-0 bg-black/40 flex items-center justify-center z-50 ${isFormOpen ? "flex" : "hidden"}`}
     >
       {loading && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">

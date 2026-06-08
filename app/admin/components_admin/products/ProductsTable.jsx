@@ -135,13 +135,13 @@ export default function ProductsTable({ setIsFormOpen }) {
 
   //   );
   return (
-    <div className="w-full h-screen">
-      <div className="bg-white  border rounded-lg border-1  w-full mt-5 flex flex-row justify-between  p-3 items-center  xs:gap-4">
-        <div className="flex items-center justify-between border px-1 rounded-md w-[300px] bg-gray-100">
+    <div className="w-full p-5">
+      <div className="bg-white  border rounded-lg  w-full  flex justify-between  p-3 items-center  xs:gap-4">
+        <div className="flex items-center justify-between border px-1 rounded-md   bg-gray-100">
           <input
             type="text"
             placeholder={t("search")}
-            className="bg-none outline-none placeholder:text-sm   bg-gray-100 p-1 rounded-lg"
+            className="bg-none outline-none placeholder:text-sm  w-[250px] bg-gray-100 p-1 rounded-lg"
             // value={searchInput}
             ref={searchInputRef}
             onKeyDown={(e) => {
@@ -174,19 +174,18 @@ export default function ProductsTable({ setIsFormOpen }) {
 
       <div
         ref={productTableRef}
-        className=" rounded-xl w-full border h-[600px] mt-3 overflow-hidden xs:overflow-x-scroll lg:overflow-x-auto overflow-y-scroll "
+        className=" rounded-xl border h-[510px] mt-3 overflow-hidden xs:overflow-x-scroll lg:overflow-x-auto overflow-y-scroll "
       >
         <table className=" xs:w-[200%] lg:w-full">
           <thead className="bg-[#F9FAFB] text-xs text-justify sticky top-0  z-10">
             <tr className=" text-gray-500 h-12  ">
               <th className="w-[10%]"></th>
-              <th className="w-[30%]">{t("PRODUCT_NAME")}</th>
-              <th className="w-[20%]">{t("product_category")}</th>
-              <th className="w-[15%]">{t("price")}</th>
-              <th className="w-[15%]">{t("old_price")}</th>
-              {/* <th></th> */}
+              <th className="w-[25%]">{t("PRODUCT_NAME")}</th>
+              <th className="w-[15%]">{t("product_category")}</th>
+              <th className="w-[10%]">{t("price")}</th>
+              <th className="w-[10%]">{t("old_price")}</th>
 
-              <th className="w-[20%]"></th>
+              <th className="w-[10%]"></th>
             </tr>
           </thead>
           <tbody className="bg-white text-black text-lg w-full ">
@@ -324,7 +323,6 @@ export default function ProductsTable({ setIsFormOpen }) {
                 >
                   {product.price.toLocaleString("en-US")}
                 </td>
-                {/* <td></td> */}
                 <td
                   className="text-sm font-bold text-gray-600"
                   onClick={() => openForm(product.itemId)}

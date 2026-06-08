@@ -44,8 +44,8 @@ export default function Table({
   //   getShippingCost();
   // }, []);
   return (
-    <div className="md:w-[85%] xs:w-full xs:p-5 h-screen bg-[#F9FAFB]">
-      <div className=" rounded-xl w-full h-[600px]   border  overflow-hidden xs:overflow-x-scroll md:overscroll-x-none   overflow-y-scroll ">
+    <div className="w-full pt-3 md:px-16 xs:px-0 h-full bg-[#F9FAFB]">
+      <div className=" rounded-xl w-full h-[580px]   border  overflow-hidden xs:overflow-x-scroll md:overscroll-x-none   overflow-y-scroll ">
         <table className="w-full   ">
           <thead className="bg-[#F9FAFB]  w-full text-xs text-gray-500  sticky top-0  z-10 text-justify">
             <tr className=" text-gray-500 h-12 ">

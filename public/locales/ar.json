@@ -227,7 +227,7 @@
   "shippingcost":"تكلفة الشحن",
   "ShippingCost_management":"إدارة تكلفة الشحن",
   "EditShippingCost":"تعديل تكلفة الشحن",
-  "reasonMessage":"تفصيل سبب الإرجاع",
+  "reasonMessage":" سبب الإرجاع بالتفصيل",
   "reason":"سبب الإرجاع",
   "APPROVED":"تم الموافقة",
   "REFUNDED":"تم استرداد المبلغ",

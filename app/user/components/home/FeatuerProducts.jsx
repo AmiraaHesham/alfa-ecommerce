@@ -49,7 +49,7 @@ export default function FeatuerProducts({ FeatuerProducts }) {
               </SwiperSlide>
             );
           })}
-          <div className=" flex flex-col justify-center items-center relative mb-10">
+          <div className=" flex flex-col justify-center items-center relative my-10">
             <div className=" p-1 rounded-full absolute flex gap-2 justify-center items-center  ">
               <button className="prev-btn1 p-1 rounded-full border-2 hover:bg-red-600 border-red-600   hover:text-white text-red-600 text-3xl   font-bold">
                 {locale === "ar" ? (

@@ -119,7 +119,7 @@ export default function CategoryForm({ isFormOpen, setIsFormOpen }) {
   return (
     <div
       id="add-category-form"
-      className={`justify-center items-center w-full  mt-5  ${isFormOpen ? "flex" : "hidden"}`}
+      className={`fixed inset-0 bg-black/40 flex items-center justify-center z-50 ${isFormOpen ? "flex" : "hidden"}`}
     >
       {loading && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
@@ -219,7 +219,7 @@ export default function CategoryForm({ isFormOpen, setIsFormOpen }) {
               <button
                 type="submit"
                 id="btn-saveCategory"
-                className={`"bg-red-600 py-2 px-3 text-white mt-7  hover:bg-red-800 rounded-lg ${isEditMode ? "hidden" : ""}`}
+                className={`"bg-red-600 py-2 px-3 text-white mt-7  hover:bg-red-800 rounded-lg ${isEditMode ? "hidden" : "block"}`}
                 onClick={addCategory}
               >
                 {t("save")}
@@ -227,7 +227,7 @@ export default function CategoryForm({ isFormOpen, setIsFormOpen }) {
               <button
                 type="submit"
                 id="btn-editCategory"
-                className={`bg-red-600 py-2 px-3 text-white mt-7  hover:bg-red-800 rounded-lg  ${isEditMode ? "" : "hidden"}`}
+                className={`bg-red-600 py-2 px-3 text-white mt-7  hover:bg-red-800 rounded-lg  ${isEditMode ? "block" : "hidden"}`}
                 onClick={updateCategory}
               >
                 {t("save-changes")}

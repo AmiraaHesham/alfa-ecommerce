@@ -258,8 +258,16 @@ export default function FormProduct({ isFormOpen, setIsFormOpen }) {
     // if (!validateForm()) return;
 
     // التحقق من السعر
-    if (product.oldPrice !== null &&   Number(product.oldPrice) < Number(product.price)) {
-      console.log("Old Price:",product.oldPrice !== null, "Current Price:",product.oldPrice < product.price);
+    if (
+      product.oldPrice !== null &&
+      Number(product.oldPrice) < Number(product.price)
+    ) {
+      console.log(
+        "Old Price:",
+        product.oldPrice !== null,
+        "Current Price:",
+        product.oldPrice < product.price,
+      );
       toast.error(t("check_oldPrice"));
       return;
     }
@@ -289,7 +297,7 @@ export default function FormProduct({ isFormOpen, setIsFormOpen }) {
   return (
     <div
       id="add-product-form"
-      className={` absolute w-full justify-end items-end h-full  ${isFormOpen ? "flex" : "hidden"}`}
+      className={` fixed inset-0 bg-black/40 flex items-center justify-end z-50  ${isFormOpen ? "flex" : "hidden"}`}
     >
       {loading && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
@@ -437,95 +445,91 @@ export default function FormProduct({ isFormOpen, setIsFormOpen }) {
               <label className="text-xs text-gray-600 font-semibold block mb-1">
                 {t("Category")}*
               </label>
-              <Select
-                isClearable
-                options={itemCategory.map((category) => ({
-                  value: category.itemCategoryId,
-                  label:
-                    localStorage.getItem("lang") === "ar"
-                      ? category.nameAr
-                      : category.nameEn,
-                  data: category,
-                }))}
-                value={
-                  product.category.id
-                    ? {
-                        value: product.category.id,
-                        label:
-                          localStorage.getItem("lang") === "ar"
-                            ? product.category.nameAr
-                            : product.category.nameEn,
-                      }
-                    : null
-                }
-                onChange={(option) => {
-                  if (option) {
-                    setProduct((prev) => ({
-                      ...prev,
-                      category: {
-                        id: option.value,
-                        nameAr: option.data.nameAr,
-                        nameEn: option.data.nameEn,
-                      },
-                    }));
-                  } else {
-                    setProduct((prev) => ({
-                      ...prev,
-                      category: {
-                        id: null,
-                        nameAr: "",
-                        nameEn: "",
-                      },
-                    }));
+              <div className="bg-[#F9FAFB] border rounded-md">
+                <Select
+                  options={itemCategory.map((category) => ({
+                    value: category.itemCategoryId,
+                    label:
+                      localStorage.getItem("lang") === "ar"
+                        ? category.nameAr
+                        : category.nameEn,
+                    data: category,
+                  }))}
+                  value={
+                    product.category.id
+                      ? {
+                          value: product.category.id,
+                          label:
+                            localStorage.getItem("lang") === "ar"
+                              ? product.category.nameAr
+                              : product.category.nameEn,
+                        }
+                      : null
                   }
-                }}
-                isSearchable={false}
-                placeholder={t("select_category")}
-                noOptionsMessage={() => t("no_categories")}
-                styles={{
-                  control: (base) => ({
-                    ...base,
-                    backgroundColor: "#F9FAFB",
-                    borderColor: "#e5e7eb",
-                    borderRadius: "0.375rem",
-                    minHeight: "40px",
-                    cursor: "pointer",
-                    // outline: "none",
-                    "&:hover": {
-                      borderColor: "#e5e7eb",
-                    },
-                    "&:focus": {
-                      borderColor: "#e5e7eb",
-                      boxShadow: "0 0 0 3px rgba(185, 28, 28, 0.2)",
-                      // outline: "n/one",
-                    },
-                  }),
-                  option: (base, state) => ({
-                    ...base,
-                    backgroundColor: state.isSelected
-                      ? "#dc2626"
-                      : state.isFocused
-                        ? "#fee2e2"
-                        : "#ffffff",
-                    color: state.isSelected ? "#ffffff" : "#374151",
-                    cursor: "pointer",
-                    padding: "10px",
-                    "&:hover": {
-                      backgroundColor: state.isSelected ? "#dc2626" : "#fee2e2",
-                    },
-                  }),
-                  menu: (base) => ({
-                    ...base,
-                    backgroundColor: "#ffffff",
-                    borderRadius: "0.375rem",
-                    boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
-                  }),
-                  input: (base) => ({
-                    ...base,
-                    color: "#374151",
-                  }),
-                }}
-              />
+                  onChange={(option) => {
+                    if (option) {
+                      setProduct((prev) => ({
+                        ...prev,
+                        category: {
+                          id: option.value,
+                          nameAr: option.data.nameAr,
+                          nameEn: option.data.nameEn,
+                        },
+                      }));
+                    } else {
+                      setProduct((prev) => ({
+                        ...prev,
+                        category: {
+                          id: null,
+                          nameAr: "",
+                          nameEn: "",
+                        },
+                      }));
+                    }
+                  }}
+                  isSearchable={false}
+                  placeholder={t("select_category")}
+                  noOptionsMessage={() => t("no_categories")}
+                  styles={{
+                    control: (provided) => ({
+                      ...provided,
+                      border: "none",
+                      boxShadow: "none",
+                      background: "#f8fafc",
+                      fontWeight: "600",
+                      height: "100%",
+                      width: "100%",
+                    }),
+                    option: (provided) => ({
+                      ...provided,
+                      // backgroundColor: '#b91c1c',
+                      color: "white",
+                      fontSize: "18px",
+                      fontWeight: "600",
+                    }),
+                    input: (base) => ({
+                      ...base,
+                      color: "#374151",
+                    }),
+                    option: (base, state) => ({
+                      ...base,
+                      backgroundColor: state.isSelected
+                        ? "#dc2626"
+                        : state.isFocused
+                          ? "#fee2e2"
+                          : "#ffffff",
+                      color: state.isSelected ? "#ffffff" : "#374151",
+                      cursor: "pointer",
+                      padding: "10px",
+                      "&:hover": {
+                        backgroundColor: state.isSelected
+                          ? "#dc2626"
+                          : "#fee2e2",
+                      },
+                    }),
+                  }}
+                />
+              </div>
             </div>
           </div>
 
@@ -610,8 +614,6 @@ export default function FormProduct({ isFormOpen, setIsFormOpen }) {
                   }`}
                 >
                   <ImBlocked />
-
-                
                 </button>
               </div>
             </div>

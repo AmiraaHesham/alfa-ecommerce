@@ -94,11 +94,11 @@ const [isFormOpen,setIsFormOpen] = useState(false)
                       </h1>
                      
                     </div>
-                    <h1 className="md:text-sm xs:text-xs mt-2 text-gray-400 ">
+                    {/* <h1 className="md:text-sm xs:text-xs mt-2 text-gray-400 ">
                       {describtion.length <= 50
                         ? describtion
                         : describtion.slice(0, 50) + " ..."}
-                    </h1>
+                    </h1> */}
                   </div>
                 </div>
 

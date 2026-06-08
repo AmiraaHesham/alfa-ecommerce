@@ -54,6 +54,7 @@ export default function SignIn({ popUp, setShowSignUp, setShowSignIn }) {
       localStorage.setItem("username", response.data.userDetails.username);
       localStorage.setItem("lang", response.data.userDetails.language);
       localStorage.setItem("role", response.data.userDetails.role);
+      localStorage.setItem("governorateId", response.data.userDetails.governorate.governorateId);
 
       if (response.data.userDetails.role === "ADMIN") {
         navigate.replace("/admin/pages/Dashboard");
@@ -90,7 +91,7 @@ export default function SignIn({ popUp, setShowSignUp, setShowSignIn }) {
   };
 
   return (
-    <div className="h-full w-full p-10  md:order-1 xs:order-2">
+    <div className="p-10 w-full h-full md:order-1 xs:order-2">
       {loading && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
           <Image

@@ -45,7 +45,7 @@ export default function ReturnTable() {
       }, [state]);
 return(
     <div>
-         <div className="w-full  bg-white mt-3 rounded-lg border flex md:flex-row xs:flex-col gap-5  items-start  p-4 ">
+         <div className="w-full  bg-white  rounded-lg border flex md:flex-row xs:flex-col gap-5  items-start  p-4 ">
            <div className="flex items-center justify-between border px-1 rounded-md w-[300px] bg-gray-100">
              <input
                type="text"
@@ -86,9 +86,8 @@ return(
                  options={[
                    { value: "", label: t("all_statuses") },
                    { value: "PENDING", label: t("PENDING") },
-                   { value: "PROCESSING", label: t("PROCESSING") },
-                   { value: "SHIPPED", label: t("SHIPPED") },
-                   { value: "DELIVERED", label: t("DELIVERED") },
+                   { value: "APPROVED", label: t("APPROVED") },
+                   { value: "REFUNDED", label: t("REFUNDED") },
                  ]}
                  placeholder={t("all_statuses")}
                  isClearable
@@ -158,7 +157,7 @@ return(
          </div>
          <div className=" rounded-xl w-full  h-[500px] mt-5  border  overflow-hidden overflow-x-scroll overflow-y-scroll ">
            <table className="xs:w-[200%] lg:w-full   ">
-             <thead className="bg-[#F9FAFB] text-xs text-gray-500  text-justify">
+             <thead className="bg-[#F9FAFB] text-xs text-gray-500  text-justify sticky top-0  z-10">
                <tr className=" text-gray-500 h-12">
                  {/* <th className="w-[2%] "></th> */}
                  <th className="w-[20%] px-5 ">{t("order_id")}</th>
@@ -184,7 +183,7 @@ return(
                          <div className="h-4 bg-gray-200 rounded animate-pulse w-28"></div>
                        </td>
                        <td className=" py-2">
-                         <div className="h-10 bg-gray-200 rounded-full animate-pulse w-10"></div>
+                         <div className="h-4 bg-gray-200 rounded animate-pulse w-28"></div>
                        </td>
                        <td className=" py-2">
                          <div className="h-4 bg-gray-200 rounded animate-pulse w-16"></div>

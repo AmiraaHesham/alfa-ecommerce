@@ -5,6 +5,7 @@ import { postRequest } from "../../../../utils/requestsUtils";
 import { useOrderDetailsContext } from "../../../../context/orderDetailsContext";
 import { useLanguage } from "../../../../context/LanguageContext";
 import { TfiTimer } from "react-icons/tfi";
+import { GiMoneyStack } from "react-icons/gi";
 
 export default function UpdateStatus({ orderId , orderType  }) {
   const [activeStep, setActiveStep] = useState();
@@ -41,9 +42,9 @@ export default function UpdateStatus({ orderId , orderType  }) {
       label: t("PENDING"),
       value: "PENDING",
     },
-    { icon: <FaBox size={20} />, label: t("APPROVED"), value: "APPROVED" },
+    { icon: <FaCheck size={20} />, label: t("APPROVED"), value: "APPROVED" },
     // { icon: <FaTruck size={20} />, label: t("REJECTED"), value: "REJECTED" },
-    { icon: <FaCheck size={20} />, label: t("REFUNDED"), value: "REFUNDED" },
+    { icon: <GiMoneyStack size={20} />, label: t("REFUNDED"), value: "REFUNDED" },
   ];
   const orderSteps = [
     {

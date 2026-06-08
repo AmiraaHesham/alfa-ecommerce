@@ -14,7 +14,7 @@ import { useLanguage } from "../../../context/LanguageContext";
 import { RiShoppingBag4Fill } from "react-icons/ri";
 import { TbTruckReturn } from "react-icons/tb";
 import Select from "react-select";
-import { getRequest } from "../../../utils/requestsUtils";
+import { getRequest, putRequest } from "../../../utils/requestsUtils";
 export default function Profile() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -22,22 +22,15 @@ export default function Profile() {
   const [address, setAddress] = useState("");
   const [username, setUsername] = useState("");
   const [phone, setPhone] = useState("");
+  const [governorateId, setGovernorateId] = useState("");
+  const [governorate, setGovernorate] = useState("");
+  const [userId, setUserId] = useState("");
   const navigate = useRouter();
   const { t } = useLanguage();
- const [governorates, setGovernorates] = useState([]);
-  const [value, setValue] = useState(null);
-   const getGovernorate = async () => {
-    const res = await getRequest("/api/public/governorates");
-    console.log(res.data)
-    const formatted = res.data.map((item) => ({
-      value: item.governorateId,
-      label: localStorage.getItem("lang") === "ar" ? item.nameAr : item.nameEn,
-    }));
-    setGovernorates(formatted);
-  };
-  useEffect(() => {
-      getGovernorate();
+  const [governorates, setGovernorates] = useState([]);
+  const [value, setValue] = useState();
 
+  useEffect(() => {
     const firstName = localStorage.getItem("firstName");
     setFirstName(firstName);
     const lastName = localStorage.getItem("lastName");
@@ -50,10 +43,66 @@ export default function Profile() {
     setPhone(phone);
     const emailAdress = localStorage.getItem("email");
     setEmail(emailAdress);
-  }, []);
- 
+    const userId = localStorage.getItem("id");
+    setUserId(userId);
+    const governorateId = localStorage.getItem("governorateId");
+    setGovernorateId(governorateId);
+  }, [firstName,lastName,username,address,phone,email,governorateId]);
+
+  const updateProfile = async (e) => {
+    e.preventDefault();
+    try {
+     const res = await putRequest(`/api/users/${userId}`, {
+        username: username,
+        firstName: firstName,
+        lastName: lastName,
+        phone: phone,
+        address: address,
+        governorateId: value ? value.value : null,
+      });
+console.log(res.success)
+if(res.success){
+      localStorage.setItem("firstName", firstName);
+      localStorage.setItem("lastName", lastName);
+      localStorage.setItem("address", address);
+      localStorage.setItem("phone", phone);
+      localStorage.setItem("email", email);
+      localStorage.setItem("username", username);
+      localStorage.setItem("governorateId",  value.value);
+}
+    } catch (err) {}
+  };
+  const getGovernorate = async () => {
+    try {
+      const res = await getRequest("/api/public/governorates");
+
+      const formatted = res.data.map((item) => ({
+        value: item.governorateId,
+        label:
+          localStorage.getItem("lang") === "ar" ? item.nameAr : item.nameEn,
+      }));
+
+      setGovernorates(formatted);
+
+      const selectedGovernorate = formatted.find(
+        (item) => item.value === Number(governorateId),
+      );
+
+      if (selectedGovernorate) {
+        setGovernorate(selectedGovernorate);
+        setValue(selectedGovernorate);
+      }
+    } catch (error) {
+      console.error("Error loading governorates:", error);
+    }
+  };
+useEffect(() => {
+  if (governorateId) {
+    getGovernorate();
+  }
+}, [governorateId]);
   return (
-    <div  className="p-10">
+    <div className="p-10">
       <div className="flex xs:flex-col md:flex-row  h-full gap-10 justify-between">
         <div className="bg-white md:w-[50%] xl:w-[30%] h-[400px] flex   flex-col gap-3   p-7 rounded-md shadow-md">
           <div className="flex items-center bg-red-600 p-2 rounded-md text-white gap-3 cursor-pointer">
@@ -70,7 +119,7 @@ export default function Profile() {
               <span> {t("orderHistory")} </span>
             </div>
           </Link>
-           <Link href="/user/returnorders">
+          <Link href="/user/returnorders">
             <div className="flex items-center hover:bg-red-600 p-2 rounded-md hover:text-white text-gray-600 gap-3 cursor-pointer">
               <span className="text-2xl">
                 <TbTruckReturn />
@@ -143,7 +192,7 @@ export default function Profile() {
               <span className=""> {t("editPersonalInfo")} </span>
             </div>
             <hr></hr>
-            <form className="p-7">
+            <form className="p-7" onSubmit={updateProfile}>
               <div className="grid grid-cols-2 gap-6">
                 <div className="flex flex-col gap-3">
                   <label className="text-xs font-semibold text-gray-500">
@@ -167,16 +216,17 @@ export default function Profile() {
                     onChange={(e) => setLastName(e.target.value)}
                   />
                 </div>
-                {/* <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-3">
                   <label className="text-xs font-semibold text-gray-500">
-                    البريد الإلكتروني
+                    {t("username")}
                   </label>
                   <input
                     type="text"
-                    value={email}
+                    value={username}
                     className="bg-slate-50 p- outline-none p-2 rounded-lg border "
+                    onChange={(e) => setUsername(e.target.value)}
                   />
-                </div> */}
+                </div>
                 <div className="flex flex-col gap-3">
                   <label className="text-xs font-semibold text-gray-500">
                     {t("phoneNumber")}
@@ -187,6 +237,58 @@ export default function Profile() {
                     className="bg-slate-50 p- outline-none p-2 rounded-lg border "
                     onChange={(e) => setPhone(e.target.value)}
                   />
+                </div>
+                 <div className="flex flex-col gap-3">
+                  <label className="text-xs font-semibold text-gray-500">
+                    {t("governorate")}
+                  </label>
+                  <div className="bg-slate-50 rounded-lg border">
+                    <Select
+                      options={governorates}
+                      value={value}
+                      onChange={setValue}
+                      isSearchable={false}
+                      placeholder=""
+                      styles={{
+                        control: (provided) => ({
+                          ...provided,
+                          border: "none",
+                          boxShadow: "none",
+                          background: "#f8fafc",
+                          fontWeight: "600",
+                          height: "100%",
+                          width: "100%",
+                        }),
+                        option: (provided) => ({
+                          ...provided,
+                          // backgroundColor: '#b91c1c',
+                          color: "white",
+                          fontSize: "18px",
+                          fontWeight: "600",
+                        }),
+                        input: (base) => ({
+                          ...base,
+                          color: "#374151",
+                        }),
+                        option: (base, state) => ({
+                          ...base,
+                          backgroundColor: state.isSelected
+                            ? "#dc2626"
+                            : state.isFocused
+                              ? "#fee2e2"
+                              : "#ffffff",
+                          color: state.isSelected ? "#ffffff" : "#374151",
+                          cursor: "pointer",
+                          padding: "10px",
+                          "&:hover": {
+                            backgroundColor: state.isSelected
+                              ? "#dc2626"
+                              : "#fee2e2",
+                          },
+                        }),
+                      }}
+                    />
+                  </div>
                 </div>
                 <div className="flex flex-col gap-3">
                   <label className="text-xs font-semibold text-gray-500">
@@ -199,33 +301,7 @@ export default function Profile() {
                     onChange={(e) => setAddress(e.target.value)}
                   />
                 </div>
-                 <div className="flex flex-col gap-3">
-                  <label className="text-xs font-semibold text-gray-500">
-                    {t("governorate")}
-                  </label>
-                  <Select
-                    options={governorates}
-                    value={value}
-                    onChange={setValue}
-                    placeholder={t("selectGovernorate")}
-                    classNames={{
-                      control: () =>
-                        "bg-slate-50 border  rounded-lg h-10  hover:border-indigo-500",
-                      menu: () =>
-                        "bg-slate-900 border border-slate-700 rounded-xl mt-2",
-                      option: ({ isFocused, isSelected }) =>
-                        `px-3 py-2 cursor-pointer ${
-                          isSelected
-                            ? "bg-indigo-600 text-white"
-                            : isFocused
-                            ? "bg-indigo-500 text-white"
-                            : "text-gray-300"
-                        }`,
-                      placeholder: () => "text-slate-400",
-                      singleValue: () => "text-white",
-                    }}
-                  />
-                </div>
+               
               </div>
 
               <div className="mt-10 flex items-center gap-5">

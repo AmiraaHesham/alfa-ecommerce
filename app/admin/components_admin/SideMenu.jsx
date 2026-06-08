@@ -62,9 +62,9 @@ export default function SideMenu() {
   //   checkAdmin()
   // },[checkAdmin])
   return (
-    <div className=" h-screen  xs:w-[60px] md:w-[300px]  bg-[#ffffff]">
+    <div className="xs:w-[60px] md:w-[300px] bg-[#ffffff]">
       <div className="   ">
-        <div className="flex  items-center xs:justify-center md:justify-start md:mx-5 xs:mx-0 gap-1 xs:mt-2 md:mt-5">
+        <div className="flex  items-center xs:justify-center md:justify-start md:mx-5 xs:mx-0 gap-1 mt-2">
           <span className="p-2 rounded-md  ">
             <Image
               src="/Images/logo.png"
@@ -83,8 +83,7 @@ export default function SideMenu() {
             <h1 className="text-xs text-red-950">{t("super_admin")}</h1>
           </div>
         </div>
-        {/* <hr></hr> */}
-        <div className="mt-9 flex flex-col gap-1 text-gray-600">
+        <div className="mt-5 flex flex-col gap-1 text-gray-600">
           <Link
             href="/admin/pages/Dashboard"
             onClick={() => setSelectedNamePage("Dashboard Overview")}
@@ -199,7 +198,24 @@ export default function SideMenu() {
               <h1 className="text-md xs:hidden md:block">{t("returns")}</h1>
             </div>
           </Link>
-
+ <Link
+            href="/admin/pages/ShippingCost"
+            onClick={() => setSelectedNamePage("ShippingCost Management")}
+          >
+            <div
+              className={`flex gap-4 mx-3 xs:justify-center md:justify-start items-center p-3 rounded-md cursor-pointer hover:bg-red-100 hover:text-red-500
+                 ${
+                   selectedNamePage === "ShippingCost_management"
+                     ? "bg-red-100 text-red-500"
+                     : ""
+                 }`}
+            >
+              <span className="text-2xl">
+                <RiMoneyDollarCircleLine  />
+              </span>
+              <h1 className="text-md xs:hidden md:block">{t("shippingcost")}</h1>
+            </div>
+          </Link>
           <Link
             href="/admin/UsersPage/Users"
             onClick={() => setSelectedNamePage("Users Management")}
@@ -258,27 +274,10 @@ export default function SideMenu() {
             </div>
           </Link>
 
-           <Link
-            href="/admin/pages/ShippingCost"
-            onClick={() => setSelectedNamePage("ShippingCost Management")}
-          >
-            <div
-              className={`flex gap-4 mx-3 xs:justify-center md:justify-start items-center p-3 rounded-md cursor-pointer hover:bg-red-100 hover:text-red-500
-                 ${
-                   selectedNamePage === "ShippingCost_management"
-                     ? "bg-red-100 text-red-500"
-                     : ""
-                 }`}
-            >
-              <span className="text-2xl">
-                <RiMoneyDollarCircleLine  />
-              </span>
-              <h1 className="text-md xs:hidden md:block">{t("shippingcost")}</h1>
-            </div>
-          </Link>
-          <hr className="my-10"></hr>
+          
+          <hr className="my-6"></hr>
           <div
-            className={`flex gap-4 mx-3  xs:justify-center md:justify-start items-center rounded-md cursor-pointer text-red-500 `}
+            className={`flex gap-4 mx-3 mb-5  xs:justify-center md:justify-start items-center rounded-md cursor-pointer text-red-500 `}
             onClick={() => {
               localStorage.setItem("id", "");
               localStorage.setItem("accessToken", "");
