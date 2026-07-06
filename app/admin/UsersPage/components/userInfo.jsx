@@ -1,12 +1,7 @@
 "use client";
-import SideMenu from "../../components_admin/SideMenu";
-import Header from "../../components_admin/Header";
-import Image from "next/image";
 import { IoLocationSharp } from "react-icons/io5";
 import { TbPointFilled } from "react-icons/tb";
 import { useLanguage } from "../../../../context/LanguageContext.js";
-import User_Info from "../../components_admin/order_details/User_Info";
-import Orders_Table from "../../components_admin/orders/Orders_Table";
 import { useEffect, useState } from "react";
 import { getRequest, postRequest } from "../../../../utils/requestsUtils";
 import { useIdContext } from "../../../../context/idContext";
