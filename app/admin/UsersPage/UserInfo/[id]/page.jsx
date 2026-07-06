@@ -1,6 +1,4 @@
-import SideMenu from "../../../components_admin/SideMenu";
-import Header from "../../../components_admin/Header";
-import UserInfo from "../../../components_admin/users/userInfo";
+import UserInfo from "../../components/userInfo";
 export default function UsersPage({ params }) {
   const { id } = params;
   return (
@@ -10,5 +8,4 @@ export default function UsersPage({ params }) {
       </div>
     </div>
   );
-
 }

@@ -57,7 +57,7 @@ export default function SignIn({ popUp, setShowSignUp, setShowSignIn }) {
       localStorage.setItem("governorateId", response.data.userDetails.governorate.governorateId);
 
       if (response.data.userDetails.role === "ADMIN") {
-        navigate.replace("/admin/pages/Dashboard");
+        navigate.replace("/admin/Dashboard");
       } else if (popUp) {
         window.location.reload();
       } else {
@@ -66,7 +66,7 @@ export default function SignIn({ popUp, setShowSignUp, setShowSignIn }) {
       setLocale(response.data.userDetails.language);
     } catch (error) {
       console.log(error);
-      toast.error(error.message);
+      toast.error(error.response.data.error.message);
     } finally {
       setLoading(false);
     }

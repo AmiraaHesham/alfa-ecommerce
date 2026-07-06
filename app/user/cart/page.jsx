@@ -1,5 +1,5 @@
 "use client";
-import Cartpage from "../components/cart";
+import Cartpage from "./components/cart";
 import SignIn_Form from "../../components/SignIn_Form";
 import SignUp_Form from "../../components/SignUp_Form";
 import { MdCancel } from "react-icons/md";

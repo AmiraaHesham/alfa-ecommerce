@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
-import Header from "./components_admin/Header";
-import SideMenu from "./components_admin/SideMenu";
+import Header from "./components/Header";
+import SideMenu from "./components/SideMenu";
 import Image from "next/image";
 
 export default function AdminLayout({ children }) {

@@ -183,7 +183,7 @@ export default function ProductCard({ productInfo, favorite }) {
             className="object-contain "
             onClick={() => {
               setSelectedProductId(productInfo.itemId);
-              navigate.push(`/user/pages/productdetails/${productInfo.itemId}`);
+              navigate.push(`/user/productdetails/${productInfo.itemId}`);
             }}
           />
         </div>
@@ -200,7 +200,7 @@ export default function ProductCard({ productInfo, favorite }) {
               onClick={() => {
                 setSelectedProductId(productInfo.itemId);
                 navigate.push(
-                  `/user/pages/productdetails/${productInfo.itemId}`,
+                  `/user/productdetails/${productInfo.itemId}`,
                 );
               }}
             >
@@ -244,7 +244,7 @@ export default function ProductCard({ productInfo, favorite }) {
               <div className=" h-4 flex justify-start items-center gap-1 pt-4"
                 onClick={() => {
               setSelectedProductId(productInfo.itemId);
-              navigate.push(`/user/pages/productdetails/${productInfo.itemId}`);
+              navigate.push(`/user/productdetails/${productInfo.itemId}`);
             }}
               >
                 {productInfo.oldPrice ? (

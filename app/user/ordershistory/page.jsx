@@ -1,4 +1,4 @@
-import OrdersHistory from "../components/ordersHistory"
+import OrdersHistory from "./components/ordersHistory"
 
 export default function OrdersHistoryPage() {  
 

@@ -1,4 +1,4 @@
-import ReturnOrders from "../components/returnOrdersHistory"
+import ReturnOrders from "./components/returnOrdersHistory"
 
 export default function OrdersHistoryPage() {  
 

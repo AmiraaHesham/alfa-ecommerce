@@ -11,7 +11,7 @@ export default function Home() {
       role === "ADMIN"
 
     ) {
-      router.replace('/admin/pages/Dashboard');
+      router.replace('/admin/Dashboard');
 
     } else {
       router.replace('/user/home'); // استخدم replace عشان ما يبقاش في التاريخ

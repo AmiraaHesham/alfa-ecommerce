@@ -197,7 +197,7 @@ export default function Footer() {
             {t("wishlist")}{" "}
           </Link>
           <Link
-            href={"/user/pages/profile"}
+            href={"/user/profile"}
             className="hover:[text-shadow:2px_2px_5px_rgba(0,0,0,0.25)]"
           >
             {t("view_profile")}{" "}

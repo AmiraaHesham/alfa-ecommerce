@@ -2,16 +2,12 @@
 import { MdEmail, MdLanguage } from "react-icons/md";
 import { FaEyeSlash, FaLocationDot, FaUserLarge } from "react-icons/fa6";
 import { useState, useRef, useEffect } from "react";
-// import { loginUser } from '../../utils/auth';
-
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useLanguage } from "../../context/LanguageContext";
-import { IoLocationOutline } from "react-icons/io5";
 import { FaEye, FaPhone } from "react-icons/fa";
 import Link from "next/link";
-import { getRequest, postRequest } from "../../utils/requestsUtils";
 import Select from "react-select";
 import { toast } from "react-toastify";
 
@@ -34,11 +30,12 @@ export default function SignUp({ popUp, setShowSignIn }) {
   const [value, setValue] = useState(null);
 
   const getGovernorate = async () => {
-    const res = await getRequest("/api/public/governorates");
-    const formatted = res.data.map((item) => ({
+    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/public/governorates`);
+    const formatted = res.data.data.map((item) => ({
       value: item.governorateId,
       label: locale === "ar" ? item.nameAr : item.nameEn,
     }));
+
     setGovernorates(formatted);
   };
   useEffect(() => {
@@ -278,6 +275,7 @@ export default function SignUp({ popUp, setShowSignIn }) {
                     value={value}
                     onChange={setValue}
                     isSearchable={false}
+                    required
                     placeholder={t("selectGovernorate")}
                     styles={{
                       control: (provided) => ({

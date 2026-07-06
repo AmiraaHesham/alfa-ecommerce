@@ -11,21 +11,20 @@ import {
 } from "../../../utils/functions";
 import { useLanguage } from "../../../context/LanguageContext";
 import "aos/dist/aos.css";
-import { FcAbout } from "react-icons/fc";
 import Link from "next/link";
 import { FaHouseFlag } from "react-icons/fa6";
 
-const ImageSlider = dynamic(() => import("../components/home/ImageSlider"), {
+const ImageSlider = dynamic(() => import("./components/ImageSlider"), {
   ssr: false,
 });
 const CategoriesSection = dynamic(
-  () => import("../components/home/CategoriesSection"),
+  () => import("./components/CategoriesSection"),
   {
     ssr: false,
   },
 );
 const FeaturedProducts = dynamic(
-  () => import("../components/home/FeatuerProducts"),
+  () => import("./components/FeatuerProducts"),
   {
     ssr: false,
   },

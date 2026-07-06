@@ -1,4 +1,4 @@
-import ReturnOrderDetails from'../../components/returnOrderDetails'
+import ReturnOrderDetails from'../components/returnOrderDetails'
 
 export default function ReturnOrderDetailsPage({params}) {  
   const { id } = params; 

@@ -183,7 +183,7 @@ export default function Header() {
               </span>
               <IoMdCart className="xs:w-6 xs:h-6 md:w-8 md:h-8" />
             </Link>
-            <Link href={userId ? "/user/pages/profile" : "/signin"}>
+            <Link href={userId ? "/user/profile" : "/signin"}>
               <div className="flex items-center gap-1  ">
                 <span className="xs:w-7 xs:h-7 md:w-8 md:h-8">
                   <FaRegCircleUser className="w-full h-full" />
