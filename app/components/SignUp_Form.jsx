@@ -62,7 +62,7 @@ export default function SignUp({ popUp, setShowSignIn }) {
             address: address,
             phone: phoneNumber,
             language: locale,
-            governorateId: value ? value.value : null,
+            governorateId: value.value,
           },
           "",
         );
@@ -112,6 +112,7 @@ export default function SignUp({ popUp, setShowSignIn }) {
             address: address,
             phone: phoneNumber,
             language: locale,
+            governorateId: value.value,
           },
           "",
         );
