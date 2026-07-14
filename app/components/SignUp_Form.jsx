@@ -3,13 +3,13 @@ import { MdEmail, MdLanguage } from "react-icons/md";
 import { FaEyeSlash, FaLocationDot, FaUserLarge } from "react-icons/fa6";
 import { useState, useRef, useEffect } from "react";
 import axios from "axios";
-import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useLanguage } from "../../context/LanguageContext";
 import { FaEye, FaPhone } from "react-icons/fa";
 import Link from "next/link";
 import Select from "react-select";
 import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 export default function SignUp({ popUp, setShowSignIn }) {
   const navigate = useRouter();
@@ -28,6 +28,7 @@ export default function SignUp({ popUp, setShowSignIn }) {
   const input_confirmPasswordRef = useRef();
   const [governorates, setGovernorates] = useState([]);
   const [value, setValue] = useState(null);
+const router = useRouter();
 
   const getGovernorate = async () => {
     const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/public/governorates`);
@@ -94,8 +95,7 @@ export default function SignUp({ popUp, setShowSignIn }) {
             response.data.userDetails.governorate.governorateId,
           );
 
-          window.location.reload();
-        }
+router.refresh();        }
       } else {
         const response = await axios.post(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/signup`,

@@ -2,15 +2,12 @@
 import { MdEmail, MdLanguage } from "react-icons/md";
 import { FaEyeSlash, FaUserLarge } from "react-icons/fa6";
 import { useState, useRef, useEffect } from "react";
-// import { loginUser } from '../../utils/auth';
-
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useLanguage } from "../../context/LanguageContext";
 import Link from "next/link";
 import { FaEye } from "react-icons/fa";
-import { postRequest } from "../../utils/requestsUtils";
 import { toast } from "react-toastify";
 
 export default function SignIn({ popUp, setShowSignUp, setShowSignIn }) {
@@ -24,6 +21,7 @@ export default function SignIn({ popUp, setShowSignUp, setShowSignIn }) {
   const { locale, setLocale } = useLanguage();
   const { t } = useLanguage();
   const input_passwordRef = useRef();
+  const router = useRouter();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -54,12 +52,15 @@ export default function SignIn({ popUp, setShowSignUp, setShowSignIn }) {
       localStorage.setItem("username", response.data.userDetails.username);
       localStorage.setItem("lang", response.data.userDetails.language);
       localStorage.setItem("role", response.data.userDetails.role);
-      localStorage.setItem("governorateId", response.data.userDetails.governorate.governorateId);
+      localStorage.setItem(
+        "governorateId",
+        response.data.userDetails.governorate.governorateId,
+      );
 
       if (response.data.userDetails.role === "ADMIN") {
         navigate.replace("/admin/Dashboard");
       } else if (popUp) {
-        window.location.reload();
+        router.refresh();
       } else {
         navigate.replace("/user/home");
       }

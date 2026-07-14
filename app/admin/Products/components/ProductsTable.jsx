@@ -3,10 +3,9 @@ import {
   MdBlock,
   MdDelete,
   MdOutlineDownloading,
-  MdStar,
 } from "react-icons/md";
 import { FaCircle } from "react-icons/fa";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useLanguage } from "../../../../context/LanguageContext.js";
 import { FaPlus } from "react-icons/fa";
 import Image from "next/image";
@@ -17,10 +16,9 @@ import { IoMdSearch } from "react-icons/io";
 import { deleteRequest } from "../../../../utils/requestsUtils.js";
 import { useRefresh } from "../../../../context/refreshContext.jsx";
 import { getThumbnailUrl } from "../../../../utils/functions.jsx";
-import { CgUnavailable } from "react-icons/cg";
-import { ImBlocked } from "react-icons/im";
+import { IoCheckmarkCircleOutline } from "react-icons/io5";
 
-export default function ProductsTable({ setIsFormOpen }) {
+export default function ProductsTable({ setIsFormOpen, category }) {
   const { t } = useLanguage();
   const [products, setProducts] = useState([]);
   const productTableRef = useRef();
@@ -32,7 +30,6 @@ export default function ProductsTable({ setIsFormOpen }) {
   const [loading, setLoading] = useState(true);
   const getAllProducts = async () => {
     try {
-
       console.log(searchInputRef.current.value);
       const response = await postRequest(
         "/api/public/items/search",
@@ -40,6 +37,7 @@ export default function ProductsTable({ setIsFormOpen }) {
           page: pageNum.current,
           size: 10,
           searchText: searchInputRef.current.value,
+          categoryId: category || null,
         },
         "",
       );
@@ -54,9 +52,9 @@ export default function ProductsTable({ setIsFormOpen }) {
     }
   };
   useEffect(() => {
-    setLoading(true)
+    setLoading(true);
     getAllProducts();
-  }, [refreshKey]);
+  }, [refreshKey,category]);
 
   const productFavorite = async (productId, favorite) => {
     await postRequest(
@@ -266,11 +264,9 @@ export default function ProductsTable({ setIsFormOpen }) {
                         </button>
                         <button
                           className={
-                            "flex items-center justify-center " +
-                            (product.available
-                              ? " text-green-500"
-                              : " text-red-500")
-                          }
+                            "flex items-center justify-center " }
+                          
+                        
                           onClick={async () => {
                             console.log(product.available);
                             if (product.available === false) {
@@ -280,7 +276,13 @@ export default function ProductsTable({ setIsFormOpen }) {
                             }
                           }}
                         >
-                          <MdBlock />
+                          {product.available ?(
+                          <IoCheckmarkCircleOutline className="text-green-500 text-lg"/> 
+
+                          ):(
+                          <MdBlock className="text-red-500" />
+
+                          )}
                         </button>
                       </div>
                     </td>

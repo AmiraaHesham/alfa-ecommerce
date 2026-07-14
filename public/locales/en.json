@@ -231,7 +231,8 @@
   "EditShippingCost":"Edit Shipping Cost",
     "reasonMessage":"Reason Message",
   "reason":"Reason for Return",
-  "Placed_on":"Placed on"
+  "Placed_on":"Placed on",
+  "quick_links":"Quick Links"
 
 
 }

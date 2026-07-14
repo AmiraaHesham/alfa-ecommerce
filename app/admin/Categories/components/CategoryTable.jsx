@@ -6,8 +6,9 @@ import { useRefresh } from "../../../../context/refreshContext";
 import { useLanguage } from "../../../../context/LanguageContext.js";
 import { deleteRequest, getRequest } from "../../../../utils/requestsUtils.js";
 import { useEffect, useState } from "react";
-import { MdDelete } from "react-icons/md";
+import { MdDelete, MdEdit, MdUpdate } from "react-icons/md";
 import { getThumbnailUrl } from "../../../../utils/functions";
+import ProductsByCategoryPopup from "./ProductsByCategoryPopup";
 
 export default function CategorysTable({ setIsFormOpen }) {
   const { t } = useLanguage();
@@ -15,7 +16,9 @@ export default function CategorysTable({ setIsFormOpen }) {
   const { setSelectedCategoryId } = useIdContext();
   const { refreshKey } = useRefresh();
   let [itemCategory, setItemCategory] = useState([]);
+  let [categoryId, setCategoryId] = useState();
   const [loading, setLoading] = useState(true);
+  const [popupShow, setPopupShow] = useState(false);
 
   const getAllCategories = async () => {
     try {
@@ -53,6 +56,7 @@ export default function CategorysTable({ setIsFormOpen }) {
 
   return (
     <div>
+      <ProductsByCategoryPopup categoryId={categoryId} popupShow={popupShow} setPopupShow={setPopupShow}/>
       <div className="bg-white h-[50px] border rounded-lg border-1  w-full mt-2 flex justify-end p-5 items-center">
         <button
           className="p-2  text-white xs:text-xs md:text-sm rounded-md bg-red-500 text-center flex items-center justify-center gap-2"
@@ -107,11 +111,13 @@ export default function CategorysTable({ setIsFormOpen }) {
               : itemCategory.map((category, index) => (
                   <tr
                     key={index}
-                    className=" text-red-950 border hover:bg-gray-100 cursor-pointer "
+                    className=" text-red-950 border hover:bg-gray-100 "
                   >
                     <td
                       className="px-4"
-                      onClick={() => openForm(category.itemCategoryId)}
+                     onClick={()=>{setCategoryId(category.itemCategoryId) 
+                      setPopupShow(true)
+                     }}
                     >
                       <span className="w-[100px]">
                         <Image
@@ -127,11 +133,10 @@ export default function CategorysTable({ setIsFormOpen }) {
                       </span>
                     </td>
 
-                    <td onClick={() => {openForm(category.itemCategoryId)
-
-                    }
-                      
-                    }>
+                    <td
+                      onClick={()=>{setCategoryId(category.itemCategoryId) 
+                      setPopupShow(true)
+                     }}>
                       <div>
                         <h1 className="md:text-sm xs:text-xs font-semibold">
                           {localStorage.lang === "ar"
@@ -143,20 +148,35 @@ export default function CategorysTable({ setIsFormOpen }) {
                         </h1>
                       </div>
                     </td>
-                    <td onClick={() => openForm(category.itemCategoryId)}>
+                    <td   onClick={()=>{setCategoryId(category.itemCategoryId) 
+                      setPopupShow(true)
+                     }}>
                       <div className="bg-red-100 md:w-[80px]  xs:w-[60px] text-center rounded-full text-red-600  px-2 font-semibold md:text-xs xs:text-[10px]">
                         <h1>{category.itemsCount}</h1>
                         <h2>{t("products_category")}</h2>
                       </div>
                     </td>
                     <td>
-                      <button
-                        className="text-red-800 text-sm flex items-center gap-1 bg-red-300 px-2 py-1 font-semibold rounded-md hover:bg-red-400"
-                        onClick={() => deleteCategory(category.itemCategoryId)}
-                      >
-                        <MdDelete />
-                        <h1 className="md:block xs:hidden">{t("delete")}</h1>
-                      </button>
+                      <div className="flex gap-5">
+                        <button
+                          className="text-blue-800 text-sm flex items-center gap-1 bg-blue-300 px-2 py-1 font-semibold rounded-md hover:bg-blue-400"
+                          onClick={() => {
+                            openForm(category.itemCategoryId);
+                          }}
+                        >
+                          <MdEdit />
+                          <h1 className="md:block xs:hidden">{t("edit")}</h1>
+                        </button>
+                        <button
+                          className="text-red-800 text-sm flex items-center gap-1 bg-red-300 px-2 py-1 font-semibold rounded-md hover:bg-red-400"
+                          onClick={() =>
+                            deleteCategory(category.itemCategoryId)
+                          }
+                        >
+                          <MdDelete />
+                          <h1 className="md:block xs:hidden">{t("delete")}</h1>
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
