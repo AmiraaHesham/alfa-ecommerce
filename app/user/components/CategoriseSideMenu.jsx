@@ -51,7 +51,7 @@ export default function CategoriesSideMenu({ category }) {
             ))}
           </div>
         ) : (
-          <div className=" w-full gap-1 mb-2  text-gray-500">
+          <div className=" w-full gap-1 my-2  text-gray-500">
             <Swiper
               slidesPerView={"auto"}
               spaceBetween={7}

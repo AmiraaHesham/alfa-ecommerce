@@ -2,7 +2,7 @@
 "use client"
 import Header from "./components/Header";
 import Footer from './components/Footer'
-import { FaSquareWhatsapp } from "react-icons/fa6";
+import { FaSquareWhatsapp, FaWhatsapp } from "react-icons/fa6";
 import { getRequest } from "../../utils/requestsUtils";
 import { useEffect, useState } from "react";
 import Image from "next/image";
@@ -50,8 +50,8 @@ export default function UserLayout({ children }) {
                 rel="noopener noreferrer"
                 className="fixed bottom-14 right-5 z-50"
               >
-                <FaSquareWhatsapp
-                  className="text-green-500 bg-white rounded-xl text-5xl drop-shadow-lg hover:scale-110 duration-300"
+                <FaWhatsapp
+                  className="bg-green-500 text-white p-1 rounded-xl text-5xl drop-shadow-lg hover:scale-110 duration-300"
                 />
               </a>
             </main>

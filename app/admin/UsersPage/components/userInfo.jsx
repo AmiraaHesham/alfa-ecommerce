@@ -55,7 +55,7 @@ const [totalOrders, setTotalOrders] = useState(0);
         ...prevState,
         [state.state]: state.count,
       }));
-setTotalOrders(orderState.PROCESSING + orderState.PENDING + orderState.DELIVERED + orderState.SHIPPED)
+
     });
    
     console.log(resData);

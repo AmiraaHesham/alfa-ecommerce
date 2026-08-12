@@ -259,8 +259,10 @@ export default function UserOrders({ userId }) {
                             : order.state === "SHIPPED"
                             ? "text-yellow-500"
                             : order.state === "PENDING"
-                            ? "text-red-500"
-                            : "text-green-500"
+                            ? "text-orange-500"
+                            : order.state === "DELIVERED"?
+                            "text-green-500":
+                              "text-red-500"
                         }`}
                       >
                         {t(order.state)}

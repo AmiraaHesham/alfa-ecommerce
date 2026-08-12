@@ -78,10 +78,10 @@ export default function Table({
                       className="  border w-full h-14 hover:bg-gray-50 "
                     >
                       <td className="font-semibold  px-5">{locale === "ar"?gov.governorate.nameAr : gov.governorate.nameEn}</td>
-                      <td className="text-sm">{gov.shippingCost} </td>
+                      <td className="text-sm font-semibold px-5">{gov.shippingCost} </td>
                       <td className="text-2xl">
                         <button
-                          className="hover:bg-gray-300 rounded-full p-2"
+                          className="hover:bg-red-200 text-red-600 rounded-full p-2"
                           onClick={() => {
                             setGovernorate(locale === "ar"? gov.governorate.nameAr : gov.governorate.nameEn);
                             setGovernorateId(gov.shippingRateId);
