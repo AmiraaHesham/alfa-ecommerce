@@ -27,15 +27,15 @@ export default function RecentOrders_table() {
         <h1 className="md:text-lg xs:text-sm  font-semibold ">
           {t("recent_orders")}
         </h1>
-        <button
+        {/* <button
           className="md:text-sm xs:text-xs text-red-600"
           onClick={() => {
-            navigate.push("/admin/orders_page/Orders");
+            navigate.push("/admin/orders");
             setSelectedNamePage("Orders Management");
           }}
         >
           {t("view_all_orders")}
-        </button>
+        </button> */}
       </div>
       <div className=" rounded-b-xl w-full h-[370px] border-s border-b overflow-y-scroll ">
         <table className=" xs:w-[220%] lg:w-full   ">

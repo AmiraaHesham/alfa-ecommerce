@@ -44,7 +44,7 @@ export default function RecentOrders_table() {
         <div
           className="  bg-[#F9FAFB]  py-3 rounded-md  flex flex-col items-center justify-center cursor-pointer"
           onClick={() => {
-             navigate.push("/admin/orders_page/Orders");
+             navigate.push("/admin/orders");
             setSelectedNamePage("Orders Management");
            
           }}

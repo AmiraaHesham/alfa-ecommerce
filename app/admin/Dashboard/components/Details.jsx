@@ -6,6 +6,9 @@ import { IoFileTray } from "react-icons/io5";
 import { useLanguage } from "../../../../context/LanguageContext.js";
 import { useEffect, useState } from "react";
 import { getRequest } from "../../../../utils/requestsUtils.js";
+import { useRouter } from "next/navigation.js";
+import { useNamePageInAdminContext } from "../../../../context/namePageInAdmin.jsx";
+import { useIdContext } from "../../../../context/idContext.jsx";
 
 export default function Dashboard_Details() {
   const { t } = useLanguage();
@@ -13,17 +16,17 @@ export default function Dashboard_Details() {
   const [newUsers, setNewUsers] = useState();
   const [pendingOrders, setPendingOrders] = useState(0);
   const [ordersCount, setOrdersCount] = useState(0);
+  const navigate = useRouter();
+  const { setSelectedState } = useIdContext();
 
+  const { setSelectedNamePage } = useNamePageInAdminContext();
   const dashboardPendingOrders = async () => {
     const response = await getRequest("/api/admin/dashboard");
     const resData = response.data;
     console.log(response.data);
 
-    resData.ordersStats.map((state) => {
-      if (state.state === "pending") {
-        setPendingOrders(state.count);
-      }
-    });
+    setPendingOrders(resData.pendingOrders.length)
+
     setNewUsers(resData.newUsers);
     setActiveItems(resData.activeItems);
 
@@ -36,7 +39,14 @@ export default function Dashboard_Details() {
 
   return (
     <div className="w-full grid lg:grid-cols-4 xs:grid-cols-2 lg:gap-10 xs:gap-2 ">
-      <div className="bg-white border flex flex-col gap-5 rounded-lg p-3">
+      <div
+        className="bg-white border flex flex-col gap-5 rounded-lg p-3 cursor-pointer"
+        onClick={() => {
+          navigate.push("/admin/orders");
+          setSelectedNamePage("Orders Management");
+          setSelectedState("PENDING");
+        }}
+      >
         <div className="flex items-center  gap-2">
           <span className="md:text-2xl xs:text-lg  p-1 rounded-md text-red-600 bg-red-100">
             <IoMdCart />
@@ -49,7 +59,13 @@ export default function Dashboard_Details() {
       </div>
 
       <div className="bg-white border border-orange-300 flex flex-col gap-5 rounded-lg p-3">
-        <div className="flex items-center  gap-2">
+        <div
+          className="flex items-center  gap-2"
+          onClick={() => {
+            navigate.push("/admin/orders");
+            setSelectedNamePage("Orders Management");
+          }}
+        >
           <span className="md:text-2xl xs:text-lg text-orange-600 bg-orange-100 p-1 rounded-md">
             <FaHourglassStart />
           </span>
