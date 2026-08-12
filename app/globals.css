@@ -30,21 +30,38 @@ body {
   }
 }
 
-
+/* * {
+  outline: 1px solid red;
+} */
 /* إخفاء الأيقونة الافتراضية */
 .swiper-button-prev,
 .swiper-button-next {
-  color: rgb(201, 2, 2) !important;
-  font-size: 50px !important;
-  margin-left: 20px !important;
-  margin-right: 20px !important;
+  color: rgb(255,255, 255) !important;
+  background-color: rgba(0, 0, 0, 0.612) !important;
+  border: 1px solid rgb(255, 255, 255) !important;
+  border-radius: 50% !important;
+  width: 40px !important;
+  height: 40px !important;
+  
   
 }
 
-/* إضافة سهم مخصص كنص */
-.swiper-button-prev::after,
-.swiper-button-next::after {
-  font-family: inherit;
-  font-weight: bold;
+.swiper-button-prev svg,
+.swiper-button-next svg {
+  width: 15px !important;
+  height: 15px !important;
+}
 
+.swiper-pagination-bullet {
+  width: 8px !important;
+  height: 8px !important;
+  border-radius: 999px !important;
+  background-color: #d1d5db !important;
+  opacity: 1 !important;
+  transition: all 0.3s ease !important;
+}
+
+.swiper-pagination-bullet-active {
+  width: 15px !important;
+  background: #8b0202 !important;
 }

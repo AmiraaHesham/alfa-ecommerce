@@ -219,7 +219,7 @@ export default function CategoryForm({ isFormOpen, setIsFormOpen }) {
               <button
                 type="submit"
                 id="btn-saveCategory"
-                className={`"bg-red-600 py-2 px-3 text-white mt-7  hover:bg-red-800 rounded-lg ${isEditMode ? "hidden" : "block"}`}
+                className={`bg-red-600 py-2 px-3 text-white mt-7  hover:bg-red-800 rounded-lg ${isEditMode ? "hidden" : "block"}`}
                 onClick={addCategory}
               >
                 {t("save")}

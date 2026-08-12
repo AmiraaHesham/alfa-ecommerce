@@ -3,6 +3,7 @@ import { use, useEffect } from "react";
 import { useLanguage } from "../../../context/LanguageContext.js";
 import { postRequest } from "../../../utils/requestsUtils.js";
 import { useNamePageInAdminContext } from "../../../context/namePageInAdmin.jsx";
+import { MdLanguage } from "react-icons/md";
 
 export default function Header({ page_title }) {
   const { locale, setLocale } = useLanguage();
@@ -38,7 +39,7 @@ export default function Header({ page_title }) {
     case "Returns Management":
       setSelectedNamePage("returns_management");
       break;
-       case "ShippingCost Management":
+    case "ShippingCost Management":
       setSelectedNamePage("ShippingCost_management");
       break;
   }
@@ -46,56 +47,54 @@ export default function Header({ page_title }) {
   const userId =
     typeof window !== "undefined" ? localStorage.getItem("id") : "";
 
-  const changeLanguage = async () => {
-    await postRequest(`/api/users/${userId}/langauge/${locale}`, "", "");
+ const changeLanguage = async (newLang) => {
+    const validLangs = ["ar", "en"];
+
+    if (!validLangs.includes(newLang)) return;
+    setLocale(newLang);
+    try {
+      await postRequest(`/api/users/${userId}/langauge/${newLang}`, "", "");
+      setLocale(newLang);
+
+      localStorage.setItem("lang", newLang);
+    } catch (err) {
+      console.error("Failed to update language", err);
+    }
   };
   const lang =
     typeof window !== "undefined" ? localStorage.getItem("lang") : "";
-  useEffect(() => {
-    let en = document.querySelector("#en");
-    let ar = document.querySelector("#ar");
+  // useEffect(() => {
+  //   let en = document.querySelector("#en");
+  //   let ar = document.querySelector("#ar");
 
-    if (lang === "en") {
-      en.classList.add("bg-red-600");
-      ar.classList.add("bg-red-200");
+  //   if (lang === "en") {
+  //     en.classList.add("bg-red-600");
+  //     ar.classList.add("bg-red-200");
 
-      en.classList.remove("bg-red-200");
-      ar.classList.remove("bg-red-600");
-    } else {
-      ar.classList.add("bg-red-600");
-      en.classList.add("bg-red-200");
-      en.classList.remove("bg-red-600");
-      ar.classList.remove("bg-red-200");
-    }
-  });
+  //     en.classList.remove("bg-red-200");
+  //     ar.classList.remove("bg-red-600");
+  //   } else {
+  //     ar.classList.add("bg-red-600");
+  //     en.classList.add("bg-red-200");
+  //     en.classList.remove("bg-red-600");
+  //     ar.classList.remove("bg-red-200");
+  //   }
+  // });
 
   return (
     <header className="md:h-[70px] xs:h-[50px] flex justify-between items-center px-5 font-semibold w-full bg-white  border-b-[1px]">
       <h1 id="page-title" className="md:text-2xl xs:text-lg ">
         {t(selectedNamePage)}
       </h1>
-      <div className="gap-2 flex xs:text-[10px] md:text-sm ">
-        <button
-          id="en"
-          className=" p-2 rounded-md text-white"
-          onClick={() => {
-            setLocale("en");
-            changeLanguage();
-          }}
-        >
-          English
-        </button>
-        <button
-          id="ar"
-          className=" p-2 rounded-md text-white "
-          onClick={() => {
-            setLocale("ar");
-            changeLanguage();
-          }}
-        >
-          العربية
-        </button>
-      </div>
+      <button
+        onClick={() => {
+          const newLocale = locale === "ar" ? "en" : "ar";
+          setLocale(newLocale);
+          changeLanguage(newLocale);
+        }}
+      >
+        <MdLanguage className="w-7 h-7 text-red-700" />
+      </button>
     </header>
   );
 }

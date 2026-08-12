@@ -29,15 +29,15 @@ export default function AdminLayout({ children }) {
   }
 
   return (
-    <div className=" bg-[#F9FAFB]">
+    <div className=" bg-[#F9FAFB] h-screen">
       {
         role === 'ADMIN' ?
           (
-            <main className=" flex border ">
+            <main className=" flex border  ">
               <SideMenu homepage={"bg-red-100 text-red-500"} />
               <div className="w-full h-full ">
                 <Header page_title={"Homepage Management"} />
-                <div className="bg-[#F9FAFB] h-auto ">{children}</div>
+                <div className="bg-[#F9FAFB] h-screen ">{children}</div>
               </div>
             </main>
           ) : (

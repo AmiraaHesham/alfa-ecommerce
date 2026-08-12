@@ -62,8 +62,8 @@ export default function SideMenu() {
   //   checkAdmin()
   // },[checkAdmin])
   return (
-    <div className="xs:w-[60px] md:w-[300px] bg-[#ffffff]">
-      <div className="   ">
+    <div className="xs:w-[60px] md:w-[300px] bg-[#ffffff] h-screen ">
+      <div className=" h-full  ">
         <div className="flex  items-center xs:justify-center md:justify-start md:mx-5 xs:mx-0 gap-1 mt-2">
           <span className="p-2 rounded-md  ">
             <Image
@@ -105,7 +105,7 @@ export default function SideMenu() {
           </Link>
 
           <Link
-            href="/admin/HomePage"
+            href="/admin/Homepage"
             onClick={() => setSelectedNamePage("Homepage Management")}
           >
             <div
