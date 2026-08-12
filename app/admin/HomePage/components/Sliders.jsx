@@ -17,36 +17,22 @@ import {
   getSliderImage,
   getThumbnailUrl,
 } from "../../../../utils/functions.jsx";
+import { useRefresh } from "../../../../context/refreshContext.jsx";
 
-export default function Sliders() {
+export default function Sliders({setIsFormOpen}) {
   const { t } = useLanguage();
   const [sliderImages, setSliderImages] = useState([]);
+  const { refreshKey } = useRefresh();
 
   const [loading, setLoading] = useState();
 
   const getSliderImages = async () => {
     const res = await getSliderImage();
+    console.log(res)
     setSliderImages(res);
   };
 
-  const handelupload = async (e) => {
-    const file = e.target.files[0];
-    const formData = new FormData();
-    formData.append("imageFile", file);
-    try{
-      await postRequest(
-      "/api/admin/sliderImages",
-      formData,
-      t("message")
-    );
-    getSliderImages();
-    }catch(error){
-      console.log(error)
-    }finally {
-      setLoading(false);
-    }
-    
-  };
+ 
 
   const deleteSlideImage = async (deletedSliderImageId) => {
     try {
@@ -66,7 +52,7 @@ export default function Sliders() {
 
   useEffect(() => {
     getSliderImages();
-  }, []);
+  }, [refreshKey]);
 
   return (
     <div className="h-full w-full p-5">
@@ -135,8 +121,12 @@ export default function Sliders() {
       </div>
       <div className="w-full grid lg:grid-cols-5 md:grid-cols-3  xs:grid-cols-2 gap-3  ">
         <div className="bg-white border rounded-md h-[170px] w-full flex flex-col gap-3 p-4 cursor-pointer">
-          <div className=" border-dashed flex justify-center p-5 items-center border-2 rounded-md border-red-400 bg-gray-50  hover:bg-gray-100 w-full h-full ">
-            <label htmlFor="fileInput">
+          <div className=" border-dashed flex justify-center p-5 items-center border-2 rounded-md border-red-400 bg-gray-50  hover:bg-gray-100 w-full h-full "
+          onClick={()=>{
+            setIsFormOpen(true)
+          }}
+          >
+            <label >
               <div
                 id="label-uplod"
                 className="flex flex-col justify-center items-center cursor-pointer"
@@ -155,13 +145,13 @@ export default function Sliders() {
               </div>
             </label>
 
-            <input
+            {/* <input
               type="file"
               accept="image/*"
-              onChange={handelupload}
+              // onChange={handelupload}
               className="hidden"
               id="fileInput"
-            />
+            /> */}
           </div>
         </div>
         {sliderImages.map((img, index) => {
