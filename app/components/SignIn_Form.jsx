@@ -51,6 +51,7 @@ export default function SignIn({ popUp, setShowSignUp, setShowSignIn }) {
       localStorage.setItem("email", response.data.userDetails.email);
       localStorage.setItem("username", response.data.userDetails.username);
       localStorage.setItem("lang", response.data.userDetails.language);
+      setLocale(response.data.userDetails.language);
       localStorage.setItem("role", response.data.userDetails.role);
       localStorage.setItem(
         "governorateId",

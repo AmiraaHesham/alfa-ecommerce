@@ -1,6 +1,5 @@
 "use client";
 import Image from "next/image";
-import axios from "axios";
 import React, { useRef, useState } from "react";
 import { useLanguage } from "../../context/LanguageContext.js";
 import { IoMdSearch } from "react-icons/io";
