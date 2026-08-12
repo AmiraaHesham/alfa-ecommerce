@@ -8,14 +8,14 @@ import {
   FaTelegram,
   FaYoutube,
 } from "react-icons/fa";
-import { FaSquarePhone, FaSquareWhatsapp, FaXTwitter } from "react-icons/fa6";
-import { MdEmail } from "react-icons/md";
+import { FaFacebookF, FaInstagram, FaPhone, FaSquarePhone, FaSquareWhatsapp, FaWhatsapp, FaXTwitter } from "react-icons/fa6";
+import { MdEmail, MdLocalPhone, MdOutlineMailOutline } from "react-icons/md";
 import { getRequest } from "../../../utils/requestsUtils";
 import { useLanguage } from "../../../context/LanguageContext";
 
 export default function Footer() {
   const { t } = useLanguage();
-
+const {locale}= useLanguage();
   const [contact, setContact] = useState({
     phone: "",
     email: "",
@@ -47,7 +47,7 @@ export default function Footer() {
     getContact();
   }, []);
   return (
-    <div className="flex md:flex-row xs:flex-col px-3 py-5 gap-7 items-center w-full">
+    <div className={`${locale === "ar" ? "bg-gradient-to-l" :"bg-gradient-to-r"} from-black via-red-950 to-red-900 text-white flex lg:flex-row xs:flex-col px-3 py-5 gap-7 items-center w-full`}>
       <div className="flex md:flex-row xs:flex-col items-center gap-2">
         <Link href="/user/home">
           <div className="flex  items-center xs:justify-center md:justify-start ">
@@ -57,48 +57,48 @@ export default function Footer() {
                 alt="logo"
                 fill
                 priority
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                className="object-contain"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                className="object-fill"
               />
             </span>
           </div>
         </Link>
-        <hr className="xs:w-full md:w-[2px] xs:h-2 md:h-36 bg-red-600 "></hr>
+
       </div>
       <div className="flex md:flex-row xs:flex-col gap-10 md:justify-between xs:justify-center items-center w-full ">
-        <div className="flex flex-col  gap-5  justify-center items-start  ">
-          <div className="flex  justify-between gap-5">
+        <div className="flex flex-col gap-5 justify-center items-center  ">
+          <div>
+            <h1 className="text-3xl font-bold">{t("alfa_group")}</h1>
+          </div>
+          <div className="flex justify-between gap-5">
             <Link
               href={contact.facebook}
               target="_blank"
               rel="noopener noreferrer"
-              className={`w-8 h-8 text-blue-600 ${
-                contact.facebook === "" ? "hidden" : "block"
-              }`}
+              className={`w-7 h-7 bg-blue-600 text-white p-1 rounded-full ${contact.facebook === "" ? "hidden" : "block"
+                }`}
             >
               <span>
-                <FaFacebookSquare className="w-full h-full" />
+                <FaFacebookF className="w-full h-full" />
               </span>
             </Link>
             <Link
               href={contact.whatsApp}
               target="_blank"
               rel="noopener noreferrer"
-              className={` w-8 h-8 text-green-600 ${
-                contact.whatsApp === "" ? "hidden" : "block"
-              } `}
+              className={` w-7 h-7 bg-green-600 text-white rounded-full p-1 ${contact.whatsApp === "" ? "hidden" : "block"
+                } `}
             >
               <span>
-                <FaSquareWhatsapp className="w-full h-full" />
+                <FaWhatsapp className="w-full h-full" />
               </span>
             </Link>
             <Link
               href={contact.telegram}
               target="_blank"
               rel="noopener noreferrer"
-              className={` w-8 h-8  text-blue-600 ${
-                contact.telegram === "" ? "hidden" : "block"
-              }`}
+              className={` w-7 h-7  bg-blue-600 text-white p-1 rounded-full ${contact.telegram === "" ? "hidden" : "block"
+                }`}
             >
               <span>
                 <FaTelegram className="w-full h-full" />
@@ -109,12 +109,11 @@ export default function Footer() {
               href={contact.instagram}
               target="_blank"
               rel="noopener noreferrer"
-              className={` w-8 h-8 text-pink-600 ${
-                contact.instagram === "" ? "hidden" : "block"
-              }`}
+              className={` w-7 h-7 bg-pink-600 text-white rounded-full p-1  ${contact.instagram === "" ? "hidden" : "block"
+                }`}
             >
               <span>
-                <FaInstagramSquare className="w-full h-full" />
+                <FaInstagram className="w-full h-full" />
               </span>
             </Link>
 
@@ -122,9 +121,8 @@ export default function Footer() {
               href={contact.x}
               target="_blank"
               rel="noopener noreferrer"
-              className={` w-8 h-8 text-black ${
-                contact.x === "" ? "hidden" : "block"
-              }`}
+              className={` w-7 h-7 text-white ${contact.x === "" ? "hidden" : "block"
+                }`}
             >
               <span>
                 <FaXTwitter className="w-full h-full" />
@@ -134,115 +132,128 @@ export default function Footer() {
               href={contact.youtube}
               target="_blank"
               rel="noopener noreferrer"
-              className={` w-8 h-8 text-red-600 ${
-                contact.youtube === "" ? "hidden" : "block"
-              }`}
+              className={` w-7 h-7 rounded-full bg-red-600 text-white p-1 ${contact.youtube === "" ? "hidden" : "block"
+                }`}
             >
               <span>
                 <FaYoutube className="w-full h-full" />
               </span>
             </Link>
           </div>
-          <div className="flex flex-col items-start justify-start gap-2">
+
+       
+        </div>
+        <hr className="xs:w-full md:w-[2px] xs:h-1 md:h-36 md:bg-gradient-to-b xs:bg-gradient-to-l from-red-400 via-red-600 to-red-800 "></hr>
+
+        <div className="md:flex  xs:grid md:justify-between md:items-start xs:grid-cols-2 xs:gap-4   w-full">
+
+          <div className="flex flex-col justify-start items-start text-sm text-gray-300 w-full">
+            <h1 className="text-lg font-bold mb-2 text-white">{t("quick_links")} </h1>
+            <Link
+              href={"/user/home"}
+              className="hover:text-gray-50"
+            >
+              {t("homepage")}
+            </Link>
+            <Link
+              href={"/user/home#FeaturedProducts"}
+              className="hover:text-gray-50"
+            >
+              {t("featured_products")}
+            </Link>
+
+
+            <Link
+              href={"/user/home#CategoriesSection"}
+              className="hover:text-gray-50"
+            >
+              {t("categories")}{" "}
+            </Link>
+            <Link
+              href={"/user/about"}
+              className="hover:text-gray-50"
+            >
+              {t("about_us")}
+            </Link> 
+          </div>
+          {/* <hr className="xs:w-full md:w-[1px] xs:h-2 md:h-36 bg-gray-50 "></hr> */}
+          <div className="flex flex-col justify-start items-start text-sm text-gray-300 w-full">
+            <h1 className="text-lg font-bold mb-2 text-white">{t("customer_service")} </h1>
+            <Link
+              href={"/user/ordershistory"}
+              className="hover:text-gray-50"
+            >
+              {t("orders")}{" "}
+            </Link>
+            <Link
+              href={"/user/returnorders"}
+              className="hover:text-gray-50"
+            >
+              {t("returns")}{" "}
+            </Link>
+            <Link
+              href={"/user/about#Guarantee_Policy"}
+              className="hover:text-gray-50"
+            >
+              {t("Guarantee_Policy")}
+            </Link>
+            <Link
+              href={"/user/about#Return_Policy"}
+              className="hover:text-gray-50"
+            >
+              {t("Return_Policy")}
+            </Link>
+          </div>
+          <div className="flex flex-col justify-start items-start text-sm text-gray-300 w-full">
+            <h1 className="text-lg font-bold mb-2 text-white">{t("my_account")} </h1>
+            <Link
+              href={"/user/profile"}
+              className="hover:text-gray-50"
+            >
+              {t("view_profile")}{" "}
+            </Link>
+            <Link
+              href={"/user/wishlist"}
+              className="hover:text-gray-50"
+            >
+              {" "}
+              {t("wishlist")}{" "}
+            </Link>
+            <Link
+              href={"/user/cart"}
+              className="hover:text-gray-50"
+            >
+              {" "}
+              {t("shoppingCart")}{" "}
+            </Link>
+          </div>
+           <div className="flex flex-col justify-start items-start text-sm text-gray-300 w-full">
+            <h1 className="text-lg font-bold mb-2 text-white">{t("contact_us")} </h1>
+               <div className="flex flex-col items-start justify-start gap-2">
             <div className="flex items-center gap-2">
               <span
-                className={`text-2xl text-gray-700 ${
+                className={`text-lg text-white ${
                   contact.email === "" ? "hidden" : "block"
                 }`}
               >
-                <MdEmail />
+                <MdOutlineMailOutline  />
               </span>
               <span className="text-base">{contact.email}</span>
             </div>
             <div className="flex items-center gap-2">
               <span
-                className={`text-2xl text-gray-700 ${
+                className={`text-lg text-white ${
                   contact.phone === "" ? "hidden" : "block"
                 }`}
               >
-                <FaSquarePhone />
+                <MdLocalPhone  />
               </span>
-              <span className="text-base">{contact.phone}</span>
+              <span className="">{contact.phone}</span>
             </div>
           </div>
+            </div>
+         
         </div>
-        <div className="flex xs:justify-center md:justify-end md:items-start xs:items-center xs:text-center md:text-start  w-full">
-          <div className="lg:w-[60%] xs:w-full  grid grid-cols-3   sm:gap-x-6 xs:gap-x-4 gap-y-2 sm:text-sm  xs:text-xs  text-gray-600 font-semibold">
-          <Link
-            href={"/user/home"}
-            className="hover:[text-shadow:2px_2px_5px_rgba(0,0,0,0.25)]"
-          >
-            {t("homepage")}
-          </Link>
-
-          <Link
-            href={"/user/home#FeaturedProducts"}
-            className="hover:[text-shadow:2px_2px_5px_rgba(0,0,0,0.25)]"
-          >
-            {t("featured_products")}
-          </Link>
-          <Link
-            href={"/user/cart"}
-            className="hover:[text-shadow:2px_2px_5px_rgba(0,0,0,0.25)]"
-          >
-            {" "}
-            {t("shoppingCart")}{" "}
-          </Link>
-
-          <Link
-            href={"/user/wishlist"}
-            className="hover:[text-shadow:2px_2px_5px_rgba(0,0,0,0.25)]"
-          >
-            {" "}
-            {t("wishlist")}{" "}
-          </Link>
-          <Link
-            href={"/user/profile"}
-            className="hover:[text-shadow:2px_2px_5px_rgba(0,0,0,0.25)]"
-          >
-            {t("view_profile")}{" "}
-          </Link>
-          <Link
-            href={"/user/returnorders"}
-            className="hover:[text-shadow:2px_2px_5px_rgba(0,0,0,0.25)]"
-          >
-            {t("returns")}{" "}
-          </Link>
-
-          <Link
-            href={"/user/home#CategoriesSection"}
-            className="hover:[text-shadow:2px_2px_5px_rgba(0,0,0,0.25)]"
-          >
-            {t("categories")}{" "}
-          </Link>
-          <Link
-            href={"/user/ordershistory"}
-            className="hover:[text-shadow:2px_2px_5px_rgba(0,0,0,0.25)]"
-          >
-            {" "}
-            {t("orders")}{" "}
-          </Link>
-          <Link
-            href={"/user/about#Return_Policy"}
-            className="hover:[text-shadow:2px_2px_5px_rgba(0,0,0,0.25)]"
-          >
-            {t("Return_Policy")}
-          </Link>
-          <Link
-            href={"/user/about#Guarantee_Policy"}
-            className="hover:[text-shadow:2px_2px_5px_rgba(0,0,0,0.25)]"
-          >
-            {t("Guarantee_Policy")}
-          </Link>
-          <Link
-            href={"/user/about"}
-            className="hover:[text-shadow:2px_2px_5px_rgba(0,0,0,0.25)]"
-          >
-            {t("about_us")}
-          </Link>
-        </div>
-        </div>
-        
       </div>
     </div>
   );

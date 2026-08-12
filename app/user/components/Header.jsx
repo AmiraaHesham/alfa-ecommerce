@@ -3,7 +3,11 @@ import { useLanguage } from "../../../context/LanguageContext";
 import { FaRegCircleUser } from "react-icons/fa6";
 
 import { IoMdCart, IoMdSearch } from "react-icons/io";
-import { MdElectricBolt, MdLanguage } from "react-icons/md";
+import {
+  MdElectricBolt,
+  MdLanguage,
+  MdOutlineShoppingCart,
+} from "react-icons/md";
 import { useEffect, useRef, useState } from "react";
 import { useSearshInputContext } from "../../../context/searshInputContext";
 import { useRouter } from "next/navigation";
@@ -13,6 +17,10 @@ import { FaHeart } from "react-icons/fa";
 import { RiShoppingBag4Fill } from "react-icons/ri";
 import { getRequest, postRequest } from "../../../utils/requestsUtils";
 import { useRefresh } from "../../../context/refreshContext";
+import { FiHeart } from "react-icons/fi";
+import { AiOutlineShopping } from "react-icons/ai";
+import { TiShoppingCart } from "react-icons/ti";
+import { GrLanguage } from "react-icons/gr";
 
 export default function Header() {
   const { t } = useLanguage();
@@ -87,17 +95,17 @@ export default function Header() {
 
   return (
     <header>
-      <div className="w-full h-[60px] xl:px-10 xs:px-2 flex items-center border-b  justify-between bg-red-700">
+      <div className="w-full h-[60px] flex items-center border-b px-3  justify-between bg-red-700">
         <Link href="/user/home">
           <div className="flex  items-center  ">
             <span className="relative xs:w-8 xs:h-8 md:w-12 md:h-12 ">
               <Image
-                src="/Images/logo.png"
+                src="/Images/logo1.png"
                 alt="logo"
                 fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 priority
-                className="object-contain"
+                className="object-fill"
               />
             </span>
             <div className="cursor-pointer">
@@ -118,9 +126,9 @@ export default function Header() {
             className="text-white h-full border-2 rounded-s-lg text-2xl bg-red-600 p-1 "
             onClick={() => {
               // setSelectedSearchInput(searchInput);
-               searchInput
-                  ? navigate.push('/user/search/' + searchInput)
-                  : navigate.push("/user/home") ;
+              searchInput
+                ? navigate.push("/user/search/" + searchInput)
+                : navigate.push("/user/home");
             }}
           >
             <IoMdSearch />
@@ -133,8 +141,8 @@ export default function Header() {
                 e.preventDefault();
                 // setSelectedSearchInput(searchInput);
                 searchInput
-                  ? navigate.push('/user/search/' + searchInput)
-                  : navigate.push("/user/home") ;
+                  ? navigate.push("/user/search/" + searchInput)
+                  : navigate.push("/user/home");
               }
             }}
             placeholder={t("search") + "..."}
@@ -146,7 +154,7 @@ export default function Header() {
 
         <div className="flex items-center md:gap-5 xs:gap-1 ">
           <div className="flex items-center   cursor-pointer ">
-            <select
+            {/* <select
               className=" rounded text-white xs:text-xs md:text-base outline-none bg-red-700 px-1 py-0.5 text-center cursor-pointer"
               value={locale}
               onChange={(e) => {
@@ -167,28 +175,39 @@ export default function Header() {
               >
                 English
               </option>
-            </select>
+            </select> */}
           </div>
 
           <div className="flex items-center xs:gap-2 md:gap-5 text-white">
-            <Link href="/user/ordershistory">
-              <RiShoppingBag4Fill className="xs:w-5 xs:h-5 md:w-7 md:h-7" />
-            </Link>
+            {/* <Link href="/user/ordershistory">
+              <AiOutlineShopping  className="xs:w-5 xs:h-5 md:w-7 md:h-7" />
+            </Link> */}
+         
+
             <Link href="/user/wishlist">
-              <FaHeart className="xs:w-5 xs:h-5 md:w-6 md:h-6" />
+              <FiHeart className="w-6 h-6 " />
             </Link>
             <Link href="/user/cart" className="relative ">
-              <span className="absolute  text-red-700 text-center [-webkit-text-stroke:1px_orange] md:text-lg xs:text-sm font-extrabold   right-0 xs:top-[-4px] md:top-[-10px] left-0 bottom-0">
+              <span className="absolute  text-red-700 text-center [-webkit-text-stroke:1px_white] md:text-base xs:text-sm font-extrabold   right-0 xs:top-[-8px] md:top-[-9px] left-0 bottom-0">
                 {itemNum}{" "}
               </span>
-              <IoMdCart className="xs:w-6 xs:h-6 md:w-8 md:h-8" />
+              <MdOutlineShoppingCart className="w-7 h-7" />
             </Link>
+               <button
+              onClick={() => {
+                const newLocale = locale === "ar" ? "en" : "ar";
+                setLocale(newLocale);
+                changeLanguage(newLocale);
+              }}
+            >
+              <MdLanguage className="w-7 h-7 text-white" />
+            </button>
             <Link href={userId ? "/user/profile" : "/signin"}>
               <div className="flex items-center gap-1  ">
-                <span className="xs:w-7 xs:h-7 md:w-8 md:h-8">
-                  <FaRegCircleUser className="w-full h-full" />
+                <span className="w-7 h-7">
+                  <FaRegCircleUser className="w-full h-full " />
                 </span>
-                <span className="md:text-sm xs:text-xs font-semibold text-center ">
+                <span className="text-xs  font-semibold text-center ">
                   {username ? username : t("login")}
                 </span>
               </div>
@@ -207,9 +226,9 @@ export default function Header() {
         <button
           className="text-white h-full borde rounded-s-lg text-2xl bg-red-600 p-1 "
           onClick={() => {
-              searchInput
-                  ? navigate.push('/user/search/' + searchInput)
-                  : navigate.push("/user/home") ;
+            searchInput
+              ? navigate.push("/user/search/" + searchInput)
+              : navigate.push("/user/home");
           }}
         >
           {" "}
@@ -223,8 +242,8 @@ export default function Header() {
               e.preventDefault();
               // setSelectedSearchInput(searchInput);
               searchInput
-                ? navigate.push('/user/search/' + searchInput)
-                : navigate.push("/user/home") ;
+                ? navigate.push("/user/search/" + searchInput)
+                : navigate.push("/user/home");
             }
           }}
           placeholder={t("search") + "..."}
