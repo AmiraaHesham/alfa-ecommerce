@@ -71,7 +71,7 @@ const [isFormOpen,setIsFormOpen] = useState(false)
               }}
               className="cursor-pointer hover:shadow-md "
             >
-              <div className="h-[330px] bg-white border rounded-md">
+              <div className="h-[290px] bg-white border rounded-md">
                 <div className="">
                   <Image
                     src={`${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL}${

@@ -7,10 +7,13 @@ import { postRequest } from "../../../../utils/requestsUtils.js";
 import { FaUserLarge } from "react-icons/fa6";
 import { IoMdSearch } from "react-icons/io";
 import Select from "react-select";
+import { useIdContext } from "../../../../context/idContext.jsx";
 export default function Orders_Table() {
   const { t } = useLanguage();
   const navigate = useRouter();
-  const [state, setState] = useState("");
+  const { selectedState, setSelectedState } = useIdContext();
+
+  // const [state, setState] = useState(selectedPendingState || "");
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const pageNum = useRef(0);
@@ -18,13 +21,14 @@ export default function Orders_Table() {
 
   const getAllOrders = async () => {
     try {
+      console.log(selectedState);
       const response = await postRequest(
         "/api/orders/search",
         {
           page: pageNum.current,
           size: 15,
           searchText: searchInputRef.current.value,
-          orderState: state,
+          orderState: selectedState,
         },
         "",
       );
@@ -72,7 +76,7 @@ export default function Orders_Table() {
   };
   useEffect(() => {
     getAllOrders();
-  }, [state]);
+  }, [selectedState]);
   return (
     <div>
       <div className="w-full  bg-white mt-3 rounded-lg border flex md:flex-row xs:flex-col gap-5  items-start  p-4 ">
@@ -103,15 +107,15 @@ export default function Orders_Table() {
             </span>
             <Select
               value={
-                state
+                selectedState
                   ? {
-                      value: state,
-                      label: t(state),
-                    }
+                    value: selectedState,
+                    label: t(selectedState),
+                  }
                   : null
               }
               onChange={(option) => {
-                setState(option ? option.value : "");
+                setSelectedState(option ? option.value : "");
               }}
               options={[
                 { value: "", label: t("all_statuses") },
@@ -190,190 +194,190 @@ export default function Orders_Table() {
           <thead className="bg-[#F9FAFB] text-xs text-gray-500  text-justify sticky top-0  z-10">
             <tr className=" text-gray-500 h-12">
               {/* <th className="w-[2%] "></th> */}
-              <th className="w-[20%] px-5 ">{t("order_id")}</th>
-              <th className="w-[15%] ">{t("date")}</th>
-              <th className="w-[25%] ">{t("user")}</th>
-              <th className="w-[15%] ">{t("items")}</th>
-              <th className="w-[15%] ">{t("total")}</th>
-              <th className="w-[20%] ">{t("state_order")}</th>
+              <th className=" px-5 ">{t("order_id")}</th>
+              <th className=" ">{t("date")}</th>
+              <th className=" ">{t("user")}</th>
+              <th className=" ">{t("items")}</th>
+              <th className=" ">{t("total")}</th>
+              <th className=" ">{t("state_order")}</th>
             </tr>
           </thead>
           <tbody className="bg-white text-md w-full ">
             {loading
               ? // Skeleton rows
-                [...Array(7)].map((_, index) => (
-                  <tr key={`skeleton-${index}`} className="border-b h-12">
-                    <td className="px-4 py-2">
-                      <div className="h-4 bg-gray-200 rounded animate-pulse w-36"></div>
-                    </td>
+              [...Array(7)].map((_, index) => (
+                <tr key={`skeleton-${index}`} className="border-b h-12">
+                  <td className="px-4 py-2">
+                    <div className="h-4 bg-gray-200 rounded animate-pulse w-36"></div>
+                  </td>
 
-                    {/* <td className="px-4 py-2 flex items-center gap-2">
+                  {/* <td className="px-4 py-2 flex items-center gap-2">
                     <div className="h-12 bg-gray-200 rounded-full animate-pulse w-12"></div>
                     <div className="flex flex-col gap-2">
                     <div  className="h-4 bg-gray-200 rounded-lg animate-pulse w-28"></div>
                     <div  className="h-2 bg-gray-200 rounded-md animate-pulse w-20"></div>
                     </div>
                   </td> */}
-                    {/* <td className="px-4 py-2"><div className="h-4 bg-gray-200 rounded animate-pulse w-24"></div></td> */}
-                    <td className=" py-2">
-                      <div className="h-4 bg-gray-200 rounded animate-pulse w-20"></div>
-                    </td>
-                    <td className=" py-2">
-                      <div className="h-4 bg-gray-200 rounded animate-pulse w-28"></div>
-                    </td>
-                    <td className=" py-2">
-                      <div className="h-10 bg-gray-200 rounded-full animate-pulse w-10"></div>
-                    </td>
-                    <td className=" py-2">
-                      <div className="h-4 bg-gray-200 rounded animate-pulse w-16"></div>
-                    </td>
-                    <td className=" py-2">
-                      <div className="h-4 bg-gray-200 rounded animate-pulse w-16"></div>
-                    </td>
-                  </tr>
-                ))
+                  {/* <td className="px-4 py-2"><div className="h-4 bg-gray-200 rounded animate-pulse w-24"></div></td> */}
+                  <td className=" py-2">
+                    <div className="h-4 bg-gray-200 rounded animate-pulse w-20"></div>
+                  </td>
+                  <td className=" py-2">
+                    <div className="h-4 bg-gray-200 rounded animate-pulse w-28"></div>
+                  </td>
+                  <td className=" py-2">
+                    <div className="h-10 bg-gray-200 rounded-full animate-pulse w-10"></div>
+                  </td>
+                  <td className=" py-2">
+                    <div className="h-4 bg-gray-200 rounded animate-pulse w-16"></div>
+                  </td>
+                  <td className=" py-2">
+                    <div className="h-4 bg-gray-200 rounded animate-pulse w-16"></div>
+                  </td>
+                </tr>
+              ))
               : orders.map((order, index) => {
-                  const date = new Date(order.createdDate);
-                  const dateOnly = date.toLocaleDateString("en-GB");
-                  return (
-                    <tr
-                      key={index}
-                      className=" text-red-950 border w-full hover:bg-gray-50 cursor-pointer"
+                const date = new Date(order.createdDate);
+                const dateOnly = date.toLocaleDateString("en-GB");
+                return (
+                  <tr
+                    key={index}
+                    className=" text-red-950 border w-full hover:bg-gray-50 cursor-pointer"
+                  >
+                    <td
+                      className="font-semibold text-red-500 px-5"
+                      onClick={() =>
+                        navigate.push(
+                          `/admin/orders/OrdersDetails/${order.orderId}`,
+                        )
+                      }
                     >
-                      <td
-                        className="font-semibold text-red-500 px-5"
-                        onClick={() =>
-                          navigate.push(
-                            `/admin/orders/OrdersDetails/${order.orderId}`,
-                          )
-                        }
-                      >
-                        {order.code}
-                      </td>
-                      <td className="text-sm">{dateOnly}</td>
-                      <td
-                        onClick={() =>
-                          navigate.push(
-                            `/admin/orders/OrdersDetails/${order.orderId}`,
-                          )
-                        }
-                      >
-                        <div className="flex items-center gap-3">
-                          <span className="w-[40px] h-[40px] text-gray-600 my-2  bg-gray-50 flex justify-center items-center p-2 rounded-full border ">
-                            <FaUserLarge />
-                          </span>
-                          <div>
-                            <h1 className="font-semibold text-sm">
-                              {order.user.firstName + " " + order.user.lastName}
-                            </h1>
-                            <h1 className="text-xs  text-gray-500">
-                              {order.user.email}
-                            </h1>
-                          </div>
-                        </div>
-                      </td>
-
-                      <td
-                        className="text-sm "
-                        onClick={() =>
-                          navigate.push(
-                            `/admin/orders/OrdersDetails/${order.orderId}`,
-                          )
-                        }
-                      >
-                        <span className="py-2 px-5 font-semibold rounded-full   bg-red-100 text-red-600">
-                          {order.orderItemLines.length}
+                      {order.code}
+                    </td>
+                    <td className="text-sm">{dateOnly}</td>
+                    <td
+                      onClick={() =>
+                        navigate.push(
+                          `/admin/orders/OrdersDetails/${order.orderId}`,
+                        )
+                      }
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="w-[40px] h-[40px] text-gray-600 my-2  bg-gray-50 flex justify-center items-center p-2 rounded-full border ">
+                          <FaUserLarge />
                         </span>
-                      </td>
-                      <td className="text-sm font-bold">
-                        {order.netTotal.toLocaleString("en-US")} {t("currency")}
-                      </td>
-                      <td>
-                        <Select
-                          value={{
-                            value: order.state,
-                            label: t(order.state),
-                          }}
-                          onChange={(option) =>
-                            updateOrderState(order.orderId, option.value)
-                          }
-                          options={nextStatus[order.state] || []}
-                          isSearchable={false}
-                          className="w-[200px] text-sm font-semibold"
-                          styles={{
-                            control: (base) => ({
-                              ...base,
+                        <div>
+                          <h1 className="font-semibold text-sm">
+                            {order.user.firstName + " " + order.user.lastName}
+                          </h1>
+                          <h1 className="text-xs  text-gray-500">
+                            {order.user.email}
+                          </h1>
+                        </div>
+                      </div>
+                    </td>
 
-                              backgroundColor: "#f3f4f6",
-                              border: "none",
-                              borderRadius: "0.375rem",
-                              minHeight: "36px",
-                              cursor: "pointer",
-                              boxShadow: "none",
-                              "&:hover": {
-                                borderColor: "#dc2626",
-                              },
-                              "&:focus": {
-                                borderColor: "#b91c1c",
-                                boxShadow: "0 0 0 3px rgba(185, 28, 28, 0.2)",
-                                // outline: "none",
-                              },
-                            }),
-                            option: (base, state) => ({
-                              ...base,
+                    <td
+                      className="text-sm "
+                      onClick={() =>
+                        navigate.push(
+                          `/admin/orders/OrdersDetails/${order.orderId}`,
+                        )
+                      }
+                    >
+                      <span className="py-2 px-5 font-semibold rounded-full   bg-red-100 text-red-600">
+                        {order.orderItemLines.length}
+                      </span>
+                    </td>
+                    <td className="text-sm font-bold">
+                      {order.netTotal.toLocaleString("en-US")} {t("currency")}
+                    </td>
+                    <td>
+                      <Select
+                        value={{
+                          value: order.state,
+                          label: t(order.state),
+                        }}
+                        onChange={(option) =>
+                          updateOrderState(order.orderId, option.value)
+                        }
+                        options={nextStatus[order.state] || []}
+                        isSearchable={false}
+                        className="w-[200px] text-sm font-semibold"
+                        styles={{
+                          control: (base) => ({
+                            ...base,
+
+                            backgroundColor: "#f3f4f6",
+                            border: "none",
+                            borderRadius: "0.375rem",
+                            minHeight: "36px",
+                            cursor: "pointer",
+                            boxShadow: "none",
+                            "&:hover": {
+                              borderColor: "#dc2626",
+                            },
+                            "&:focus": {
+                              borderColor: "#b91c1c",
+                              boxShadow: "0 0 0 3px rgba(185, 28, 28, 0.2)",
+                              // outline: "none",
+                            },
+                          }),
+                          option: (base, state) => ({
+                            ...base,
+                            backgroundColor: state.isSelected
+                              ? "#dc2626"
+                              : state.isFocused
+                                ? "#fee2e2"
+                                : "#ffffff",
+                            color: state.isSelected ? "#ffffff" : "#374151",
+                            cursor: "pointer",
+                            // padding: "8px 12px",
+                            fontSize: "14px",
+                            "&:hover": {
                               backgroundColor: state.isSelected
                                 ? "#dc2626"
-                                : state.isFocused
-                                  ? "#fee2e2"
-                                  : "#ffffff",
-                              color: state.isSelected ? "#ffffff" : "#374151",
-                              cursor: "pointer",
-                              // padding: "8px 12px",
-                              fontSize: "14px",
-                              "&:hover": {
-                                backgroundColor: state.isSelected
-                                  ? "#dc2626"
-                                  : "#fee2e2",
-                              },
-                            }),
-                            menu: (base) => ({
-                              ...base,
-                              backgroundColor: "#ffffff",
-                              borderRadius: "0.375rem",
-                              boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
-                              zIndex: 9999,
-                            }),
-                            placeholder: (base) => ({
-                              ...base,
-                              color: "#374151",
-                              fontSize: "14px",
-                              fontWeight: "600",
-                            }),
-                            singleValue: (base) => ({
-                              ...base,
-                              color:
-                                order.state === "PROCESSING"
-                                  ? "#3b82f6"
-                                  : order.state === "SHIPPED"
-                                    ? "#eab308"
-                                    : order.state === "PENDING"
-                                      ? "#c2410c"
-                                      : order.state === "CANCELLED"
-                                        ? "#f21818"
-                                        : "#22c55e",
-                              fontSize: "14px",
-                              fontWeight: "600",
-                            }),
-                            input: (base) => ({
-                              ...base,
-                              color: "#374151",
-                            }),
-                          }}
-                        />
-                      </td>
-                    </tr>
-                  );
-                })}
+                                : "#fee2e2",
+                            },
+                          }),
+                          menu: (base) => ({
+                            ...base,
+                            backgroundColor: "#ffffff",
+                            borderRadius: "0.375rem",
+                            boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
+                            zIndex: 9999,
+                          }),
+                          placeholder: (base) => ({
+                            ...base,
+                            color: "#374151",
+                            fontSize: "14px",
+                            fontWeight: "600",
+                          }),
+                          singleValue: (base) => ({
+                            ...base,
+                            color:
+                              order.state === "PROCESSING"
+                                ? "#3b82f6"
+                                : order.state === "SHIPPED"
+                                  ? "#eab308"
+                                  : order.state === "PENDING"
+                                    ? "#c2410c"
+                                    : order.state === "CANCELLED"
+                                      ? "#f21818"
+                                      : "#22c55e",
+                            fontSize: "14px",
+                            fontWeight: "600",
+                          }),
+                          input: (base) => ({
+                            ...base,
+                            color: "#374151",
+                          }),
+                        }}
+                      />
+                    </td>
+                  </tr>
+                );
+              })}
             {/* {orders.length <= 5 ? (
               " "
             ) : ( */}
