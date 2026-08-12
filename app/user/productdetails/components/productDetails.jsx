@@ -182,8 +182,18 @@ export default function ProductDetails({ itemId }) {
       setLoading(false);
     }
   };
+  const addToRecentlyWatched = async () => {
+    try{
+
+      await postRequest(`/api/users/recentWatchedItems/${itemId}`,'','')
+    }
+    catch(error){
+      console.log(error)
+    }
+  }
 
   useEffect(() => {
+addToRecentlyWatched()
     productDetails();
   }, []);
   return (
@@ -229,7 +239,7 @@ export default function ProductDetails({ itemId }) {
                 fill
                 priority
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                className="object-contain"
+                className="object-fill"
               />
             </div>
             <div className="flex items-center gap-4 mt-5 ">
@@ -241,7 +251,7 @@ export default function ProductDetails({ itemId }) {
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     priority
-                    className="object-containr cursor-pointer"
+                    className="object-fill cursor-pointer"
                     onClick={() => {
                       setImageShow(urlImage + product.img2);
                     }}
@@ -259,7 +269,7 @@ export default function ProductDetails({ itemId }) {
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     priority
-                    className="object-contain cursor-pointer"
+                    className="object-fill cursor-pointer"
                     onClick={() => {
                       setImageShow(urlImage + product.img3);
                     }}
@@ -275,7 +285,7 @@ export default function ProductDetails({ itemId }) {
                   fill
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   priority
-                  className="object-contain cursor-pointer "
+                  className="object-fill cursor-pointer "
                   onClick={() => {
                     setImageShow(urlImage + product.mainImage);
                   }}

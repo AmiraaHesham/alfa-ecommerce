@@ -10,7 +10,7 @@ import { useLanguage } from "../../../../context/LanguageContext";
 import ProductCard from "../../components/ProductCard";
 import { useEffect, useState } from "react";
 
-export default function FeatuerProducts({ FeatuerProducts }) {
+export default function FeatuerProducts({ Products, type }) {
   const { locale } = useLanguage();
 
   const [mounted, setMounted] = useState(false);
@@ -33,23 +33,37 @@ export default function FeatuerProducts({ FeatuerProducts }) {
             prevEl: ".prev-btn1",
           }}
           dir={locale === "ar" ? "rtl" : "ltr"}
-          spaceBetween={20}
+          spaceBetween={10}
           className="w-full h-full rounded-xl flex   "
         >
-          {FeatuerProducts.map((product) => {
+          {type === "FeaturedProducts" || type === "newProduct"? Products.map((product) => {
             return (
               <SwiperSlide
                 key={product.itemId}
-                className=" mt-4 !w-[250px] rounded-lg "
+                className=" mt-4 !w-[220px] rounded-lg "
               >
-                <div className="rounded-lg h-[350px] flex justify-center  cursor-pointer">
+                <div className="rounded-lg h-[270px] flex justify-center  cursor-pointer">
                   <ProductCard productInfo={product} favorite={false} />
                 </div>
               </SwiperSlide>
             );
-          })}
+          })
+        :Products?.map((product,index) => {
+          console.log(product.item)
+            return (
+              <SwiperSlide
+                key={index}
+                className=" mt-4 !w-[220px] rounded-lg "
+              >
+                <div className="rounded-lg h-[370px] flex justify-center  cursor-pointer">
+                  <ProductCard productInfo={product.item} favorite={false} />
+                </div>
+              </SwiperSlide>
+            );
+          })
+        }
           <div className=" flex flex-col justify-center items-center relative my-10">
-            <div className=" p-1 rounded-full absolute flex gap-2 justify-center items-center  ">
+            {/* <div className=" p-1 rounded-full absolute flex gap-2 justify-center items-center  ">
               <button className="prev-btn1 p-1 rounded-full border-2 hover:bg-red-600 border-red-600   hover:text-white text-red-600 text-3xl   font-bold">
                 {locale === "ar" ? (
                   <IoIosArrowRoundForward className="text-3xl font-bold" />
@@ -64,7 +78,7 @@ export default function FeatuerProducts({ FeatuerProducts }) {
                   <IoIosArrowRoundForward />
                 )}
               </button>
-            </div>
+            </div> */}
           </div>
         </Swiper>
       </div>

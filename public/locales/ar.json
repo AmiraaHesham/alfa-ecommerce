@@ -79,6 +79,7 @@
   "recent_orders": "الطلبات الأخيرة",
   "view_all_orders": "عرض جميع الطلبات",
   "add_category": "إضافة قسم",
+  "add_slider": "إضافة صورة عرض",
   "process_orders": "معالجة الطلبات",
   "add_admin": "إضافة مشرف",
   "edit_admin": "تعديل مشرف",
@@ -233,5 +234,18 @@
   "REFUNDED":"تم استرداد المبلغ",
   "REJECTED":"تم الرفض",
   "Placed_on":"تم الطلب في",
-  "quick_links":"روابط سريعة"
+  "quick_links":"روابط سريعة",
+  "view_all_category":"عرض جميع الأقسام",
+  "view_all_products":"عرض جميع المنتجات",
+  "shop_by_category":"تسوق حسب القسم",
+  "my_account":"حسابي",
+  "customer_service":"دعم العملاء",
+  "Original_Products":"منتجات أصلية",
+  "Best_Prices":"أفضل سعر",
+  "Easy_Returns":"سهل الإرجاع",
+  "Fast_Delivery":"توصيل سريع",
+  "High_Quality":"جودة عالية",
+  "New_arrivals":"وصل حديثا",
+  "recentWatched":"المشاهدة الأخيرة",
+  "choose_product":"إختر المنتج"
 }

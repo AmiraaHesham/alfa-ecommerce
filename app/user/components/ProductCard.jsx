@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import { useState } from "react";
 import { getThumbnailUrl } from "../../../utils/functions";
+import { IoMdHeart, IoMdHeartEmpty } from "react-icons/io";
 
 export default function ProductCard({ productInfo, favorite }) {
   const { setSelectedProductId } = useIdContext();
@@ -149,46 +150,60 @@ export default function ProductCard({ productInfo, favorite }) {
   };
   // const describtion =
     // productInfo?.[locale === "ar" ? "descriptionAr" : "descriptionEn"] || "";
-  const productName = locale === "ar" ? productInfo.nameAr : productInfo.nameEn;
+  const productName = locale === "ar" ? productInfo?.nameAr : productInfo?.nameEn;
 
   return (
-    // <div className="h-full w-full border rounded-md bg-white flex justify-center py-2  cursor-pointer duration-300 hover:scale-105 ">
     <div
-      id={`div_${productInfo.itemId}`}
-      className="h-[260px] bg-white border border-gray-300 shadow-md w-full rounded-md cursor-pointer  hover:border-b-[7px] hover:border-b-red-600  hover:scale-105 duration-200   hover:shadow-lg "
+      id={`div_${productInfo?.itemId}`}
+      className="h-[270px] bg-white border border-gray-300 shadow-md w-full rounded-md cursor-pointer  hover:border-b-[7px] hover:border-b-red-600  hover:scale-105 duration-200   hover:shadow-lg "
     >
-      {/* {loading && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-          <Image
-            src="/Images/logo.png"
-            alt=""
-            className="w-[100px] h-[100px]  border-t-transparent rounded-full animate-pulse"
-            width={100}
-            height={100}
-            priority
-          />
-        </div>
-      )} */}
       <div className="flex flex-col h-full gap-2 ">
-        <div className="relative h-[160px] w-full rounded-t-lg">
-          <Image
+        <div className="relative h-[150px] w-full  ">
+          <button
+              id={`btn_fov_${productInfo?.itemId}`}
+              className={`inline-flex items-center hover:text-red-600 m-1 rounded-full htransition  absolute right-0 p-1 z-20 text-lg bg-gray-100   ${
+                favorite === true ? "text-red-600" : "text-gray-400"
+              } rounded-full`}
+              onClick={() => {
+                const btn_fov = document.querySelector(
+                  `#btn_fov_${productInfo?.itemId}`,
+                );
+                if (favorite === true) {
+                  btn_fov.classList.add("text-red-600");
+                  deleteFavoriteItems(productInfo?.itemId);
+                } else {
+                  btn_fov.classList.remove("text-gray-400");
+                  addFavoriteItems(productInfo?.itemId);
+                  btn_fov.classList.add("text-red-600");
+                }
+                setSelectedProductId(productInfo?.itemId);
+              }}
+            >
+              <IoMdHeart className="w-5 h-5" />
+            </button>
+            <div className="w-full h-full my-2 flex justify-center items-center   z-10">
+               <div className="h-full w-[200px] relative bg-gray-100">
+                <Image
             src={
               process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +
-              getThumbnailUrl(productInfo.mainImageURL)
+              getThumbnailUrl(productInfo?.mainImageURL)
             }
             alt=""
             fill
             priority
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className="object-contain "
+            className="object-fill rounded-md"
             onClick={() => {
-              setSelectedProductId(productInfo.itemId);
-              navigate.push(`/user/productdetails/${productInfo.itemId}`);
+              setSelectedProductId(productInfo?.itemId);
+              navigate.push(`/user/productdetails/${productInfo?.itemId}`);
             }}
           />
+            </div>
+            </div>
+           
+        
         </div>
 
-        <div className="px-2 w-full flex items-center flex-col ">
+        <div className="px-2 mt-3 w-full flex items-center flex-col ">
           {/* <div className="w-full flex justify-end items-end">
             
           </div> */}
@@ -196,74 +211,51 @@ export default function ProductCard({ productInfo, favorite }) {
           <div className="w-full flex justify-between items-center">
             {/* <div> */}
             <h1
-              className="text-sm font-semibold"
+              className="text-sm font-bold"
               onClick={() => {
-                setSelectedProductId(productInfo.itemId);
+                setSelectedProductId(productInfo?.itemId);
                 navigate.push(
-                  `/user/productdetails/${productInfo.itemId}`,
+                  `/user/productdetails/${productInfo?.itemId}`,
                 );
               }}
             >
-              {productName.length <= 29
+              {productName?.length <= 29
                 ? productName
-                : productName.slice(0, 29) + " ..."}
+                : productName?.slice(0, 29) + " ..."}
             </h1>
           
-    <span
-              id={`btn_fov_${productInfo.itemId}`}
-              className={`hover:text-red-600     ${
-                favorite === true ? "text-red-600" : "text-gray-400"
-              } rounded-full`}
-              onClick={() => {
-                const btn_fov = document.querySelector(
-                  `#btn_fov_${productInfo.itemId}`,
-                );
-                if (favorite === true) {
-                  btn_fov.classList.add("text-red-600");
-                  deleteFavoriteItems(productInfo.itemId);
-                } else {
-                  btn_fov.classList.remove("text-gray-400");
-                  addFavoriteItems(productInfo.itemId);
-                  btn_fov.classList.add("text-red-600");
-                }
-                setSelectedProductId(productInfo.itemId);
-              }}
-            >
-              <FaHeart />
-            </span>
+    
           </div>
          
         </div>
 <div className="w-full">
    <div className="flex w-full justify-between items-center  px-2">
-          {productInfo.available ? (
+          {productInfo?.available ? (
             <div
               className="flex flex-col w-full"
               
             >
-              <div className=" h-4 flex justify-start items-center gap-1 pt-4"
+              <div className=" h-4 flex justify-start items-center gap-2 mt-3"
                 onClick={() => {
-              setSelectedProductId(productInfo.itemId);
-              navigate.push(`/user/productdetails/${productInfo.itemId}`);
+              setSelectedProductId(productInfo?.itemId);
+              navigate.push(`/user/productdetails/${productInfo?.itemId}`);
             }}
               >
-                {productInfo.oldPrice ? (
+                {productInfo?.oldPrice ? (
                   <div className="flex gap-2">
                     <span className=" font-semibold line-through text-sm  flex text-gray-400">
-                      {productInfo.oldPrice.toLocaleString("en-US")}{" "}
-                      {t("currency")}
+                      {productInfo?.oldPrice.toLocaleString("en-US")}{" "}{t("currency")}
                     </span>
                   </div>
                 ) : (
                   <span className="p-[11px]"></span>
                 )}
-                {productInfo.oldPrice ? (
-                  <span className="font-semibold  text-center bg-red-600 text-xs p-[2px]  text-white rounded-md">
-                    {t("off")}
-                    {" " +
+                {productInfo?.oldPrice ? (
+                  <span className="font-semibold  text-center bg-red-600 text-[10px] p-[2px]  text-white rounded-md">
+                    {" - " +
                       (
-                        ((productInfo.oldPrice - productInfo.price) /
-                          productInfo.oldPrice) *
+                        ((productInfo?.oldPrice - productInfo?.price) /
+                          productInfo?.oldPrice) *
                         100
                       ).toFixed(0)}
                     %
@@ -275,14 +267,14 @@ export default function ProductCard({ productInfo, favorite }) {
               </div>
               <div className="flex  justify-between  items-center ">
                 <span className="text-base  font-bold ">
-                  {productInfo.price.toLocaleString("en-US")} {t("currency")}
+                  {productInfo?.price.toLocaleString("en-US")} {t("currency")}
                 </span>
-              {productInfo.available ? (
+              {productInfo?.available ? (
           <div className="my-1">
              <button
-              className="text-xl  text-red-700 bg-red-50 p-2   hover:bg-red-300 duration-500 hover:scale-110 rounded-md"
+              className="text-lg  text-white bg-red-600 p-[5px]   hover:bg-red-700 hover:text-white transition duration-200 hover:scale-105 rounded-3xl"
               onClick={() => {
-                addToCart(productInfo.itemId);
+                addToCart(productInfo?.itemId);
               }}
             >
               <MdOutlineAddShoppingCart />
@@ -297,10 +289,10 @@ export default function ProductCard({ productInfo, favorite }) {
           ) : (
             ""
           )}
-          {productInfo.available ? (
+          {productInfo?.available ? (
             ""
           ) : (
-            <span className="text-red-600 py-5 ">
+            <span className="text-red-600 mt-10 text-xs ">
               {t("Currently_unavailable")}
             </span>
           )}

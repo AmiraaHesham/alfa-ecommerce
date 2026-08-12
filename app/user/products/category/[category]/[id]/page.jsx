@@ -1,12 +1,12 @@
 "use client";
-import { useSearshInputContext } from "../../../../../context/searshInputContext";
+import { useSearshInputContext } from "../../../../../../context/searshInputContext";
 import { useCallback, useEffect, useRef, useState } from "react";
-import CategoriesSideManu from "../../../components/CategoriseSideMenu";
-import { postRequest } from "../../../../../utils/requestsUtils";
+import CategoriesSideManu from "../../../../components/CategoriseSideMenu";
+import { postRequest } from "../../../../../../utils/requestsUtils";
 import { useRouter } from "next/navigation";
-import { useIdContext } from "../../../../../context/idContext";
-import ProductCard from "../../../components/ProductCard";
-import { useLanguage } from "../../../../../context/LanguageContext";
+import { useIdContext } from "../../../../../../context/idContext";
+import ProductCard from "../../../../components/ProductCard";
+import { useLanguage } from "../../../../../../context/LanguageContext";
 import { BsList } from "react-icons/bs";
 import Select from "react-select";
 import { MdOutlineDownloading } from "react-icons/md";
@@ -71,7 +71,7 @@ export default function ProductsByCategory({ params }) {
       <div className="flex flex-col items-start justify-start  ">
         <CategoriesSideManu category={category} />
 
-        <div className={`p-5 w-full `}>
+        <div className="p-3 w-full ">
           <div className="flex gap-5 ">
             <div className="bg-white flex  gap-4 items-center  border rounded-md  px-3 h-10  mb-5">
               <span>{t("sortBy")}:</span>
@@ -88,7 +88,7 @@ export default function ProductsByCategory({ params }) {
                     setSortBy(undefined);
                   }
                 }}
-                className="h-full w-[200px]"
+                className="h-full w-[200px] z-50"
                 placeholder={t("select")}
                 styles={{
                   control: (provided) => ({

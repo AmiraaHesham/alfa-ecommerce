@@ -79,6 +79,7 @@
   "recent_orders": "Recent Orders",
   "view_all_orders": "View All Orders",
   "add_category": "Add Category",
+  "add_slider": "Add Slider",
   "process_orders": "Process Orders",
   "add_admin": "Add Admin",
   "canceled_orders": "Canceled Orders",
@@ -232,7 +233,20 @@
     "reasonMessage":"Reason Message",
   "reason":"Reason for Return",
   "Placed_on":"Placed on",
-  "quick_links":"Quick Links"
+  "quick_links":"Quick Links",
+  "view_all_category":"View All Categories",
+  "view_all_products":"View All Products",
+  "shop_by_category":"Shop by Category",
+  "my_account":"My Account",
+  "customer_service":"Customer Support",
+    "Original_Products":"Original Products",
+  "Best_Prices":"Best Prices",
+  "Easy_Returns":"Easy Returns",
+  "Fast_Delivery":"Fast Delivery",
+  "High_Quality":"High Quality",
+  "New_arrivals":"New Arrivals",
+  "recentWatched":"Recently Watched",
+  "choose_product":"Choose Product"
 
 
 }

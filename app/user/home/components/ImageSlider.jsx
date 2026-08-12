@@ -5,36 +5,43 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useLanguage } from "../../../../context/LanguageContext";
 
 export default function ImageSlider({ sliderImages }) {
   const { locale } = useLanguage();
+  const navigate = useRouter();
 
   return (
-    <div className=" my-10 md:px-10 xs:px-0">
+    <div className="md:px-10 xs:px-3 py-3">
       <Swiper
         key={locale}
         dir={locale === "ar" ? "rtl" : "ltr"}
         navigation={true}
-        slidesPerView={1}
+        pagination={true}
+        slidesPerView={"auto"}
         loop={true}
         autoplay={true}
         modules={[Pagination, Navigation, Autoplay]}
-        className="md:w-[90%] xs:w-full h-[500px]"
+        className="w-full lg:h-[500px] xs:h-[300px]"
       >
         {sliderImages.map((img, index) => (
-          <SwiperSlide key={img.sliderImageId} className="relative w-full h-full flex justify-center items-center rounded-lg  ">
-              <Image
-                src={`${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL}${
-                  img.imageUrl || ""
-                }`}
-                alt={`Slide ${index + 1}`}
-                fill
-                priority
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                className="object-contain "
-              />
-          </SwiperSlide>
+         <SwiperSlide key={index} className="relative w-full rounded-2xl">
+  <button
+    onClick={() => navigate.push(`/user/productdetails/${img.itemId}`)}
+    className="relative w-full h-full block cursor-pointer"
+  >
+  <Image
+    src={`${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL}${img.imageUrl}`}
+    alt={`Slide ${index + 1}`}
+    fill
+    priority
+    quality={100}
+    sizes="100vw"
+    className="object-fill rounded-2xl"
+  />
+  </button>
+</SwiperSlide>
         ))}
       </Swiper>
     </div>

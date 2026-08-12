@@ -12,6 +12,7 @@ export function IdProvider({ children }) {
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
   const [selectedImgesSliders, setSelectedImagesSliders] = useState([]);
+  const [selectedState, setSelectedState] = useState(null);
  
 
   return (
@@ -28,7 +29,9 @@ export function IdProvider({ children }) {
         selectedOrderId,
         setSelectedOrderId,
         selectedImgesSliders,
-        setSelectedImagesSliders
+        setSelectedImagesSliders,
+        selectedState,
+        setSelectedState,
       }}
     >
       {children}

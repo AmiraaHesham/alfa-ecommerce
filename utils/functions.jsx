@@ -13,6 +13,7 @@ export const getCategories = async () => {
 };
 export const getSliderImage = async () => {
   const response = await getRequest("/api/public/sliderImages");
+  console.log(response.data)
   return await response.data;
 };
 export const getFeatuerProducts = async () => {
@@ -20,7 +21,7 @@ export const getFeatuerProducts = async () => {
     "/api/public/items/search",
     {
       page: 0,
-      size: 100,
+      size: 50,
       isFavorite: true,
     },
     ""
