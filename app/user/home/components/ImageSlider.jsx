@@ -28,7 +28,7 @@ export default function ImageSlider({ sliderImages }) {
         {sliderImages.map((img, index) => (
          <SwiperSlide key={index} className="relative w-full rounded-2xl">
   <button
-    onClick={() => navigate.push(`/user/productdetails/${img.itemId}`)}
+    onClick={() => img.itemId? navigate.push(`/user/productdetails/${img.itemId}`):null}
     className="relative w-full h-full block cursor-pointer"
   >
   <Image
