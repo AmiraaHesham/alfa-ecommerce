@@ -105,7 +105,7 @@ export default function SideMenu() {
           </Link>
 
           <Link
-            href="/admin/HomePage"
+            href="/admin/Homepage"
             onClick={() => setSelectedNamePage("Homepage Management")}
           >
             <div
