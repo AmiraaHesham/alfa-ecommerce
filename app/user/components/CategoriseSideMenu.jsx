@@ -23,6 +23,7 @@ export default function CategoriesSideMenu({ category }) {
       const res = await getCategories();
       setCategoriesList(res.data);
     } catch (error) {
+      console.log(error);
     } finally {
       setLoading(false);
     }
@@ -63,13 +64,10 @@ export default function CategoriesSideMenu({ category }) {
                     category === "all" ? "bg-red-100 text-red-500" : ""
                   }`}
                   onClick={() => {
-                  navigate.push(
-                    "/user/products/category/" +
-                    category.nameEn +
-                    "/" +
-                    category.itemCategoryId,
-                  );
-                }}
+                    navigate.push(
+                      "/user/products/category/all/null"
+                    );
+                  }}
                 >
                   <h1 className=" font-semibold text-sm ">{t("all")}</h1>
                 </div>
@@ -85,7 +83,7 @@ export default function CategoriesSideMenu({ category }) {
                     onClick={() => {
                       // setSelectedCategoryId(item.itemCategoryId);
                       navigate.push(
-                        "/user/products/" +
+                        "/user/products/category/" +
                           item.nameEn +
                           "/" +
                           item.itemCategoryId,
