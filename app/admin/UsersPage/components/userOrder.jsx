@@ -219,7 +219,7 @@ export default function UserOrders({ userId }) {
                       className=" text-red-950 border w-full hover:bg-gray-50 cursor-pointer"
                       onClick={() => {
                         navigate.push(
-                          `/admin/orders_page/OrderDetailsPage/${order.orderId}`
+                          `/admin/orders/OrdersDetails/${order.orderId}`
                         );
                         setSelectedNamePage("Orders Management");
                       }}
