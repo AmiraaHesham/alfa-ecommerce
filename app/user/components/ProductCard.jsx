@@ -149,7 +149,7 @@ export default function ProductCard({ productInfo, favorite }) {
     }
   };
   // const describtion =
-    // productInfo?.[locale === "ar" ? "descriptionAr" : "descriptionEn"] || "";
+  // productInfo?.[locale === "ar" ? "descriptionAr" : "descriptionEn"] || "";
   const productName = locale === "ar" ? productInfo?.nameAr : productInfo?.nameEn;
 
   return (
@@ -160,54 +160,55 @@ export default function ProductCard({ productInfo, favorite }) {
       <div className="flex flex-col h-full gap-2 ">
         <div className="relative h-[150px] w-full  ">
           <button
-              id={`btn_fov_${productInfo?.itemId}`}
-              className={`inline-flex items-center hover:text-red-600 m-1 rounded-full htransition  absolute right-0 p-1 z-20 text-lg bg-gray-100   ${
-                favorite === true ? "text-red-600" : "text-gray-400"
+            id={`btn_fov_${productInfo?.itemId}`}
+            className={`inline-flex items-center hover:text-red-600 m-1 rounded-full htransition  absolute right-0 p-1 z-20 text-lg bg-gray-100   ${favorite === true ? "text-red-600" : "text-gray-400"
               } rounded-full`}
-              onClick={() => {
-                const btn_fov = document.querySelector(
-                  `#btn_fov_${productInfo?.itemId}`,
-                );
-                if (favorite === true) {
-                  btn_fov.classList.add("text-red-600");
-                  deleteFavoriteItems(productInfo?.itemId);
-                } else {
-                  btn_fov.classList.remove("text-gray-400");
-                  addFavoriteItems(productInfo?.itemId);
-                  btn_fov.classList.add("text-red-600");
-                }
-                setSelectedProductId(productInfo?.itemId);
-              }}
-            >
-              <IoMdHeart className="w-5 h-5" />
-            </button>
-            <div className="w-full h-full my-2 flex justify-center items-center   z-10">
-               <div className="h-full w-[200px] relative bg-gray-100">
-                <Image
-            src={
-              process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +
-              getThumbnailUrl(productInfo?.mainImageURL)
-            }
-            alt=""
-            fill
-            priority
-            className="object-fill rounded-md"
             onClick={() => {
+              const btn_fov = document.querySelector(
+                `#btn_fov_${productInfo?.itemId}`,
+              );
+              if (favorite === true) {
+                btn_fov.classList.add("text-red-600");
+                deleteFavoriteItems(productInfo?.itemId);
+              } else {
+                btn_fov.classList.remove("text-gray-400");
+                addFavoriteItems(productInfo?.itemId);
+                btn_fov.classList.add("text-red-600");
+              }
               setSelectedProductId(productInfo?.itemId);
-              navigate.push(`/user/productdetails/${productInfo?.itemId}`);
             }}
-          />
+          >
+            <IoMdHeart className="w-5 h-5" />
+          </button>
+          <div className="w-full h-full my-2 flex justify-center items-center   z-10">
+            <div className="h-full w-[200px] relative bg-gray-100">
+              <Image
+                src={
+                  process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +
+                  getThumbnailUrl(productInfo?.mainImageURL)
+                }
+                alt=""
+                fill
+                priority
+                quality={100}
+                sizes="100vw"
+                className="object-fill rounded-md"
+                onClick={() => {
+                  setSelectedProductId(productInfo?.itemId);
+                  navigate.push(`/user/productdetails/${productInfo?.itemId}`);
+                }}
+              />
             </div>
-            </div>
-           
-        
+          </div>
+
+
         </div>
 
         <div className="px-2 mt-3 w-full flex items-center flex-col ">
           {/* <div className="w-full flex justify-end items-end">
             
           </div> */}
-                  
+
           <div className="w-full flex justify-between items-center">
             {/* <div> */}
             <h1
@@ -223,84 +224,84 @@ export default function ProductCard({ productInfo, favorite }) {
                 ? productName
                 : productName?.slice(0, 29) + " ..."}
             </h1>
-          
-    
+
+
           </div>
-         
+
         </div>
-<div className="w-full">
-   <div className="flex w-full justify-between items-center  px-2">
-          {productInfo?.available ? (
-            <div
-              className="flex flex-col w-full"
-              
-            >
-              <div className=" h-4 flex justify-start items-center gap-2 mt-3"
-                onClick={() => {
-              setSelectedProductId(productInfo?.itemId);
-              navigate.push(`/user/productdetails/${productInfo?.itemId}`);
-            }}
+        <div className="w-full">
+          <div className="flex w-full justify-between items-center  px-2">
+            {productInfo?.available ? (
+              <div
+                className="flex flex-col w-full"
+
               >
-                {productInfo?.oldPrice ? (
-                  <div className="flex gap-2">
-                    <span className=" font-semibold line-through text-sm  flex text-gray-400">
-                      {productInfo?.oldPrice.toLocaleString("en-US")}{" "}{t("currency")}
+                <div className=" h-4 flex justify-start items-center gap-2 mt-3"
+                  onClick={() => {
+                    setSelectedProductId(productInfo?.itemId);
+                    navigate.push(`/user/productdetails/${productInfo?.itemId}`);
+                  }}
+                >
+                  {productInfo?.oldPrice ? (
+                    <div className="flex gap-2">
+                      <span className=" font-semibold line-through text-sm  flex text-gray-400">
+                        {productInfo?.oldPrice.toLocaleString("en-US")}{" "}{t("currency")}
+                      </span>
+                    </div>
+                  ) : (
+                    <span className="p-[11px]"></span>
+                  )}
+                  {productInfo?.oldPrice ? (
+                    <span className="font-semibold  text-center bg-red-600 text-[10px] p-[2px]  text-white rounded-md">
+                      {" - " +
+                        (
+                          ((productInfo?.oldPrice - productInfo?.price) /
+                            productInfo?.oldPrice) *
+                          100
+                        ).toFixed(0)}
+                      %
                     </span>
-                  </div>
-                ) : (
-                  <span className="p-[11px]"></span>
-                )}
-                {productInfo?.oldPrice ? (
-                  <span className="font-semibold  text-center bg-red-600 text-[10px] p-[2px]  text-white rounded-md">
-                    {" - " +
-                      (
-                        ((productInfo?.oldPrice - productInfo?.price) /
-                          productInfo?.oldPrice) *
-                        100
-                      ).toFixed(0)}
-                    %
+                  ) : (
+                    ""
+                  )}
+
+                </div>
+                <div className="flex  justify-between  items-center ">
+                  <span className="text-base  font-bold ">
+                    {productInfo?.price.toLocaleString("en-US")} {t("currency")}
                   </span>
-                ) : (
-                  ""
-                )}
-                   
+                  {productInfo?.available ? (
+                    <div className="my-1">
+                      <button
+                        className="text-lg  text-white bg-red-600 p-[5px]   hover:bg-red-700 hover:text-white transition duration-200 hover:scale-105 rounded-3xl"
+                        onClick={() => {
+                          addToCart(productInfo?.itemId);
+                        }}
+                      >
+                        <MdOutlineAddShoppingCart />
+                      </button>
+                    </div>
+
+                  ) : (
+                    ""
+                  )}
+                </div>
               </div>
-              <div className="flex  justify-between  items-center ">
-                <span className="text-base  font-bold ">
-                  {productInfo?.price.toLocaleString("en-US")} {t("currency")}
-                </span>
-              {productInfo?.available ? (
-          <div className="my-1">
-             <button
-              className="text-lg  text-white bg-red-600 p-[5px]   hover:bg-red-700 hover:text-white transition duration-200 hover:scale-105 rounded-3xl"
-              onClick={() => {
-                addToCart(productInfo?.itemId);
-              }}
-            >
-              <MdOutlineAddShoppingCart />
-            </button>
+            ) : (
+              ""
+            )}
+            {productInfo?.available ? (
+              ""
+            ) : (
+              <span className="text-red-600 mt-10 text-xs ">
+                {t("Currently_unavailable")}
+              </span>
+            )}
+
           </div>
-           
-          ) : (
-            ""
-          )}
-              </div>
-            </div>
-          ) : (
-            ""
-          )}
-          {productInfo?.available ? (
-            ""
-          ) : (
-            <span className="text-red-600 mt-10 text-xs ">
-              {t("Currently_unavailable")}
-            </span>
-          )}
-         
+
         </div>
-        
-</div>
-       
+
       </div>
     </div>
     // </div>

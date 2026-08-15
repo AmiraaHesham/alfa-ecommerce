@@ -53,21 +53,21 @@ export default function CategorySection({ categories }) {
                 onClick={() => {
                   navigate.push(
                     "/user/products/category/" +
-                      category.nameEn +
-                      "/" +
-                      category.itemCategoryId,
+                    category.nameEn +
+                    "/" +
+                    category.itemCategoryId,
                   );
                 }}
               >
                 <div className=" w-full flex flex-col justify-center items-center   ">
                   <div className="relative rounded-full h-[135px] w-[135px]  bg-gray-100">
                     <Image
-                      src={`${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL}${
-                        getThumbnailUrl(category.imageURL) || ""
-                      }`}
+                      src={`${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL}${getThumbnailUrl(category.imageURL) || ""
+                        }`}
                       alt=""
                       fill
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      quality={100}
+                      sizes="100vw" 
                       className="object-fill rounded-full"
                     />
                   </div>
@@ -79,8 +79,8 @@ export default function CategorySection({ categories }) {
             </SwiperSlide>
           ))}
           {/* <div className=" flex flex-col justify-center items-center relative my- "> */}
-            <div className=" p-1 rounded-full  flex gap-2 justify-center items-center my-5 ">
-              {/* <button className="prev-btn2 p-1 rounded-full hover:bg-red-600 border-2 border-red-600  hover:text-white text-red-600 text-3xl   font-bold cursor-pointer *:">
+          <div className=" p-1 rounded-full  flex gap-2 justify-center items-center my-5 ">
+            {/* <button className="prev-btn2 p-1 rounded-full hover:bg-red-600 border-2 border-red-600  hover:text-white text-red-600 text-3xl   font-bold cursor-pointer *:">
                 {locale === "ar" ? (
                   <IoIosArrowRoundForward className="text-3xl font-bold" />
                 ) : (
@@ -94,7 +94,7 @@ export default function CategorySection({ categories }) {
                   <IoIosArrowRoundForward />
                 )}
               </button> */}
-            </div>
+          </div>
           {/* </div> */}
         </Swiper>
       </div>
