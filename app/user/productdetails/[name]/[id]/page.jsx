@@ -1,4 +1,4 @@
-import ProductDetails from'../components/productDetails'
+import ProductDetails from'../../components/productDetails'
 
 
 

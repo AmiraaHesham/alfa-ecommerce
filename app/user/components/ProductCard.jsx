@@ -195,7 +195,7 @@ export default function ProductCard({ productInfo, favorite }) {
                 className="object-fill rounded-md"
                 onClick={() => {
                   setSelectedProductId(productInfo?.itemId);
-                  navigate.push(`/user/productdetails/${productInfo?.itemId}`);
+                  navigate.push(`/user/productdetails/${productName}/${productInfo?.itemId}`);
                 }}
               />
             </div>
@@ -215,9 +215,8 @@ export default function ProductCard({ productInfo, favorite }) {
               className="text-sm font-bold"
               onClick={() => {
                 setSelectedProductId(productInfo?.itemId);
-                navigate.push(
-                  `/user/productdetails/${productInfo?.itemId}`,
-                );
+                  navigate.push(`/user/productdetails/${productName}/${productInfo?.itemId}`);
+
               }}
             >
               {productName?.length <= 29
@@ -239,7 +238,7 @@ export default function ProductCard({ productInfo, favorite }) {
                 <div className=" h-4 flex justify-start items-center gap-2 mt-3"
                   onClick={() => {
                     setSelectedProductId(productInfo?.itemId);
-                    navigate.push(`/user/productdetails/${productInfo?.itemId}`);
+                  navigate.push(`/user/productdetails/${productName}/${productInfo?.itemId}`);
                   }}
                 >
                   {productInfo?.oldPrice ? (

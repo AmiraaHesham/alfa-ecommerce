@@ -64,10 +64,13 @@ export default function CategoriesSideMenu({ category }) {
                     category === "all" ? "bg-red-100 text-red-500" : ""
                   }`}
                   onClick={() => {
-                    navigate.push(
-                      "/user/products/all/null"
-                    );
-                  }}
+                  navigate.push(
+                    "/user/products/category/" +
+                    category.nameEn +
+                    "/" +
+                    category.itemCategoryId,
+                  );
+                }}
                 >
                   <h1 className=" font-semibold text-sm ">{t("all")}</h1>
                 </div>

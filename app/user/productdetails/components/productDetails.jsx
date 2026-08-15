@@ -307,11 +307,14 @@ addToRecentlyWatched()
                 </span>
                 <span
                   className="text-red-600 cursor-pointerr md:text-base xs:text-xs hover:shadow-sm hover:shadow-red-700 px-4 rounded-md  "
-                  onClick={() => {
-                    // setSelectedCategoryId();
-                    // setSelectedSearchInput("");
-                  navigate.push("/user/products/"+product.category.nameEn + "/" + product.category.id);
-                  }}
+                   onClick={() => {
+                  navigate.push(
+                    "/user/products/category/" +
+                    product.category.nameEn +
+                    "/" +
+                    product.category.itemCategoryId,
+                  );
+                }}
                 >
                   {locale === "ar"
                     ? product.category.nameAr
