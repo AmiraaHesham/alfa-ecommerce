@@ -7,7 +7,7 @@ import { useLanguage } from "../../../../context/LanguageContext.js";
 import { FaTimes } from "react-icons/fa";
 import "swiper/css";
 import "swiper/css/pagination";
-import LivePreview from "../components/LivePreview.jsx";
+import LivePreview from "./LivePreview.jsx";
 
 import {
   deleteRequest,
