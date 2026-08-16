@@ -21,7 +21,6 @@ export default function Orders_Table() {
 
   const getAllOrders = async () => {
     try {
-      console.log(selectedState);
       const response = await postRequest(
         "/api/orders/search",
         {
@@ -38,7 +37,6 @@ export default function Orders_Table() {
         setOrders(resOrders);
       } else setOrders((prev) => [...prev, ...resOrders]);
     } catch (error) {
-      console.log(error);
     } finally {
       setLoading(false);
     }
@@ -65,13 +63,11 @@ export default function Orders_Table() {
               item.orderId === orderId ? { ...item, state: newState } : item,
             );
 
-            console.log(updated);
             return updated;
           });
         }
       }
     } catch (error) {
-      console.log(error);
     }
   };
   useEffect(() => {

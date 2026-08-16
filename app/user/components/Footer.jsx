@@ -28,7 +28,6 @@ const {locale}= useLanguage();
   });
   const getContact = async () => {
     const response = await getRequest(`/api/public/contact`);
-    console.log(response);
     const resData = response.data;
     setContact((prev) => ({
       ...prev,

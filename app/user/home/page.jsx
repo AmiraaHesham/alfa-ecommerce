@@ -64,11 +64,15 @@ export default function Homepage() {
         setCategories(categoriesRes.data || []);
         setFeaturedProducts(productsRes.data || []);
 
-        const recentWatchedProductsRes = await getRequest("/api/users/recentWatchedItems");
-        setrecentWatchedProducts(recentWatchedProductsRes.data || []);
-
-         const newProductsRes = await getRequest("/api/public/items/recent");
+    const newProductsRes = await getRequest("/api/public/items/recent");
         setNewProducts(newProductsRes.data || []);
+
+      if (isLoggedIn) {
+        const recentWatchedProductsRes = await getRequest(
+          "/api/users/recentWatchedItems",
+        );
+        setrecentWatchedProducts(recentWatchedProductsRes.data || []);
+      }
 
       } catch (error) {
         console.error("Failed to fetch homepage data:", error);
@@ -106,7 +110,6 @@ export default function Homepage() {
             </span>
             {t("featured_products")}
           </a>
-
 
           <hr
             className="w-[10px] h-5 border-0 rounded-full bg-gray-300"
@@ -316,8 +319,41 @@ export default function Homepage() {
           </div>
         )}
       </section>
-      <div>
-        <div>
+      <div className="w-full h-28 mb-10">
+        <div className="w-full h-full md:text-sm xs:text-[10px] flex bg-white justify-between items-center shadow-md rounded-lg  py-3 mt-5 gap-5">
+          <span className="h-full p-2  flex flex-col w-full gap-2 items-center">
+            <LiaCertificateSolid className="w-10 h-10 bg-red-100 text-red-600 rounded-3xl p-1 " />
+            <h1 className=" text-center font-semibold">{t("High_Quality")}</h1>
+          </span>
+          <hr
+            className="w-5 h-10 border-0 rounded-full bg-gradient-to-l from-red-200 via-red-400 to-red-200"
+          />
+          <span className="h-full p-2 bg-white flex flex-col w-full gap-2 items-center">
+            <FaShippingFast className="w-10 h-10 bg-red-100 text-red-600 rounded-3xl p-1 " />
+            <h1 className="text-center font-semibold">{t("Fast_Delivery")}</h1>
+          </span>
+          <hr
+            className="w-5 h-10 border-0 rounded-full bg-gradient-to-l from-red-200 via-red-400 to-red-200"
+          />
+          <span className="h-full p-2 bg-white flex flex-col w-full gap-2 items-center">
+            <RiLoopRightFill className="w-10 h-10 bg-red-100 text-red-600 rounded-3xl p-1 " />
+            <h1 className=" text-center font-semibold">{t("Easy_Returns")}</h1>
+          </span>
+          <hr
+            className="w-5 h-10 border-0 rounded-full bg-gradient-to-l from-red-200 via-red-400 to-red-200"
+          />
+          <span className="h-full p-2 bg-white flex flex-col w-full gap-2 items-center">
+            <IoPricetagsOutline className="w-10 h-10 bg-red-100 text-red-600 rounded-3xl p-1"/>
+            <h1 className=" text-center font-semibold">{t("Best_Prices")}</h1>
+
+          </span>
+          <hr
+            className="w-5 h-10 border-0 rounded-full bg-gradient-to-l from-red-200 via-red-400 to-red-200"
+          />
+          <span className="h-full p-2 bg-white flex flex-col w-full gap-2 items-center">
+            <LuShieldCheck className="w-10 h-10 bg-red-100 text-red-600 rounded-3xl p-1 " />
+            <h1 className=" text-center font-semibold">{t("Original_Products")}</h1>
+          </span>
         </div>
       </div>
       {/* Featured Products Section */}
@@ -399,43 +435,7 @@ export default function Homepage() {
         )}
       </section>
       
-      <div className="w-full h-28 mb-10">
-        <div className="w-full h-full md:text-sm xs:text-[10px] flex bg-white justify-between items-center shadow-md rounded-lg  py-3 mt-5 gap-5">
-          <span className="h-full p-2  flex flex-col w-full gap-2 items-center">
-            <LiaCertificateSolid className="w-10 h-10 bg-red-100 text-red-600 rounded-3xl p-1 " />
-            <h1 className=" text-center font-semibold">{t("High_Quality")}</h1>
-          </span>
-          <hr
-            className="w-5 h-10 border-0 rounded-full bg-gradient-to-l from-red-200 via-red-400 to-red-200"
-          />
-          <span className="h-full p-2 bg-white flex flex-col w-full gap-2 items-center">
-            <FaShippingFast className="w-10 h-10 bg-red-100 text-red-600 rounded-3xl p-1 " />
-            <h1 className="text-center font-semibold">{t("Fast_Delivery")}</h1>
-          </span>
-          <hr
-            className="w-5 h-10 border-0 rounded-full bg-gradient-to-l from-red-200 via-red-400 to-red-200"
-          />
-          <span className="h-full p-2 bg-white flex flex-col w-full gap-2 items-center">
-            <RiLoopRightFill className="w-10 h-10 bg-red-100 text-red-600 rounded-3xl p-1 " />
-            <h1 className=" text-center font-semibold">{t("Easy_Returns")}</h1>
-          </span>
-          <hr
-            className="w-5 h-10 border-0 rounded-full bg-gradient-to-l from-red-200 via-red-400 to-red-200"
-          />
-          <span className="h-full p-2 bg-white flex flex-col w-full gap-2 items-center">
-            <IoPricetagsOutline className="w-10 h-10 bg-red-100 text-red-600 rounded-3xl p-1 " />
-            <h1 className=" text-center font-semibold">{t("Best_Prices")}</h1>
-
-          </span>
-          <hr
-            className="w-5 h-10 border-0 rounded-full bg-gradient-to-l from-red-200 via-red-400 to-red-200"
-          />
-          <span className="h-full p-2 bg-white flex flex-col w-full gap-2 items-center">
-            <LuShieldCheck className="w-10 h-10 bg-red-100 text-red-600 rounded-3xl p-1 " />
-            <h1 className=" text-center font-semibold">{t("Original_Products")}</h1>
-          </span>
-        </div>
-      </div>
+    
     </div>
   );
 }

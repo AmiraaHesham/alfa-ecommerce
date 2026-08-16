@@ -17,7 +17,6 @@ export default function Orders_Details({ orderId , orderType }) {
     setOrderUser(resData.user);
     setPaymentMethod(resData.paymentMethod)
     setOrderAddress(resData.address)
-    console.log(resData)
   };
   useEffect(() => {
     orderItem();

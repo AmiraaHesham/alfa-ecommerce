@@ -1,6 +1,6 @@
 "use client";
+import axios from "axios";
 import { useEffect, useState } from "react";
-import { useIdContext } from "../../../../context/idContext";
 import { getProductDetails, getThumbnailUrl } from "../../../../utils/functions";
 import Image from "next/image";
 import { MdOutlineAddShoppingCart } from "react-icons/md";
@@ -11,17 +11,14 @@ import { useLanguage } from "../../../../context/LanguageContext";
 import Swal from "sweetalert2";
 import FeatuerProducts from "../../home/components/FeatuerProducts";
 import { FaQuestionCircle } from "react-icons/fa";
-import { useSearshInputContext } from "../../../../context/searshInputContext";
 import { useRefresh } from "../../../../context/refreshContext";
 export default function ProductDetails({ itemId }) {
   const [count, setCount] = useState(1);
-  const { setSelectedCategoryId } = useIdContext();
   const navigate = useRouter();
   const [loading, setLoading] = useState(true);
   const [imageShow, setImageShow] = useState("");
   const urlImage = process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL;
   const { t } = useLanguage();
-  const { setSelectedSearchInput } = useSearshInputContext();
   const { locale } = useLanguage();
   const { triggerRefresh } = useRefresh();
 
@@ -49,11 +46,11 @@ export default function ProductDetails({ itemId }) {
   });
 
   const productDetails = async () => {
-    setLoading(true);
     try {
+          setLoading(true);
+
       const res = await getProductDetails(itemId);
       const resData = res.data;
-      console.log(resData);
       setProduct((prev) => ({
         ...prev,
         nameEn: resData.nameEn,
@@ -74,18 +71,17 @@ export default function ProductDetails({ itemId }) {
           nameEn: resData.itemCategory.nameEn,
         },
       }));
-      setLoading(false);
       setImageShow(urlImage + resData.mainImageURL);
       getProductsByCategory(resData.itemCategory.itemCategoryId);
     } catch (error) {
-      console.log(error);
-      setLoading(true);
     } finally {
       setLoading(false);
     }
   };
   const getProductsByCategory = async (categoryId) => {
     try {
+            setLoading(true);
+
       const response = await postRequest(
         "/api/public/items/search",
         {
@@ -96,10 +92,7 @@ export default function ProductDetails({ itemId }) {
         "",
       );
       setProducts(response.data);
-      console.log(categoryId);
-      setLoading(false);
     } catch (error) {
-      console.log(error);
     } finally {
       setLoading(false);
     }
@@ -177,25 +170,33 @@ export default function ProductDetails({ itemId }) {
         }
       }
     } catch (error) {
-      console.log(error);
     } finally {
       setLoading(false);
     }
   };
   const addToRecentlyWatched = async () => {
-    try{
+   const token = localStorage.getItem("accessToken");
 
-      await postRequest(`/api/users/recentWatchedItems/${itemId}`,'','')
+  if (!token) return;
+
+    try{
+     await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/users/recentWatchedItems/${itemId}`,{},
+         {
+        headers: {
+          Authorization: token ? `Bearer ${token}` : undefined,
+        },
+      }
+      )
     }
     catch(error){
-      console.log(error)
     }
   }
 
   useEffect(() => {
 addToRecentlyWatched()
     productDetails();
-  }, []);
+    getProductsByCategory()
+  }, [itemId]);
   return (
     <div className=" ">
       {loading ? (
@@ -220,17 +221,6 @@ addToRecentlyWatched()
         ))
       ) : (
         <div className="flex lg:flex-row xs:flex-col  gap-10 md:p-10 xs:p-2 ">
-          {loading && (
-            <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-              <Image
-                src="/Images/logo.png"
-                alt=""
-                className="w-[100px] h-[100px]  border-t-transparent rounded-full animate-pulse"
-                width={100}
-                height={100}
-              />
-            </div>
-          )}
           <div className="w-full h-[550px] ">
             <div className="w-full h-[450px] relative  flex justify-center border rounded-md shadow-md  ">
               <Image
@@ -416,7 +406,7 @@ addToRecentlyWatched()
         </h1>
       
 <div className="xs:px-5 md:px-0">
-        <FeatuerProducts FeatuerProducts={products} />
+        <FeatuerProducts Products={products} type={"FeaturedProducts"} />
 
 </div>
       </div>

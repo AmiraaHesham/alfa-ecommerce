@@ -23,7 +23,6 @@ export default function Dashboard_Details() {
   const dashboardPendingOrders = async () => {
     const response = await getRequest("/api/admin/dashboard");
     const resData = response.data;
-    console.log(response.data);
 
     setPendingOrders(resData.pendingOrders.length)
 

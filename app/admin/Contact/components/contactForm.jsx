@@ -47,10 +47,8 @@ export default function ContactForm() {
       },
       t("message")
     );
-    console.log(res)
     getcontactInfo();
     }catch(error){
-      console.log(error)
     }finally {
       setLoading(false);
     }

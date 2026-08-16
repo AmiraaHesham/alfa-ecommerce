@@ -41,7 +41,6 @@ export default function AdminForm({ isFormOpen, setIsFormOpen }) {
       triggerRefresh();
       setSelectedAdminId(null);
     } catch (error) {
-      console.log(error);
     } finally {
       setLoading(false);
     }
@@ -70,7 +69,6 @@ export default function AdminForm({ isFormOpen, setIsFormOpen }) {
         });
       }
     } catch (error) {
-      console.log(error);
     } finally {
       setLoading(false);
     }
@@ -94,7 +92,6 @@ export default function AdminForm({ isFormOpen, setIsFormOpen }) {
       triggerRefresh();
       setSelectedAdminId(null);
     } catch (error) {
-      console.log(error);
     } finally {
       setLoading(false);
     }

@@ -42,7 +42,6 @@ export default function UsersPage() {
       // pagination()
       //       console.log("Categories after set:", resProducts);
     } catch (error) {
-      console.log(error);
     }
   };
   const addBlock = async (userId) => {

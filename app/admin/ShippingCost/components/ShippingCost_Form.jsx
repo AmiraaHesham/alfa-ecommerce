@@ -18,7 +18,6 @@ export default function ShippingCostForm({ govName, govId, setShowForm }) {
       triggerRefresh();
       setShowForm(false);
     } catch (err) {
-      console.log(err);
     }
   };
   const { t } = useLanguage();

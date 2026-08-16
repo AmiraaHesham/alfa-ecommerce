@@ -9,14 +9,12 @@ import { ToastContainer } from "react-toastify";
 import RTLController from './components/RTLController.jsx'
 
 export default function RootLayout({ children }) {
-   const lang = typeof window !== 'undefined'? localStorage.getItem("lang"):'ar';
-
    return (
-    <html lang={lang} dir={lang === "ar" ? "rtl" : "ltr"} >
+    <html lang="ar" dir="rtl">
       <body >
         
         <ToastContainer
-          position={lang === "ar" ? "bottom-left" : "bottom-right"}/>
+          position={"bottom-center"}/>
 
         <LanguageProvider>
           <RTLController>

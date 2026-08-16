@@ -15,7 +15,6 @@ export default function RecentOrders_table() {
   const dashboardPendingOrders = async () => {
     const response = await getRequest("/api/admin/dashboard");
     setPendingOrders(response.data.pendingOrders);
-    console.log(response.pendingOrders);
   };
 
   useEffect(() => {

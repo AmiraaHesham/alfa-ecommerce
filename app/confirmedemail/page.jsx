@@ -9,20 +9,20 @@ export default function ConfirmedEmailPage() {
     const [count, setCount] = useState(5);
   const router = useRouter();
   const { t } = useLanguage();
-    useEffect(() => {
-    const timer = setInterval(() => {
-      setCount((prev) => {
-        if (prev === 1) {
-          clearInterval(timer);
-          router.push("/user/home");
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
+  //   useEffect(() => {
+  //   const timer = setInterval(() => {
+  //     setCount((prev) => {
+  //       if (prev === 1) {
+  //         clearInterval(timer);
+  //         router.push("/user/home");
+  //         return 0;
+  //       }
+  //       return prev - 1;
+  //     });
+  //   }, 1000);
 
-    return () => clearInterval(timer);
-  }, [router]);
+  //   return () => clearInterval(timer);
+  // }, [router]);
   return (
     <div className="">
       <header className="h-14 w-full bg-red-700">

@@ -49,7 +49,7 @@ export default function CategorySection({ categories }) {
               className="rounded-lg !w-[220px]"
             >
               <div
-                className="h-[220px]  mt-4   flex justify-center items-center text-center hover:shadow-xl hover:shadow-slate-300   hover:scale-105 duration-200 cursor-pointer rounded-md  hover:border-b-red-600 hover:border-b-[7px]"
+                className="h-[220px]  mt-4 border shadow-md  flex justify-center items-center text-center hover:shadow-xl hover:shadow-slate-300   hover:scale-105 duration-200 cursor-pointer rounded-md  hover:border-b-red-600 hover:border-b-[7px]"
                 onClick={() => {
                   navigate.push(
                     "/user/products/category/" +
@@ -60,7 +60,7 @@ export default function CategorySection({ categories }) {
                 }}
               >
                 <div className=" w-full flex flex-col justify-center items-center   ">
-                  <div className="relative rounded-full h-[135px] w-[135px]  bg-gray-100">
+                  <div className="relative rounded-xl h-[135px] w-[135px]  bg-gray-100 ">
                     <Image
                       src={`${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL}${getThumbnailUrl(category.imageURL) || ""
                         }`}
@@ -68,7 +68,7 @@ export default function CategorySection({ categories }) {
                       fill
                       quality={100}
                       sizes="100vw" 
-                      className="object-fill rounded-full"
+                      className="object-fill rounded-xl"
                     />
                   </div>
                   <h1 className="font-semibold text-xs  mt-6">

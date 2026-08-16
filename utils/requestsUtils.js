@@ -64,7 +64,6 @@ export const postRequest = async (endpoint, dataBody, message) => {
     if (result.isConfirmed) {
 
       const token = getToken();
-      console.log(token)
 
       const response = await request(token);
       toast.success(response.data.message);
@@ -325,7 +324,6 @@ export const deleteRequest = async (endpoint, message) => {
 
 
       try {
-        console.log(refreshToken)
         const refreshRes = await axios.post(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/refresh`, {},
           {

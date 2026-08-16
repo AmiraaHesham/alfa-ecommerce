@@ -21,7 +21,6 @@ export default function OrdersItems({ orderId, orderType }) {
   const orderItem = async () => {
     const res = await getRequest(`/api/${orderType}/${orderId}`);
     const resData = res.data;
-    console.log(resData);
     setOrderItems(
       orderType === "orders" ? resData.orderItemLines : resData.item,
     );

@@ -71,7 +71,6 @@ export default function UpdateStatus({ orderId , orderType  }) {
       }
       
     } catch (error) {
-      console.log(error);
     }
   };
   return (

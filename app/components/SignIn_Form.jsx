@@ -40,7 +40,6 @@ export default function SignIn({ popUp, setShowSignUp, setShowSignIn }) {
       // console.log(response.data);
       toast.success(response.data.message);
 
-      console.log(response.data);
       localStorage.setItem("accessToken", response.data.accessToken);
       localStorage.setItem("refreshToken", response.data.refreshToken);
       localStorage.setItem("id", response.data.userDetails.userId);
@@ -67,7 +66,6 @@ export default function SignIn({ popUp, setShowSignUp, setShowSignIn }) {
       }
       setLocale(response.data.userDetails.language);
     } catch (error) {
-      console.log(error);
       toast.error(error.response.data.error.message);
     } finally {
       setLoading(false);
@@ -84,9 +82,7 @@ export default function SignIn({ popUp, setShowSignUp, setShowSignIn }) {
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/forgot-password/?email=${email}`,
       );
 
-      console.log(response.data);
     } catch (err) {
-      console.log(err);
     } finally {
       setLoading(false);
     }

@@ -58,7 +58,6 @@ export default function Searchpage({params}) {
       } else setProducts((prev) => [...prev, ...resProducts]);
       }
     } catch (error) {
-      console.log(error);
     } finally {
       setLoading(false);
     }

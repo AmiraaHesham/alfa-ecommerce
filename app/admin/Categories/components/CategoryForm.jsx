@@ -54,7 +54,6 @@ export default function CategoryForm({ isFormOpen, setIsFormOpen }) {
       
       setSelectedCategoryId(null);
     } catch (error) {
-      console.log(error);
     } finally {
       setLoading(false);
     }
@@ -83,7 +82,6 @@ export default function CategoryForm({ isFormOpen, setIsFormOpen }) {
         }));
       }
     } catch (error) {
-      console.log(error);
     } finally {
       setLoading(false);
     }
@@ -107,7 +105,6 @@ export default function CategoryForm({ isFormOpen, setIsFormOpen }) {
       setSelectedCategoryId(null);
       setIsFormOpen(false);
     } catch (error) {
-      console.log(error);
     } finally {
       setLoading(false);
     }

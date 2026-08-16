@@ -57,7 +57,6 @@ export default function Profile() {
         address: address,
         governorateId: value ? value.value : null,
       }, t("message"));
-console.log(res.success)
 if(res.success){
       localStorage.setItem("firstName", firstName);
       localStorage.setItem("lastName", lastName);

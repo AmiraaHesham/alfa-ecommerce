@@ -49,7 +49,6 @@ const navigate = useRouter();
     const res = await getRequest(`/api/return-orders/${returnOrderId}`);
     const resData = res.data;
     setOrder(resData.item);
-    console.log(resData);
     setOrderSummary((prev) => ({
       ...prev,
       total: resData.unitPrice,
@@ -72,7 +71,6 @@ const navigate = useRouter();
           t("message"),
         );
     } catch (error) {
-      console.log(error);
     }
   };
 

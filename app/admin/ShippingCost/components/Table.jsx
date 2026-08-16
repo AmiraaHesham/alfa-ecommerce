@@ -20,7 +20,6 @@ export default function Table({
 
     const getGovernorate = async () => {
       const res = await getRequest("/api/admin/shipping-rates");
-     console.log(res.data)
       setGovernorates(res.data);
     };
     useEffect(() => {

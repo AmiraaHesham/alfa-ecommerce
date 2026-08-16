@@ -72,7 +72,6 @@ export default function Cart({ setShowSignUp }) {
 
         synced.current = true; // 👈 بعد النجاح
       } catch (error) {
-        console.log(error);
       }
     };
 
@@ -85,7 +84,6 @@ export default function Cart({ setShowSignUp }) {
 
         const res = await getRequest(`/api/shopCarts/${userId}`);
         const rseData = res.data;
-        console.log(rseData);
         setItems(rseData.itemLines);
         setItemNum(rseData.itemLines.length);
         setSummery((prev) => ({
@@ -109,11 +107,9 @@ export default function Cart({ setShowSignUp }) {
             };
           }),
         );
-        console.log(items);
         setItems(items); // 👈 مهم
         setItemNum(items.length);
         const total = items.reduce((acc, item) => {
-          console.log(typeof item.oldPrice);
           const totalPrice = Number(item.oldPrice) * Number(item.quantity || 0);
 
           return acc + totalPrice;
@@ -129,7 +125,6 @@ export default function Cart({ setShowSignUp }) {
         }));
       }
     } catch (error) {
-      console.log(error);
     } finally {
       setLoading(false);
     }
@@ -198,7 +193,6 @@ export default function Cart({ setShowSignUp }) {
               "",
             );
             navigate.push("/user/ordershistory");
-            console.log(res);
           }
           setIsFirstAction(!isFirstAction);
         } else {
@@ -208,7 +202,6 @@ export default function Cart({ setShowSignUp }) {
         setShowSignUp(true);
       }
     } catch (error) {
-      console.log(error);
     } finally {
       setLoading(false);
     }

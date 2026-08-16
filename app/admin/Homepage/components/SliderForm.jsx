@@ -198,7 +198,6 @@ export default function SliderForm({ isFormOpen, setIsFormOpen }) {
                                     onChange={(selected) => {
                                         setItemId(selected.value)
                                         setSelectedProduct(selected);
-                                        console.log(selected.product)
                                         setSearch("");
                                     }}
 

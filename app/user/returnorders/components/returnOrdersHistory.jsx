@@ -32,12 +32,10 @@ export default function ReturnOrders() {
         },
         ""
       );
-      console.log(res.data);
       setOrders(res.data);
       // setLength(res.data.length)
       setLoading(false);
     } catch (error) {
-      console.log(error);
     }
     finally{
       setLoading(false)
@@ -176,7 +174,6 @@ export default function ReturnOrders() {
           {orders.map((order, index) => {
             const date = new Date(order.createdDate);
             const dateOnly = date.toLocaleDateString("en-GB");
-            console.log(order.item)
             return (
               <div
                 key={index}

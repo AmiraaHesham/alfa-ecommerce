@@ -58,7 +58,6 @@ const [totalOrders, setTotalOrders] = useState(0);
 
     });
    
-    console.log(resData);
   };
 
   const addBlock = async () => {
@@ -134,7 +133,6 @@ const [totalOrders, setTotalOrders] = useState(0);
                   //     : "text-red-600 bg-red-50 "
                   // }   rounded-2xl`}
                   onClick={() => {
-                    console.log(userInfo.blocked);
                     if (userInfo.blocked === false) {
                       addBlock();
                     } else {

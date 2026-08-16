@@ -28,7 +28,6 @@ export default function Sliders({setIsFormOpen}) {
 
   const getSliderImages = async () => {
     const res = await getSliderImage();
-    console.log(res)
     setSliderImages(res);
   };
 
@@ -44,7 +43,6 @@ export default function Sliders({setIsFormOpen}) {
       );
       getSliderImages();
     } catch (error) {
-      console.log(error);
     }finally {
       setLoading(false);
     }

@@ -57,7 +57,6 @@ export default function ProductsByCategory({ params }) {
       }
      
     } catch (error) {
-      console.log(error);
     } finally {
       setLoading(false);
     }
@@ -100,13 +99,7 @@ export default function ProductsByCategory({ params }) {
                     height: "100%",
                     width: "100%",
                   }),
-                  option: (provided) => ({
-                    ...provided,
-                    // backgroundColor: '#b91c1c',
-                    color: "white",
-                    fontSize: "18px",
-                    fontWeight: "600",
-                  }),
+              
                   input: (base) => ({
                     ...base,
                     color: "#374151",

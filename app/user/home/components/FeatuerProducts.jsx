@@ -49,7 +49,6 @@ export default function FeatuerProducts({ Products, type }) {
             );
           })
         :Products?.map((product,index) => {
-          console.log(product.item)
             return (
               <SwiperSlide
                 key={index}

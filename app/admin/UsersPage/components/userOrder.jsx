@@ -41,7 +41,6 @@ export default function UserOrders({ userId }) {
         setOrders(resOrders);
       } else setOrders((prev) => [...prev, ...resOrders]);
     } catch (error) {
-      console.log(error);
     } finally {
       setLoading(false);
     }

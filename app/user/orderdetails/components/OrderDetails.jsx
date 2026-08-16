@@ -51,7 +51,6 @@ export default function OrderDetails({ orderId }) {
   const getOrder = async () => {
     const res = await getRequest(`/api/orders/${orderId}`);
     const resData = res.data;
-    console.log(resData);
     setOrder(resData.orderItemLines);
     setOrderSummary((prev) => ({
       ...prev,
@@ -76,7 +75,6 @@ export default function OrderDetails({ orderId }) {
                   window.location.reload();
 
     } catch (error) {
-      console.log(error);
     }
   };
 
@@ -89,7 +87,6 @@ export default function OrderDetails({ orderId }) {
         reasonMessage: reasonMessage,
       },t("message"));
     } catch (error) {
-      console.log(error);
     }
   };
 

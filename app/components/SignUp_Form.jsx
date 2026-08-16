@@ -66,7 +66,6 @@ const router = useRouter();
         );
         // localStorage.setItem("accessToken", response.data.accessToken);
         // console.log("accessToken", response.data.accessToken);
-        console.log(response);
         if (response.data.success) {
           const response = await axios.post(
             `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/login`,
@@ -114,12 +113,9 @@ router.refresh();        }
           "",
         );
         localStorage.setItem("accessToken", response.data.accessToken);
-        console.log("accessToken", response.data.accessToken);
-        console.log(response);
         navigate.push("/signin");
       }
     } catch (err) {
-      console.log(err);
       toast.error(err.response?.data?.error.message || "");
     } finally {
       setLoading(false);

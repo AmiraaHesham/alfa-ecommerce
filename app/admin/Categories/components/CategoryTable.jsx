@@ -27,7 +27,6 @@ export default function CategorysTable({ setIsFormOpen }) {
       );
       setItemCategory(resData.data);
     } catch (error) {
-      console.log(error);
     } finally {
       setLoading(false);
     }
@@ -46,7 +45,6 @@ export default function CategorysTable({ setIsFormOpen }) {
       );
       triggerRefresh();
     } catch (error) {
-      console.log(error);
     }
   };
 

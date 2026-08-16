@@ -30,7 +30,6 @@ export default function ProductsTable({ setIsFormOpen, category }) {
   const [loading, setLoading] = useState(true);
   const getAllProducts = async () => {
     try {
-      console.log(searchInputRef.current.value);
       const response = await postRequest(
         "/api/public/items/search",
         {
@@ -46,7 +45,6 @@ export default function ProductsTable({ setIsFormOpen, category }) {
         setProducts(resProducts);
       } else setProducts((prev) => [...prev, ...resProducts]);
     } catch (error) {
-      console.log(error);
     } finally {
       setLoading(false);
     }
@@ -108,7 +106,6 @@ export default function ProductsTable({ setIsFormOpen, category }) {
       await deleteRequest(`/api/admin/items/${product.itemId}`, t("message"));
       getAllProducts();
     } catch (error) {
-      console.log(error);
     }
   };
   // const SkeletonRow = () => (
@@ -252,7 +249,6 @@ export default function ProductsTable({ setIsFormOpen, category }) {
                               : " text-gray-500")
                           }
                           onClick={async () => {
-                            console.log(product.favorite);
                             if (product.favorite === false) {
                               await productFavorite(product.itemId, true);
                             } else {
@@ -268,7 +264,6 @@ export default function ProductsTable({ setIsFormOpen, category }) {
                           
                         
                           onClick={async () => {
-                            console.log(product.available);
                             if (product.available === false) {
                               await productAvailable(product.itemId, true);
                             } else {

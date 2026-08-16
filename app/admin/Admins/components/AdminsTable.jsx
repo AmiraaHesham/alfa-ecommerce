@@ -35,7 +35,6 @@ export default function AdminsTable({ setIsFormOpen }) {
         setUsers(resUsers);
       } else setUsers((prev) => [...prev, ...resUsers]);
     } catch (error) {
-      console.log(error);
     } finally {
       setLoading(false);
     }

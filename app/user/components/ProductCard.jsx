@@ -93,7 +93,6 @@ export default function ProductCard({ productInfo, favorite }) {
         }
       }
     } catch (error) {
-      console.log(error);
     } finally {
       setLoading(false);
     }
@@ -135,7 +134,6 @@ export default function ProductCard({ productInfo, favorite }) {
         t("message"),
       );
       // triggerRefresh();
-      console.log(res);
       if (res.success === true) {
         const divProductId = document.querySelector(
           `#div_${productInfo.itemId}`,
@@ -143,7 +141,6 @@ export default function ProductCard({ productInfo, favorite }) {
         divProductId.classList.add("hidden");
       }
     } catch (error) {
-      console.log(error);
     } finally {
       setLoading(false);
     }

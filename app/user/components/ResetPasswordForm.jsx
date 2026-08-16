@@ -33,7 +33,6 @@ export default function ResetPasswordForm() {
       setOldPassword("");
       setRepeatPassword("");
     } catch (error) {
-      console.log(error);
     } finally {
       setLoading(false);
     }

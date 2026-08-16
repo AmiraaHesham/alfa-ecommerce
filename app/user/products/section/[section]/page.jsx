@@ -82,7 +82,6 @@ export default function ProductsBySection({ params }) {
 
        
     } catch (error) {
-      console.log(error);
     } finally {
       setLoading(false);
     }
@@ -131,13 +130,6 @@ export default function ProductsBySection({ params }) {
                     fontWeight: "600",
                     height: "100%",
                     width: "100%",
-                  }),
-                  option: (provided) => ({
-                    ...provided,
-                    // backgroundColor: '#b91c1c',
-                    color: "white",
-                    fontSize: "18px",
-                    fontWeight: "600",
                   }),
                   input: (base) => ({
                     ...base,

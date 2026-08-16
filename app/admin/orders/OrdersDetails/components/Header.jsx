@@ -26,7 +26,6 @@ export default function Orders_Details({ orderId, orderType }) {
       }
       router.refresh();
     } catch (error) {
-      console.log(error);
     }
   };
 

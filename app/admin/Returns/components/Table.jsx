@@ -29,12 +29,10 @@ export default function ReturnTable() {
             ""
           );
           const resOrders = response.data || [];
-    console.log(resOrders)
           if (pageNum.current === 0) {
             setreturnOrders(resOrders);
           } else setreturnOrders((prev) => [...prev, ...resOrders]);
         } catch (error) {
-          console.log(error);
         } finally {
           setLoading(false);
         }  

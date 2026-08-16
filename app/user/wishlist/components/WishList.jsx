@@ -42,7 +42,6 @@ export default function WishList() {
 
         synced.current = true; // 👈 بعد النجاح
       } catch (error) {
-        console.log(error);
       }
     };
 
@@ -55,7 +54,6 @@ export default function WishList() {
         setLoading(true);
         const response = await getRequest(`/api/users/${userId}/favoriteItems`);
         setProducts(response.data);
-        console.log(response.data);
       } else {
         const favoriteItems = JSON.parse(
           localStorage.getItem("favoriteItems") || "[]",
@@ -70,11 +68,9 @@ export default function WishList() {
             };
           }),
         );
-        console.log(items);
         setProducts(items);
       }
     } catch (error) {
-      console.log(error);
     } finally {
       setLoading(false);
     }
