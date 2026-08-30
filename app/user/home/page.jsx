@@ -157,7 +157,7 @@ export default function Homepage() {
         ) : (
           <div className="flex flex-col xs:w-full lg:w-auto items-center gap-5">
             <RecentlyViewed Products={recentWatchedProducts} />
-
+<div className="bg-white w-[300px] h-[500px] rounded-3xl"></div>
           </div>
         )}
         <section className="w-full" >
@@ -238,10 +238,6 @@ export default function Homepage() {
         )}
         <section id="newProducts" className="w-full">
           <div className=" flex justify-between px-5 items-center gap-2 text-center">
-            {/* <div>
-
-              <hr className="w-24 h-1 border-0 rounded-full bg-gradient-to-l from-red-200 via-red-400 to-red-200" />
-            </div> */}
             <div className=" ">
               {/* <button className="bg-gradient-to-l from-red-100 via-red-300 to-red-100  md:text-xs xs:text-[11px] flex items-center justify-center gap-1 rounded-full p-1 font-semibold hover:shadow-md hover:scale-105 duration-200"
             onClick={() => {
@@ -277,7 +273,13 @@ export default function Homepage() {
 
         </section>
       </div>
-
+<section className="my-20">
+  <div className="w-full h-[500px] flex justify-between items-center gap-5">
+    <div className="w-full h-full bg-white rounded-3xl"></div>
+    <div className="w-full h-full bg-black rounded-3xl"></div>
+    <div className="w-full h-full bg-white rounded-3xl"></div>
+  </div>
+</section>
       <section id="newProducts" className="w-full pb-20">
         <div>
           <h1 className="flex items-center font-semibold gap-2 xs:text-base md:text-lg mb-1">

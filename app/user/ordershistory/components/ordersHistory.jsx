@@ -37,10 +37,12 @@ export default function OrdersHistory() {
         },
         ""
       );
+      console.log(res.data);
       setOrders(res.data);
       // setLength(res.data.length)
       setLoading(false);
     } catch (error) {
+      console.log(error);
     }
     finally{
       setLoading(false)

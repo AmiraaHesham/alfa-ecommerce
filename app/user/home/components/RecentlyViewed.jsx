@@ -7,10 +7,10 @@ export default function RecentlyViewed({ Products }) {
     const {locale} = useLanguage()
     const{t}=useLanguage()
     return (
-        <div className="lg:w-[350px] xs:w-full bg-white rounded-3xl">
+        <div className="lg:w-[300px] xs:w-full bg-white rounded-3xl">
             <div className="flex w-full flex-col gap-5 p-5">
                 <h1 className="font-semibold text-lg sticky z-10 py-2 bg-white">{t("recentViewed")} </h1>
-<div className="w-full h-[350px] flex flex-col gap-3 overflow-hidden overflow-y-scroll">
+<div className="w-full h-[250px] flex flex-col gap-3 overflow-hidden overflow-y-scroll">
       {Products?.map((product, index) => {
                     return (
 

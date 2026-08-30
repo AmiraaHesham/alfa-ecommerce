@@ -152,11 +152,11 @@ export default function ProductCard({ productInfo, favorite }) {
   return (
     <div
       id={`div_${productInfo?.itemId}`}
-      className="h-[330px] group relative  bg-white  py-2 w-full rounded-3xl cursor-pointer  hover:scale-105 duration-200   hover:shadow-lg "
+      className="h-[360px] group relative  bg-white  py-2 w-full rounded-3xl cursor-pointer  "
     >
-      <div className="flex flex-col justify-between  items-center h-full">
-        <div className=" relative h-[180px] w-full  ">
-          <div className="absolute h-4 flex justify-center items-center gap-2 z-20 p-3 "
+      <div className="flex flex-col justify-center gap-4  items-center h-full">
+        <div className=" relative h-[200px] w-full  ">
+          <div className="absolute h-4 flex justify-center items-center gap-2 z-20 p-4 "
             onClick={() => {
               setSelectedProductId(productInfo?.itemId);
               navigate.push(`/user/productdetails/${productName}/${productInfo?.itemId}`);
@@ -164,7 +164,7 @@ export default function ProductCard({ productInfo, favorite }) {
           >
 
             {productInfo?.oldPrice ? (
-              <span className="font-semibold flex justify-center items-center  text-center bg-[#8CBC67] text-xs  w-10 h-5 text-white rounded-full">
+              <span className="font-semibold flex justify-center items-center  text-center bg-[#8CBC67] text-xs  w-12 h-6 text-white rounded-full">
                 {" - " +
                   (
                     ((productInfo?.oldPrice - productInfo?.price) /
