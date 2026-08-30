@@ -95,14 +95,14 @@ export default function Homepage() {
           <div className="w-full md:h-[500px] md:px-10 xs:px-3  xs:h-[300px]  flex justify-between items-center gap-5">
             <div className="w-full  h-full bg-gray-200 rounded-2xl animate-pulse"></div>
             <div className="w-full h-full flex flex-col">
-              <div className="flex w-full h-full gap-5">
-                <div className="w-[100px] h-[200px] bg-gray-200 rounded-full animate-pulse"></div>
-                <div className="w-[100px] h-[200px] bg-gray-200 rounded-full animate-pulse"></div>
-                <div className="w-[100px] h-[200px] bg-gray-200 rounded-full animate-pulse"></div>
-                <div className="w-[100px] h-[200px] bg-gray-200 rounded-full animate-pulse"></div>
-                <div className="w-[100px] h-[200px] bg-gray-200 rounded-full animate-pulse"></div>
+              <div className="flex w-full h-full justify-center items-center gap-5">
+                <div className="w-[120px] h-[120px] bg-gray-200 rounded-full animate-pulse"></div>
+                <div className="w-[120px] h-[120px] bg-gray-200 rounded-full animate-pulse"></div>
+                <div className="w-[120px] h-[120px] bg-gray-200 rounded-full animate-pulse"></div>
+                <div className="w-[120px] h-[120px] bg-gray-200 rounded-full animate-pulse"></div>
+                <div className="w-[120px] h-[120px] bg-gray-200 rounded-full animate-pulse"></div>
               </div>
-              <div className="w-full h-[300px] grid grid-cols-2 animate-pulse bg-white p-5 gap-5 rounded-xl">
+              <div className="w-full h-[400px] grid grid-cols-2 animate-pulse bg-white p-5 gap-5 rounded-xl">
                 {Array.from({ length: 4 }).map((_, i) => (
                 <div key={i} className="flex items-center gap-2">
                   <div className="w-[70px] h-[70px] bg-gray-200 rounded-full animate-pulse" />

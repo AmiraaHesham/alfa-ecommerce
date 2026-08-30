@@ -467,7 +467,7 @@ export default function ProductDetails({ itemId }) {
                 onClick={handleShare}
               >
                 <IoShareSocial />
-                <h1>share</h1>
+                <h1>{t("share")} </h1>
               </div>
               <div className="flex items-center cursor-pointer gap-2 hover:text-gray-500"
                 onClick={(e) => {
@@ -477,7 +477,7 @@ export default function ProductDetails({ itemId }) {
               >
                 <FaRegHeart />
 
-                <h1>Add to wishlist</h1>
+                <h1>{t("addToWishList")} </h1>
               </div>
             </div>
           </div>

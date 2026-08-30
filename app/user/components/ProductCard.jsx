@@ -204,38 +204,38 @@ export default function ProductCard({ productInfo, favorite }) {
           </div>
           <div
             className="
-    absolute bottom-0 left-0
-    px-3 w-full
-    opacity-0 invisible
-    transition-all duration-300
-    group-hover:opacity-100 group-hover:visible
-    text-center
-  "
+            absolute bottom-0 left-0
+            px-3 w-full
+            opacity-0 invisible
+            transition-all duration-300
+            group-hover:opacity-100 group-hover:visible
+            text-center
+          "
           >
             <div
               className="
-      flex items-center justify-center
-      w-full
-      bg-[#E76E7D]
-      rounded-b-3xl
-      overflow-hidden
-    "
+              flex items-center justify-center
+              w-full
+              bg-[#E76E7D]
+              rounded-b-3xl
+              overflow-hidden
+            "
             >
 
               {/* Wish List */}
               <button
                 id={`btn_fov_${productInfo?.itemId}`}
                 className="
-        group/wishlist
-        flex items-center justify-center 
-        text-white
-        w-full
-        py-2
-        
-        transition-all duration-200
-        hover:bg-[#CD4354]
-       
-      "
+                group/wishlist
+                flex items-center justify-center
+                text-white
+                w-full
+                py-2
+                text-sm
+                transition-all duration-300
+              hover:bg-[#CD4354]
+
+              "
                 onClick={(e) => {
                   e.stopPropagation();
 
@@ -250,27 +250,22 @@ export default function ProductCard({ productInfo, favorite }) {
               >
                 <IoMdHeart
                   className="
-          w-5 h-5
-          opacity-0
-      invisible
-      scale-75
-      transition-all duration-300
-      group-hover/wishlist:opacity-100
-      group-hover/wishlist:visible
-      group-hover/wishlist:scale-100
-        "
+                  absolute
+                  w-5 h-5
+                  scale-0
+                  transition-all duration-300
+                  translate-y-0
+                  group-hover/wishlist:-translate-y-0
+                  group-hover/wishlist:scale-100
+                "
                 />
 
                 <span
-                  className=" text-xs
-      transition-all duration-300
-      opacity-100
-      visible
-      scale-100
-      group-hover/wishlist:opacity-0
-      group-hover/wishlist:invisible
-      group-hover/wishlist:absolute
-      group-hover/wishlist:scale-75">
+                  className="
+                transition-all duration-300
+                group-hover/wishlist:-translate-y-5
+                group-hover/wishlist:opacity-0
+              ">
                   {t("wishlist")}
                 </span>
               </button>
@@ -280,16 +275,16 @@ export default function ProductCard({ productInfo, favorite }) {
               {productInfo?.available && (
                 <button
                   className="
-    group/cart
-    flex items-center justify-center
-    text-white
-    w-full
-    py-2
-    text-sm
-    transition-all duration-300
-   hover:bg-[#CD4354]
+                  group/cart
+                  flex items-center justify-center
+                  text-white
+                  w-full
+                  py-2
+                  text-sm
+                  transition-all duration-300
+                hover:bg-[#CD4354]
 
-  "
+                "
                   onClick={(e) => {
                     e.stopPropagation();
                     addToCart(productInfo?.itemId);
@@ -298,32 +293,24 @@ export default function ProductCard({ productInfo, favorite }) {
                   {/* Add to Cart */}
                   <span
                     className="
-    text-xs
-      transition-all duration-300
-      opacity-100
-      visible
-      scale-100
-      group-hover/cart:opacity-0
-      group-hover/cart:invisible
-      group-hover/cart:absolute
-      group-hover/cart:scale-75
-    "
+                  transition-all duration-300
+                  group-hover/cart:-translate-y-5
+                  group-hover/cart:opacity-0
+                "
                   >
                     {t("Cart")}
                   </span>
 
                   {/* Cart Icon */}
                   <MdOutlineAddShoppingCart
-                    className="
-      w-5 h-5
-      opacity-0
-      invisible
-      scale-75
-      transition-all duration-300
-      group-hover/cart:opacity-100
-      group-hover/cart:visible
-      group-hover/cart:scale-100
-    "
+                    className=" absolute
+                      w-5 h-5
+                      scale-0
+                      transition-all duration-300
+                      translate-y-0
+                      group-hover/cart:-translate-y-0
+                      group-hover/cart:scale-100
+                    "
                   />
                 </button>
               )}
@@ -331,10 +318,7 @@ export default function ProductCard({ productInfo, favorite }) {
             </div>
           </div>
 
-
         </div>
-
-
 
         <div className="w-full flex flex-col justify-center items-center">
           <h1

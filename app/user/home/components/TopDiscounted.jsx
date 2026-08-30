@@ -44,10 +44,7 @@ export default function TopDiscounted({ Products }) {
           slidesOffsetBefore={16}
           slidesOffsetAfter={16}
           modules={[Navigation, Autoplay]}
-          navigation={{
-            nextEl: ".next-btn1",
-            prevEl: ".prev-btn1",
-          }}
+          navigation={true}
           dir={locale === "ar" ? "rtl" : "ltr"}
           spaceBetween={10}
           className="w-full h-full   "
@@ -66,24 +63,7 @@ export default function TopDiscounted({ Products }) {
           })
       
         }
-      {/* <div className=" flex flex-col justify-center items-center relative my-10">
-            <div className=" p-1 rounded-full absolute flex gap-2 justify-center items-center  ">
-              <button className="prev-btn1 p-1 rounded-full border-2 hover:bg-red-600 border-red-600   hover:text-white text-red-600 text-3xl   font-bold">
-                {locale === "ar" ? (
-                  <IoIosArrowRoundForward className="text-3xl font-bold" />
-                ) : (
-                  <IoIosArrowRoundBack />
-                )}
-              </button>
-              <button className="next-btn1 p-1 rounded-full border-2 hover:bg-red-600 border-red-600   hover:text-white text-red-600 text-3xl   font-bold">
-                {locale === "ar" ? (
-                  <IoIosArrowRoundBack className="text-3xl font-bold" />
-                ) : (
-                  <IoIosArrowRoundForward />
-                )}
-              </button>
-            </div>
-          </div> */}
+     
       </Swiper>
       </div>
 

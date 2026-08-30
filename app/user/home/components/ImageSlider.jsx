@@ -43,7 +43,7 @@ export default function ImageSlider({ sliderImages }) {
                 alt={`Slide ${index + 1}`}
                 fill
                 priority
-                quality={1000}
+                quality={100}
                 sizes="100vw"
                 className="object-fill rounded-3xl"
               />

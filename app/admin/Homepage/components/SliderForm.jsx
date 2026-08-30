@@ -80,10 +80,7 @@ export default function SliderForm({ isFormOpen, setIsFormOpen }) {
     };
  
     const handleSubmit = async () => {
-        if (!photo.imageFile || !itemId) {
-            alert(t("please_fill_all_fields"));
-            return;
-        }
+        
         const formData = new FormData();
         formData.append("imageFile", photo.imageFile);
         formData.append("itemId", itemId);
