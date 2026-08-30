@@ -1,6 +1,6 @@
 "use client";
-import axios from "axios";
 import { useEffect, useState } from "react";
+import { useIdContext } from "../../../../context/idContext";
 import { getProductDetails, getThumbnailUrl } from "../../../../utils/functions";
 import Image from "next/image";
 import { MdOutlineAddShoppingCart } from "react-icons/md";
@@ -11,14 +11,17 @@ import { useLanguage } from "../../../../context/LanguageContext";
 import Swal from "sweetalert2";
 import FeatuerProducts from "../../home/components/FeatuerProducts";
 import { FaQuestionCircle } from "react-icons/fa";
+import { useSearshInputContext } from "../../../../context/searshInputContext";
 import { useRefresh } from "../../../../context/refreshContext";
 export default function ProductDetails({ itemId }) {
   const [count, setCount] = useState(1);
+  const { setSelectedCategoryId } = useIdContext();
   const navigate = useRouter();
   const [loading, setLoading] = useState(true);
   const [imageShow, setImageShow] = useState("");
   const urlImage = process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL;
   const { t } = useLanguage();
+  const { setSelectedSearchInput } = useSearshInputContext();
   const { locale } = useLanguage();
   const { triggerRefresh } = useRefresh();
 
@@ -46,11 +49,11 @@ export default function ProductDetails({ itemId }) {
   });
 
   const productDetails = async () => {
+    setLoading(true);
     try {
-          setLoading(true);
-
       const res = await getProductDetails(itemId);
       const resData = res.data;
+      console.log(resData);
       setProduct((prev) => ({
         ...prev,
         nameEn: resData.nameEn,
@@ -71,17 +74,18 @@ export default function ProductDetails({ itemId }) {
           nameEn: resData.itemCategory.nameEn,
         },
       }));
+      setLoading(false);
       setImageShow(urlImage + resData.mainImageURL);
       getProductsByCategory(resData.itemCategory.itemCategoryId);
     } catch (error) {
+      console.log(error);
+      setLoading(true);
     } finally {
       setLoading(false);
     }
   };
   const getProductsByCategory = async (categoryId) => {
     try {
-            setLoading(true);
-
       const response = await postRequest(
         "/api/public/items/search",
         {
@@ -92,7 +96,10 @@ export default function ProductDetails({ itemId }) {
         "",
       );
       setProducts(response.data);
+      console.log(categoryId);
+      setLoading(false);
     } catch (error) {
+      console.log(error);
     } finally {
       setLoading(false);
     }
@@ -170,33 +177,15 @@ export default function ProductDetails({ itemId }) {
         }
       }
     } catch (error) {
+      console.log(error);
     } finally {
       setLoading(false);
     }
   };
-  const addToRecentlyWatched = async () => {
-   const token = localStorage.getItem("accessToken");
-
-  if (!token) return;
-
-    try{
-     await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/users/recentWatchedItems/${itemId}`,{},
-         {
-        headers: {
-          Authorization: token ? `Bearer ${token}` : undefined,
-        },
-      }
-      )
-    }
-    catch(error){
-    }
-  }
 
   useEffect(() => {
-addToRecentlyWatched()
     productDetails();
-    getProductsByCategory()
-  }, [itemId]);
+  }, []);
   return (
     <div className=" ">
       {loading ? (
@@ -221,6 +210,17 @@ addToRecentlyWatched()
         ))
       ) : (
         <div className="flex lg:flex-row xs:flex-col  gap-10 md:p-10 xs:p-2 ">
+          {loading && (
+            <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+              <Image
+                src="/Images/logo.png"
+                alt=""
+                className="w-[100px] h-[100px]  border-t-transparent rounded-full animate-pulse"
+                width={100}
+                height={100}
+              />
+            </div>
+          )}
           <div className="w-full h-[550px] ">
             <div className="w-full h-[450px] relative  flex justify-center border rounded-md shadow-md  ">
               <Image
@@ -229,19 +229,19 @@ addToRecentlyWatched()
                 fill
                 priority
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                className="object-fill"
+                className="object-contain"
               />
             </div>
             <div className="flex items-center gap-4 mt-5 ">
               {product.img2 ? (
-                <div className="relative w-[100px] h-[100px] border rounded-md  shadow-md cursor-pointer">
+                <div className="relative w-[100px] h-[100px] border rounded-md  shadow-md cursor-pointe">
                   <Image
                     src={urlImage + getThumbnailUrl(product.img2)}
                     alt="mainImage"
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     priority
-                    className="object-fill cursor-pointer"
+                    className="object-containr cursor-pointe"
                     onClick={() => {
                       setImageShow(urlImage + product.img2);
                     }}
@@ -252,14 +252,14 @@ addToRecentlyWatched()
               )}
 
               {product.img3 ? (
-                <div className="relative w-[100px] h-[100px] border rounded-md  shadow-md cursor-pointer">
+                <div className="relative w-[100px] h-[100px] border rounded-md  shadow-md cursor-pointe">
                   <Image
                     src={urlImage + getThumbnailUrl(product.img3)}
                     alt="mainImage"
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     priority
-                    className="object-fill cursor-pointer"
+                    className="object-contain cursor-pointe"
                     onClick={() => {
                       setImageShow(urlImage + product.img3);
                     }}
@@ -268,14 +268,14 @@ addToRecentlyWatched()
               ) : (
                 ""
               )}
-              <div className="relative w-[100px] h-[100px] border rounded-md  shadow-md cursor-pointerr">
+              <div className="relative w-[100px] h-[100px] border rounded-md  shadow-md cursor-pointe">
                 <Image
                   src={urlImage + getThumbnailUrl(product.mainImage)}
                   alt="mainImage"
                   fill
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   priority
-                  className="object-fill cursor-pointer "
+                  className="object-contain cursor-pointe "
                   onClick={() => {
                     setImageShow(urlImage + product.mainImage);
                   }}
@@ -296,15 +296,12 @@ addToRecentlyWatched()
                   </h1>
                 </span>
                 <span
-                  className="text-red-600 cursor-pointerr md:text-base xs:text-xs hover:shadow-sm hover:shadow-red-700 px-4 rounded-md  "
-                   onClick={() => {
-                  navigate.push(
-                    "/user/products/category/" +
-                    product.category.nameEn +
-                    "/" +
-                    product.category.itemCategoryId,
-                  );
-                }}
+                  className="text-red-600 cursor-pointer md:text-base xs:text-xs hover:shadow-sm hover:shadow-red-700 px-4 rounded-md  "
+                  onClick={() => {
+                    setSelectedCategoryId(product.category.id);
+                    setSelectedSearchInput("");
+                    navigate.push("/user/search");
+                  }}
                 >
                   {locale === "ar"
                     ? product.category.nameAr
@@ -401,12 +398,11 @@ addToRecentlyWatched()
   <hr />
       <div className="mt-24 ">
         <h1 className="md:text-2xl xs:text-lg flex items-center gap-3 font-bold mx-10 ">
-          <FaQuestionCircle className="text-red-600" />
           {t("You_might_like")}
         </h1>
       
-<div className="xs:px-5 md:px-0">
-        <FeatuerProducts Products={products} type={"FeaturedProducts"} />
+<div className="px-5">
+        <FeatuerProducts Products={products} type={"MoreRecommended"} />
 
 </div>
       </div>

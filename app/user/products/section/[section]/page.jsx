@@ -91,7 +91,7 @@ export default function ProductsBySection({ params }) {
   }, [sortBy, ascending]);
 
   return (
-    <div className=" w-full ">
+    <div className=" w-full">
       <div className="flex flex-col items-start justify-start  ">
 
 
@@ -155,7 +155,7 @@ export default function ProductsBySection({ params }) {
           </div>
 
           {loading ? (
-            <div className="grid xl:grid-cols-6 lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-1 gap-5 ">
+            <div className="grid xl:grid-cols-6 lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-1 gap-5">
               {[...Array(6)].map((_, index) => (
                 <div
                   key={`skeleton-${index}`}
@@ -166,7 +166,7 @@ export default function ProductsBySection({ params }) {
           ) : products.length != 0 ? (
             <div>
               <div
-                className={`grid xl:grid-cols-6 lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 p-2 gap-5`}
+                className="grid xl:grid-cols-6 lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 p-2 gap-5"
               >
                 {section === "featured" || section === "newProducts"? products.map((product, index) => (
                   <div key={index}>
