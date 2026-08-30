@@ -10,8 +10,8 @@ import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import { useState } from "react";
 import { getThumbnailUrl } from "../../../utils/functions";
-import { IoMdHeart, IoMdHeartEmpty } from "react-icons/io";
-
+import { IoMdCart, IoMdHeart, IoMdHeartEmpty } from "react-icons/io";
+import StarRating from "./StarRating"
 export default function ProductCard({ productInfo, favorite }) {
   const { setSelectedProductId } = useIdContext();
   const navigate = useRouter();
@@ -27,7 +27,7 @@ export default function ProductCard({ productInfo, favorite }) {
       if (userId) {
         if (productInfo.available) {
           await postRequest(
-            `/api/shopCarts/${userId}/addLine`,
+            `/api/shopCarts/addLine`,
             {
               itemId: productId,
               quantity: 1,
@@ -152,33 +152,36 @@ export default function ProductCard({ productInfo, favorite }) {
   return (
     <div
       id={`div_${productInfo?.itemId}`}
-      className="h-[270px] bg-white border border-gray-300 shadow-md w-full rounded-md cursor-pointer  hover:border-b-[7px] hover:border-b-red-600  hover:scale-105 duration-200   hover:shadow-lg "
+      className="h-[330px] group relative  bg-white  py-2 w-full rounded-3xl cursor-pointer  hover:scale-105 duration-200   hover:shadow-lg "
     >
-      <div className="flex flex-col h-full gap-2 ">
-        <div className="relative h-[150px] w-full  ">
-          <button
-            id={`btn_fov_${productInfo?.itemId}`}
-            className={`inline-flex items-center hover:text-red-600 m-1 rounded-full htransition  absolute right-0 p-1 z-20 text-lg bg-gray-100   ${favorite === true ? "text-red-600" : "text-gray-400"
-              } rounded-full`}
+      <div className="flex flex-col justify-between  items-center h-full">
+        <div className=" relative h-[180px] w-full  ">
+          <div className="absolute h-4 flex justify-center items-center gap-2 z-20 p-3 "
             onClick={() => {
-              const btn_fov = document.querySelector(
-                `#btn_fov_${productInfo?.itemId}`,
-              );
-              if (favorite === true) {
-                btn_fov.classList.add("text-red-600");
-                deleteFavoriteItems(productInfo?.itemId);
-              } else {
-                btn_fov.classList.remove("text-gray-400");
-                addFavoriteItems(productInfo?.itemId);
-                btn_fov.classList.add("text-red-600");
-              }
               setSelectedProductId(productInfo?.itemId);
+              navigate.push(`/user/productdetails/${productName}/${productInfo?.itemId}`);
             }}
           >
-            <IoMdHeart className="w-5 h-5" />
-          </button>
-          <div className="w-full h-full my-2 flex justify-center items-center   z-10">
-            <div className="h-full w-[200px] relative bg-gray-100">
+
+            {productInfo?.oldPrice ? (
+              <span className="font-semibold flex justify-center items-center  text-center bg-[#8CBC67] text-xs  w-10 h-5 text-white rounded-full">
+                {" - " +
+                  (
+                    ((productInfo?.oldPrice - productInfo?.price) /
+                      productInfo?.oldPrice) *
+                    100
+                  ).toFixed(0)}
+                %
+              </span>
+            ) : (
+              ""
+            )}
+
+          </div>
+          <div className="w-full h-full flex justify-center px-3 items-center z-10">
+            <div className=" h-full w-full relative  bg-gray-100 rounded-3xl">
+
+
               <Image
                 src={
                   process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +
@@ -187,9 +190,9 @@ export default function ProductCard({ productInfo, favorite }) {
                 alt=""
                 fill
                 priority
-                quality={100}
+                quality={200}
                 sizes="100vw"
-                className="object-fill rounded-md"
+                className="object-fill rounded-3xl"
                 onClick={() => {
                   setSelectedProductId(productInfo?.itemId);
                   navigate.push(`/user/productdetails/${productName}/${productInfo?.itemId}`);
@@ -197,102 +200,198 @@ export default function ProductCard({ productInfo, favorite }) {
               />
             </div>
           </div>
+          <div
+            className="
+    absolute bottom-0 left-0
+    px-3 w-full
+    opacity-0 invisible
+    transition-all duration-300
+    group-hover:opacity-100 group-hover:visible
+    text-center
+  "
+          >
+            <div
+              className="
+      flex items-center justify-center
+      w-full
+      bg-[#E76E7D]
+      rounded-b-3xl
+      overflow-hidden
+    "
+            >
+
+              {/* Wish List */}
+              <button
+                id={`btn_fov_${productInfo?.itemId}`}
+                className="
+        group/wishlist
+        flex items-center justify-center 
+        text-white
+        w-full
+        py-2
+        
+        transition-all duration-200
+        hover:bg-[#CD4354]
+       
+      "
+                onClick={(e) => {
+                  e.stopPropagation();
+
+                  if (favorite === true) {
+                    deleteFavoriteItems(productInfo?.itemId);
+                  } else {
+                    addFavoriteItems(productInfo?.itemId);
+                  }
+
+                  setSelectedProductId(productInfo?.itemId);
+                }}
+              >
+                <IoMdHeart
+                  className="
+          w-5 h-5
+          opacity-0
+      invisible
+      scale-75
+      transition-all duration-300
+      group-hover/wishlist:opacity-100
+      group-hover/wishlist:visible
+      group-hover/wishlist:scale-100
+        "
+                />
+
+                <span
+                  className=" text-xs
+      transition-all duration-300
+      opacity-100
+      visible
+      scale-100
+      group-hover/wishlist:opacity-0
+      group-hover/wishlist:invisible
+      group-hover/wishlist:absolute
+      group-hover/wishlist:scale-75">
+                  {t("wishlist")}
+                </span>
+              </button>
+
+
+              {/* Add To Cart */}
+              {productInfo?.available && (
+                <button
+                  className="
+    group/cart
+    flex items-center justify-center
+    text-white
+    w-full
+    py-2
+    text-sm
+    transition-all duration-300
+   hover:bg-[#CD4354]
+
+  "
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    addToCart(productInfo?.itemId);
+                  }}
+                >
+                  {/* Add to Cart */}
+                  <span
+                    className="
+    text-xs
+      transition-all duration-300
+      opacity-100
+      visible
+      scale-100
+      group-hover/cart:opacity-0
+      group-hover/cart:invisible
+      group-hover/cart:absolute
+      group-hover/cart:scale-75
+    "
+                  >
+                    {t("Cart")}
+                  </span>
+
+                  {/* Cart Icon */}
+                  <MdOutlineAddShoppingCart
+                    className="
+      w-5 h-5
+      opacity-0
+      invisible
+      scale-75
+      transition-all duration-300
+      group-hover/cart:opacity-100
+      group-hover/cart:visible
+      group-hover/cart:scale-100
+    "
+                  />
+                </button>
+              )}
+
+            </div>
+          </div>
 
 
         </div>
 
-        <div className="px-2 mt-3 w-full flex items-center flex-col ">
-          {/* <div className="w-full flex justify-end items-end">
-            
-          </div> */}
-
-          <div className="w-full flex justify-between items-center">
-            {/* <div> */}
-            <h1
-              className="text-sm font-bold"
-              onClick={() => {
-                setSelectedProductId(productInfo?.itemId);
-                  navigate.push(`/user/productdetails/${productName}/${productInfo?.itemId}`);
-
-              }}
-            >
-              {productName?.length <= 29
-                ? productName
-                : productName?.slice(0, 29) + " ..."}
-            </h1>
 
 
+        <div className="w-full flex flex-col justify-center items-center">
+          <h1
+            className="text-sm font-semibold"
+            onClick={() => {
+              setSelectedProductId(productInfo?.itemId);
+              navigate.push(`/user/productdetails/${productName}/${productInfo?.itemId}`);
+
+            }}
+          >
+            {productName?.length <= 29
+              ? productName
+              : productName?.slice(0, 29) + " ..."}
+          </h1>
+          <div className="flex justify-center items-cente text-gray-500 text-sm">
+            {locale === "ar" ? productInfo?.itemCategory?.nameAr : productInfo?.itemCategory?.nameEn}
+            {" "}
           </div>
 
         </div>
+
+        <div>
+          <StarRating rating={10} maxRating={10} />
+        </div>
+
         <div className="w-full">
-          <div className="flex w-full justify-between items-center  px-2">
+          <div className="flex w-full justify-center items-center">
             {productInfo?.available ? (
               <div
                 className="flex flex-col w-full"
 
               >
-                <div className=" h-4 flex justify-start items-center gap-2 mt-3"
-                  onClick={() => {
-                    setSelectedProductId(productInfo?.itemId);
-                  navigate.push(`/user/productdetails/${productName}/${productInfo?.itemId}`);
-                  }}
-                >
+
+                <div className="flex  justify-center gap-2 items-center ">
                   {productInfo?.oldPrice ? (
                     <div className="flex gap-2">
-                      <span className=" font-semibold line-through text-sm  flex text-gray-400">
+                      <span className=" line-through text-sm  flex text-gray-400">
                         {productInfo?.oldPrice.toLocaleString("en-US")}{" "}{t("currency")}
                       </span>
                     </div>
                   ) : (
                     <span className="p-[11px]"></span>
                   )}
-                  {productInfo?.oldPrice ? (
-                    <span className="font-semibold  text-center bg-red-600 text-[10px] p-[2px]  text-white rounded-md">
-                      {" - " +
-                        (
-                          ((productInfo?.oldPrice - productInfo?.price) /
-                            productInfo?.oldPrice) *
-                          100
-                        ).toFixed(0)}
-                      %
-                    </span>
-                  ) : (
-                    ""
-                  )}
-
-                </div>
-                <div className="flex  justify-between  items-center ">
-                  <span className="text-base  font-bold ">
-                    {productInfo?.price.toLocaleString("en-US")} {t("currency")}
+                  <span className=" font-semibold text-red-600 ">
+                    {productInfo?.price.toLocaleString("en-US")}.00 {t("currency")}
                   </span>
-                  {productInfo?.available ? (
-                    <div className="my-1">
-                      <button
-                        className="text-lg  text-white bg-red-600 p-[5px]   hover:bg-red-700 hover:text-white transition duration-200 hover:scale-105 rounded-3xl"
-                        onClick={() => {
-                          addToCart(productInfo?.itemId);
-                        }}
-                      >
-                        <MdOutlineAddShoppingCart />
-                      </button>
-                    </div>
 
-                  ) : (
-                    ""
-                  )}
                 </div>
               </div>
-            ) : (
-              ""
-            )}
-            {productInfo?.available ? (
-              ""
             ) : (
               <span className="text-red-600 mt-10 text-xs ">
                 {t("Currently_unavailable")}
               </span>
             )}
+            {/* {productInfo?.available ? (
+              ""
+            ) : (
+             
+            )} */}
 
           </div>
 

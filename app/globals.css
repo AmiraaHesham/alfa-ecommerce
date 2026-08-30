@@ -15,7 +15,6 @@
 } */
 
 body {
-  font-family: 'cairo', sans-serif;
   cursor: default;
   /* height: 100%;
   overflow: hidden;
@@ -29,39 +28,77 @@ body {
     text-wrap: balance;
   }
 }
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary) transparent;
+}
 
+/* Chrome / Edge / Safari */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  opacity: 0.8;
+}
+
+/* Scrollbar أفقي */
+::-webkit-scrollbar:horizontal {
+  height: 7px;
+}
 /* * {
   outline: 1px solid red;
 } */
 /* إخفاء الأيقونة الافتراضية */
 .swiper-button-prev,
 .swiper-button-next {
-  color: rgb(255,255, 255) !important;
-  background-color: rgba(0, 0, 0, 0.612) !important;
-  border: 1px solid rgb(255, 255, 255) !important;
-  border-radius: 50% !important;
+  color: rgb(84, 81, 81) !important;
   width: 40px !important;
   height: 40px !important;
-  
+    opacity: 0 !important;
+  visibility: hidden !important;
+  transition: opacity 0.3s ease !important;
   
 }
 
 .swiper-button-prev svg,
 .swiper-button-next svg {
-  width: 15px !important;
-  height: 15px !important;
+  width: 30px !important;
+  height: 30px !important;
 }
-
+.swiper:hover .swiper-button-prev,
+.swiper:hover .swiper-button-next {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
 .swiper-pagination-bullet {
-  width: 8px !important;
-  height: 8px !important;
+  width: 10px !important;
+  height: 10px !important;
   border-radius: 999px !important;
-  background-color: #d1d5db !important;
+  background-color: #bcc0c6 !important;
   opacity: 1 !important;
   transition: all 0.3s ease !important;
 }
-
+.swiper-pagination {
+  background: white;
+  width: auto !important;
+  border-radius: 999px !important;
+  margin: 5px;
+}
 .swiper-pagination-bullet-active {
-  width: 15px !important;
-  background: #8b0202 !important;
+  width: 10px !important;
+  height: 10px !important;
+  background: #403f3f !important;
 }

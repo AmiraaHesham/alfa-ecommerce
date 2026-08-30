@@ -9,10 +9,10 @@ module.exports = {
       'xs':'320px',
    
      },
-      fontFamily: {
-        sans: ['var(--font-cairo)', 'sans-serif'],
-        Cairo: ['var(--font-cairo)'],
-      },
+      // fontFamily: {
+      //   sans: ['var(--font-cairo)', 'sans-serif'],
+      //   Cairo: ['var(--font-cairo)'],
+      // },
     },
   },
   plugins: [],

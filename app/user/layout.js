@@ -7,7 +7,6 @@ import { getRequest } from "../../utils/requestsUtils";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 
-
 export default function UserLayout({ children }) {
   const [whatsAppUrl, setWhatsAppUrl] = useState()
   const [role, setRole] = useState('')
@@ -55,7 +54,7 @@ export default function UserLayout({ children }) {
                 />
               </a>
             </main>
-            <footer id="footer" className="w-full  bg-white border-t-2">
+            <footer id="footer" className="w-full  bg-white">
               <Footer />
             </footer>
           </div>

@@ -10,7 +10,7 @@ import Link from "next/link";
 import { FaEye } from "react-icons/fa";
 import { toast } from "react-toastify";
 
-export default function SignIn({ popUp, setShowSignUp, setShowSignIn }) {
+export default function SignIn({ popUp, setShowSignUp, setShowSignIn,setOpenForm }) {
   const navigate = useRouter();
 
   const [username, setUsername] = useState("");
@@ -61,6 +61,7 @@ export default function SignIn({ popUp, setShowSignUp, setShowSignIn }) {
         navigate.replace("/admin/Dashboard");
       } else if (popUp) {
         router.refresh();
+        setOpenForm(false)
       } else {
         navigate.replace("/user/home");
       }
@@ -117,27 +118,14 @@ export default function SignIn({ popUp, setShowSignUp, setShowSignIn }) {
             )}
           </h4>
         </div>
-        <div className="flex items-center gap-1 mx-5  ">
-          <span className="text-red-600 text-2xl ">
-            <MdLanguage />
-          </span>
-
-          <select
-            className="w-[80px] rounded text-white bg-red-700  py-1  px-1"
-            value={locale} // افترض أن عندك متغير اسمه lang (مثل 'AR' أو 'EN')
-            onChange={(e) => {
-              const newLang = e.target.value;
-              setLocale(newLang);
-            }}
-          >
-            <option value="ar" className="bg-white text-red-500">
-              العربية
-            </option>
-            <option value="en" className="bg-white text-red-500">
-              English
-            </option>
-          </select>
-        </div>
+       <button
+          onClick={() => {
+            const newLocale = locale === "ar" ? "en" : "ar";
+            setLocale(newLocale);
+          }}
+        >
+          <MdLanguage className="w-6 h-6 text-red-600" />
+        </button>
       </div>
       <div className="flex justify-center items-center  mt-20">
         <div className="flex flex-col gap-7 w-[80%]">

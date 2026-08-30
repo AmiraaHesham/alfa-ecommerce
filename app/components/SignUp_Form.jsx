@@ -11,7 +11,7 @@ import Select from "react-select";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 
-export default function SignUp({ popUp, setShowSignIn }) {
+export default function SignUp({ popUp, setShowSignIn ,setOpenForm}) {
   const navigate = useRouter();
   const { t } = useLanguage();
   const [username, setUsername] = useState("");
@@ -94,7 +94,9 @@ const router = useRouter();
             response.data.userDetails.governorate.governorateId,
           );
 
-router.refresh();        }
+router.refresh();    
+setOpenForm(false)
+}
       } else {
         const response = await axios.post(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/signup`,
@@ -144,27 +146,14 @@ router.refresh();        }
             {t("signupWelcomeMessage")}
           </h4>
         </div>
-        <div className="flex items-center gap-1 mx-5  ">
-          <span className="text-red-600 text-2xl ">
-            <MdLanguage />
-          </span>
-
-          <select
-            className=" rounded-md text-white outline-none bg-red-700  py-1  px-2"
-            value={locale} // افترض أن عندك متغير اسمه lang (مثل 'AR' أو 'EN')
-            onChange={(e) => {
-              const newLang = e.target.value;
-              setLocale(newLang);
-            }}
-          >
-            <option value="ar" className="bg-white text-red-500">
-              العربية
-            </option>
-            <option value="en" className="bg-white text-red-500">
-              English
-            </option>
-          </select>
-        </div>
+       <button
+          onClick={() => {
+            const newLocale = locale === "ar" ? "en" : "ar";
+            setLocale(newLocale);
+          }}
+        >
+          <MdLanguage className="w-6 h-6 text-red-600" />
+        </button>
       </div>
 
       <div className="flex justify-center items-center  mt-5">

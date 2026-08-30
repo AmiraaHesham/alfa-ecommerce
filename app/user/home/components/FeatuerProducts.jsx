@@ -22,64 +22,34 @@ export default function FeatuerProducts({ Products, type }) {
   return (
     <div className="flex  justify-center items-center  relative  ">
       <div className=" w-full">
-        <Swiper
-          key={locale}
-          slidesPerView={"auto"}
-          slidesOffsetBefore={16}
-          slidesOffsetAfter={16}
-          modules={[Navigation, Autoplay]}
-          navigation={{
-            nextEl: ".next-btn1",
-            prevEl: ".prev-btn1",
-          }}
-          dir={locale === "ar" ? "rtl" : "ltr"}
-          spaceBetween={10}
-          className="w-full h-full rounded-xl flex   "
-        >
-          {type === "FeaturedProducts" || type === "newProduct"? Products.map((product) => {
-            return (
-              <SwiperSlide
-                key={product.itemId}
-                className=" mt-4 !w-[220px] rounded-lg "
-              >
-                <div className="rounded-lg h-[270px] flex justify-center  cursor-pointer">
+
+        {type === "MoreRecommended" ?
+          <div className="grid  xl:grid-cols-6 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 ">
+            {Products.map((product,index) => {
+              return (
+
+                <div  key={index} className="cursor-pointer">
                   <ProductCard productInfo={product} favorite={false} />
                 </div>
-              </SwiperSlide>
-            );
-          })
-        :Products?.map((product,index) => {
-            return (
-              <SwiperSlide
-                key={index}
-                className=" mt-4 !w-[220px] rounded-lg "
-              >
-                <div className="rounded-lg h-[370px] flex justify-center  cursor-pointer">
-                  <ProductCard productInfo={product.item} favorite={false} />
-                </div>
-              </SwiperSlide>
-            );
-          })
-        }
-          <div className=" flex flex-col justify-center items-center relative my-10">
-            {/* <div className=" p-1 rounded-full absolute flex gap-2 justify-center items-center  ">
-              <button className="prev-btn1 p-1 rounded-full border-2 hover:bg-red-600 border-red-600   hover:text-white text-red-600 text-3xl   font-bold">
-                {locale === "ar" ? (
-                  <IoIosArrowRoundForward className="text-3xl font-bold" />
-                ) : (
-                  <IoIosArrowRoundBack />
-                )}
-              </button>
-              <button className="next-btn1 p-1 rounded-full border-2 hover:bg-red-600 border-red-600   hover:text-white text-red-600 text-3xl   font-bold">
-                {locale === "ar" ? (
-                  <IoIosArrowRoundBack className="text-3xl font-bold" />
-                ) : (
-                  <IoIosArrowRoundForward />
-                )}
-              </button>
-            </div> */}
+
+              );
+            })}
           </div>
-        </Swiper>
+
+          :
+          <div className={`grid ${type === "FeaturedProducts" ?"xl:grid-cols-4 2xl:grid-cols-5 lg:grid-cols-3 md:grid-cols-3 xs:grid-cols-2" :"xl:grid-cols-3 2xl:grid-cols-3 lg:grid-cols-3 md:grid-cols-3 xs:grid-cols-2"} gap-3 `}>
+
+            {Products?.map((product, index) => {
+              return (
+
+                <div  key={index} className="rounded-lg h-[370px] flex justify-center  cursor-pointer">
+                  <ProductCard productInfo={product} favorite={false} />
+                </div>
+              );
+            })
+            }
+          </div>
+}
       </div>
     </div>
   );
