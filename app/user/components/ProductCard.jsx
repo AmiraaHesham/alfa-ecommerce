@@ -184,13 +184,15 @@ export default function ProductCard({ productInfo, favorite }) {
 
               <Image
                 src={
-                  process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +
-                  getThumbnailUrl(productInfo?.mainImageURL)
+                  `${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +
+                  getThumbnailUrl(productInfo?.mainImageURL) || ""
+                  }`
+
                 }
                 alt=""
                 fill
                 priority
-                quality={200}
+                quality={100}
                 sizes="100vw"
                 className="object-fill rounded-3xl"
                 onClick={() => {
@@ -383,7 +385,7 @@ export default function ProductCard({ productInfo, favorite }) {
                 </div>
               </div>
             ) : (
-              <span className="text-red-600 mt-10 text-xs ">
+              <span className="text-red-600  text-xs ">
                 {t("Currently_unavailable")}
               </span>
             )}

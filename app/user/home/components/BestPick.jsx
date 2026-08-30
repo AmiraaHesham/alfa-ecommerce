@@ -21,7 +21,7 @@ export default function BestPick({ Products }) {
                             } alt=""
                                 fill
                                 priority
-                                quality={200}
+                                quality={100}
                                 sizes="100vw"
                                 className="object-fill rounded-full" />
                         </div>

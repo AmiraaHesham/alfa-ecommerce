@@ -58,7 +58,7 @@ export default function Cart({ setShowSignUp }) {
         await Promise.all(
           cart.map((item) =>
             postRequest(
-              `/api/shopCarts/${userId}/addLine`,
+              `/api/shopCarts/addLine`,
               {
                 itemId: item.id,
                 quantity: item.quantity,
@@ -82,7 +82,7 @@ export default function Cart({ setShowSignUp }) {
       if (userId) {
         setLoading(true);
 
-        const res = await getRequest(`/api/shopCarts/${userId}`);
+        const res = await getRequest("/api/shopCarts");
         const rseData = res.data;
         setItems(rseData.itemLines);
         setItemNum(rseData.itemLines.length);
@@ -132,7 +132,7 @@ export default function Cart({ setShowSignUp }) {
   const changeQuantity = async (itemLineId, itemId, newQuantity) => {
     if (userId) {
       await postRequest(
-        `/api/shopCarts/${userId}/changeQuantity`,
+        `/api/shopCarts/changeQuantity`,
         {
           itemLineId: itemLineId,
           quantity: newQuantity,
@@ -157,7 +157,7 @@ export default function Cart({ setShowSignUp }) {
   const deleteItemFormCart = async (itemLineId, productID) => {
     if (userId) {
       await deleteRequest(
-        `/api/shopCarts/${userId}/deleteLine/${itemLineId}`,
+        `/api/shopCarts/deleteLine/${itemLineId}`,
         t("message"),
       );
       getProductInCart();
@@ -236,7 +236,7 @@ export default function Cart({ setShowSignUp }) {
           className="md:text-sm xs:text-xs font-semibold text-red-600 flex items-center gap-2"
         >
           <h1>{t("continueShopping")} </h1>
-          <span className="mt-2">
+          <span className="">
             {locale === "ar" ? <FaArrowLeft /> : <FaArrowRight />}
           </span>
         </Link>

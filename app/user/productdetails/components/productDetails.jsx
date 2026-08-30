@@ -1,18 +1,23 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useIdContext } from "../../../../context/idContext";
 import { getProductDetails, getThumbnailUrl } from "../../../../utils/functions";
 import Image from "next/image";
-import { MdOutlineAddShoppingCart } from "react-icons/md";
 import { useRouter } from "next/navigation";
 import { postRequest } from "../../../../utils/requestsUtils";
 import "aos/dist/aos.css";
 import { useLanguage } from "../../../../context/LanguageContext";
-import Swal from "sweetalert2";
-import FeatuerProducts from "../../home/components/FeatuerProducts";
-import { FaQuestionCircle } from "react-icons/fa";
 import { useSearshInputContext } from "../../../../context/searshInputContext";
 import { useRefresh } from "../../../../context/refreshContext";
+import StarRating from "../../components/StarRating";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Navigation } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import ProductCard from "../../components/ProductCard";
+import { IoShareSocial } from "react-icons/io5";
+import { FaRegHeart } from "react-icons/fa6";
 export default function ProductDetails({ itemId }) {
   const [count, setCount] = useState(1);
   const { setSelectedCategoryId } = useIdContext();
@@ -24,7 +29,7 @@ export default function ProductDetails({ itemId }) {
   const { setSelectedSearchInput } = useSearshInputContext();
   const { locale } = useLanguage();
   const { triggerRefresh } = useRefresh();
-
+  const swiperRef = useRef(null);
   const [products, setProducts] = useState([]);
   const [product, setProduct] = useState({
     nameEn: "",
@@ -48,6 +53,33 @@ export default function ProductDetails({ itemId }) {
     img3file: "",
   });
 
+  const addFavoriteItems = async () => {
+    if (userId) {
+      await postRequest(
+        `/api/users/${userId}/favoriteItems/${itemId}`,
+        "",
+        "",
+      );
+    } else {
+      const product = {
+        id: productId,
+      };
+
+      let favoriteItems = JSON.parse(
+        localStorage.getItem("favoriteItems") || "[]",
+      );
+
+      const existingItem = favoriteItems.find((item) => item.id === productId);
+
+      if (existingItem) {
+      } else {
+        favoriteItems.push(product);
+        toast.success("تم اضافة المنتج بنجاح");
+      }
+
+      localStorage.setItem("favoriteItems", JSON.stringify(favoriteItems));
+    }
+  };
   const productDetails = async () => {
     setLoading(true);
     try {
@@ -75,13 +107,26 @@ export default function ProductDetails({ itemId }) {
         },
       }));
       setLoading(false);
-      setImageShow(urlImage + resData.mainImageURL);
+      // setImageShow(urlImage + resData.mainImageURL);
       getProductsByCategory(resData.itemCategory.itemCategoryId);
     } catch (error) {
       console.log(error);
       setLoading(true);
     } finally {
       setLoading(false);
+    }
+  };
+  const handleShare = async () => {
+    const productUrl = window.location.href
+
+    if (navigator.share) {
+      await navigator.share({
+        title: product.nameEn,
+        url: productUrl,
+      });
+    } else {
+      await navigator.clipboard.writeText(productUrl);
+      toast.success("Link copied!");
     }
   };
   const getProductsByCategory = async (categoryId) => {
@@ -106,12 +151,12 @@ export default function ProductDetails({ itemId }) {
   };
   const userId = typeof window !== "undefined" ? localStorage.id : "";
 
-  const addToCart = async () => {
+  const addToCart = async (buyNow) => {
     try {
       if (userId) {
         if (product.available) {
           await postRequest(
-            `/api/shopCarts/${userId}/addLine`,
+            `/api/shopCarts/addLine`,
             {
               itemId: itemId,
               quantity: count,
@@ -120,25 +165,12 @@ export default function ProductDetails({ itemId }) {
           );
         }
         triggerRefresh();
-        const result = await Swal.fire({
-          icon: "success",
-          title: t("تم إضافة المنتج الى سلة التسوق"),
-          showCancelButton: true,
-          confirmButtonText: t("goToCart"),
-          cancelButtonText: t("continueShopping"),
-          customClass: {
-            popup: "rounded-xl shadow-lg border border-gray-200 p-6",
-            title: "text-xl font-bold text-gray-800 mb-2",
-            content: "text-sm text-gray-600 mb-4",
-            confirmButton:
-              "bg-red-600 hover:bg-red-500 text-white font-medium px-6 py-2 rounded-lg",
-            cancelButton:
-              "bg-gray-500 hover:bg-gray-400 text-w  font-medium px-6 py-2 rounded-lg ml-2",
-          },
-        });
-        if (result.isConfirmed) {
-          navigate.push("/user/cart");
+        if (buyNow) {
+          navigate.push("/user/cart")
         }
+
+
+
       } else {
         const product = {
           id: itemId,
@@ -156,25 +188,7 @@ export default function ProductDetails({ itemId }) {
         }
         triggerRefresh();
         localStorage.setItem("cart", JSON.stringify(cart));
-        const result = await Swal.fire({
-          icon: "success",
-          title: t("تم إضافة المنتج الى سلة التسوق"),
-          showCancelButton: true,
-          confirmButtonText: t("goToCart"),
-          cancelButtonText: t("continueShopping"),
-          customClass: {
-            popup: "rounded-xl shadow-lg border border-gray-200 p-6",
-            title: "text-xl font-bold text-gray-800 mb-2",
-            content: "text-sm text-gray-600 mb-4",
-            confirmButton:
-              "bg-red-600 hover:bg-red-500 text-white font-medium px-6 py-2 rounded-lg",
-            cancelButton:
-              "bg-gray-500 hover:bg-gray-400 text-w  font-medium px-6 py-2 rounded-lg ml-2",
-          },
-        });
-        if (result.isConfirmed) {
-          navigate.push("/user/cart");
-        }
+
       }
     } catch (error) {
       console.log(error);
@@ -209,7 +223,7 @@ export default function ProductDetails({ itemId }) {
           </div>
         ))
       ) : (
-        <div className="flex lg:flex-row xs:flex-col  gap-10 md:p-10 xs:p-2 ">
+        <div className="flex lg:flex-row xs:flex-col w-full justify-center bg-white  gap-10 md:p-10 xs:p-2 ">
           {loading && (
             <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
               <Image
@@ -221,29 +235,83 @@ export default function ProductDetails({ itemId }) {
               />
             </div>
           )}
-          <div className="w-full h-[550px] ">
-            <div className="w-full h-[450px] relative  flex justify-center border rounded-md shadow-md  ">
-              <Image
-                src={imageShow}
-                alt="mainImage"
-                fill
-                priority
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                className="object-contain"
-              />
-            </div>
-            <div className="flex items-center gap-4 mt-5 ">
+          <div className="lg:w-1/2 xs:w-full h-[500px] relative">
+            {product.oldPrice ? (
+              <span className="absolute z-10  font-semibold m-3 text-sm py-1  w-[60px] text-center bg-[#8CBC67]  text-white rounded-full">
+                -
+                {(
+                  ((product.oldPrice - product.price) / product.oldPrice) *
+                  100
+                ).toFixed(0)}
+                %
+              </span>
+            ) : (
+              ""
+            )}
+            <Swiper
+              key={locale}
+              slidesPerView={1}
+              navigation={true}
+              pagination={true}
+              modules={[Navigation, Autoplay]}
+              onSwiper={(swiper) => {
+                swiperRef.current = swiper;
+              }}
+              dir={locale === "ar" ? "rtl" : "ltr"}
+              spaceBetween={10}
+              className="w-full h-full  select-none "
+            >
+
+              {/* <div className="w-full h-full relative  flex justify-center  rounded-3xl    "> */}
+
+                <SwiperSlide>
+                  <Image
+                    src={urlImage + product.mainImage}
+                    alt="mainImage"
+                    fill
+                    priority
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className=" rounded-3xl"
+                  />
+                </SwiperSlide>
+                {product.img3 ? (
+                  <SwiperSlide>
+                    <Image
+                      src={urlImage + product.img3}
+                      alt="mainImage"
+                      fill
+                      priority
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      className=" rounded-3xl"
+                    />
+                  </SwiperSlide>) : ""}
+                {product.img2 ? (
+                  <SwiperSlide>
+                    <Image
+                      src={ urlImage + product.img2}
+                      alt="mainImage"
+                      fill
+                      priority
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      className=" rounded-3xl"
+                    />
+                  </SwiperSlide>) : ""}
+              {/* </div> */}
+
+
+            </Swiper>
+            <div className="flex flex-col items-center gap-4 mt-5 absolute bottom-0 z-10">
               {product.img2 ? (
-                <div className="relative w-[100px] h-[100px] border rounded-md  shadow-md cursor-pointe">
+                <div className="relative w-[50px] h-[50px]  rounded-full   cursor-pointer  select-none shadow-md">
                   <Image
                     src={urlImage + getThumbnailUrl(product.img2)}
                     alt="mainImage"
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     priority
-                    className="object-containr cursor-pointe"
+                    className="object-fill  rounded-full"
                     onClick={() => {
-                      setImageShow(urlImage + product.img2);
+                       swiperRef.current?.slideTo(1)
                     }}
                   />
                 </div>
@@ -252,43 +320,43 @@ export default function ProductDetails({ itemId }) {
               )}
 
               {product.img3 ? (
-                <div className="relative w-[100px] h-[100px] border rounded-md  shadow-md cursor-pointe">
+                <div className="relative  w-[50px] h-[50px]  rounded-full cursor-pointer select-none shadow-md">
                   <Image
                     src={urlImage + getThumbnailUrl(product.img3)}
                     alt="mainImage"
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     priority
-                    className="object-contain cursor-pointe"
+                    className="object-fill  rounded-full"
                     onClick={() => {
-                      setImageShow(urlImage + product.img3);
+                     swiperRef.current?.slideTo(2);
                     }}
                   />
                 </div>
               ) : (
                 ""
               )}
-              <div className="relative w-[100px] h-[100px] border rounded-md  shadow-md cursor-pointe">
+              <div className="relative  w-[50px] h-[50px]  rounded-full  cursor-pointer select-none shadow-md">
                 <Image
                   src={urlImage + getThumbnailUrl(product.mainImage)}
                   alt="mainImage"
                   fill
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   priority
-                  className="object-contain cursor-pointe "
+                  className="object-fill rounded-full"
                   onClick={() => {
-                    setImageShow(urlImage + product.mainImage);
+                   swiperRef.current?.slideTo(0)
                   }}
                 />
               </div>
             </div>
           </div>
 
-          <div className="flex py-5 flex-col w-full h-auto  justify-between gap-5 bg-white  px-5 border rounded-md shadow-md">
+          <div className="flex py-5 flex-col w-full h-auto  justify-between gap-5 bg-white  px-5  rounded-3xl">
             <div>
               <div className="flex justify-between items-start">
                 <span>
-                  <h1 className="md:text-xl xs:text-base font-semibold">
+                  <h1 className="md:text-3xl xs:text-base font-semibold">
                     {locale === "ar" ? product.nameAr : product.nameEn}
                   </h1>
                   <h1 className=" text-gray-500 mt-2  md:text-sm xs:text-xs">
@@ -309,63 +377,63 @@ export default function ProductDetails({ itemId }) {
                 </span>
               </div>
 
-              <hr className="w-full  my-5"></hr>
             </div>
-            <span className="text-gray-500">
-              {locale === "ar" ? product.descriptionAr : product.descriptionEn}
-            </span>
             {product.available ? (
               <div className="flex flex-col  gap-3">
-                {product.oldPrice ? (
-                  <span className=" font-semibold mt-3 w-[80px] text-center bg-red-600 px-1 text-white rounded-md">
-                    {t("off")}{" "}
-                    {(
-                      ((product.oldPrice - product.price) / product.oldPrice) *
-                      100
-                    ).toFixed(0)}
-                    %
-                  </span>
-                ) : (
-                  ""
-                )}
+
                 <div className="flex items-center gap-2">
-                  <span className="md:text-3xl xs:text-2xl  font-semibold  ">
-                    {product.price
-                      ? product.price.toLocaleString("en-US") +
-                        " " +
-                        t("currency")
-                      : ""}
-                  </span>
-                  <span className="text-gray-400 md:text-xl xs:text-base line-through">
+                  <span className="text-gray-400 md:text-3xl xs:text-base line-through">
                     {product.oldPrice
                       ? product.oldPrice.toLocaleString("en-US") +
-                        " " +
-                        t("currency")
+                      " " +
+                      t("currency")
                       : ""}
                   </span>
+                  <span className="md:text-4xl xs:text-3xl  font-semibold text-[#E14A5C] ">
+                    {product.price
+                      ? product.price.toLocaleString("en-US") +
+                      " " +
+                      t("currency")
+                      : ""}
+                  </span>
+
                 </div>
               </div>
             ) : (
               ""
             )}
+            <StarRating rating={10} maxRating={10} />
+
+            <span className="text-gray-400">
+              {locale === "ar" ? product.descriptionAr : product.descriptionEn}
+            </span>
+
             <span className="text-red-600">
               {product.available ? "" : t("Currently_unavailable")}
             </span>
 
-            <div className="flex w-full  items-center gap-4 h-10 ">
+            <div className="flex w-full  items-center gap-4 h-12 ">
               <button
-                className={`w-[70%] h-full rounded-md text-white text-lg flex  justify-center items-center gap-3  ${
-                  product.available
-                    ? "bg-red-600 hover:bg-red-700 hover:scale-105 duration-200"
-                    : "cursor-not-allowed bg-gray-400 hover:bg-gray-400 hover:scale-100"
-                }`}
+                className={`w-[70%] h-full rounded-full text-white  flex  justify-center items-center gap-3  ${product.available
+                  ? "bg-[#E14A5C] hover:bg-[#CD4354] hover:scale-105 duration-200"
+                  : "cursor-not-allowed bg-gray-400 hover:bg-gray-400 hover:scale-100"
+                  }`}
                 disabled={!product.available}
-                onClick={addToCart}
+                onClick={() => addToCart(false)}
               >
                 {t("addToCart")}
-                <MdOutlineAddShoppingCart />
               </button>
-              <div className="flex items-center text-center justify-center gap-3 w-[30%] rounded-lg px-4 h-full border text-gray-600 bg-white">
+              <button
+                className={`w-[70%] h-full rounded-full text-[#E14A5C]  flex  justify-center items-center gap-3  ${product.available
+                  ? "bg-[#F9DBDF] hover:bg-[#EDD0D3]  hover:scale-105 duration-200"
+                  : "cursor-not-allowed bg-gray-400 hover:bg-gray-400 hover:scale-100"
+                  }`}
+                disabled={!product.available}
+                onClick={() => addToCart(true)}
+              >
+                {t("buyNow")}
+              </button>
+              <div className="flex items-center text-center justify-center gap-3 w-[20%] rounded-full px-4 h-full border text-gray-600 bg-white">
                 {/* زر النقصان */}
                 <button
                   onClick={() => {
@@ -375,11 +443,12 @@ export default function ProductDetails({ itemId }) {
                 >
                   +
                 </button>
-
+                <hr className="h-full w-px border-0 bg-gray-100" />
                 {/* الرقم */}
                 <span className="font-medium text-lg w-16 text-center">
                   {count}
                 </span>
+                <hr className="h-full w-px border-0 bg-gray-100" />
 
                 {/* زر الزيادة */}
                 <button
@@ -392,19 +461,83 @@ export default function ProductDetails({ itemId }) {
                 </button>
               </div>
             </div>
+            <hr className="w-full h-px bg-gray-100" />
+            <div className="flex items-center gap-10">
+              <div className="flex items-center cursor-pointer gap-2 hover:text-gray-500"
+                onClick={handleShare}
+              >
+                <IoShareSocial />
+                <h1>share</h1>
+              </div>
+              <div className="flex items-center cursor-pointer gap-2 hover:text-gray-500"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  addFavoriteItems();
+                }}
+              >
+                <FaRegHeart />
+
+                <h1>Add to wishlist</h1>
+              </div>
+            </div>
           </div>
         </div>
       )}
-  <hr />
+      <hr />
       <div className="mt-24 ">
         <h1 className="md:text-2xl xs:text-lg flex items-center gap-3 font-bold mx-10 ">
           {t("You_might_like")}
         </h1>
-      
-<div className="px-5">
-        <FeatuerProducts Products={products} type={"MoreRecommended"} />
 
-</div>
+        <div className="px-5 pb-10">
+          <Swiper
+            key={locale}
+            slidesPerView={"auto"}
+            slidesOffsetBefore={16}
+            slidesOffsetAfter={16}
+            modules={[Navigation, Autoplay]}
+            navigation={{
+              nextEl: ".next-btn1",
+              prevEl: ".prev-btn1",
+            }}
+            dir={locale === "ar" ? "rtl" : "ltr"}
+            spaceBetween={10}
+            className="w-full h-full   "
+          >
+            {products.map((product) => {
+              return (
+                <SwiperSlide
+                  key={product.itemId}
+                  className=" my-10 !w-[220px] rounded-lg select-none"
+                >
+                  <div className="rounded-lg  flex justify-center  cursor-pointer">
+                    <ProductCard productInfo={product} favorite={false} />
+                  </div>
+                </SwiperSlide>
+              );
+            })
+
+            }
+            {/* <div className=" flex flex-col justify-center items-center relative my-10">
+            <div className=" p-1 rounded-full absolute flex gap-2 justify-center items-center  ">
+              <button className="prev-btn1 p-1 rounded-full border-2 hover:bg-red-600 border-red-600   hover:text-white text-red-600 text-3xl   font-bold">
+                {locale === "ar" ? (
+                  <IoIosArrowRoundForward className="text-3xl font-bold" />
+                ) : (
+                  <IoIosArrowRoundBack />
+                )}
+              </button>
+              <button className="next-btn1 p-1 rounded-full border-2 hover:bg-red-600 border-red-600   hover:text-white text-red-600 text-3xl   font-bold">
+                {locale === "ar" ? (
+                  <IoIosArrowRoundBack className="text-3xl font-bold" />
+                ) : (
+                  <IoIosArrowRoundForward />
+                )}
+              </button>
+            </div>
+          </div> */}
+          </Swiper>
+        </div>
       </div>
     </div>
   );
