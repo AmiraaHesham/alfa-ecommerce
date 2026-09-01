@@ -1,22 +1,19 @@
 "use client";
-import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+// import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { useLanguage } from "../../../../context/LanguageContext";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { MdDelete } from "react-icons/md";
 import { AiFillSafetyCertificate } from "react-icons/ai";
 import {
-  deleteRequest,
   getRequest,
   postRequest,
 } from "../../../../utils/requestsUtils";
 import { LuLoader } from "react-icons/lu";
-
 import "aos/dist/aos.css";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import Link from "next/link";
-import { getThumbnailUrl } from "../../../../utils/functions";
+// import Link from "next/link";
+import CartTable from "./CartTable";
 import Select from "react-select";
 export default function Cart({ setShowSignUp }) {
   const { t } = useLanguage();
@@ -33,7 +30,7 @@ export default function Cart({ setShowSignUp }) {
   const [itemNum, setItemNum] = useState(0);
   const userId =
     typeof window !== "undefined" ? localStorage.getItem("id") : null;
-  const { locale } = useLanguage();
+  // const { locale } = useLanguage();
 
   const [isFirstAction, setIsFirstAction] = useState(true);
   const [loading, setLoading] = useState(true);
@@ -129,47 +126,9 @@ export default function Cart({ setShowSignUp }) {
       setLoading(false);
     }
   };
-  const changeQuantity = async (itemLineId, itemId, newQuantity) => {
-    if (userId) {
-      await postRequest(
-        `/api/shopCarts/changeQuantity`,
-        {
-          itemLineId: itemLineId,
-          quantity: newQuantity,
-        },
-        "",
-      );
-      getProductInCart();
-    } else {
-      let cart = JSON.parse(localStorage.getItem("cart") || "[]");
 
-      cart = cart.map((item) =>
-        Number(item.id) === Number(itemId)
-          ? { ...item, quantity: newQuantity }
-          : item,
-      );
 
-      localStorage.setItem("cart", JSON.stringify(cart));
-      getProductInCart();
-    }
-  };
 
-  const deleteItemFormCart = async (itemLineId, productID) => {
-    if (userId) {
-      await deleteRequest(
-        `/api/shopCarts/deleteLine/${itemLineId}`,
-        t("message"),
-      );
-      getProductInCart();
-    } else {
-      let cart = JSON.parse(localStorage.getItem("cart") || "[]");
-
-      cart = cart.filter((item) => Number(item.id) !== Number(productID));
-
-      localStorage.setItem("cart", JSON.stringify(cart));
-      getProductInCart();
-    }
-  };
 
   const placeOrder = async () => {
     try {
@@ -224,7 +183,7 @@ export default function Cart({ setShowSignUp }) {
           />
         </div>
       )}
-      <div className="flex justify-between py-5">
+      {/* <div className="flex justify-between py-5">
         <div className="">
           <h1 className="text-4xl font-bold mb-2"> {t("shoppingCart")} </h1>
           <span className="text-sm text-gray-500 font-semibold">
@@ -240,226 +199,47 @@ export default function Cart({ setShowSignUp }) {
             {locale === "ar" ? <FaArrowLeft /> : <FaArrowRight />}
           </span>
         </Link>
-      </div>
+      </div> */}
       <div className="flex lg:flex-row xs:flex-col gap-5 ">
-        <div className=" rounded-xl w-full  border overflow-hidden overflow-x-auto  overflow-y-auto ">
-          <table className="  xs:w-[200%] lg:w-full   ">
-            <thead className="bg-[#F9FAFB] text-xs text-gray-500  text-justify">
-              <tr className=" text-gray-500 h-12">
-                <th className="w-[30%] px-5">{t("product")} </th>
-                <th className="w-[20%]">{t("price")} </th>
-                <th className="w-[12%] ">{t("discount")} </th>
-                <th className="w-[16%] px-7 ">{t("quantity")} </th>
-                <th className="w-[14%] ">{t("total")} </th>
-                <th className="w-[15%] px-3"> </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white text-md w-full  ">
-              {loading ? (
-                // Skeleton rows
-                [...Array(5)].map((_, index) => (
-                  <tr key={`skeleton-${index}`} className="border-b">
-                    <td className="px-4 py-2 flex items-center gap-2">
-                      <div className="h-14 bg-gray-200 rounded-full animate-pulse w-14"></div>
-                      <div className="flex flex-col gap-2">
-                        <div className="h-4 bg-gray-200 rounded-lg animate-pulse w-28"></div>
-                        <div className="h-2 bg-gray-200 rounded-md animate-pulse w-20"></div>
-                      </div>
-                    </td>
-                    <td className=" py-2">
-                      <div className="h-4 bg-gray-200 rounded animate-pulse w-24"></div>
-                    </td>
-                    <td className=" py-2">
-                      <div className="h-4 bg-gray-200 rounded animate-pulse w-24"></div>
-                    </td>
-                    <td className=" py-2">
-                      <div className="h-4 bg-gray-200 rounded animate-pulse w-24"></div>
-                    </td>
-                    <td className="py-2">
-                      <div className="h-4 bg-gray-200 rounded animate-pulse w-16"></div>
-                    </td>
-                    <td className=" py-2">
-                      <div className="h-4 bg-gray-200 rounded animate-pulse w-16"></div>
-                    </td>
-                  </tr>
-                ))
-              ) : items.length != 0 ? (
-                items.map((item, index) => {
-                  const product = userId ? item.item : item;
-                  return (
-                    <tr key={index} className=" text-red-950 border w-full">
-                      <td className="px-5">
-                        <div className="flex items-center gap-3">
-                          <Image
-                            alt=""
-                            src={`${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL}${getThumbnailUrl(product.mainImageURL)}`}
-                            width={45}
-                            height={45}
-                            className="rounded-full border my-1 p-1"
-                          />
-
-                          <div>
-                            <h1 className="font-semibold text-sm">
-                              {locale === "ar"
-                                ? product.nameAr
-                                : product.nameEn}
-                            </h1>
-                            <h1 className="text-xs  text-gray-500">
-                              {product.code}
-                            </h1>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="font-semibold text-red-500">
-                        <div>
-                          <span>
-                            {" "}
-                            {product.unitPrice
-                              ? product.unitPrice.toLocaleString("en-US")
-                              : product.price}{" "}
-                            {t("currency")}{" "}
-                          </span>
-
-                          {product.oldUnitPrice ? (
-                            <span className="text-gray-400 line-through text-sm mx-2 opacity-90">
-                              {product.oldUnitPrice.toLocaleString("en-US")}{" "}
-                              {t("currency")}
-                            </span>
-                          ) : product.oldPrice ? (
-                            <span className="text-gray-400 line-through text-sm mx-2 opacity-90">
-                              {product.oldPrice.toLocaleString("en-US")}{" "}
-                              {t("currency")}
-                            </span>
-                          ) : (
-                            ""
-                          )}
-                        </div>
-                      </td>
-                      <td className="">
-                        <div className="flex gap-5">
-                          {product.oldUnitPrice ? (
-                            <span className="bg-red-600 text-sm px-2 text-white rounded-md">
-                              {(
-                                ((product.oldUnitPrice - product.unitPrice) /
-                                  product.oldUnitPrice) *
-                                100
-                              ).toFixed()}
-                              %
-                            </span>
-                          ) : product.oldPrice ? (
-                            <span className="bg-red-600 text-sm px-2 text-white rounded-md">
-                              {(
-                                ((product.oldPrice - product.price) /
-                                  product.oldPrice) *
-                                100
-                              ).toFixed()}
-                              %
-                            </span>
-                          ) : (
-                            "--"
-                          )}
-                        </div>
-                      </td>
-                      <td className="text-sm">
-                        <div className="flex items-center gap-3 rounded-lg px-1 h-full w-[100px] border text-gray-600 bg-white">
-                          {/* زر النقصان */}
-                          <button
-                            onClick={() => {
-                              changeQuantity(
-                                item.itemLineId,
-                                product.itemId,
-                                item.quantity + 1,
-                              );
-                            }}
-                            className="text-xl font-bold text-gray-600  hover:text-red-600"
-                          >
-                            +
-                          </button>
-
-                          {/* الرقم */}
-                          <span className="font-medium text-sm w-16 text-center">
-                            {item.quantity}
-                          </span>
-
-                          {/* زر الزيادة */}
-                          <button
-                            onClick={() => {
-                              if (item.quantity > 1) {
-                                changeQuantity(
-                                  item.itemLineId,
-                                  product.itemId,
-                                  item.quantity - 1,
-                                );
-                              }
-                            }}
-                            className="text-xl font-bold text-gray-600 hover:text-red-600"
-                          >
-                            −
-                          </button>
-                        </div>
-                      </td>
-                      <td className="text-sm font-semibold">
-                        {item.totalPrice
-                          ? item.totalPrice.toLocaleString("en-US")
-                          : item.price
-                            ? item.price * item.quantity
-                            : ""}{" "}
-                        {t("currency")}
-                      </td>
-                      <td className=" font-semibold text-lg text-gray-600 px-5 cursor-pointer">
-                        <button
-                          className=""
-                          onClick={() => {
-                            deleteItemFormCart(item.itemLineId, product.itemId);
-                          }}
-                        >
-                          <MdDelete />
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })
-              ) : (
-                <tr>
-                  <td colSpan="6" className="text-center p-4">
-                    {t("noProductsInCart")}
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+   <CartTable items={items} loading={loading}/>
         <div className="md:w-[40%]  xs:w-full">
           {loading ? (
             // Skeleton rows
-            <div className=" h-[500px] p-7  w-full bg-white rounded-lg border">
-              <h1 className="mb-10 text-2xl font-bold">{t("orderSummary")} </h1>
+            <div className=" p-7  w-full bg-white rounded-3xl ">
+              <h1 className="mb-10 text-2xl font-bold">{t("cartTotals")} </h1>
               <div className="flex justify-between items-center mb-5">
-                <span className="text-gray-600"> {t("totalProducts")} </span>
+                <span className="text-gray-600"> {t("Subtotal")} </span>
                 <span className="h-4 bg-gray-200 rounded animate-pulse w-20">
                   {" "}
                 </span>
               </div>
+              <hr className="my-5"></hr>
               <div className="flex justify-between items-center mb-5">
-                <span className="text-gray-600">{t("totalDiscount")} </span>
+                <span className="text-gray-600">{t("ShippingTo")} </span>
                 <span className="h-4 bg-gray-200 rounded animate-pulse w-20">
                   {" "}
                 </span>
               </div>
 
-              <div className="flex justify-between items-center">
+              <div className="flex justify-between items-center mb-5">
                 <span className="text-gray-600">{t("shippingCost")} </span>
+                <span className="h-4 bg-gray-200 rounded animate-pulse w-20">
+                  {" "}
+                </span>
+              </div>
+                 <div className="flex justify-between items-center mb-5">
+                <span className="text-gray-600">{t("payment_method")} </span>
                 <span className="h-4 bg-gray-200 rounded animate-pulse w-20">
                   {" "}
                 </span>
               </div>
               <hr className="my-6" />
               <div className="flex justify-between items-center text-2xl font-semibold">
-                <span>{t("grandTotal")} </span>
+                <span>{t("Total")} </span>
                 <span className="h-4 bg-gray-200 rounded animate-pulse w-20"></span>
               </div>
               <button
-                className={`flex justify-center items-center w-full  py-2 rounded-md mt-10 text-white text-lg  ${
+                className={`flex justify-center items-center w-full  py-2 rounded-full mt-10 text-white   ${
                   items.length === 0
                     ? "bg-gray-400 cursor-not-allowed"
                     : "bg-red-600 hover:bg-red-700"
@@ -467,52 +247,34 @@ export default function Cart({ setShowSignUp }) {
               >
                 {t("proceedToCheckout")}
               </button>
-              <div className="flex gap-4 p-2 w-full bg-red-50 mt-5 rounded-md">
-                <span className="text-2xl text-red-600 mt-1">
-                  <AiFillSafetyCertificate />
-                </span>
-                <div>
-                  <h1 className="text-red-600  font-semibold">
-                    {t("secureShopping")}
-                  </h1>
-                  <h2 className="text-gray-600 text-xs">
-                    {t("protectedData")}
-                  </h2>
-                </div>
-              </div>
+            
             </div>
           ) : (
-            <div className="  p-7  w-full bg-white rounded-lg border">
-              <h1 className="mb-10 text-2xl font-bold">{t("orderSummary")} </h1>
+            <div className="  p-7  w-full bg-white rounded-3xl ">
+              <h1 className="mb-10 text-xl font-bold">{t("cartTotals")} </h1>
               <div className="flex justify-between items-center mb-5">
-                <span className="text-gray-600">
+                <span className="">
                   {" "}
-                  {t("totalProducts") + " " + ` [${itemNum}]`}
+                  {t("Subtotal") + " " + ` [${itemNum}]`}
                 </span>
-                <span className="font-semibold">
-                  {summery.totalOrder.toLocaleString("en-US") +
+                <span className="font-semibold text-gray-600">
+                  {(summery.totalOrder - summery.totalDiscount).toLocaleString("en-US") +
                     " " +
                     t("currency")}{" "}
                 </span>
               </div>
-              <div className="flex justify-between items-center mb-5">
-                <span className="text-gray-600">{t("totalDiscount")} </span>
-                <span className="font-semibold">
-                  {summery.totalDiscount.toLocaleString("en-US") +
-                    " " +
-                    t("currency")}{" "}
-                </span>
-              </div>
+              <hr className="my-5"/>
+              
               {
                 userId?
                 (<div>
                   <div className="flex justify-between items-center mb-5">
-                <span className="text-gray-600">{t("address")} </span>
-                <span className="font-semibold">{summery.address} </span>
+                <span className="">{t("ShippingTo")} </span>
+                <span className="font-semibold text-gray-600">{summery.address} </span>
               </div>
               <div className="flex justify-between items-center mb-5">
-                <span className="text-gray-600">{t("shippingCost")} </span>
-                <span className="font-semibold">
+                <span className="">{t("shippingCost")} </span>
+                <span className="font-semibold text-gray-600">
                   {  items.length === 0 ? 0 : summery.shappingCost + " " + t("currency")}
                 </span>
               </div>
@@ -524,7 +286,7 @@ export default function Cart({ setShowSignUp }) {
               }
               
               <div className="flex justify-between items-center mb-5">
-                <span className="text-gray-600">{t("payment_method")}</span>
+                <span className="">{t("payment_method")}</span>
 
                 <Select
                   options={paymentMethodOptions}
@@ -579,17 +341,17 @@ export default function Cart({ setShowSignUp }) {
               </div>
 
               <hr className="my-6" />
-              <div className="flex justify-between items-center text-2xl font-semibold">
-                <span>{t("grandTotal")} </span>
-                <span className="text-red-500">
+              <div className="flex justify-between items-center text-xl font-semibold">
+                <span>{t("Total")} </span>
+                <span className="text-[#da643b]">
                   {  items.length === 0 ? 0 :summery.netTotal + " " + t("currency")}
                 </span>
               </div>
               <button
-                className={`flex justify-center items-center w-full  py-2 rounded-md mt-10 text-white text-lg  ${
+                className={`flex justify-center items-center w-full  py-2 rounded-full mt-10 text-white   ${
                   items.length === 0
                     ? "bg-gray-400 cursor-not-allowed"
-                    : Checkout?  "bg-green-600 hover:bg-green-700" :"bg-red-600 hover:bg-red-700"
+                    : Checkout?  "bg-green-600 hover:bg-green-700" :"bg-[#da643b] hover:bg-[#CD4354]"
                 }`}
                 onClick={placeOrder}
               >
@@ -601,19 +363,7 @@ export default function Cart({ setShowSignUp }) {
                   t("confirmOrder")
                 )}
               </button>
-              {/* <div className="flex gap-4 p-2 w-full bg-red-50 mt-5 rounded-md">
-                <span className="text-2xl text-red-600 mt-1">
-                  <AiFillSafetyCertificate />
-                </span>
-                <div>
-                  <h1 className="text-red-600  font-semibold">
-                    {t("secureShopping")}
-                  </h1>
-                  <h2 className="text-gray-600 text-xs">
-                    {t("protectedData")}
-                  </h2>
-                </div>
-              </div> */}
+            
             </div>
           )}
         </div>
