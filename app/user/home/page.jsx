@@ -274,7 +274,7 @@ export default function Homepage() {
         </section>
       </div>
 <section className="my-20">
-  <div className="w-full h-[500px] flex justify-between items-center gap-5">
+  <div className="w-full h-[500px] flex lg: justify-between items-center gap-5">
     <div className="w-full h-full bg-white rounded-3xl"></div>
     <div className="w-full h-full bg-black rounded-3xl"></div>
     <div className="w-full h-full bg-white rounded-3xl"></div>

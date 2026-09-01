@@ -9,7 +9,7 @@ export default function topProducts({ Products ,section }) {
         <div className="w-full h-[440px] bg-white rounded-3xl p-5  overflow-hidden overflow-y-scroll ">
             <h1 className="font-semibold text-lg sticky z-10 ">{t(section)}</h1>
 
-            <div className="w-full h-[350px] mt-5 overflow-hidden overflow-y-scroll gap-5 xs:grid-cols-2 lg:grid-cols-2 grid ">
+            <div className="w-full h-[350px] mt-5 overflow-hidden overflow-y-scroll gap-5 xs:grid-cols-1 lg:grid-cols-2 grid ">
 
                 {Products?.map((product, index) => {
                     return (

@@ -8,7 +8,7 @@ export default function BestPick({ Products }) {
     return (
         <div className="w-full  bg-white rounded-2xl p-5">
             <h1 className="font-semibold text-lg sticky z-10 py-2">{t("Best_pick_of_the_week")}</h1>
-            <div className=" h-[150px] overflow-hidden overflow-y-scroll grid grid-cols-2 gap-5 mt-2">
+            <div className=" h-[200px] overflow-hidden overflow-y-scroll grid md:grid-cols-2 xs:grid-cols-1 gap-5 mt-2">
 
             {Products?.map((product, index) => {
                 return (

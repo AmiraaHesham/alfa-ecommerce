@@ -16,7 +16,7 @@ export default function SiteFeatures() {
     const { locale } = useLanguage()
     const { t } = useLanguage()
     return (
-        <div className=" text-white bg-[#0d0625] w-full rounded-full text-sm p-2">
+        <div className=" text-white bg-[#0d0625] w-full rounded-full  p-3 flex justify-center items-center my-5">
 
             <Swiper
                 key={locale}
@@ -37,7 +37,7 @@ export default function SiteFeatures() {
                     <div className="h-full w-full  flex   gap-1 items-center">
                         <span className="w-12 h-12 p-1">
 
-                            <LiaCertificateSolid className="w-full h-full text-blue-600 " />
+                            <LiaCertificateSolid className="w-full h-full text-[#7354ef] " />
                         </span>
                         <h1 className=" ">{t("High_Quality")}</h1>
                     </div>
@@ -46,7 +46,7 @@ export default function SiteFeatures() {
                 <SwiperSlide className="!w-[280px]   text-center">
                     <div className="h-full w-full flex  gap-1 items-center">
                         <span className="w-10 h-10 p-1">
-                            <FaShippingFast className="w-full h-full  text-blue-600 " />
+                            <FaShippingFast className="w-full h-full  text-[#7354ef] " />
                         </span>
                         <h1 className=" ">{t("Fast_Delivery")}</h1>
                     </div>
@@ -57,7 +57,7 @@ export default function SiteFeatures() {
                     <div className="h-full  w-full flex   gap-1 items-center">
                         <span className="w-10 h-10 p-1">
 
-                            <RiLoopRightFill className="w-full h-full  text-blue-600 " />
+                            <RiLoopRightFill className="w-full h-full  text-[#7354ef] " />
                         </span>
                         <h1 className="  ">{t("Easy_Returns")}</h1>
                     </div>
@@ -67,7 +67,7 @@ export default function SiteFeatures() {
                     <div className="h-full  flex w-full  gap-1 items-center">
                         <span className="w-10 h-10 p-1 ">
 
-                            <IoMdPricetags className="w-full h-full text-blue-600 " />
+                            <IoMdPricetags className="w-full h-full text-[#7354ef] " />
                         </span>
                         <h1 className=" ">{t("Best_Prices")}</h1>
 
@@ -77,7 +77,7 @@ export default function SiteFeatures() {
                     <div className="h-full  flex  w-full gap-1 items-center">
                         <span className="w-10 h-10 p-1">
 
-                            <LuShieldCheck className="w-full h-full  text-blue-600  " />
+                            <LuShieldCheck className="w-full h-full  text-[#7354ef]  " />
                         </span>
                         <h1 className="  ">{t("Original_Products")}</h1>
                     </div>

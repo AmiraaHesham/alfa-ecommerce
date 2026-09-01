@@ -206,9 +206,10 @@ export default function ProductCard({ productInfo, favorite }) {
             className="
             absolute bottom-0 left-0
             px-3 w-full
-            opacity-0 invisible
+          lg:opacity-0 lg:invisible
             transition-all duration-300
-            group-hover:opacity-100 group-hover:visible
+            lg:group-hover:opacity-100 lg:group-hover:visible
+            xs:opacity-100 xs:visible
             text-center
           "
           >
@@ -252,19 +253,22 @@ export default function ProductCard({ productInfo, favorite }) {
                   className="
                   absolute
                   w-5 h-5
-                  scale-0
+                  lg:scale-0
                   transition-all duration-300
-                  translate-y-0
-                  group-hover/wishlist:-translate-y-0
-                  group-hover/wishlist:scale-100
+                  lg:translate-y-10              
+                  lg:group-hover/wishlist:-translate-y-0
+                  lg:group-hover/wishlist:scale-100
+                  xs:scale-100
                 "
                 />
 
                 <span
                   className="
                 transition-all duration-300
-                group-hover/wishlist:-translate-y-5
-                group-hover/wishlist:opacity-0
+                lg:opacity-100
+                lg:group-hover/wishlist:-translate-y-5
+                lg:group-hover/wishlist:opacity-0
+                xs:opacity-0
               ">
                   {t("wishlist")}
                 </span>
@@ -294,8 +298,11 @@ export default function ProductCard({ productInfo, favorite }) {
                   <span
                     className="
                   transition-all duration-300
-                  group-hover/cart:-translate-y-5
-                  group-hover/cart:opacity-0
+                  lg:opacity-100
+
+                  lg:group-hover/cart:-translate-y-5
+                  lg:group-hover/cart:opacity-0
+                  xs:opacity-0
                 "
                   >
                     {t("Cart")}
@@ -305,11 +312,12 @@ export default function ProductCard({ productInfo, favorite }) {
                   <MdOutlineAddShoppingCart
                     className=" absolute
                       w-5 h-5
-                      scale-0
+                      lg:scale-0
                       transition-all duration-300
-                      translate-y-0
-                      group-hover/cart:-translate-y-0
-                      group-hover/cart:scale-100
+                      lg:translate-y-10
+                      lg:group-hover/cart:translate-y-0
+                      lg:group-hover/cart:scale-100
+                      xs:scale-100
                     "
                   />
                 </button>

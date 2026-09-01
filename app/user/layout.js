@@ -41,7 +41,7 @@ export default function UserLayout({ children }) {
         ) : (
           <div className="w-full">
             <Header />
-            <main className=" bg-[#F9FAFB] w-full ">
+            <main className=" bg-[#f6f5f8] w-full ">
               {children}
               <a
                 href={whatsAppUrl}
