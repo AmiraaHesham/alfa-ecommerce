@@ -281,5 +281,14 @@
   "details": "Details",
   "specification": "Specification",
   "Fast_delivery":"Fast delivery within 72 Hours",
-  "ShippingTo":"Shipping To"
+  "ShippingTo":"Shipping To",
+  "reviews": "Reviews",
+  "Your_review_placeholder": "Write your review here...",
+  "CustomerReviews": "Customer Reviews",
+  "Add_review": "Add a review",
+  "Your_rating": "Your rating",
+  "Your_review": "Your review",
+  "Submit":"Submit",
+  "Required_fields": "Your email address will not be published. Required fields are marked"
+
 }

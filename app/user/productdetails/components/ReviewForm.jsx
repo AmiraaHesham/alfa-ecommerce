@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { FaStar } from "react-icons/fa";
+import { FaRegStar } from "react-icons/fa6";
+import { useLanguage } from "../../../../context/LanguageContext";
 
 export default function ReviewForm({ product }) {
   const [rating, setRating] = useState(0);
@@ -10,7 +12,7 @@ export default function ReviewForm({ product }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [saveInfo, setSaveInfo] = useState(false);
-
+const {t}= useLanguage()
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log({
@@ -29,18 +31,18 @@ export default function ReviewForm({ product }) {
       className="w-full bg-white rounded-lg p-6 md:p-8"
     >
       <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-2">
-        Add a review
+        {t("Add_review")}
       </h2>
 
       <p className="text-sm text-gray-500 mb-8">
-        Your email address will not be published. Required fields are marked{" "}
+        {t("Required_fields")}{" "}
         <span className="text-[#e5485d]">*</span>
       </p>
 
       {/* Rating */}
       <div className="mb-6 flex items-center gap-3">
         <label className="block text-sm font-medium text-gray-700 ">
-          Your rating <span className="text-[#e5485d]">*</span>
+          {t("Your_rating")} <span className="text-[#e5485d]">*</span>
         </label>
         <div className="flex items-center gap-1" role="radiogroup" aria-label="Rating">
           {[1, 2, 3, 4, 5].map((value) => (
@@ -53,13 +55,15 @@ export default function ReviewForm({ product }) {
               onMouseLeave={() => setHoverRating(0)}
               className="outline-none focus:outline-none"
             >
-              <FaStar
-                className={`w-5 h-5 transition-colors duration-200 ease-in-out ${
-                  value <= hoverRating || value <= rating
-                    ? "text-[#f5b800]"
-                    : "text-gray-300"
-                }`}
-              />
+              {value <= hoverRating || value <= rating ? (
+                <FaStar
+                  className="w-4 h-4 transition-colors duration-200 ease-in-out text-[#f5b800]" />
+              ) :
+                (<FaRegStar
+                  key={value}
+                  className="text-gray-300 w-4 h-4 transition-colors duration-200 ease-in-out"
+                />)
+              }
             </button>
           ))}
         </div>
@@ -68,14 +72,14 @@ export default function ReviewForm({ product }) {
       {/* Review */}
       <div className="mb-6">
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Your review <span className="text-[#e5485d]">*</span>
+          {t("Your_review")} <span className="text-[#e5485d]">*</span>
         </label>
         <textarea
           value={review}
           onChange={(e) => setReview(e.target.value)}
           rows={8}
           required
-          placeholder="Write your review here..."
+          placeholder={t("Your_review_placeholder")}
           className="w-full h-[190px] resize-y rounded-3xl border border-gray-300 bg-white p-4 text-sm text-gray-800 outline-none transition-colors focus:border-[#e5485d]/60"
         />
       </div>
@@ -101,7 +105,7 @@ export default function ReviewForm({ product }) {
         </label>
         <input
           type="email"
-          value={email}
+          v>alue={email}
           onChange={(e) => setEmail(e.target.value)}
           required
           className="w-full h-[42px] rounded-full border border-gray-300 bg-white px-5 text-sm text-gray-800 outline-none transition-colors focus:border-[#e5485d]/60"
@@ -128,7 +132,7 @@ export default function ReviewForm({ product }) {
         type="submit"
         className="rounded-full bg-[#e5485d] px-6 py-3 text-sm font-medium text-white transition-all duration-200 hover:bg-[#d04153] hover:opacity-90"
       >
-        Submit
+        {t("Submit")}
       </button>
     </form>
   );

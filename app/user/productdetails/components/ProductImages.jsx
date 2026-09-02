@@ -17,7 +17,7 @@ export default function ProductImages({ product }) {
   return (
     <div className="w-full h-[450px] md:col-span-2 col-span-3 relative flex xs:flex-col md:flex-row gap-2">
       <div className="flex md:flex-col xs:flex-row  items-center gap-4 mt-5 xs:order-2 md:order-1 ">
-         <div className={`relative   w-[80px] h-[80px] rounded-xl hover:opacity-50  cursor-pointer select-none shadow-md `}>
+         <div className={`relative   w-[80px] h-[80px] rounded-xl hover:opacity-50  cursor-pointer select-none `}>
           <Image
             src={urlImage + getThumbnailUrl(product.mainImage)}
             alt="mainImage"
@@ -34,7 +34,7 @@ export default function ProductImages({ product }) {
        
 
         {product.img3 ? (
-          <div className="relative   w-[80px] h-[80px]  rounded-xl hover:opacity-50 cursor-pointer select-none shadow-md">
+          <div className="relative   w-[80px] h-[80px]  rounded-xl hover:opacity-50 cursor-pointer select-none ">
             <Image
               src={urlImage + getThumbnailUrl(product.img3)}
               alt="mainImage"
@@ -51,7 +51,7 @@ export default function ProductImages({ product }) {
           ""
         )}
         {product.img2 ? (
-          <div className="relative w-[80px] h-[80px]  rounded-xl hover:opacity-50  cursor-pointer  select-none shadow-md">
+          <div className="relative w-[80px] h-[80px]  rounded-xl hover:opacity-50  cursor-pointer  select-none ">
             <Image
               src={urlImage + getThumbnailUrl(product.img2)}
               alt="mainImage"

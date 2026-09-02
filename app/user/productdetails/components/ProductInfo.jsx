@@ -97,8 +97,6 @@ export default function ProductInfo({ product, itemId }) {
             }
         } catch (error) {
             console.log(error);
-        } finally {
-            setLoading(false);
         }
     };
 
@@ -141,14 +139,14 @@ export default function ProductInfo({ product, itemId }) {
                     <div className="flex flex-col  gap-3">
 
                         <div className="flex items-center gap-2">
-                            <span className="text-gray-400 md:text-xl xs:text-base line-through">
+                            <span className="text-gray-400 md:text-2xl xs:text-xl line-through">
                                 {product.oldPrice
                                     ? product.oldPrice.toLocaleString("en-US") +
                                     " " +
                                     t("currency")
                                     : ""}
                             </span>
-                            <span className="text-2xl  font-semibold text-[#E14A5C] ">
+                            <span className="text-3xl  font-semibold text-[#E14A5C] ">
                                 {product.price
                                     ? product.price.toLocaleString("en-US") +
                                     " " +

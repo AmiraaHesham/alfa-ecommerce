@@ -1,6 +1,7 @@
 "use client";
 
 import { FaStar, FaRegStar, FaStarHalfAlt } from "react-icons/fa";
+import { useLanguage } from "../../../../context/LanguageContext";
 
 const ratingData = [
   { stars: 5, count: 1 },
@@ -14,8 +15,8 @@ const totalReviews = ratingData.reduce((sum, r) => sum + r.count, 0);
 const avgRating =
   totalReviews > 0
     ? (
-        ratingData.reduce((sum, r) => sum + r.stars * r.count, 0) / totalReviews
-      ).toFixed(1)
+      ratingData.reduce((sum, r) => sum + r.stars * r.count, 0) / totalReviews
+    ).toFixed(1)
     : "0.0";
 
 // function StarIcon({ filled, half }) {
@@ -43,11 +44,12 @@ function renderStars(rating, IconComponent) {
 }
 
 export default function ProductRating({ product }) {
+  const {t} = useLanguage()
   return (
     <div className="w-full bg-white rounded-lg px-4 py-6 md:px-8">
       {/* Header */}
       <h2 className="text-xl md:text-2xl font-bold text-center mb-2">
-        Customer Reviews
+        {t("CustomerReviews")}
       </h2>
 
       {/* Average Rating */}
@@ -63,7 +65,7 @@ export default function ProductRating({ product }) {
 
         {/* Review Count */}
         <span className="text-gray-500 mt-2 text-sm md:text-base">
-          {totalReviews} reviews
+          {totalReviews} {t("reviews")}
         </span>
       </div>
 
@@ -81,14 +83,15 @@ export default function ProductRating({ product }) {
               {/* Star icons */}
               <div className="flex items-center gap-0.5 min-w-[80px]">
                 {[1, 2, 3, 4, 5].map((s) => (
-                  <FaStar
+                  s <= row.stars ? <FaStar
                     key={s}
-                    className={
-                      s <= row.stars
-                        ? "text-[#f5b800] text-xs"
-                        : "text-gray-300 text-xs"
-                    }
-                  />
+                    className=
+                    "text-[#f5b800] text-sm"
+                  /> :
+                    <FaRegStar
+                      key={s}
+                      className="text-gray-300 text-sm"
+                    />
                 ))}
               </div>
 

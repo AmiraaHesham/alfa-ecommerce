@@ -10,6 +10,7 @@ import YouMightLike from "./YouMightLike"
 import Specification from "./Specification"
 import ProductRating from "./ProductRating"
 import ReviewForm from "./ReviewForm"
+import CustomerReviewCard from "./CustomerReviewCard"
 
 import "swiper/css";
 import "swiper/css/navigation";
@@ -187,6 +188,7 @@ export default function ProductDetails({ itemId }) {
         <div className="w-full h-full">
           <ProductRating />
           <ReviewForm product={product} />
+          <CustomerReviewCard name={"amira hesham"} date={"1/9/2026"} rating={3} review={"Great product!"} />
         </div>
       </div>
       <YouMightLike categoryId={product.category.id} />

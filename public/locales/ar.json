@@ -282,5 +282,13 @@
   "details": "تفاصيل",
   "specification": "المواصفات",
   "Fast_delivery": "توصيل سريع خلال 72 ساعة",
-  "ShippingTo": "الشحن إلى"
+  "ShippingTo": "الشحن إلى",
+  "reviews": "التقييمات",
+  "Your_review_placeholder": "اكتب تقييمك هنا...",
+  "CustomerReviews": "تقييمات العملاء",
+  "Add_review": "إضافة تقييم",
+  "Your_rating": "تقييمك",
+  "Your_review": "مراجعتك",
+  "Submit":"إرسال",
+  "Required_fields": "لن يتم نشر عنوان بريدك الإلكتروني. الحقول المطلوبة محددة بعلامة"
 }

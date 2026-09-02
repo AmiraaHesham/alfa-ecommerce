@@ -8,20 +8,9 @@ import { RefreshProvider } from "../context/refreshContext";
 import { NamePageInAdminProvider } from "../context/namePageInAdmin";
 import { ToastContainer } from "react-toastify";
 import RTLController from './components/RTLController.jsx'
-// import { Roboto } from "next/font/google";
 
-// const roboto = Roboto({
-//   subsets: ["latin"],
-//   weight: ["400", "500", "700"],
-// });
-// import { Poppins } from "next/font/google";
-
-// const poppins = Poppins({
-//   subsets: ["latin"],
-//   weight: ["400", "500", "600", "700"],
-// });
 export const metadata = {
-  title: "Alfa Group | E-commerce",
+  title: "alfagrouptech.com",
   description: "Alfa Group - Shop the latest products and best deals.",
   keywords: ["Alfa Group", "e-commerce", "online shopping", "products"],
   icons: {
@@ -29,16 +18,31 @@ export const metadata = {
   },
 };
 
-import { Montserrat } from "next/font/google";
 
-const montserrat = Montserrat({
-  subsets: ["latin"],
+// import { Tajawal } from "next/font/google";
+
+// const tajawal = Tajawal({
+//   subsets: ["arabic", "latin"],
+//   weight: ["400", "500", "700"],
+// });
+// import { IBM_Plex_Sans_Arabic } from "next/font/google";
+
+// const plex = IBM_Plex_Sans_Arabic({
+//   subsets: ["arabic", "latin"],
+//   weight: ["400", "500", "600", "700"],
+// });
+
+import { Cairo } from "next/font/google";
+
+const cairo = Cairo({
+  subsets: ["arabic", "latin"],
   weight: ["400", "500", "600", "700"],
 });
+
 export default function RootLayout({ children }) {
   return (
     <html lang="ar" dir="rtl">
-      <body className={montserrat.className} >
+      <body className={cairo.className} >
 
         <ToastContainer
           position={"bottom-center"} />
