@@ -100,7 +100,7 @@ useEffect(() => {
   return (
     <div className="p-10">
       <div className="flex xs:flex-col md:flex-row  h-full gap-10 justify-between">
-        <div className="bg-white md:w-[50%] xl:w-[30%] h-[400px] flex   flex-col gap-3   p-7 rounded-md shadow-md">
+        <div className="bg-white md:w-[50%] xl:w-[30%] h-[400px] flex   flex-col gap-3   p-7 rounded-3xl">
           <div className="flex items-center bg-red-600 p-2 rounded-md text-white gap-3 cursor-pointer">
             <span className="text-xl">
               <FaUser />
@@ -155,7 +155,7 @@ useEffect(() => {
           </div>
         </div>
         <div className="w-full flex flex-col gap-5">
-          <div className="w-full  bg-white rounded-md shadow-sm border p-5">
+          <div className="w-full  bg-white rounded-3xl p-5">
             <div className="flex w-full flex-col gap-7">
               <div className="flex justify-between w-full">
                 <span className="text-xl font-semibold">
@@ -183,7 +183,7 @@ useEffect(() => {
             </div>
           </div>
 
-          <div className="w-full  bg-white rounded-md shadow-sm border">
+          <div className="w-full  bg-white rounded-3xl">
             <div className="p-7  font-semibold">
               <span className=""> {t("editPersonalInfo")} </span>
             </div>
@@ -311,7 +311,7 @@ useEffect(() => {
               </div>
             </form>
           </div>
-          <div className="w-full h-[100px] bg-white rounded-md shadow-sm border mb-10">
+          <div className="w-full h-[100px] bg-white rounded-3xl mb-10">
             <div className="p-5 flex justify-between items-center">
               <div className="flex items-center gap-3">
                 <span className="p-3 text-xl rounded-full text-gray-600 bg-gray-100">
