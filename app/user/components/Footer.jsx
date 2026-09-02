@@ -168,7 +168,7 @@ export default function Footer() {
             <span className={`text-black md:hidden transition-transform duration-300 ${show.quick_links ? "rotate-180" : ""
               }`}><IoIosArrowDown /></span>
           </div>
-          <div className={`flex-col gap-2 w-full ${show.quick_links ? "flex translate-y-1 duration-300 scale-100" : "hidden scale-75"
+          <div className={`flex-col  gap-2 w-full ${show.quick_links ?  "flex duration-500 scale-x-100" : "hidden duration-500 "
             } md:flex`}>
             <Link
               href={"/user/home"}
@@ -201,12 +201,20 @@ export default function Footer() {
         </div>
         {/* <hr className="xs:w-full md:w-[1px] xs:h-2 md:h-36 bg-gray-50 "></hr> */}
         <div className="flex flex-col justify-start items-start gap-3 text-gray-500 w-full">
-          <div className="xs:flex justify-between items-center cursor-pointer w-full">
+          <div className="xs:flex justify-between items-center cursor-pointer w-full"
+            onClick={() => setshow((prev) => ({
+              ...prev,
+              quick_links: false,
+              contact_us: false,
+              my_account: false,
+              customer_service: !prev.customer_service
+            }))}>
 
             <h1 className="text-xl font-medium  text-black">{t("customer_service")} </h1>
-            <span className="text-black xs:block md:hidden"><IoIosArrowDown /></span>
-          </div>
-          <div className="flex-col md:flex gap-2 xs:hidden">
+            <span className={`text-black md:hidden transition-transform duration-300 ${show.customer_service ? "rotate-180" : ""
+              }`}><IoIosArrowDown /></span>          </div>
+          <div className={`flex-col gap-2 w-full ${show.customer_service ?  "flex duration-500 scale-x-100" : "hidden duration-500 "
+            } md:flex`}>
 
             <Link
               href={"/user/ordershistory"}
@@ -237,12 +245,21 @@ export default function Footer() {
 
 
         <div className="flex flex-col justify-start items-start gap-3 text-gray-500 w-full">
-          <div className="xs:flex justify-between items-center cursor-pointer w-full">
+          <div className="xs:flex justify-between items-center cursor-pointer w-full"
+            onClick={() => setshow((prev) => ({
+              ...prev,
+              quick_links: false,
+              contact_us: false,
+              my_account: !prev.my_account,
+              customer_service: false
+            }))}
+          >
 
             <h1 className="text-xl font-medium  text-black">{t("my_account")} </h1>
-            <span className="text-black xs:block md:hidden"><IoIosArrowDown /></span>
-          </div>
-          <div className="flex-col md:flex gap-2 xs:hidden">
+            <span className={`text-black md:hidden transition-transform duration-300 ${show.my_account ? "rotate-180" : ""
+              }`}><IoIosArrowDown /></span>          </div>
+          <div className={`flex-col  gap-2 w-full ${show.my_account ? "flex duration-500 scale-x-100" : "hidden duration-500 "
+            } md:flex`}>
             <Link
               href={"/user/profile"}
               className="hover:text-gray-800"
@@ -266,12 +283,22 @@ export default function Footer() {
           </div>
         </div>
         <div className="flex flex-col justify-start items-start gap-3 text-gray-500 w-full">
-          <div className="xs:flex justify-between items-center cursor-pointer w-full">
+          <div className="xs:flex justify-between items-center cursor-pointer w-full"
+            onClick={() => setshow((prev) => ({
+              ...prev,
+              quick_links: false,
+              contact_us: !prev.contact_us,
+              my_account: false,
+              customer_service: false
+            }))}
+          >
 
             <h1 className="text-xl font-medium  text-black">{t("contact_us")} </h1>
-            <span className="text-black xs:block md:hidden"><IoIosArrowDown /></span>
-          </div>
-          <div className="md:flex flex-col items-start justify-start gap-2 xs:hidden ">
+            <span className={`text-black md:hidden transition-transform duration-300 ${show.contact_us ? "rotate-180" : ""
+              }`}><IoIosArrowDown /></span>       
+                 </div>
+          <div className={`flex-col  gap-2 w-full ${show.contact_us ? "flex duration-500 scale-x-100" : "hidden duration-500 "
+            } md:flex`}>
             <div className="flex items-center gap-2">
               <span
                 className={`text-lg text-black ${contact.email === "" ? "hidden" : "block"
