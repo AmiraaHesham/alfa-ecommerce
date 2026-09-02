@@ -41,9 +41,10 @@ export default function CategorySection({ categories }) {
         </div>
       <div className="w-full grid xl:grid-cols-6 xs:grid-cols-3 gap-3">
 
-          {categories.map((category) => (
+          {categories.map((category ,index) => (
           
               <div
+              key={index}
                 className="mt-4 flex justify-center items-center text-center cursor-pointer rounded-md  "
                 onClick={() => {
                   navigate.push(
@@ -62,7 +63,7 @@ export default function CategorySection({ categories }) {
                       alt=""
                       fill
                       quality={100}
-                      sizes="100vw" 
+                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                       className="object-fill rounded-full"
                     />
                   </div>

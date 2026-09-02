@@ -13,14 +13,14 @@ import Link from "next/link";
 import { getRequest, postRequest } from "../../../utils/requestsUtils";
 import { useRefresh } from "../../../context/refreshContext";
 import { FiHeart } from "react-icons/fi";
-import { PiListBold, PiUserLight } from "react-icons/pi";
+import { PiListBold, PiUser } from "react-icons/pi";
 import SignIn_Form from "../../components/SignIn_Form";
 import SignUp_Form from "../../components/SignUp_Form";
-import { getUserInfo } from "../../../utils/functions";
+
 export default function Header() {
   const { t } = useLanguage();
   const navigate = useRouter();
-  const [mounted, setMounted] = useState(false);
+  const [netTotal, setNetTotal] = useState(0);
   const [searchInput, setSearchInput] = useState();
   const { locale, setLocale } = useLanguage();
   const [username, setUsername] = useState();
@@ -38,7 +38,7 @@ export default function Header() {
     if (!validLangs.includes(newLang)) return;
     setLocale(newLang);
     try {
-      await postRequest(`/api/users/${userId}/langauge/${newLang}`, "", "");
+      await postRequest(`/api/users/langauge/${newLang}`, "", "");
       setLocale(newLang);
 
       localStorage.setItem("lang", newLang);
@@ -49,9 +49,9 @@ export default function Header() {
   const getProductInCart = async () => {
     try {
       if (userId) {
-        const res = await getRequest(`/api/shopCarts/`);
+        const res = await getRequest(`/api/shopCarts`);
         const rseData = res.data;
-
+setNetTotal(rseData.netTotal)
         setItemNum(rseData.itemLines.length);
       } else {
         const cart = JSON.parse(localStorage.getItem("cart") || "[]");
@@ -65,43 +65,73 @@ export default function Header() {
     getProductInCart();
   }, [refreshKey]);
   useEffect(() => {
-    setMounted(true);
-    const username =
+  
+    const firstName =
       typeof window !== "undefined" ? localStorage.getItem("firstName") : "";
-    setUsername(username);
+    const lastName =
+      typeof window !== "undefined" ? localStorage.getItem("lastName") : "";
+    setUsername(firstName + " " + lastName);
 
-  // const userInfo = async()=>{
-  //  const res = await getUserInfo()
-  //  console.lo(res)
-  // } 
-// userInfo()
+    // const userInfo = async()=>{
+    //  const res = await getUserInfo()
+    //  console.lo(res)
+    // } 
+    // userInfo()
   }, []);
 
   return (
-    <header className="bg-[#0d0625] xs:pb-2 md:pb-0">
-      <div className="flex gap-2 items-center text-white p-2 text-xs">
-
-        <span>
-          {t("about_us")}
-        </span>
-        <hr
-          className="w-[1px] h-4 border-0  bg-gray-300"
-        />
-        <span>
-          {t("contact_us")}
-        </span>
-        <hr
-          className="w-[1px] h-4 border-0  bg-gray-300"
-        />
-        <button
-          onClick={() => {
-            const newLocale = locale === "ar" ? "en" : "ar";
-            setLocale(newLocale);
-            changeLanguage(newLocale);
-          }}
-        >
-          <MdLanguage className="w-6 h-6 text-white" />
-        </button>
+    <header className="bg-[#0d0625] ">
+      <div className="flex gap-2 items-center text-white p-2 text-xs w-full justify-between">
+        <div className="flex justify-start items-center gap-2">
+          <Link
+            href={"/user/about"}
+            className="hover:text-gray-100"
+          >
+            {t("about_us")}
+          </Link>
+          <hr
+            className="w-[1px] h-4 border-0  bg-gray-300"
+          />
+          <Link
+            href={"/user/home/#footer"}
+            className="hover:text-gray-100"
+          >
+            {t("contact_us")}
+          </Link>
+          <hr
+            className="w-[1px] h-4 border-0  bg-gray-300"
+          />
+          <Link
+            href={"/user/ordershistory"}
+            className="hover:text-gray-100"
+          >
+            {t("orders")}{" "}
+          </Link>
+        </div>
+        <div className="flex justify-start items-center gap-2">
+          <Link
+            href={"/user/returnorders"}
+            className="hover:text-gray-1000"
+          >
+            {t("returns")}{" "}
+          </Link><hr
+            className="w-[1px] h-4 border-0  bg-gray-300"
+          />
+          <Link
+            href={"/user/about#Guarantee_Policy"}
+            className="hover:text-gray-100"
+          >
+            {t("Guarantee_Policy")}
+          </Link><hr
+            className="w-[1px] h-4 border-0  bg-gray-300"
+          />
+          <Link
+            href={"/user/about#Return_Policy"}
+            className="hover:text-gray-100"
+          >
+            {t("Return_Policy")}
+          </Link>
+        </div>
 
       </div>
       <hr
@@ -120,7 +150,7 @@ export default function Header() {
                 src="/Images/logo.png"
                 alt="logo"
                 fill
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                sizes="200px"
                 priority
                 className="object-fill"
               />
@@ -139,7 +169,7 @@ export default function Header() {
 
         >
           <button
-            className="text-white h-full border-2 rounded-full text-2xl bg-red-600 p-1 "
+            className="text-white h-full border-2 rounded-full text-2xl bg-[#CD4354] p-1 "
             onClick={() => {
               searchInput
                 ? navigate.push("/user/search/" + searchInput)
@@ -172,48 +202,89 @@ export default function Header() {
           </div>
 
           <div className="flex items-center xs:gap-2 md:gap-5 text-white">
-
-            <Link href="/user/cart" className="relative xs:hidden md:block ">
-              <span className="absolute  text-red-800 text-center [-webkit-text-stroke:1px_white] md:text-lg xs:text-sm font-extrabold   right-0 xs:top-[-8px] md:top-[-9px] left-0 bottom-0">
-                {itemNum}{" "}
-              </span>
+            <button
+              onClick={() => {
+                const newLocale = locale === "ar" ? "en" : "ar";
+                setLocale(newLocale);
+                changeLanguage(newLocale);
+              }}
+            >
+              <MdLanguage className="w-7 h-7 text-white" />
+            </button>
+            <div className=" items-center justify-center gap-2 xs:hidden md:flex">
+               <Link href="/user/cart" className="relative  ">
+             
               <MdOutlineShoppingCart className="w-9 h-9" />
             </Link>
-            <Link href="/user/wishlist" className="xs:hidden md:block">
-              <FiHeart className="w-7 h-7 " />
-            </Link>
-
             <hr
-              className="w-[1px] h-10 border-0 xs:hidden md:block bg-gray-300"
+              className="w-[1px] h-7 border-0  bg-gray-500"
             />
-            <div  onClick={() => {
-    if (userId) {
-      navigate.push("/user/profile");
-    } else {
-      setShowSignIn(true);
-      setOpenForm(true);
+            <div className="flex flex-col text-sm">
+              <span className="text-[#CD4354]">
+                { netTotal.toLocaleString("en-US") + " " + t("currency")}
+              </span>
+               <span className=" text-xs">
+                {itemNum }{" "}{t("Items")}
+              </span>
+            </div>
+            </div>
+           
 
-    }
-  }}>
-              <div className="flex items-center gap-1 cursor-pointer ">
+            <div className="xs:flex md:hidden items-center gap-1 cursor-pointer ">
+              <span className="w-8 h-8">
+                <PiUser className="w-full h-full " />
+              </span>
+              <span className=" font-semibold text-center xs:hidden md:block">
+                {username ? username : (t("login") + " / " + t("register"))}
+              </span>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <div className="w-full px-3 bg-[#CD4354]  p-2">
+        <div className="xs:hidden md:flex text-white">
+          <div className="w-full flex justify-between ">
+            <div className="w-full flex"></div>
+            <div className="w-full flex justify-end items-center gap-5">
+              <div className="flex items-center gap-2">
+                <Link href="/user/wishlist" className="xs:hidden md:block">
+                  <FiHeart className="w-6 h-6 " />
+                </Link>
+                <span>{t("wishlist")} </span>
+
+              </div>
+              <hr className="w-px h-5 bg-gray-50 "></hr>
+              <div className=" items-center gap-1 cursor-pointer flex  "
+                onClick={() => {
+                  if (userId) {
+                    navigate.push("/user/profile");
+                  } else {
+                    setShowSignIn(true);
+                    setOpenForm(true);
+
+                  }
+                }}
+              >
                 <span className="w-8 h-8">
-                  <PiUserLight className="w-full h-full " />
+                  <PiUser className="w-full h-full " />
                 </span>
                 <span className=" font-semibold text-center xs:hidden md:block">
-                  {username ?  username : (t("login")+ " / " +t("register"))}
+                  {username ? username : (t("login") + " / " + t("register"))}
                 </span>
               </div>
             </div>
           </div>
+
+
         </div>
-      </div>
-      <div className="w-full px-3">
+
         <div
           className="xs:flex md:hidden items-center bg-white justify-start border-2 w-full bg-none h-10   rounded-full"
 
         >
           <button
-            className="text-white h-full border-2 rounded-full text-2xl bg-red-600 p-1 "
+            className="text-white h-full border-2 rounded-full text-2xl bg-[#CD4354] p-1 "
             onClick={() => {
               searchInput
                 ? navigate.push("/user/search/" + searchInput)
@@ -241,7 +312,7 @@ export default function Header() {
         </div>
       </div>
 
-     <div
+      <div
         className={`fixed inset-0 bg-black/40 flex items-center justify-center z-50 ${openForm ? "block" : "hidden"}`}
       >
         <div className=" bg-white rounded-md relative">
@@ -253,9 +324,9 @@ export default function Header() {
           />
           {showSignin ? (
             <SignIn_Form popUp={true} setShowSignUp={setShowSignUp} setShowSignIn={setShowSignIn} setOpenForm={setOpenForm} />
-          ) : showSignUp? (
-            <SignUp_Form popUp={true} setShowSignIn={setShowSignIn} setShowSignUp={setShowSignUp} setOpenForm={setOpenForm}/>     
-                 ):""}
+          ) : showSignUp ? (
+            <SignUp_Form popUp={true} setShowSignIn={setShowSignIn} setShowSignUp={setShowSignUp} setOpenForm={setOpenForm} />
+          ) : ""}
         </div>
       </div>
     </header>

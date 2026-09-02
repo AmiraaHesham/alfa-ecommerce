@@ -296,7 +296,7 @@ export default function Cart({ setShowSignUp }) {
                   }}
                   required
                   placeholder={t("select")}
-                  className="h-full w-[170px] rounded-md border"
+                  className="h-full w-[170px] rounded-2xl border"
                   //  onMenuOpen={() => {}}
                   isSearchable={false}
                   styles={{
@@ -351,7 +351,7 @@ export default function Cart({ setShowSignUp }) {
                 className={`flex justify-center items-center w-full  py-2 rounded-full mt-10 text-white   ${
                   items.length === 0
                     ? "bg-gray-400 cursor-not-allowed"
-                    : Checkout?  "bg-green-600 hover:bg-green-700" :"bg-[#da643b] hover:bg-[#CD4354]"
+                    : Checkout?  "bg-green-600 hover:bg-green-700" :"bg-[#E76E7D] hover:bg-[#CD4354]"
                 }`}
                 onClick={placeOrder}
               >

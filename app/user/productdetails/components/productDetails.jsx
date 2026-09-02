@@ -128,6 +128,7 @@ export default function ProductDetails({ itemId }) {
             <Image
               src="/Images/logo.png"
               alt=""
+              sizes="100vw"
               className="w-[100px] h-[100px]  border-t-transparent rounded-full animate-pulse"
               width={100}
               height={100}

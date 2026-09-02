@@ -8,13 +8,18 @@ export default function BestPick({ Products }) {
     return (
         <div className="w-full  bg-white rounded-2xl p-5">
             <h1 className="font-semibold text-lg sticky z-10 py-2">{t("Best_pick_of_the_week")}</h1>
-            <div className=" h-[200px] overflow-hidden overflow-y-scroll grid md:grid-cols-2 xs:grid-cols-1 gap-5 mt-2">
+            <div className=" h-[200px] overflow-hidden overflow-y-scroll p-1 grid md:grid-cols-2 xs:grid-cols-1 gap-5 mt-2">
 
             {Products?.map((product, index) => {
                 return (
 
-                    <div key={index} className={`flex  gap-2 items-center `}>
-                        <div className="relative w-[70px] h-[70px]">
+                    <div key={index} className={`flex  gap-2 items-center  `}
+                    onClick={() => {
+              setSelectedProductId(productInfo?.itemId);
+              navigate.push(`/user/productdetails/${productName}/${productInfo?.itemId}`);
+            }}
+                    >
+                        <div className="relative w-[70px] h-[70px] cursor-pointer select-none rounded-full hover:scale-105 duration-200 ">
                             <Image src={
                                 process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +
                                 getThumbnailUrl(product.mainImageURL)
@@ -22,11 +27,11 @@ export default function BestPick({ Products }) {
                                 fill
                                 priority
                                 quality={100}
-                                sizes="100vw"
+                              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                                 className="object-fill rounded-full" />
                         </div>
                         <div>
-                            <span className="text-xs font-semibold">{locale === "ar" ? product.nameAr : product.nameEn}</span>
+                            <span className="text-xs font-semibold cursor-pointer">{locale === "ar" ? product.nameAr : product.nameEn}</span>
 
                             <div className="flex  justify-start gap-2 items-center ">
                                 {product.oldPrice ? (

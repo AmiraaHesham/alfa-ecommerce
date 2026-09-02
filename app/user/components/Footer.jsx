@@ -53,7 +53,7 @@ export default function Footer() {
 
 
   return (
-    <div className="bg-white text-black px-3 py-5 flex flex-col  w-full">
+    <div  className="bg-white text-black px-3 py-5 flex flex-col  w-full">
       <div className="flex  md:flex-row xs:flex-col  justify-between md:items-center xs:items-start xs:gap-5">
         <div className="flex items-center justify-start w-full">
           <Link href="/user/home">
@@ -65,7 +65,7 @@ export default function Footer() {
                   alt="logo"
                   fill
                   priority
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                   className="object-fill"
                 />
               </span>
@@ -168,7 +168,7 @@ export default function Footer() {
             <span className={`text-black md:hidden transition-transform duration-300 ${show.quick_links ? "rotate-180" : ""
               }`}><IoIosArrowDown /></span>
           </div>
-          <div className={`flex-col  gap-2 w-full ${show.quick_links ?  "flex duration-500 scale-x-100" : "hidden duration-500 "
+          <div className={`flex-col  gap-2 w-full ${show.quick_links ? "flex duration-500 scale-x-100" : "hidden duration-500 "
             } md:flex`}>
             <Link
               href={"/user/home"}
@@ -213,7 +213,7 @@ export default function Footer() {
             <h1 className="text-xl font-medium  text-black">{t("customer_service")} </h1>
             <span className={`text-black md:hidden transition-transform duration-300 ${show.customer_service ? "rotate-180" : ""
               }`}><IoIosArrowDown /></span>          </div>
-          <div className={`flex-col gap-2 w-full ${show.customer_service ?  "flex duration-500 scale-x-100" : "hidden duration-500 "
+          <div className={`flex-col gap-2 w-full ${show.customer_service ? "flex duration-500 scale-x-100" : "hidden duration-500 "
             } md:flex`}>
 
             <Link
@@ -295,8 +295,8 @@ export default function Footer() {
 
             <h1 className="text-xl font-medium  text-black">{t("contact_us")} </h1>
             <span className={`text-black md:hidden transition-transform duration-300 ${show.contact_us ? "rotate-180" : ""
-              }`}><IoIosArrowDown /></span>       
-                 </div>
+              }`}><IoIosArrowDown /></span>
+          </div>
           <div className={`flex-col  gap-2 w-full ${show.contact_us ? "flex duration-500 scale-x-100" : "hidden duration-500 "
             } md:flex`}>
             <div className="flex items-center gap-2">

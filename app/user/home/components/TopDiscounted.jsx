@@ -29,7 +29,7 @@ export default function TopDiscounted({ Products }) {
       <div className="w-full h-full absolute flex md:flex-row xs:flex-col px-2 justify-center items-center ">
 <div className="w-full h-full flex flex-col justify-center items-center">
    <div className=" text-center  text-white ">
-          <h1 className="text-5xl"> {t("top_discount")} </h1>
+          <h1 className="text-5xl mb-3"> {t("top_discount")} </h1>
           <h2>{t("text_for_discounts")}    </h2>
         </div>
       

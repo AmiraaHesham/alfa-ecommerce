@@ -62,13 +62,11 @@ export default function Homepage() {
         setNewProducts(newProductsRes.data || []);
 
         const mustWatchedRes = await getRequest("/api/public/items/mustWatched");
-        setMustWatchedItem(mustWatchedRes.data || []);
-
-        const topSoldRes = await getRequest("/api/public/items/topSold");
-        setTopSoldItems(topSoldRes.data || []);
+        setMustWatchedItem(mustWatchedRes.data.content || []);
+        
 
         const topDiscountedRes = await getRequest("/api/public/items/topDiscounted");
-        setTopDiscountedItems(topDiscountedRes.data || []);
+        setTopDiscountedItems(topDiscountedRes.data.content || []);
         if (isLoggedIn) {
           const recentWatchedProductsRes = await getRequest(
             "/api/users/recentWatchedItems",
@@ -76,7 +74,12 @@ export default function Homepage() {
           setrecentWatchedProducts(recentWatchedProductsRes.data || []);
           // console.log(recentWatchedProductsRes.data)
         }
-
+// const topSoldRes = await getRequest("/api/public/items/topSold",{
+//   "page": 0,
+//   "size": 10,
+ 
+// });
+//         setTopSoldItems(topSoldRes.data || []);
       } catch (error) {
         console.error("Failed to fetch homepage data:", error);
       } finally {

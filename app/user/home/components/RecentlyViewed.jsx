@@ -14,8 +14,13 @@ export default function RecentlyViewed({ Products }) {
       {Products?.map((product, index) => {
                     return (
 
-                        <div className={`flex gap-2 items-center `}>
-                            <div className="relative w-[70px] h-[70px]">
+                        <div key={index} className={`flex gap-2 items-center `}
+                        onClick={() => {
+              setSelectedProductId(product.itemId);
+              navigate.push(`/user/productdetails/${productName}/${productInfo?.itemId}`);
+            }}
+                        >
+                            <div className="relative w-[70px] h-[70px] hover:scale-105 duration-200 cursor-pointer select-none rounded-full ">
                                 <Image src={
                                     process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +
                                     getThumbnailUrl(product.item.mainImageURL)
@@ -23,11 +28,11 @@ export default function RecentlyViewed({ Products }) {
                                     fill
                                     priority
                                     quality={100}
-                                    sizes="100vw"
+                                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                                     className="object-fill rounded-full" />
                             </div>
                             <div>
-                                <span className="text-xs font-semibold">{locale === "ar"?product.item.nameAr :product.item.nameEn}</span>
+                                <span className="text-xs font-semibold cursor-pointer">{locale === "ar"?product.item.nameAr :product.item.nameEn}</span>
                            <div>
 <StarRating rating={10} maxRating={10}/>
         </div>

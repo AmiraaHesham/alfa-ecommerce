@@ -44,7 +44,7 @@ export default function ImageSlider({ sliderImages }) {
                 fill
                 priority
                 quality={100}
-                sizes="100vw"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                 className="object-fill rounded-3xl"
               />
             </button>

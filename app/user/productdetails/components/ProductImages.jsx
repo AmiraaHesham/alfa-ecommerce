@@ -57,6 +57,7 @@ export default function ProductImages({ product }) {
               alt="mainImage"
               fill
               priority
+              sizes="100vw" 
               className="object-fill  rounded-xl"
               onClick={() => {
                 swiperRef.current?.slideTo(2)
@@ -90,7 +91,7 @@ export default function ProductImages({ product }) {
             alt="mainImage"
             fill
             priority
-
+sizes="100vw" 
             className=" rounded-3xl"
           />
         </SwiperSlide>
@@ -101,7 +102,7 @@ export default function ProductImages({ product }) {
               alt="mainImage"
               fill
               priority
-
+sizes="100vw" 
               className=" rounded-3xl"
             />
           </SwiperSlide>) : ""}
@@ -112,7 +113,7 @@ export default function ProductImages({ product }) {
               alt="mainImage"
               fill
               priority
-
+sizes="100vw" 
               className=" rounded-3xl"
             />
           </SwiperSlide>) : ""}
