@@ -15,18 +15,11 @@ import RecentlyViewed from "./components/RecentlyViewed"
 import Top10Products from "./components/Top10Products"
 import SiteFeatures from "./components/SiteFeatures"
 import TopDiscounted from "./components/TopDiscounted"
-const ImageSlider = dynamic(() => import("./components/ImageSlider"), {
-  ssr: false,
-});
-const CategoriesSection = dynamic(
-  () => import("./components/CategoriesSection"),
-  {
-    ssr: false,
-  },
-);
-const FeaturedProducts = dynamic(() => import("./components/FeatuerProducts"), {
-  ssr: false,
-});
+import ImageSlider from "./components/ImageSlider"
+
+import CategoriesSection from"./components/CategoriesSection"
+
+import FeaturedProducts from "./components/FeatuerProducts"
 
 export default function Homepage() {
   const [imagesSliders, setImagesSliders] = useState([]);

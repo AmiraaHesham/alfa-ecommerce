@@ -156,8 +156,8 @@ setNetTotal(rseData.netTotal)
               />
             </span>
             <div className="cursor-pointer">
-              <h1 className="text-xl  text-white font-semibold ">
-                {t("alfa_group")}
+              <h1 className="text-3xl  text-white font-bold ">
+                {t("alfa_group")}<span className="text-red-600">.</span>
               </h1>
             </div>
 
