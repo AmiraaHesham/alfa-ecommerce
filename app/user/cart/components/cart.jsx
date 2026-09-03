@@ -7,6 +7,7 @@ import { AiFillSafetyCertificate } from "react-icons/ai";
 import {
   getRequest,
   postRequest,
+  deleteRequest,
 } from "../../../../utils/requestsUtils";
 import { LuLoader } from "react-icons/lu";
 import "aos/dist/aos.css";
@@ -127,9 +128,47 @@ export default function Cart({ setShowSignUp }) {
     }
   };
 
+  const deleteItemFormCart = async (itemLineId, productID) => {
+    if (userId) {
+      await deleteRequest(
+        `/api/shopCarts/deleteLine/${itemLineId}`,
+        t("message"),
+      );
+      getProductInCart();
+    } else {
+      let cart = JSON.parse(localStorage.getItem("cart") || "[]");
 
+      cart = cart.filter((item) => Number(item.id) !== Number(productID));
 
+      localStorage.setItem("cart", JSON.stringify(cart));
+      getProductInCart();
+    }
+  };
 
+  const changeQuantity = async (itemLineId, itemId, newQuantity) => {
+    if (userId) {
+      await postRequest(
+        `/api/shopCarts/changeQuantity`,
+        {
+          itemLineId: itemLineId,
+          quantity: newQuantity,
+        },
+        "",
+      );
+      getProductInCart();
+    } else {
+      let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+
+      cart = cart.map((item) =>
+        Number(item.id) === Number(itemId)
+          ? { ...item, quantity: newQuantity }
+          : item,
+      );
+
+      localStorage.setItem("cart", JSON.stringify(cart));
+      getProductInCart();
+    }
+  };
   const placeOrder = async () => {
     try {
       if (userId) {
@@ -201,8 +240,8 @@ export default function Cart({ setShowSignUp }) {
         </Link>
       </div> */}
       <div className="flex lg:flex-row xs:flex-col gap-5 ">
-   <CartTable items={items} loading={loading}/>
-        <div className="md:w-[40%]  xs:w-full">
+   <CartTable items={items} loading={loading} onRemove={deleteItemFormCart} onQuantityChange={changeQuantity}/>
+        <div className="lg:w-[40%]  xs:w-full">
           {loading ? (
             // Skeleton rows
             <div className=" p-7  w-full bg-white rounded-3xl ">

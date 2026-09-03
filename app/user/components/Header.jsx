@@ -138,7 +138,7 @@ setNetTotal(rseData.netTotal)
         className="h-px border-0 bg-gray-600"
       />
       <div className="w-full  flex items-center  p-5  justify-between ">
-        <button className="text-white text-3xl xs:block md:hidden">
+        <button className="text-white text-3xl xs:block lg:hidden">
           <PiListBold />
 
         </button>
@@ -165,7 +165,7 @@ setNetTotal(rseData.netTotal)
         </div>
 
         <div
-          className="md:flex xs:hidden items-center bg-white justify-start border-2 w-[50%] bg-none h-10  rounded-full"
+          className="lg:flex xs:hidden items-center bg-white justify-start border-2 w-[50%] bg-none h-10  rounded-full"
 
         >
           <button
@@ -196,12 +196,12 @@ setNetTotal(rseData.netTotal)
           />
         </div>
 
-        <div className="flex items-center md:gap-5 xs:gap-1 ">
+        <div className="flex items-center lg:gap-5 xs:gap-1 ">
           <div className="flex items-center   cursor-pointer ">
 
           </div>
 
-          <div className="flex items-center xs:gap-2 md:gap-5 text-white">
+          <div className="flex items-center xs:gap-2 lg:gap-5 text-white">
             <button
               onClick={() => {
                 const newLocale = locale === "ar" ? "en" : "ar";
@@ -211,7 +211,7 @@ setNetTotal(rseData.netTotal)
             >
               <MdLanguage className="w-7 h-7 text-white" />
             </button>
-            <div className=" items-center justify-center gap-2 xs:hidden md:flex">
+            <div className=" items-center justify-center gap-2 xs:hidden lg:flex">
                <Link href="/user/cart" className="relative  ">
              
               <MdOutlineShoppingCart className="w-9 h-9" />
@@ -230,11 +230,11 @@ setNetTotal(rseData.netTotal)
             </div>
            
 
-            <div className="xs:flex md:hidden items-center gap-1 cursor-pointer ">
+            <div className="xs:flex lg:hidden items-center gap-1 cursor-pointer ">
               <span className="w-8 h-8">
                 <PiUser className="w-full h-full " />
               </span>
-              <span className=" font-semibold text-center xs:hidden md:block">
+              <span className=" font-semibold text-center xs:hidden lg:block">
                 {username ? username : (t("login") + " / " + t("register"))}
               </span>
             </div>
@@ -243,12 +243,12 @@ setNetTotal(rseData.netTotal)
         </div>
       </div>
       <div className="w-full px-3 bg-[#CD4354]  p-2">
-        <div className="xs:hidden md:flex text-white">
+        <div className="xs:hidden lg:flex text-white">
           <div className="w-full flex justify-between ">
             <div className="w-full flex"></div>
             <div className="w-full flex justify-end items-center gap-5">
               <div className="flex items-center gap-2">
-                <Link href="/user/wishlist" className="xs:hidden md:block">
+                <Link href="/user/wishlist" className="xs:hidden lg:block">
                   <FiHeart className="w-6 h-6 " />
                 </Link>
                 <span>{t("wishlist")} </span>
@@ -269,7 +269,7 @@ setNetTotal(rseData.netTotal)
                 <span className="w-8 h-8">
                   <PiUser className="w-full h-full " />
                 </span>
-                <span className=" font-semibold text-center xs:hidden md:block">
+                <span className=" font-semibold text-center xs:hidden lg:block">
                   {username ? username : (t("login") + " / " + t("register"))}
                 </span>
               </div>
@@ -280,7 +280,7 @@ setNetTotal(rseData.netTotal)
         </div>
 
         <div
-          className="xs:flex md:hidden items-center bg-white justify-start border-2 w-full bg-none h-10   rounded-full"
+          className="xs:flex lg:hidden items-center bg-white justify-start border-2 w-full bg-none h-10   rounded-full"
 
         >
           <button

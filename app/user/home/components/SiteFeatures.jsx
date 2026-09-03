@@ -16,7 +16,7 @@ export default function SiteFeatures() {
     const { locale } = useLanguage()
     const { t } = useLanguage()
     return (
-        <div className=" text-white bg-[#0d0625] w-full rounded-full  p-3 flex justify-center items-center my-5">
+        <div className=" text-white bg-[#0d0625] w-full rounded-full  p-2 flex justify-center items-center my-5">
 
             <Swiper
                 key={locale}
@@ -35,54 +35,54 @@ export default function SiteFeatures() {
 
                 <SwiperSlide className="!w-[280px]   text-center">
                     <div className="h-full w-full  flex   gap-1 items-center">
-                        <span className="w-12 h-12 p-1">
+                        <span className="text-5xl p-1">
 
                             <LiaCertificateSolid className="w-full h-full text-[#7354ef] " />
                         </span>
-                        <h1 className=" ">{t("High_Quality")}</h1>
+                        <h1 className="text-sm ">{t("High_Quality")}</h1>
                     </div>
                 </SwiperSlide>
 
                 <SwiperSlide className="!w-[280px]   text-center">
                     <div className="h-full w-full flex  gap-1 items-center">
-                        <span className="w-10 h-10 p-1">
+                        <span className="text-3xl p-1">
                             <FaShippingFast className="w-full h-full  text-[#7354ef] " />
                         </span>
-                        <h1 className=" ">{t("Fast_Delivery")}</h1>
+                        <h1 className=" text-sm">{t("Fast_Delivery")}</h1>
                     </div>
                 </SwiperSlide>
 
                 <SwiperSlide className="!w-[280px]   text-center">
 
                     <div className="h-full  w-full flex   gap-1 items-center">
-                        <span className="w-10 h-10 p-1">
+                        <span className="text-3xl p-1">
 
                             <RiLoopRightFill className="w-full h-full  text-[#7354ef] " />
                         </span>
-                        <h1 className="  ">{t("Easy_Returns")}</h1>
+                        <h1 className=" text-sm ">{t("Easy_Returns")}</h1>
                     </div>
                 </SwiperSlide>
-                <SwiperSlide className="!w-[280px]   text-center">
-
-                    <div className="h-full  flex w-full  gap-1 items-center">
-                        <span className="w-10 h-10 p-1 ">
-
-                            <IoMdPricetags className="w-full h-full text-[#7354ef] " />
-                        </span>
-                        <h1 className=" ">{t("Best_Prices")}</h1>
-
-                    </div>
-                </SwiperSlide>
+                
                 <SwiperSlide className="!w-[280px]   text-center">
                     <div className="h-full  flex  w-full gap-1 items-center">
-                        <span className="w-10 h-10 p-1">
+                        <span className="text-3xl p-1">
 
                             <LuShieldCheck className="w-full h-full  text-[#7354ef]  " />
                         </span>
-                        <h1 className="  ">{t("Original_Products")}</h1>
+                        <h1 className=" text-sm ">{t("Original_Products")}</h1>
                     </div>
                 </SwiperSlide>
+<SwiperSlide className="!w-[280px]   text-center">
 
+                    <div className="h-full  flex w-full  gap-1 items-center">
+                        <span className="text-3xl p-1 ">
+
+                            <IoMdPricetags className="w-full h-full text-[#7354ef] " />
+                        </span>
+                        <h1 className=" text-sm">{t("Best_Prices")}</h1>
+
+                    </div>
+                </SwiperSlide>
             </Swiper>
         </div>
 
