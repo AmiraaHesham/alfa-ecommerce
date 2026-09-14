@@ -6,6 +6,7 @@ import { OrderDetailsProvider } from "../context/orderDetailsContext";
 import { SearchInputProvider } from "../context/searshInputContext";
 import { RefreshProvider } from "../context/refreshContext";
 import { NamePageInAdminProvider } from "../context/namePageInAdmin";
+import { CartDrawerOpenProvider } from "../context/CartDrawerOpenContext";
 import { ToastContainer } from "react-toastify";
 import RTLController from './components/RTLController.jsx'
 
@@ -42,7 +43,7 @@ const cairo = Cairo({
 export default function RootLayout({ children }) {
   return (
     <html lang="ar" dir="rtl">
-      <body className={cairo.className} >
+      <body className={`${cairo.className} bg-[#f6f5f8]`} >
 
         <ToastContainer
           position={"bottom-center"} />
@@ -54,10 +55,12 @@ export default function RootLayout({ children }) {
               <SearchInputProvider>
                 <RefreshProvider>
                   <OrderDetailsProvider>
-                    <NamePageInAdminProvider>
-                      {children}
+                    <CartDrawerOpenProvider>
+                      <NamePageInAdminProvider>
+                        {children}
 
-                    </NamePageInAdminProvider>
+                      </NamePageInAdminProvider>
+                    </CartDrawerOpenProvider>
 
                   </OrderDetailsProvider>
                 </RefreshProvider>

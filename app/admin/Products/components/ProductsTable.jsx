@@ -28,6 +28,7 @@ export default function ProductsTable({ setIsFormOpen, category }) {
   const { setSelectedProductId } = useIdContext();
   const searchInputRef = useRef();
   const [loading, setLoading] = useState(true);
+  
   const getAllProducts = async () => {
     try {
       const response = await postRequest(
@@ -40,7 +41,8 @@ export default function ProductsTable({ setIsFormOpen, category }) {
         },
         "",
       );
-      const resProducts = response.data || [];
+      
+      const resProducts = response.data.content || [];
       if (pageNum.current === 0) {
         setProducts(resProducts);
       } else setProducts((prev) => [...prev, ...resProducts]);
@@ -172,18 +174,18 @@ export default function ProductsTable({ setIsFormOpen, category }) {
         </button>
       </div>
 
-      <div
+      {/* <div
         ref={productTableRef}
-        className=" rounded-xl border h-[510px] mt-3 overflow-hidden xs:overflow-x-scroll lg:overflow-x-auto overflow-y-scroll "
-      >
-        <table className=" xs:w-[200%] lg:w-full">
-          <thead className="bg-[#F9FAFB] text-xs text-justify sticky top-0  z-10">
-            <tr className=" text-gray-500 h-12  ">
-              <th className="w-[10%]"></th>
-              <th className="w-[25%]">{t("PRODUCT_NAME")}</th>
-              <th className="w-[15%]">{t("product_category")}</th>
-              <th className="w-[10%]">{t("price")}</th>
-              <th className="w-[10%]">{t("old_price")}</th>
+        className=" rounded-xl border  "
+      > */}
+        <table className=" xs:w-[200%] lg:w-full h-[400px] mt-3 overflow-hidden xs:overflow-x-scroll lg:overflow-x-auto overflow-y-scroll">
+          <thead className="border bg-[#f6f5f8] text-xs text-justify sticky top-0  z-10">
+            <tr className="  h-12  ">
+              <th className=""></th>
+              <th className="">{t("PRODUCT_NAME")}</th>
+              <th className="">{t("product_category")}</th>
+              <th className="">{t("price")}</th>
+              <th className="">{t("old_price")}</th>
 
               <th className="w-[10%]"></th>
             </tr>
@@ -289,7 +291,7 @@ export default function ProductsTable({ setIsFormOpen, category }) {
                         alt=""
                         src={`${
                           process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +
-                            getThumbnailUrl(product.mainImageURL) || ""
+                            getThumbnailUrl(product.imageURL) || ""
                         }`}
                         width={40}
                         height={40}
@@ -365,7 +367,7 @@ export default function ProductsTable({ setIsFormOpen, category }) {
             </tr>
           </tbody>
         </table>
-      </div>
+      {/* </div> */}
     </div>
   );
 }

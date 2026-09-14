@@ -207,7 +207,7 @@ const [totalOrders, setTotalOrders] = useState(0);
         </div>
       </div>
 
-      <div className="flex xl:flex-row xs:flex-col items-start bg-[#F9FAFB] justify-between my-7  gap-5">
+      <div className="flex xl:flex-row xs:flex-col items-start  justify-between my-7  gap-5">
         <div className="md:order-1 w-full   xs:order-2">
           <UserOrders userId={userId} />
         </div>

@@ -62,7 +62,7 @@ export default function SideMenu() {
   //   checkAdmin()
   // },[checkAdmin])
   return (
-    <div className="xs:w-[60px] md:w-[300px] bg-[#ffffff] h-screen ">
+    <div className="xs:w-[60px] md:w-[300px] bg-[#0d0625] text-white  ">
       <div className=" h-full  ">
         <div className="flex  items-center xs:justify-center md:justify-start md:mx-5 xs:mx-0 gap-1 mt-2">
           <span className="p-2 rounded-md  ">
@@ -75,15 +75,15 @@ export default function SideMenu() {
             />
           </span>
           <div className="cursor-default md:block xs:hidden">
-            <h1 className="text-md  text-red-950 font-semibold font-sans">
+            <h1 className="text-md   font-semibold font-sans">
               <span className="text-sm  font-bold">
                 {username === "" ? "" : username}
               </span>
             </h1>
-            <h1 className="text-xs text-red-950">{t("super_admin")}</h1>
+            <h1 className="text-xs ">{t("super_admin")}</h1>
           </div>
         </div>
-        <div className="mt-5 flex flex-col gap-1 text-gray-600">
+        <div className="mt-5 flex flex-col gap-1 ">
           <Link
             href="/admin/Dashboard"
             onClick={() => setSelectedNamePage("Dashboard Overview")}

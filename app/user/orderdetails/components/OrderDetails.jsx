@@ -196,7 +196,7 @@ export default function OrderDetails({ orderId }) {
       <div className="relative flex md:flex-row xs:flex-col gap-7 ">
         <div className="re rounded-xl w-full h-[420px]  border overflow-hidden overflow-x-auto md:overflow-x-hidden overflow-y-scroll ">
           <table className="  xs:w-[200%] lg:w-full  ">
-            <thead className="bg-[#F9FAFB] text-xs text-gray-500  text-justify">
+            <thead className=" text-xs text-gray-500  text-justify">
               <tr className=" text-gray-500 h-12">
                 <th className="w-[30%] px-5">{t("product")} </th>
                 <th className="w-[20%]">{t("price")} </th>

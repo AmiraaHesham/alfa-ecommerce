@@ -155,7 +155,7 @@ export default function AdminForm({ isFormOpen, setIsFormOpen }) {
                         }))
                       }
                       required
-                      className="w-full bg-[#F9FAFB] outline-none  text-lg  p-1 border rounded-md"
+                      className="w-full  outline-none  text-lg  p-1 border rounded-md"
                     />
                   </div>
                   <div>
@@ -169,7 +169,7 @@ export default function AdminForm({ isFormOpen, setIsFormOpen }) {
                           l_name: e.target.value,
                         }))
                       }
-                      className="w-full bg-[#F9FAFB] outline-none  text-lg  p-1 border rounded-md"
+                      className="w-full  outline-none  text-lg  p-1 border rounded-md"
                     />
                   </div>
                 </div>
@@ -185,7 +185,7 @@ export default function AdminForm({ isFormOpen, setIsFormOpen }) {
                         username: e.target.value,
                       }))
                     }
-                    className="w-full bg-[#F9FAFB] outline-none  text-lg  p-1 border rounded-md"
+                    className="w-full  outline-none  text-lg  p-1 border rounded-md"
                   />
                 </div>
                 <div className="flex gap-3">
@@ -200,7 +200,7 @@ export default function AdminForm({ isFormOpen, setIsFormOpen }) {
                           password: e.target.value,
                         }))
                       }
-                      className="w-full bg-[#F9FAFB] outline-none text-lg  p-1 border rounded-md"
+                      className="w-full  outline-none text-lg  p-1 border rounded-md"
                     />
                   </div>
                   <div>
@@ -215,13 +215,13 @@ export default function AdminForm({ isFormOpen, setIsFormOpen }) {
                           confirmPassword: e.target.value,
                         }))
                       }
-                      className="w-full bg-[#F9FAFB] outline-none  text-lg  p-1 border rounded-md"
+                      className="w-full  outline-none  text-lg  p-1 border rounded-md"
                     />
                   </div>
                 </div>
               </div>
             </div>
-            <div className="flex bg-[#F9FAFB] px-4 h-20 my-10 rounded-md justify-center items-center ">
+            <div className="flex  px-4 h-20 my-10 rounded-md justify-center items-center ">
               <div className="flex justify-between w-full gap-3 items-center ">
                 <div className="flex  w-full items-center">
                   <button

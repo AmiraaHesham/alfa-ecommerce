@@ -7,7 +7,7 @@ export default function OrderDetailsPage({params}) {
     const { id } = params; 
 
   return (
-    <div className="h-full p-5 bg-[#F9FAFB]">
+    <div className="h-full p-5 ">
           <div className=" relative">
             <OrderDetailsHeader orderId={id} orderType={'orders'} />
             <UpdateStatus orderId={id} orderType={"orders"}/>

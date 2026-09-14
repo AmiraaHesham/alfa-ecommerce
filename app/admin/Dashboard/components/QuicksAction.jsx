@@ -14,7 +14,7 @@ export default function RecentOrders_table() {
       <h1 className="md:text-lg xs:text-sm font-bold">{t("quick-actions")}</h1>
       <div className="grid md:grid-cols-4 xs:grid-cols-2 gap-5 mt-3 items-center">
         <div
-          className="  bg-[#F9FAFB] py-3 rounded-md flex flex-col items-center justify-center cursor-pointer"
+          className=" bg-[#F9FAFB]  py-3 rounded-md flex flex-col items-center justify-center cursor-pointer"
           onClick={() => {
             
             navigate.push("/admin/Products");

@@ -50,6 +50,7 @@ export default function Homepage() {
         setImagesSliders(imagesRes);
         setCategories(categoriesRes.data || []);
         setFeaturedProducts(productsRes.data || []);
+        console.log(productsRes.data)
         setItems(productsRes.data || [])
         const newProductsRes = await getRequest("/api/public/items/recent");
         setNewProducts(newProductsRes.data || []);

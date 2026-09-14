@@ -10,12 +10,15 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { getRequest, postRequest } from "../../../utils/requestsUtils";
+import { getRequest, postRequest, deleteRequest } from "../../../utils/requestsUtils";
 import { useRefresh } from "../../../context/refreshContext";
 import { FiHeart } from "react-icons/fi";
 import { PiListBold, PiUser } from "react-icons/pi";
 import SignIn_Form from "../../components/SignIn_Form";
 import SignUp_Form from "../../components/SignUp_Form";
+import CartDrawer from "./CartDrawer";
+import { useCartDrawerOpen } from "../../../context/CartDrawerOpenContext";
+// import { useCartDrawerOpen } from "../../../context/CartDrawerOpenContext";
 
 export default function Header() {
   const { t } = useLanguage();
@@ -25,6 +28,8 @@ export default function Header() {
   const { locale, setLocale } = useLanguage();
   const [username, setUsername] = useState();
   const [itemNum, setItemNum] = useState(0);
+  const [cartItems, setCartItems] = useState([]);
+  const { isCartOpen, setIsCartOpen } = useCartDrawerOpen();
   const { refreshKey } = useRefresh();
   const [showSignUp, setShowSignUp] = useState(false);
   const [showSignin, setShowSignIn] = useState(false);
@@ -51,15 +56,49 @@ export default function Header() {
       if (userId) {
         const res = await getRequest(`/api/shopCarts`);
         const rseData = res.data;
-setNetTotal(rseData.netTotal)
+        setNetTotal(rseData.netTotal);
         setItemNum(rseData.itemLines.length);
+        setCartItems(rseData.itemLines);
       } else {
         const cart = JSON.parse(localStorage.getItem("cart") || "[]");
         setItemNum(cart.length);
+        if (cart.length) {
+          const items = await Promise.all(
+            cart.map(async (item) => {
+              const res = await getRequest(`/api/public/items/${item.id}`);
+              return {
+                ...res.data,
+                quantity: item.quantity,
+              };
+            }),
+          );
+          setCartItems(items);
+          const total = items.reduce((acc, item) => {
+            const price = Number(item.price) || 0;
+            return acc + price * Number(item.quantity || 0);
+          }, 0);
+          setNetTotal(total);
+        } else {
+          setCartItems([]);
+          setNetTotal(0);
+        }
       }
     } catch (err) {
       console.error("Failed to get product in cart", err);
     }
+  };
+  const deleteItemFormCart = async (itemLineId, productID) => {
+    if (userId) {
+      await deleteRequest(
+        `/api/shopCarts/deleteLine/${itemLineId}`,
+        t("message"),
+      );
+    } else {
+      let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+      cart = cart.filter((item) => Number(item.id) !== Number(productID));
+      localStorage.setItem("cart", JSON.stringify(cart));
+    }
+    getProductInCart();
   };
   useEffect(() => {
     getProductInCart();
@@ -211,15 +250,23 @@ setNetTotal(rseData.netTotal)
             >
               <MdLanguage className="w-7 h-7 text-white" />
             </button>
-            <div className=" items-center justify-center gap-2 xs:hidden lg:flex">
-               <Link href="/user/cart" className="relative  ">
-             
-              <MdOutlineShoppingCart className="w-9 h-9" />
-            </Link>
+            <button
+              
+              className=" items-center justify-center gap-2 xs:hidden lg:flex"
+            >
+               <span className="relative">
+               <MdOutlineShoppingCart className="w-9 h-9"
+                  onClick={() => setIsCartOpen(true)} />
+               {/* {itemNum > 0 && (
+                 <span className="absolute -top-1 -right-2 min-w-[16px] h-4 px-1 rounded-full bg-red-600 text-white text-[10px] font-semibold flex items-center justify-center leading-none">
+                   {itemNum > 99 ? "99+" : itemNum}
+                 </span>
+               )} */}
+             </span>
             <hr
               className="w-[1px] h-7 border-0  bg-gray-500"
             />
-            <div className="flex flex-col text-sm">
+            <div className="flex flex-col text-sm justify-start items-start">
               <span className="text-[#CD4354]">
                 { netTotal.toLocaleString("en-US") + " " + t("currency")}
               </span>
@@ -227,7 +274,7 @@ setNetTotal(rseData.netTotal)
                 {itemNum }{" "}{t("Items")}
               </span>
             </div>
-            </div>
+            </button>
            
 
             <div className="xs:flex lg:hidden items-center gap-1 cursor-pointer ">
@@ -329,6 +376,16 @@ setNetTotal(rseData.netTotal)
           ) : ""}
         </div>
       </div>
+
+      <CartDrawer
+        isOpen={isCartOpen}
+        onClose={() => setIsCartOpen(false)}
+        items={cartItems}
+        netTotal={netTotal}
+        itemNum={itemNum}
+        onRemove={deleteItemFormCart}
+        freeShippingThreshold={null}
+      />
     </header>
   );
 }

@@ -2,6 +2,7 @@
 import Sliders from './components/Sliders'
 import FeatuersProducts  from './components/FeatuersProducts'
 import SliderForm from './components/SliderForm'
+import Ads from './components/Ads'
 import { useState } from 'react';
 export default function Homepage() {
     const [isFormOpen, setIsFormOpen] = useState(false);
@@ -15,9 +16,9 @@ export default function Homepage() {
             <SliderForm setIsFormOpen={setIsFormOpen} isFormOpen={isFormOpen}/>
           <Sliders setIsFormOpen={setIsFormOpen}/>
           <hr className="h-1  my-10"></hr>
-          <div className="bg-[#F9FAFB] w-full px-5 ">
-          <FeatuersProducts/>
-
+          <div className=" w-full px-5 ">
+          {/* <FeatuersProducts/> */}
+<Ads/>
           </div>
           </div>
         </div>

@@ -7,7 +7,7 @@ export default function AdminsPage() {
   const [isFormOpen, setIsFormOpen] = useState(false);
 
   return (
-    <div className="bg-[#F9FAFB]">
+    <div className="">
       <div className="flex w-full  flex-col justify-center items-center  relative">
         <div className="px-5 w-full mt-3 ">
           <AdminForm isFormOpen={isFormOpen} setIsFormOpen={setIsFormOpen} />

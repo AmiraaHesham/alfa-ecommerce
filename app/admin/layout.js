@@ -21,7 +21,7 @@ export default function AdminLayout({ children }) {
   if (loading) {
     return (
       <div className="flex flex-col gap-10 justify-center items-center h-screen bg-color1">
-        <Image src="/Images/logo.png" alt="" priority width={200} height={200} className="w-[100px] h-[100px]  border-t-transparent rounded-full animate-pulse" />
+        <Image src="/Images/logo.png" alt=""  priority width={200} height={200} className="w-[100px] h-[100px]  border-t-transparent rounded-full animate-pulse" />
         <h1 className="md:text-5xl xs:text-4xl  font-serif font-semibold animate-pulse bg-gradient-to-r from-[#d62828] via-color3 to-color2 bg-clip-text text-transparent "></h1>
       </div>
 
@@ -29,20 +29,20 @@ export default function AdminLayout({ children }) {
   }
 
   return (
-    <div className=" bg-[#F9FAFB] h-screen">
+    <div className="h-auto">
       {
         role === 'ADMIN' ?
           (
-            <main className=" flex border  ">
+            <main className=" flex   ">
               <SideMenu homepage={"bg-red-100 text-red-500"} />
               <div className="w-full h-full ">
                 <Header page_title={"Homepage Management"} />
-                <div className="bg-[#F9FAFB] h-screen ">{children}</div>
+                <div className=" h-full ">{children}</div>
               </div>
             </main>
           ) : (
 
-            <div className="w-full h-screen flex justify-center items-center text-center">
+            <div className="w-full h-full flex justify-center items-center text-center">
               <div className=" ">
                 <div className="flex justify-center items-center mb-20">
                   <Image src='/Images/logo.png' width={200} height={200} alt='logo ' className="flex justify-center items-center" />

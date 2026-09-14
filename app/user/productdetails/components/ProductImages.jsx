@@ -19,7 +19,7 @@ export default function ProductImages({ product }) {
       <div className="flex md:flex-col xs:flex-row  items-center gap-4 mt-5 xs:order-2 md:order-1 ">
          <div className={`relative   w-[80px] h-[80px] rounded-xl hover:opacity-50  cursor-pointer select-none `}>
           <Image
-            src={urlImage + getThumbnailUrl(product.mainImage)}
+            src={urlImage + getThumbnailUrl(product.img1)}
             alt="mainImage"
             fill
 

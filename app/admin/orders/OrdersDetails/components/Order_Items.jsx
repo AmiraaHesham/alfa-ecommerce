@@ -65,7 +65,7 @@ export default function OrdersItems({ orderId, orderType }) {
         className={`rounded-b-lg  w-full ${orderType === "orders" ? "h-[435px]  overflow-hidden overflow-x-scroll  overflow-y-scroll" : ""}  border  `}
       >
         <table className="md:w-full  rounded-lg  xs:w-[200%] ">
-          <thead className="bg-[#F9FAFB] text-xs text-gray-500  text-justify">
+          <thead className=" text-xs text-gray-500  text-justify">
             <tr className=" text-gray-500 h-12  ">
               <th className="w-[2%] "></th>
               <th className="w-[30%]">{t("product")}</th>

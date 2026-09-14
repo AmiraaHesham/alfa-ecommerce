@@ -3,7 +3,7 @@ import RecentOrders_Table from "./components/Table";
 import QuicksAction from "./components/QuicksAction";
 export default function Dashboard() {
   return (
-    <div className="bg-[#F9FAFB]">
+    <div className="">
       <div className="flex w-full flex-col justify-center items-center p-5 ">
         <div className="w-full  ">
           <Dashboard_Details />

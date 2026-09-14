@@ -11,7 +11,7 @@ import { PiListBold, PiUser, PiHouse } from "react-icons/pi";
 import { RiShoppingBag4Fill, RiTruckLine } from "react-icons/ri";
 
 export default function BottomNav() {
-  const { t } = useLanguage();
+  const { t ,locale} = useLanguage();
   const navigate = useRouter();
   const { refreshKey } = useRefresh();
   const [itemNum, setItemNum] = useState(0);
@@ -61,7 +61,7 @@ export default function BottomNav() {
   return (
     <>
       <nav
-        className="xs:flex lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 shadow-[0_-2px_8px_rgba(0,0,0,0.08)] pb-[env(safe-area-inset-bottom)]"
+        className={`"xs:flex lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 shadow-[0_-2px_8px_rgba(0,0,0,0.08)] pb-[env(safe-area-inset-bottom)]"`}
       >
         <div className="flex w-full h-16 max-w-lg mx-auto">
           <button
@@ -119,7 +119,7 @@ export default function BottomNav() {
             className="absolute inset-0 bg-black/40"
             onClick={() => setMenuOpen(false)}
           ></div>
-          <div className="absolute top-0 bottom-0 left-0 w-72 max-w-[80%] bg-white shadow-xl flex flex-col transition-transform duration-300">
+          <div className={`absolute top-0 bottom-0 ${locale === "ar"? "right-0" :"left-0"}  w-72 max-w-[80%] bg-white shadow-xl flex flex-col transition-transform duration-300`}>
             <div className="flex items-center justify-between p-4 border-b border-gray-200">
               <span className="font-semibold text-gray-800">{t("menu")}</span>
               <MdClose

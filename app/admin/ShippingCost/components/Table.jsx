@@ -43,10 +43,10 @@ export default function Table({
   //   getShippingCost();
   // }, []);
   return (
-    <div className="w-full pt-3 md:px-16 xs:px-0 h-full bg-[#F9FAFB]">
+    <div className="w-full pt-3 md:px-16 xs:px-0 h-full ">
       <div className=" rounded-xl w-full h-[580px]   border  overflow-hidden xs:overflow-x-scroll md:overscroll-x-none   overflow-y-scroll ">
         <table className="w-full   ">
-          <thead className="bg-[#F9FAFB]  w-full text-xs text-gray-500  sticky top-0  z-10 text-justify">
+          <thead className=" bg-[#f6f5f8] w-full text-xs text-gray-500  sticky top-0  z-10 text-justify">
             <tr className=" text-gray-500 h-12 ">
               <th className="p-5 ">{t("governorate")}</th>
               <th className=" ">{t("shippingCost")}</th>

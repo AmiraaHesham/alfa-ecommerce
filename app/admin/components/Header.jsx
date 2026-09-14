@@ -53,7 +53,7 @@ export default function Header({ page_title }) {
     if (!validLangs.includes(newLang)) return;
     setLocale(newLang);
     try {
-      await postRequest(`/api/users/${userId}/langauge/${newLang}`, "", "");
+      await postRequest(`/api/users/langauge/${newLang}`, "", "");
       setLocale(newLang);
 
       localStorage.setItem("lang", newLang);
@@ -82,7 +82,7 @@ export default function Header({ page_title }) {
   // });
 
   return (
-    <header className="md:h-[70px] xs:h-[50px] flex justify-between items-center px-5 font-semibold w-full bg-white  border-b-[1px]">
+    <header className="md:h-[70px] xs:h-[50px] flex justify-between items-center px-5 font-semibold w-full bg-[#0d0625] text-white  border-b-[1px]">
       <h1 id="page-title" className="md:text-2xl xs:text-lg ">
         {t(selectedNamePage)}
       </h1>

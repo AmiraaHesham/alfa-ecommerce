@@ -36,7 +36,7 @@ const [isFormOpen,setIsFormOpen] = useState(false)
     getFeatuersProducts();
   }, []);
   return (
-    <div className="w-full h-auto relative bg-[#F9FAFB]  ">
+    <div className="w-full h-auto relative   ">
       <ProductForm  isFormOpen={isFormOpen} setIsFormOpen={setIsFormOpen}/>
 
       <div className=" flex justify-between items-center">

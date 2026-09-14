@@ -36,15 +36,15 @@ export default function RecentOrders_table() {
           {t("view_all_orders")}
         </button> */}
       </div>
-      <div className=" rounded-b-xl w-full h-[370px] border-s border-b overflow-y-scroll ">
+      <div className="bg-white rounded-b-xl w-full h-[370px] border overflow-y-scroll ">
         <table className=" xs:w-[220%] lg:w-full   ">
-          <thead className="bg-[#F9FAFB] text-xs text-gray-500 w-full  text-justify sticky top-0  z-10">
-            <tr className=" text-gray-500 h-12  ">
-              <th className="w-[25%] px-5">{t("order_id")}</th>
-              <th className="w-[20%] ">{t("date")}</th>
-              <th className="w-[30%]  ">{t("user")}</th>
-              <th className="w-[15%] ">{t("total")}</th>
-              <th className="w-[25%]">{t("state_order")}</th>
+          <thead className="bg-[#f6f5f8] text-xs  w-full  text-justify sticky top-0  z-10">
+            <tr className="  h-12  ">
+              <th className=" px-5">{t("order_id")}</th>
+              <th className=" ">{t("date")}</th>
+              <th className="  ">{t("user")}</th>
+              <th className=" ">{t("total")}</th>
+              <th className="">{t("state_order")}</th>
             </tr>
           </thead>
           <tbody className="bg-white text-md w-full ">
@@ -54,7 +54,7 @@ export default function RecentOrders_table() {
               return (
                 <tr
                   key={index}
-                  className=" text-red-950 border w-full hover:bg-gray-50 cursor-pointer"
+                  className=" text-red-950 border-t w-full hover:bg-gray-50 cursor-pointer"
                   onClick={() => {
                     navigate.push(
                       `/admin/orders/OrdersDetails/${order.orderId}`

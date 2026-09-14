@@ -16,7 +16,7 @@ export default function SiteFeatures() {
     const { locale } = useLanguage()
     const { t } = useLanguage()
     return (
-        <div className=" text-white bg-[#0d0625] w-full rounded-full  p-2 flex justify-center items-center my-5">
+        <div className=" text-white bg-[#0d0625] w-full rounded-full  p-2 flex justify-center items-center ">
 
             <Swiper
                 key={locale}
@@ -35,7 +35,7 @@ export default function SiteFeatures() {
 
                 <SwiperSlide className="!w-[280px]   text-center">
                     <div className="h-full w-full  flex   gap-1 items-center">
-                        <span className="text-5xl p-1">
+                        <span className="text-3xl p-1">
 
                             <LiaCertificateSolid className="w-full h-full text-[#7354ef] " />
                         </span>

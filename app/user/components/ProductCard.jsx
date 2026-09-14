@@ -12,6 +12,7 @@ import { useState } from "react";
 import { getThumbnailUrl } from "../../../utils/functions";
 import { IoMdCart, IoMdHeart, IoMdHeartEmpty } from "react-icons/io";
 import StarRating from "./StarRating"
+import { useCartDrawerOpen } from "../../../context/CartDrawerOpenContext";
 export default function ProductCard({ productInfo, favorite }) {
   const { setSelectedProductId } = useIdContext();
   const navigate = useRouter();
@@ -19,7 +20,7 @@ export default function ProductCard({ productInfo, favorite }) {
   const [loading, setLoading] = useState();
   const { locale } = useLanguage();
   const { triggerRefresh } = useRefresh();
-
+  const { setIsCartOpen } = useCartDrawerOpen();
   const userId =
     typeof window !== "undefined" ? localStorage.getItem("id") : null;
   const addToCart = async (productId) => {
@@ -36,25 +37,25 @@ export default function ProductCard({ productInfo, favorite }) {
           );
         }
         triggerRefresh();
-        const result = await Swal.fire({
-          icon: "success",
-          title: t("تم إضافة المنتج الى سلة التسوق"),
-          showCancelButton: true,
-          confirmButtonText: t("goToCart"),
-          cancelButtonText: t("continueShopping"),
-          customClass: {
-            popup: "rounded-xl shadow-lg border border-gray-200 p-6",
-            title: "text-xl font-bold text-gray-800 mb-2",
-            content: "text-sm text-gray-600 mb-4",
-            confirmButton:
-              "bg-red-600 hover:bg-red-500 text-white font-medium px-6 py-2 rounded-lg",
-            cancelButton:
-              "bg-gray-500 hover:bg-gray-400 text-w  font-medium px-6 py-2 rounded-lg ml-2",
-          },
-        });
-        if (result.isConfirmed) {
-          navigate.push("/user/cart");
-        }
+        // const result = await Swal.fire({
+        //   icon: "success",
+        //   title: t("تم إضافة المنتج الى سلة التسوق"),
+        //   showCancelButton: true,
+        //   confirmButtonText: t("goToCart"),
+        //   cancelButtonText: t("continueShopping"),
+        //   customClass: {
+        //     popup: "rounded-xl shadow-lg border border-gray-200 p-6",
+        //     title: "text-xl font-bold text-gray-800 mb-2",
+        //     content: "text-sm text-gray-600 mb-4",
+        //     confirmButton:
+        //       "bg-red-600 hover:bg-red-500 text-white font-medium px-6 py-2 rounded-lg",
+        //     cancelButton:
+        //       "bg-gray-500 hover:bg-gray-400 text-w  font-medium px-6 py-2 rounded-lg ml-2",
+        //   },
+        // });
+        // if (result.isConfirmed) {
+        //   navigate.push("/user/cart");
+        // }
       } else {
         const product = {
           id: productId,
@@ -72,25 +73,25 @@ export default function ProductCard({ productInfo, favorite }) {
         }
         triggerRefresh();
         localStorage.setItem("cart", JSON.stringify(cart));
-        const result = await Swal.fire({
-          icon: "success",
-          title: t("تم إضافة المنتج الى سلة التسوق"),
-          showCancelButton: true,
-          confirmButtonText: t("goToCart"),
-          cancelButtonText: t("continueShopping"),
-          customClass: {
-            popup: "rounded-xl shadow-lg border border-gray-200 p-6",
-            title: "text-xl font-bold text-gray-800 mb-2",
-            content: "text-sm text-gray-600 mb-4",
-            confirmButton:
-              "bg-red-600 hover:bg-red-500 text-white font-medium px-6 py-2 rounded-lg",
-            cancelButton:
-              "bg-gray-500 hover:bg-gray-400 text-w  font-medium px-6 py-2 rounded-lg ml-2",
-          },
-        });
-        if (result.isConfirmed) {
-          navigate.push("/user/cart");
-        }
+        // const result = await Swal.fire({
+        //   icon: "success",
+        //   title: t("تم إضافة المنتج الى سلة التسوق"),
+        //   showCancelButton: true,
+        //   confirmButtonText: t("goToCart"),
+        //   cancelButtonText: t("continueShopping"),
+        //   customClass: {
+        //     popup: "rounded-xl shadow-lg border border-gray-200 p-6",
+        //     title: "text-xl font-bold text-gray-800 mb-2",
+        //     content: "text-sm text-gray-600 mb-4",
+        //     confirmButton:
+        //       "bg-red-600 hover:bg-red-500 text-white font-medium px-6 py-2 rounded-lg",
+        //     cancelButton:
+        //       "bg-gray-500 hover:bg-gray-400 text-w  font-medium px-6 py-2 rounded-lg ml-2",
+        //   },
+        // });
+        // if (result.isConfirmed) {
+        //   navigate.push("/user/cart");
+        // }
       }
     } catch (error) {
     } finally {
@@ -100,7 +101,7 @@ export default function ProductCard({ productInfo, favorite }) {
   const addFavoriteItems = async (productId) => {
     if (userId) {
       await postRequest(
-        `/api/users/${userId}/favoriteItems/${productId}`,
+        `/api/users/favoriteItems/${productId}`,
         "",
         "",
       );
@@ -130,7 +131,7 @@ export default function ProductCard({ productInfo, favorite }) {
       setLoading(true);
 
       const res = await deleteRequest(
-        `/api/users/${userId}/favoriteItems/${productId}`,
+        `/api/users/favoriteItems/${productId}`,
         t("message"),
       );
       // triggerRefresh();
@@ -154,79 +155,105 @@ export default function ProductCard({ productInfo, favorite }) {
       id={`div_${productInfo?.itemId}`}
       className="h-[360px] group relative  bg-white  py-2 w-full rounded-3xl cursor-pointer  "
     >
-      <div className="flex flex-col justify-center gap-4  items-center h-full">
+      <div className="flex flex-col justify-around  gap-3  items-center h-full">
         <div className=" relative h-[200px] w-full  ">
-          <div className="absolute h-4 flex justify-center items-center gap-2 z-20 p-4 "
-            onClick={() => {
-              setSelectedProductId(productInfo?.itemId);
-              navigate.push(`/user/productdetails/${productName}/${productInfo?.itemId}`);
-            }}
-          >
+          <div className="relative w-full h-full">
 
-            {productInfo?.oldPrice ? (
-              <span className="font-semibold flex justify-center items-center  text-center bg-[#8CBC67] text-xs  w-12 h-6 text-white rounded-full">
-                {" - " +
-                  (
-                    ((productInfo?.oldPrice - productInfo?.price) /
-                      productInfo?.oldPrice) *
-                    100
-                  ).toFixed(0)}
-                %
-              </span>
-            ) : (
-              ""
-            )}
-
-          </div>
-          <div className="w-full h-full flex justify-center px-3 items-center z-10">
-            <div className=" h-full w-full relative  bg-gray-100 rounded-3xl">
+            <div className="absolute  flex justify-center items-center gap-2 z-20 px-3 "
+              onClick={() => {
+                setSelectedProductId(productInfo?.itemId);
+                navigate.push(`/user/productdetails/${productName}/${productInfo?.itemId}`);
+              }}
+            >
 
 
-              <Image
-                src={
-                  `${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +
-                  getThumbnailUrl(productInfo?.mainImageURL) || ""
-                  }`
+              {productInfo?.available ?
+                <div className=" flex flex-col gap-1">
+                  {productInfo?.oldPrice ? (
+                    <span className="font-semibold flex justify-center items-center  text-center bg-[#8CBC67] text-xs  w-12 h-6 text-white rounded-full">
+                      {" - " +
+                        (
+                          ((productInfo?.oldPrice - productInfo?.price) /
+                            productInfo?.oldPrice) *
+                          100
+                        ).toFixed(0)}
+                      %
+                    </span>
+                  ) : (
+                    ""
+                  )}
+                  {productInfo?.createdDate && new Date(productInfo?.createdDate) >= new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) ? 
+                  (<span className="font-semibold flex justify-center items-center  text-center bg-[#CD4354] text-sm  w-12 h-6 text-white rounded-full">
+                    {t("hot")}
+                  </span>) : ("")}
 
-                }
-                alt=""
-                fill
-                priority
-                quality={100}
-             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                className="object-fill rounded-3xl"
-                onClick={() => {
-                  setSelectedProductId(productInfo?.itemId);
-                  navigate.push(`/user/productdetails/${productName}/${productInfo?.itemId}`);
-                }}
-              />
+                </div>
+
+
+                : <span className="font-semibold flex justify-center items-center  text-center bg-black text-xs  w-14 h-6 text-white rounded-full">
+                  {t("soldOut")}
+                </span>}
+
+            </div>
+            <div className="w-full h-full flex justify-center px-3 items-center z-10">
+              <div className=" h-full w-full relative  bg-gray-100 rounded-3xl">
+
+
+                <Image
+                  src={
+                    `${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +
+                    getThumbnailUrl(productInfo?.imageUrl) || ""
+                    }`
+
+                  }
+                  alt=""
+                  fill
+                  priority
+                  quality={100}
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                  className="object-fill rounded-3xl"
+                  onClick={() => {
+                    setSelectedProductId(productInfo?.itemId);
+                    navigate.push(`/user/productdetails/${productName}/${productInfo?.itemId}`);
+                  }}
+                />
+              </div>
             </div>
           </div>
-          <div
-            className="
-            absolute bottom-0 left-0
-            px-3 w-full
-          lg:opacity-0 lg:invisible
+          <div className="absolute bottom-0 left-0  px-3 w-full lg:group-hover:visible     lg:opacity-0 lg:invisible
             transition-all duration-300
-            lg:group-hover:opacity-100 lg:group-hover:visible
+            lg:group-hover:opacity-100 
             xs:opacity-100 xs:visible
-            text-center
-          "
-          >
+            text-center">
+
+
+            <div className="w-full flex justify-between gap-1 " >
+              <span className="w-full h-1 bg-gray-300"></span>
+              <span className="w-full h-1 bg-gray-300"></span>
+              <span className="w-full h-1 bg-gray-300"></span>
+            </div>
+
             <div
               className="
+            
+           w-full
+      
+          "
+            >
+              <div
+                className="
               flex items-center justify-center
               w-full
               bg-[#E76E7D]
               rounded-b-3xl
               overflow-hidden
             "
-            >
+              >
 
-              {/* Wish List */}
-              <button
-                id={`btn_fov_${productInfo?.itemId}`}
-                className="
+                {/* Wish List */}
+                <button
+                  id={`btn_fov_${productInfo?.itemId}`}
+                  className="
                 group/wishlist
                 flex items-center justify-center
                 text-white
@@ -237,20 +264,20 @@ export default function ProductCard({ productInfo, favorite }) {
               hover:bg-[#CD4354]
 
               "
-                onClick={(e) => {
-                  e.stopPropagation();
+                  onClick={(e) => {
+                    e.stopPropagation();
 
-                  if (favorite === true) {
-                    deleteFavoriteItems(productInfo?.itemId);
-                  } else {
-                    addFavoriteItems(productInfo?.itemId);
-                  }
+                    if (favorite === true) {
+                      deleteFavoriteItems(productInfo?.itemId);
+                    } else {
+                      addFavoriteItems(productInfo?.itemId);
+                    }
 
-                  setSelectedProductId(productInfo?.itemId);
-                }}
-              >
-                <IoMdHeart
-                  className="
+                    setSelectedProductId(productInfo?.itemId);
+                  }}
+                >
+                  <IoMdHeart
+                    className="
                   absolute
                   w-5 h-5
                   lg:scale-0
@@ -260,25 +287,25 @@ export default function ProductCard({ productInfo, favorite }) {
                   lg:group-hover/wishlist:scale-100
                   xs:scale-100
                 "
-                />
+                  />
 
-                <span
-                  className="
+                  <span
+                    className="
                 transition-all duration-300
                 lg:opacity-100
                 lg:group-hover/wishlist:-translate-y-5
                 lg:group-hover/wishlist:opacity-0
                 xs:opacity-0
               ">
-                  {t("wishlist")}
-                </span>
-              </button>
+                    {t("wishlist")}
+                  </span>
+                </button>
 
 
-              {/* Add To Cart */}
-              {productInfo?.available && (
-                <button
-                  className="
+                {/* Add To Cart */}
+                {productInfo?.available && (
+                  <button
+                    className="
                   group/cart
                   flex items-center justify-center
                   text-white
@@ -289,14 +316,16 @@ export default function ProductCard({ productInfo, favorite }) {
                 hover:bg-[#CD4354]
 
                 "
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    addToCart(productInfo?.itemId);
-                  }}
-                >
-                  {/* Add to Cart */}
-                  <span
-                    className="
+
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      addToCart(productInfo?.itemId);
+                      setIsCartOpen(true)
+                    }}
+                  >
+                    {/* Add to Cart */}
+                    <span
+                      className="
                   transition-all duration-300
                   lg:opacity-100
 
@@ -304,13 +333,13 @@ export default function ProductCard({ productInfo, favorite }) {
                   lg:group-hover/cart:opacity-0
                   xs:opacity-0
                 "
-                  >
-                    {t("Cart")}
-                  </span>
+                    >
+                      {t("Cart")}
+                    </span>
 
-                  {/* Cart Icon */}
-                  <MdOutlineAddShoppingCart
-                    className=" absolute
+                    {/* Cart Icon */}
+                    <MdOutlineAddShoppingCart
+                      className=" absolute
                       w-5 h-5
                       lg:scale-0
                       transition-all duration-300
@@ -319,14 +348,15 @@ export default function ProductCard({ productInfo, favorite }) {
                       lg:group-hover/cart:scale-100
                       xs:scale-100
                     "
-                  />
-                </button>
-              )}
+                    />
+                  </button>
+                )}
 
+              </div>
             </div>
           </div>
-
         </div>
+        {/* </div> */}
 
         <div className="w-full flex flex-col justify-center items-center">
           <h1
@@ -377,9 +407,7 @@ export default function ProductCard({ productInfo, favorite }) {
                 </div>
               </div>
             ) : (
-              <span className="text-red-600  text-xs ">
-                {t("Currently_unavailable")}
-              </span>
+              <div className="w-full  h-full"></div>
             )}
             {/* {productInfo?.available ? (
               ""

@@ -31,7 +31,7 @@ export default function Orders_Table() {
         },
         "",
       );
-      const resOrders = response.data || [];
+      const resOrders = response.data.content || [];
 
       if (pageNum.current === 0) {
         setOrders(resOrders);
@@ -187,7 +187,7 @@ export default function Orders_Table() {
       </div>
       <div className=" rounded-xl w-full  h-[400px] mt-5  border  overflow-hidden overflow-x-scroll overflow-y-scroll ">
         <table className="  xs:w-[200%] lg:w-full   ">
-          <thead className="bg-[#F9FAFB] text-xs text-gray-500  text-justify sticky top-0  z-10">
+          <thead className=" text-xs text-gray-500  text-justify sticky top-0  z-10">
             <tr className=" text-gray-500 h-12">
               {/* <th className="w-[2%] "></th> */}
               <th className=" px-5 ">{t("order_id")}</th>

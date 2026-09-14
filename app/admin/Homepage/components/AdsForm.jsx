@@ -1,0 +1,414 @@
+"use client";
+import Image from "next/image";
+import { MdCancel } from "react-icons/md";
+import { IoCloudUploadSharp } from "react-icons/io5";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useLanguage } from "../../../../context/LanguageContext.js";
+import { getRequest, postRequest, putRequest } from "../../../../utils/requestsUtils.js";
+import { useRefresh } from "../../../../context/refreshContext.jsx";
+import Select from "react-select";
+
+export default function AdsForm({ isFormOpen, setIsFormOpen, productsOptions, adNumber, offerId, mode = "create", adData: adDataProp = null }) {
+    const [photo, setPhoto] = useState({
+        AdImageFile: "",
+        AdImage: "",
+    });
+    const [itemId, setItemId] = useState("");
+    const { t } = useLanguage();
+    const { locale } = useLanguage()
+    const { triggerRefresh } = useRefresh();
+    const [loading, setLoading] = useState();
+    const [search, setSearch] = useState("");
+    const [adData, setAdData] = useState({
+        id: "",
+        imageUrl: "",
+        title: "",
+        itemId: ""
+    });
+    const [selectedProduct, setSelectedProduct] = useState(null);
+    const [options, setOptions] = useState(productsOptions);
+    const objectUrlRef = useRef(null);
+
+    const isUpdateMode = mode === "update";
+    const adDataKey = useMemo(() => JSON.stringify(adDataProp ?? null), [adDataProp]);
+
+    const clearNewImage = useCallback(() => {
+        if (objectUrlRef.current) {
+            URL.revokeObjectURL(objectUrlRef.current);
+            objectUrlRef.current = null;
+        }
+        setPhoto({ AdImageFile: "", AdImage: "" });
+    }, []);
+
+    const deleteImage = useCallback(() => {
+        setAdData((prev) => ({
+            ...prev,
+            imageUrl: ""
+        }));
+    }, []);
+
+    useEffect(() => {
+        setOptions(productsOptions);
+    }, [productsOptions]);
+
+    const handleSearch = useCallback(async () => {
+        if (!search.trim()) return;
+
+        const res = await postRequest(
+            "/api/public/items/search",
+            {
+                searchText: search,
+            }, ""
+        );
+
+        const products = res?.data || [];
+
+        setOptions(
+            products.map((product) => ({
+                value: product.itemId,
+                label: locale === "ar" ? product.nameAr : product.nameEn,
+
+                product,
+            }))
+        );
+    }, [search, locale]);
+
+    const handeluploadAdImage = (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        if (objectUrlRef.current) {
+            URL.revokeObjectURL(objectUrlRef.current);
+            objectUrlRef.current = null;
+        }
+        const objectUrl = URL.createObjectURL(file);
+
+        setPhoto((prev) => ({
+            ...prev,
+            AdImage: objectUrl,
+            AdImageFile: file,
+        }));
+        objectUrlRef.current = objectUrl;
+    };
+
+    const selectProductOption = useCallback((itemIdNum, fallbackLabel) => {
+        setItemId(itemIdNum);
+        const match = productsOptions.find(
+            (option) => String(option.value) === String(itemIdNum)
+        );
+        setSelectedProduct(
+            match
+                ? match
+                : { value: itemIdNum, label: fallbackLabel || `#${itemIdNum}` }
+        );
+    }, [productsOptions]);
+
+    const loadFromProps = useCallback((data) => {
+        const id = data?.offerId ?? data?.id ?? "";
+        const imageUrl = data?.imageUrl ?? data?.img ?? "";
+        const title = data?.title ?? "";
+        const itemIdNum = data?.itemId ?? "";
+
+        setAdData({ id, imageUrl, title, itemId: itemIdNum });
+        if (itemIdNum) selectProductOption(itemIdNum, title);
+    }, [selectProductOption]);
+
+    const getAdData = useCallback(async () => {
+        try {
+            setLoading(true);
+            const res = await getRequest(`/api/admin/offers/${offerId}`)
+            loadFromProps(res?.data);
+        } catch (error) {
+        } finally {
+            setLoading(false);
+        }
+    }, [offerId, loadFromProps])
+
+    useEffect(() => {
+        if (!isFormOpen) return;
+
+        clearNewImage();
+        setItemId("");
+        setSelectedProduct(null);
+        setSearch("");
+
+        if (isUpdateMode) {
+            if (adDataProp) {
+                loadFromProps(adDataProp);
+            } else if (offerId) {
+                getAdData();
+            } else {
+                setAdData({ id: "", imageUrl: "", title: "", itemId: "" });
+            }
+        } else {
+            setAdData({ id: "", imageUrl: "", title: "", itemId: "" });
+        }
+    }, [isFormOpen, isUpdateMode, offerId, adDataKey, adDataProp, clearNewImage, loadFromProps, getAdData]);
+
+    useEffect(() => {
+        if (isUpdateMode && adData.itemId) {
+            const match = productsOptions.find(
+                (option) => String(option.value) === String(adData.itemId)
+            );
+            if (match) {
+                setItemId(match.value);
+                setSelectedProduct(match);
+            }
+        }
+    }, [productsOptions, adData.itemId, isUpdateMode]);
+
+    useEffect(() => {
+        return () => {
+            if (objectUrlRef.current) {
+                URL.revokeObjectURL(objectUrlRef.current);
+            }
+        };
+    }, []);
+
+    const handleSubmit = async () => {
+        const formData = new FormData();
+        if (photo.AdImageFile) {
+            formData.append("imageFile", photo.AdImageFile);
+        }
+        formData.append("itemId", itemId);
+        formData.append("title", adData.title);
+        formData.append("number", adNumber)
+
+        try {
+            setLoading(true);
+
+            if (isUpdateMode) {
+                const targetId = adData.id || offerId;
+                if (!targetId) return;
+                await putRequest(`/api/admin/offers/${targetId}`, formData, t("message"));
+            } else {
+                await postRequest("/api/admin/offers", formData, t("message"));
+            }
+
+            triggerRefresh();
+        } catch (error) {
+        } finally {
+            setLoading(false);
+            clearNewImage();
+            setItemId("");
+            setSelectedProduct(null)
+            setSearch("")
+            setIsFormOpen(false);
+        }
+    }
+
+    return (
+        <div
+            id="add-slider-form"
+            className={`fixed inset-0 bg-black/40 flex items-center justify-center z-50 ${isFormOpen ? "flex" : "hidden"}`}
+        >
+            {loading && (
+                <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+                    <Image
+                        src="/Images/logo.png"
+                        alt=""
+                        className="w-[100px] h-[100px]  border-t-transparent rounded-full animate-pulse"
+                        width={100}
+                        height={100}
+                        priority
+                    />
+                </div>
+            )}
+            <div className="bg-white p-5  xs:w-full lg:w-[500px] flex flex-col  rounded-3xl">
+                <div className="m-4 flex justify-between items-center">
+                    <h1 id="nameFormCategory" className="text-lg font-semibold">
+                        {isUpdateMode ? t("edit_advert") : t("add_advert") + " " + "[" + adNumber + "]"}
+                    </h1>
+                    <button
+                        className="text-3xl text-red-950  hover:text-red-800"
+                        onClick={() => {
+                            setIsFormOpen(false);
+                            clearNewImage();
+                            setSelectedProduct(null)
+                            setSearch("")
+                        }}
+                    >
+                        <MdCancel />
+                    </button>
+                </div>
+                <hr className="h-1 mb-3"></hr>
+                <div className="flex justify-center items-center ">
+                    <form
+                        className=" md:w-[60%] xs:w-[80%] "
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                        }}
+                    >
+                        {photo.AdImageFile ? <div>
+                            <button type="button" onClick={clearNewImage}>X</button>
+                            <div className="flex items-center relative h-[150px] justify-center border-2 border-dashed border-red-300 rounded-lg hover:bg-gray-50">
+                                <div className="w-full h-full relative">
+                                    <Image
+                                        alt=""
+                                        src={photo.AdImage}
+                                        fill
+                                        sizes="(max-width: 768px) 80vw, 300px"
+                                        className="w-full h-full object-contain rounded-lg"
+                                    />
+                                </div>
+
+                            </div>
+                        </div>
+
+                            : adData.imageUrl ? <div>
+                                <button type="button" onClick={deleteImage}>X</button>
+                                <div className="flex items-center relative h-[150px] justify-center border-2 border-dashed border-red-300 rounded-lg hover:bg-gray-50">
+                                    <div className="w-full h-full relative">
+                                        <Image
+                                            alt=""
+                                            src={process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL + adData.imageUrl}
+                                            fill
+                                            sizes="(max-width: 768px) 80vw, 300px"
+                                            className="w-full h-full object-contain rounded-lg"
+                                        />
+                                    </div>
+
+                                </div>
+                            </div>
+
+                                : <label htmlFor="AdFileInput" className="cursor-pointer ">
+                                    <div className="flex flex-col items-center relative  justify-center p-3 border-2 border-dashed border-red-300 rounded-lg hover:bg-gray-50">
+                                        {!photo.AdImage ? (
+                                            <div className="flex flex-col justify-center items-center">
+                                                <span className="text-4xl text-red-600">
+                                                    <IoCloudUploadSharp />
+                                                </span>
+                                                <span className="text-sm ">
+                                                    {t("add-photo")}
+                                                </span>
+                                            </div>
+                                        ) : (
+                                            // 🖼️ Image Preview
+                                            <div className="w-[100px] h-[100px] ">
+                                                <Image
+                                                    alt=""
+                                                    src={photo.AdImage}
+                                                    fill
+                                                    sizes="100px"
+                                                    className="w-full h-full object-contain rounded-lg"
+                                                />
+                                            </div>
+                                        )}
+                                    </div>
+                                </label>
+                        }
+                        <input
+                            type="file"
+                            accept="AdImage/*"
+                            onChange={handeluploadAdImage}
+                            className="hidden"
+                            id="AdFileInput"
+                        />
+                        <div className="mt-4">
+                            <div className="flex flex-col gap-2 ">
+                                <label className="text-md text-gray-500">
+                                    {t("title")}
+                                </label>
+                                <input
+                                    type="text"
+                                    value={adData.title}
+                                    onChange={(e) => setAdData((prev) => ({
+                                        ...prev,
+                                        title: e.target.value
+                                    }))}
+                                    placeholder={t("title_placeholder")}
+                                    className="w-full outline-none text-gray-900 text-lg p-1 border rounded-md placeholder:text-sm"
+                                />
+                                <label className="text-md ">
+                                    {t("choose_product")}
+                                </label>
+                                <div className="border rounded-lg border-red-300 px-1 ">
+
+                                    <Select
+                                        options={options}
+                                        value={selectedProduct}
+                                        inputValue={search}
+                                        isSearchable
+                                        placeholder={t("search")}
+                                        onInputChange={(value, actionMeta) => {
+                                            if (actionMeta.action === "input-change") {
+                                                setSearch(value);
+                                            }
+                                            return value;
+                                        }}
+
+                                        onKeyDown={(e) => {
+                                            if (e.key === "Enter") {
+                                                e.preventDefault();
+                                                handleSearch();
+                                            }
+                                        }}
+
+                                        onChange={(selected) => {
+                                            setItemId(selected.value)
+                                            setSelectedProduct(selected);
+                                            setSearch("");
+                                        }}
+
+                                        noOptionsMessage={() => "لا توجد منتجات"}
+                                        styles={{
+                                            control: (provided) => ({
+                                                ...provided,
+                                                border: "none",
+                                                boxShadow: "none",
+                                                fontWeight: "600",
+                                                height: "100%",
+                                                width: "100%",
+                                            }),
+                                            option: (provided) => ({
+                                                ...provided,
+                                                // backgroundColor: '#b91c1c',
+                                                color: "white",
+                                                fontSize: "18px",
+                                                fontWeight: "600",
+                                            }),
+                                            input: (base) => ({
+                                                ...base,
+                                                color: "#374151",
+                                            }),
+                                            option: (base, state) => ({
+                                                ...base,
+                                                backgroundColor: state.isSelected
+                                                    ? "#dc2626"
+                                                    : state.isFocused
+                                                        ? "#fee2e2"
+                                                        : "#ffffff",
+                                                color: state.isSelected ? "#ffffff" : "#374151",
+                                                cursor: "pointer",
+                                                padding: "10px",
+                                                "&:hover": {
+                                                    backgroundColor: state.isSelected
+                                                        ? "#dc2626"
+                                                        : "#fee2e2",
+                                                },
+                                            }),
+                                        }}
+                                    />
+                                </div>
+
+                            </div>
+                        </div>
+
+
+
+                        <div className="flex justify-center items-center">
+                            <button
+                                type="submit"
+                                id="btn-saveCategory"
+                                className={`bg-red-600 py-2 px-3 text-white mt-7  hover:bg-red-800 rounded-lg `}
+                                onClick={handleSubmit}
+                            >
+                                {isUpdateMode ? t("save-changes") : t("save")}
+                            </button>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    );
+}

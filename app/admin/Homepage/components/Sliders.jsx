@@ -11,7 +11,6 @@ import LivePreview from "./LivePreview.jsx";
 
 import {
   deleteRequest,
-  postRequest,
 } from "../../../../utils/requestsUtils.js";
 import {
   getSliderImage,
@@ -72,7 +71,7 @@ export default function Sliders({setIsFormOpen}) {
             <span className="text-xl text-red-600">
               <TfiLayoutSliderAlt />
             </span>
-            <h1 className="md:text-xl xs:text-lg font-semibold ">Sliders</h1>
+            <h1 className="md:text-xl xs:text-lg font-semibold ">{t("sliders")}</h1>
           </div>
           <button
             id="btn-livePreview"
@@ -118,8 +117,8 @@ export default function Sliders({setIsFormOpen}) {
         {/* </div> */}
       </div>
       <div className="w-full grid lg:grid-cols-5 md:grid-cols-3  xs:grid-cols-2 gap-3  ">
-        <div className="bg-white border rounded-md h-[170px] w-full flex flex-col gap-3 p-4 cursor-pointer">
-          <div className=" border-dashed flex justify-center p-5 items-center border-2 rounded-md border-red-400 bg-gray-50  hover:bg-gray-100 w-full h-full "
+        <div className="bg-white  rounded-3xl h-[170px] w-full flex flex-col gap-3 p-4 cursor-pointer">
+          <div className=" border-dashed flex justify-center p-5 items-center border-2 rounded-3xl border-red-400 bg-gray-50  hover:bg-gray-100 w-full h-full "
           onClick={()=>{
             setIsFormOpen(true)
           }}
@@ -156,7 +155,7 @@ export default function Sliders({setIsFormOpen}) {
           return (
             <div
               key={index}
-              className="bg-white  h-[170px] border p-1 rounded-md"
+              className="bg-white  h-[170px]  p-2 rounded-3xl"
             >
               <span className="flex justify-end mb-1">
                 <button
@@ -174,7 +173,7 @@ export default function Sliders({setIsFormOpen}) {
                   alt=""
                   width={100}
                   height={100}
-                  className="h-[140px] w-full rounded-md"
+                  className="h-[140px] w-full rounded-3xl"
                 />
               </div>
             </div>

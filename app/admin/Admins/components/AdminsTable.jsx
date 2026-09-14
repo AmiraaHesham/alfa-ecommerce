@@ -30,7 +30,7 @@ export default function AdminsTable({ setIsFormOpen }) {
         },
         ""
       );
-      const resUsers = response.data || [];
+      const resUsers = response.data.content || [];
       if (pageNum.current === 0) {
         setUsers(resUsers);
       } else setUsers((prev) => [...prev, ...resUsers]);
@@ -58,7 +58,7 @@ export default function AdminsTable({ setIsFormOpen }) {
     getAllUsers();
   }, []);
   return (
-    <div className="w-full h-full bg-[#F9FAFB]">
+    <div className="w-full h-full ">
      
       <div className="w-full  bg-white mt-3 rounded-lg border flex flex-row  gap-5 justify-between  items-start  p-4 ">
         <div className="flex items-center justify-between border px-1 rounded-md w-[300px] bg-gray-100">
@@ -98,7 +98,7 @@ export default function AdminsTable({ setIsFormOpen }) {
       </div>
       <div className="rounded-xl w-full h-[600px]  border  mt-3 overflow-hidden overflow-y-scroll ">
         <table className="xs:w-[220%] lg:w-full">
-          <thead className="bg-[#F9FAFB] text-xs text-justify sticky top-0  z-10">
+          <thead className=" text-xs text-justify sticky top-0  z-10">
             <tr className=" text-gray-500 h-12  ">
               {/* <th className="w-[5%]"></th> */}
               <th className="w-[1%] px-4">{t("status")}</th>

@@ -5,12 +5,14 @@ import { FaShippingFast, FaStarHalfAlt } from "react-icons/fa";
 import { postRequest } from "../../../../utils/requestsUtils";
 import { useRouter } from "next/navigation";
 import { useRefresh } from "../../../../context/refreshContext";
+import { useCartDrawerOpen } from "../../../../context/CartDrawerOpenContext";
 import { useState } from "react";
 import { useLanguage } from "../../../../context/LanguageContext";
 import StarRating from "../../components/StarRating";
 export default function ProductInfo({ product, itemId }) {
     const navigate = useRouter();
     const { triggerRefresh } = useRefresh();
+    const { setIsCartOpen } = useCartDrawerOpen();
     const [count, setCount] = useState(1);
     const { locale, t } = useLanguage();
 
@@ -70,6 +72,9 @@ export default function ProductInfo({ product, itemId }) {
                     );
                 }
                 triggerRefresh();
+                if (!buyNow) {
+                    setIsCartOpen(true);
+                }
                 if (buyNow) {
                     navigate.push("/user/cart")
                 }
@@ -93,6 +98,9 @@ export default function ProductInfo({ product, itemId }) {
                 }
                 triggerRefresh();
                 localStorage.setItem("cart", JSON.stringify(cart));
+                if (!buyNow) {
+                    setIsCartOpen(true);
+                }
 
             }
         } catch (error) {

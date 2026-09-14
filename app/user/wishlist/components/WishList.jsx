@@ -31,7 +31,7 @@ export default function WishList() {
         await Promise.all(
           favoriteItems.map((item) =>
             postRequest(
-              `/api/users/${userId}/favoriteItems/${item.id}`,
+              `/api/users/favoriteItems/${item.id}`,
               "",
               "",
             ),

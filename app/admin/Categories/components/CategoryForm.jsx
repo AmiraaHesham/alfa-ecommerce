@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { MdCancel } from "react-icons/md";
 import { IoCloudUploadSharp } from "react-icons/io5";
-import {useEffect,  useState } from "react";
+import {useCallback, useEffect, useRef, useState } from "react";
 import { useLanguage } from "../../../../context/LanguageContext.js";
 import { postRequest, putRequest } from "../../../../utils/requestsUtils.js";
 import { getRequest } from "../../../../utils/requestsUtils.js";
@@ -13,8 +13,15 @@ import { getThumbnailUrl } from "../../../../utils/functions.jsx";
 export default function CategoryForm({ isFormOpen, setIsFormOpen }) {
   const [photo, setPhoto] = useState({
     imageFile: "",
-    image: "",
+    imageUrl: "",
   });
+  const photoObjectUrlRef = useRef(null);
+
+  const [icon, setIcon] = useState({
+    iconFile: "",
+    iconUrl: "",
+  });
+  const iconObjectUrlRef = useRef(null);
 
   const [nameEn, setNameEn] = useState("");
   const [nameAr, setNameAr] = useState("");
@@ -25,20 +32,86 @@ export default function CategoryForm({ isFormOpen, setIsFormOpen }) {
   const { selectedCategoryId, setSelectedCategoryId } = useIdContext();
   const isEditMode = selectedCategoryId !== null;
 
+  const clearNewPhoto = useCallback(() => {
+    if (photoObjectUrlRef.current) {
+      URL.revokeObjectURL(photoObjectUrlRef.current);
+      photoObjectUrlRef.current = null;
+    }
+    setPhoto((prev) => ({
+      ...prev,
+      imageFile: "",
+      imageUrl: "",
+    }));
+  }, []);
+
+  const removePhoto = useCallback(() => {
+    if (photoObjectUrlRef.current) {
+      URL.revokeObjectURL(photoObjectUrlRef.current);
+      photoObjectUrlRef.current = null;
+    }
+    setPhoto({
+      imageFile: "",
+      imageUrl: "",
+    });
+  }, []);
+
+  const clearNewIcon = useCallback(() => {
+    if (iconObjectUrlRef.current) {
+      URL.revokeObjectURL(iconObjectUrlRef.current);
+      iconObjectUrlRef.current = null;
+    }
+    setIcon((prev) => ({
+      ...prev,
+      iconFile: "",
+      iconUrl: "",
+    }));
+  }, []);
+
+  const removeIcon = useCallback(() => {
+    if (iconObjectUrlRef.current) {
+      URL.revokeObjectURL(iconObjectUrlRef.current);
+      iconObjectUrlRef.current = null;
+    }
+    setIcon({
+      iconFile: "",
+      iconUrl: "",
+    });
+  }, []);
+
+  const handelIconUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (iconObjectUrlRef.current) {
+      URL.revokeObjectURL(iconObjectUrlRef.current);
+      iconObjectUrlRef.current = null;
+    }
+    const objectUrl = URL.createObjectURL(file);
+
+    iconObjectUrlRef.current = objectUrl;
+    setIcon((prev) => ({
+      ...prev,
+      iconFile: file,
+      iconUrl: objectUrl,
+    }));
+  };
+
   const handelupload = (e) => {
     const file = e.target.files?.[0];
-    if (!file) return; // مهم جدًا
+    if (!file) return;
 
-    const reader = new FileReader();
+    if (photoObjectUrlRef.current) {
+      URL.revokeObjectURL(photoObjectUrlRef.current);
+      photoObjectUrlRef.current = null;
+    }
+    const objectUrl = URL.createObjectURL(file);
 
-    reader.onload = () => {
-      setPhoto((prev) => ({
-        ...prev,
-        image: reader.result,
-        imageFile: file,
-      }));
-    };
-    reader.readAsDataURL(file);
+    photoObjectUrlRef.current = objectUrl;
+    setPhoto((prev) => ({
+      ...prev,
+      imageFile: file,
+      imageUrl: objectUrl,
+    }));
   };
 
   const addCategory = async () => {
@@ -49,6 +122,7 @@ export default function CategoryForm({ isFormOpen, setIsFormOpen }) {
       formData.append("nameEn", nameEn);
       formData.append("nameAr", nameAr);
       formData.append("imageFile", photo.imageFile);
+      formData.append("iconFile", icon.iconFile);
       await postRequest("/api/admin/itemCategory", formData, t("message"));
       triggerRefresh();
       
@@ -59,7 +133,7 @@ export default function CategoryForm({ isFormOpen, setIsFormOpen }) {
     }
   };
 
-  const CategoryData = async () => {
+  const CategoryData = useCallback(async () => {
     try {  setLoading(true);
       if (selectedCategoryId !== null) {
       
@@ -70,22 +144,32 @@ export default function CategoryForm({ isFormOpen, setIsFormOpen }) {
         const resData = res.data
         setNameAr(resData.nameAr)
          setNameEn(resData.nameEn);
+         console.log(resData)
         setPhoto((prev) => ({
           ...prev,
-          image: process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL + getThumbnailUrl(resData.imageURL),
+          imageFile: "",
+          imageUrl: resData.imageURL
+            ? process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +
+              getThumbnailUrl(resData.imageURL)
+            : "",
+        }));
+        setIcon((prev) => ({
+          ...prev,
+          iconFile: "",
+          iconUrl: resData.iconURL
+            ? process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL + resData.iconURL
+            : "",
         }));
       } else {
         (setNameAr(""), setNameEn(""));
-        setPhoto((prev) => ({
-          ...prev,
-          image: "",
-        }));
+        clearNewPhoto();
+        clearNewIcon();
       }
     } catch (error) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedCategoryId, clearNewPhoto, clearNewIcon]);
 
   const updateCategory = async () => {
     try {
@@ -95,6 +179,9 @@ export default function CategoryForm({ isFormOpen, setIsFormOpen }) {
       formData.append("nameAr", nameAr);
       if (photo.imageFile) {
         formData.append("imageFile", photo.imageFile);
+      }
+      if (icon.iconFile) {
+        formData.append("iconFile", icon.iconFile);
       }
       await putRequest(
         `/api/admin/itemCategory/${selectedCategoryId}`,
@@ -112,11 +199,22 @@ export default function CategoryForm({ isFormOpen, setIsFormOpen }) {
 
   useEffect(() => {
     CategoryData();
-  }, [selectedCategoryId]);
+  }, [selectedCategoryId, CategoryData]);
+
+  useEffect(() => {
+    return () => {
+      if (photoObjectUrlRef.current) {
+        URL.revokeObjectURL(photoObjectUrlRef.current);
+      }
+      if (iconObjectUrlRef.current) {
+        URL.revokeObjectURL(iconObjectUrlRef.current);
+      }
+    };
+  }, []);
   return (
     <div
       id="add-category-form"
-      className={`fixed inset-0 bg-black/40 flex items-center justify-center z-50 ${isFormOpen ? "flex" : "hidden"}`}
+      className={`fixed inset-0 bg-black/40 flex items-center justify-center p-10 z-50 ${isFormOpen ? "flex" : "hidden"}`}
     >
       {loading && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
@@ -130,7 +228,7 @@ export default function CategoryForm({ isFormOpen, setIsFormOpen }) {
           />
         </div>
       )}
-      <div className="bg-white shadow-md shadow-slate-400 h-[530px] xs:w-full lg:w-[600px] flex flex-col border rounded-md">
+      <div className="bg-white shadow-md shadow-slate-400   xs:w-full lg:w-[600px] flex flex-col border rounded-md">
         <div className="m-4 flex justify-between items-center">
           <h1 id="nameFormCategory" className="text-lg font-semibold">
             {" "}
@@ -164,7 +262,7 @@ export default function CategoryForm({ isFormOpen, setIsFormOpen }) {
                   value={nameEn}
                   onChange={(e) => setNameEn(e.target.value)}
                   required
-                  className="w-full bg-[#F9FAFB] outline-none text-gray-900 text-lg  p-1 border rounded-md"
+                  className="w-full  outline-none text-gray-900 text-lg  p-1 border rounded-md"
                 />
                 <label className="text-md text-gray-500">
                   {t("category_name")}* [ar]
@@ -173,46 +271,107 @@ export default function CategoryForm({ isFormOpen, setIsFormOpen }) {
                   type="text"
                   value={nameAr}
                   onChange={(e) => setNameAr(e.target.value)}
-                  className="w-full bg-[#F9FAFB] outline-none text-gray-900 text-lg  p-1 border rounded-md"
+                  className="w-full  outline-none text-gray-900 text-lg  p-1 border rounded-md"
                 />
               </div>
             </div>
+<div className="w-full flex  items-center justify-between">
 
-            <label htmlFor="fileInput">
-              <div className="flex flex-col items-center h-[150px] justify-center p-3 border-2 border-dashed border-red-300 rounded-lg hover:bg-gray-50">
-                {!photo.image ? (
-                  <div className="flex flex-col justify-center items-center">
+
+            <label className="text-md text-gray-500">
+                  {t("category_image")}
+                
+              {photo.imageUrl ? (
+                <div className="">
+                   <button
+                    type="button"
+                    className="text-red-600  text-base hover:text-red-800"
+                    onClick={removePhoto}
+                  >
+                    X
+                  </button>
+                  <div className="flex items-center relative w-[150px] h-[150px] justify-center border-2 border-dashed border-red-300 rounded-lg hover:bg-gray-50">
+                     <div className="w-full h-full relative">
+                      <Image
+                        alt=""
+                        src={photo.imageUrl}
+                        fill
+                        className="w-full h-full object-contain rounded-lg"
+                      />
+                    </div>
+                  </div>
+                 
+                </div>
+              ) : (
+                <label htmlFor="fileInput" className="cursor-pointer ">
+                  <div className="flex flex-col items-center h-[150px] w-[150px] mt-2  justify-center p-3 border-2 border-dashed border-red-300 rounded-lg hover:bg-gray-50">
+                    <div className="flex flex-col justify-center items-center">
+                      <span className="text-4xl text-red-600">
+                        <IoCloudUploadSharp />
+                      </span>
+                      <span className="text-sm text-gray-500">
+                        {t("add-photo")}
+                      </span>
+                    </div>
+                  </div>
+                </label>
+              )}
+</label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handelupload}
+                className="hidden"
+                id="fileInput"
+              />
+
+            <div className="">
+              <label className="text-md text-gray-500">
+                {t("category_icon")}
+              </label>
+              {icon.iconUrl ? (
+                <div className="">
+                   <button
+                    type="button"
+                    className="text-red-600  hover:text-red-800"
+                    onClick={removeIcon}
+                  >
+                    X
+                  </button>
+                  <div className="flex items-center relative h-[150px] w-[150px] justify-center border-2 border-dashed border-red-300 rounded-lg hover:bg-gray-50">
+                    <div className="w-full h-full relative">
+                      <Image
+                        alt=""
+                        src={icon.iconUrl}
+                        fill
+                        className="w-full h-full object-contain rounded-lg"
+                      />
+                    </div>
+                  </div>
+                 
+                </div>
+              ) : (
+                <label htmlFor="iconFileInput" className="cursor-pointer ">
+                  <div className="flex flex-col items-center h-[150px] w-[150px] mt-2 justify-center p-3 border-2 border-dashed border-red-300 rounded-lg hover:bg-gray-50">
                     <span className="text-4xl text-red-600">
                       <IoCloudUploadSharp />
                     </span>
                     <span className="text-sm text-gray-500">
-                      {t("add-photo")}
+                      {t("add-icon")}
                     </span>
                   </div>
-                ) : (
-                  // 🖼️ Image Preview
-                  <div className="w-[100px] h-[100px]">
-                    <Image
-                      alt=""
-                      src={photo.image}
-                      width={100}
-                      height={100}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                )}
-              </div>
-            </label>
-
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handelupload}
-              className="hidden"
-              id="fileInput"
-            />
-
-            <div className="flex justify-center items-center">
+                </label>
+              )}
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handelIconUpload}
+                className="hidden"
+                id="iconFileInput"
+              />
+            </div>
+</div>
+            <div className="flex justify-center items-center mb-5">
               <button
                 type="submit"
                 id="btn-saveCategory"

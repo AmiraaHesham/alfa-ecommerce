@@ -34,7 +34,7 @@ export default function UsersPage() {
         },
         ""
       );
-      const resUsers = response.data || [];
+      const resUsers = response.data.content || [];
       if (pageNum.current === 0) {
         setUsers(resUsers);
       } else setUsers((prev) => [...prev, ...resUsers]);
@@ -102,7 +102,7 @@ export default function UsersPage() {
       </div>
       <div className=" rounded-xl w-full h-[500px]   border  mt-3 overflow-hidden overflow-x-scroll overflow-y-scroll ">
         <table className="  xs:w-[220%] lg:w-full   ">
-          <thead className="bg-[#F9FAFB] text-xs text-justify sticky top-0  z-10">
+          <thead className=" text-xs text-justify sticky top-0  z-10">
             <tr className=" text-gray-500 h-12  ">
               {/* <th className="w-[5%]"></th> */}
               <th className="w-[1%] px-4">{t("status")}</th>

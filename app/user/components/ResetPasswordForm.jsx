@@ -38,7 +38,7 @@ export default function ResetPasswordForm() {
     }
   };
   return (
-    <div className=" w-[500px] h-[400px]  border  border-red-600 rounded-lg py-5 px-10 shadow-lg shadow-gray-200 bg-[#F9FAFB] ">
+    <div className=" w-[500px] h-[400px]  border  border-red-600 rounded-lg py-5 px-10 shadow-lg shadow-gray-200  ">
       {loading && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
           <Image
