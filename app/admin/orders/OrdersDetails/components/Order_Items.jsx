@@ -64,7 +64,95 @@ export default function OrdersItems({ orderId, orderType }) {
       <div
         className={`rounded-b-lg  w-full ${orderType === "orders" ? "h-[435px]  overflow-hidden overflow-x-scroll  overflow-y-scroll" : ""}  border  `}
       >
-        <table className="md:w-full  rounded-lg  xs:w-[200%] ">
+        {/* XS mobile card layout */}
+      <div className="sm:hidden max-h-[435px] overflow-y-scroll">
+        {orderType === "orders" ? (
+          orderItems.map((item, index) => {
+            return (
+              <div
+                key={`mobile-${index}`}
+                className="bg-white border rounded-xl p-3 my-3 mx-2"
+              >
+                <div className="flex items-start gap-3">
+                  <Image
+                    alt=""
+                    src={
+                      process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +
+                      getThumbnailUrl(item.item.mainImageURL)
+                    }
+                    width={48}
+                    height={48}
+                    className="rounded-xl w-12 h-12 p-1 shrink-0"
+                  />
+                  <div className="min-w-0">
+                    <h1 className="font-semibold text-sm truncate">
+                      {localStorage.lang === "ar"
+                        ? item.item.nameAr
+                        : item.item.nameEn}
+                    </h1>
+                    <h1 className="text-xs  text-gray-500 truncate">
+                      {item.item.code}
+                    </h1>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between gap-3 mt-3 pt-3 border-t">
+                  <div>
+                    <div className="text-sm font-semibold">
+                      {item.unitPrice.toLocaleString("en-US")} {t("currency")}
+                    </div>
+                    <div className="text-xs line-through text-gray-500">
+                      {item.oldUnitPrice.toLocaleString("en-US")} {t("currency")}
+                    </div>
+                  </div>
+                  <div className="text-sm text-gray-500 shrink-0">
+                    {t("quantity")} : {item.quantity}
+                  </div>
+                </div>
+                <div className="flex items-center justify-between mt-3 pt-3 border-t">
+                  <div className="text-base font-bold">
+                    {t("total")} : {item.totalPrice.toLocaleString("en-US")}{" "}
+                    {t("currency")}
+                  </div>
+                </div>
+              </div>
+            );
+          })
+        ) : (
+          <div className="bg-white border rounded-xl p-3 my-3 mx-2">
+            <div className="flex items-start gap-3">
+              <Image
+                alt=""
+                src={
+                  process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +
+                  getThumbnailUrl(orderItems.mainImageURL)
+                }
+                width={48}
+                height={48}
+                className="rounded-xl w-12 h-12 p-1 shrink-0"
+              />
+              <div className="min-w-0">
+                <h1 className="font-semibold text-sm truncate">
+                  {localStorage.lang === "ar"
+                    ? orderItems.nameAr
+                    : orderItems.nameEn}
+                </h1>
+                <h1 className="text-xs  text-gray-500 truncate">
+                  {orderItems.code}
+                </h1>
+              </div>
+            </div>
+            <div className="flex items-center justify-between gap-3 mt-3 pt-3 border-t">
+              <div className="text-sm font-semibold">
+                {itemPrice?.toLocaleString("en-US")} {t("currency")}
+              </div>
+              <div className="text-sm text-gray-500 shrink-0">
+                {t("quantity")} : {itemQuantity}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+      <table className="hidden sm:table w-full  rounded-lg">
           <thead className=" text-xs text-gray-500  text-justify">
             <tr className=" text-gray-500 h-12  ">
               <th className="w-[2%] "></th>

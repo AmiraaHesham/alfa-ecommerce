@@ -20,26 +20,67 @@ export default function RecentOrders_table() {
   useEffect(() => {
     dashboardPendingOrders();
   }, []);
+  const goToOrder = (orderId) => {
+    navigate.push(`/admin/orders/OrdersDetails/${orderId}`);
+    setSelectedNamePage("Orders Management");
+  };
   return (
     <div className="mt-5 w-full ">
       <div className="flex justify-between items-center px-5 h-16 border-s border-t rounded-t-md bg-white">
-        <h1 className="md:text-lg xs:text-sm  font-semibold ">
+        <h1 className="lg:text-lg xs:text-sm  font-semibold ">
           {t("recent_orders")}
         </h1>
-        {/* <button
-          className="md:text-sm xs:text-xs text-red-600"
-          onClick={() => {
-            navigate.push("/admin/orders");
-            setSelectedNamePage("Orders Management");
-          }}
-        >
-          {t("view_all_orders")}
-        </button> */}
       </div>
-      <div className="bg-white rounded-b-xl w-full h-[370px] border overflow-y-scroll ">
-        <table className=" xs:w-[220%] lg:w-full   ">
-          <thead className="bg-[#f6f5f8] text-xs  w-full  text-justify sticky top-0  z-10">
-            <tr className="  h-12  ">
+      <div className=" ">
+        {/* XS mobile card layout */}
+        <div className="sm:hidden bg-white rounded-b-xl border p-3 h-[370px] overflow-y-scroll">
+          {pendingOrders.map((order, index) => {
+            const date = new Date(order.createdDate);
+            const dateOnly = date.toLocaleDateString("en-GB");
+            return (
+              <div
+                key={index}
+                className="bg-white border rounded-xl p-3 mb-3 hover:bg-gray-50 cursor-pointer"
+                onClick={() => goToOrder(order.orderId)}
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <span className="text-sm font-bold text-red-600">
+                      {order.orderCode}
+                    </span>
+                    <div className="text-xs text-gray-500 mt-1">{dateOnly}</div>
+                  </div>
+                  <span className="text-xs font-semibold text-red-500">
+                    {t(order.state)}
+                  </span>
+                </div>
+                <div className="flex items-center gap-3 mt-3 pt-3 border-t">
+                  <span className="w-9 h-9 text-gray-600 shrink-0 bg-gray-50 flex justify-center items-center p-2 rounded-full border ">
+                    <FaUserLarge />
+                  </span>
+                  <div className="min-w-0">
+                    <h1 className="font-semibold text-sm truncate">
+                      {order.userName}
+                    </h1>
+                    <h1 className="text-xs  text-gray-500 truncate">
+                      {order.userEmail}
+                    </h1>
+                  </div>
+                </div>
+                <div className="mt-3 pt-3 border-t">
+                  <span className="text-base font-bold">
+                    {order.orderTotal.toLocaleString("en-US")} {t("currency")}
+                  </span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* SM and larger: existing table */}
+        <table className="hidden sm:table bg-white rounded-b-xl w-full h-[370px] border overflow-y-scroll">
+          <thead className="bg-[#f0eff0] text-xs  w-full  text-justify sticky top-0  z-10">
+            <tr className="h-12">
               <th className=" px-5">{t("order_id")}</th>
               <th className=" ">{t("date")}</th>
               <th className="  ">{t("user")}</th>
@@ -47,20 +88,15 @@ export default function RecentOrders_table() {
               <th className="">{t("state_order")}</th>
             </tr>
           </thead>
-          <tbody className="bg-white text-md w-full ">
+          <tbody className="bg-white text-md w-full divide-y divide-gray-200">
             {pendingOrders.map((order, index) => {
               const date = new Date(order.createdDate);
               const dateOnly = date.toLocaleDateString("en-GB");
               return (
                 <tr
                   key={index}
-                  className=" text-red-950 border-t w-full hover:bg-gray-50 cursor-pointer"
-                  onClick={() => {
-                    navigate.push(
-                      `/admin/orders/OrdersDetails/${order.orderId}`
-                    );
-                    setSelectedNamePage("Orders Management");
-                  }}
+                  className="text-red-950 border-t w-full hover:bg-gray-50 cursor-pointer"
+                  onClick={() => goToOrder(order.orderId)}
                 >
                   <td className="font-semibold text-red-500 px-5">
                     {order.orderCode}

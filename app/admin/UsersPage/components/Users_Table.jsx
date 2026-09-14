@@ -100,17 +100,95 @@ export default function UsersPage() {
           </div>
         </div> */}
       </div>
-      <div className=" rounded-xl w-full h-[500px]   border  mt-3 overflow-hidden overflow-x-scroll overflow-y-scroll ">
-        <table className="  xs:w-[220%] lg:w-full   ">
-          <thead className=" text-xs text-justify sticky top-0  z-10">
-            <tr className=" text-gray-500 h-12  ">
-              {/* <th className="w-[5%]"></th> */}
-              <th className="w-[1%] px-4">{t("status")}</th>
+        {/* XS mobile card layout */}
+        <div className="lg:hidden rounded-xl w-full h-[520px]   border  mt-3 overflow-hidden overflow-x-scroll overflow-y-scroll ">
+          {users.map((user, index) => {
+            const date = new Date(user.registrationDate);
+            const dateOnly = date.toLocaleDateString("en-GB");
+            return (
+              <div
+                key={`mobile-${index}`}
+                className="bg-white border-b rounded-xl p-3 my-3 mx-2 hover:bg-gray-50 cursor-pointer"
+                onClick={() => {
+                  setSelectedUserId(user.userId);
+                  navigate.push(`/admin/UsersPage/UserInfo/${user.userId}`);
+                }}
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <h1 className="text-sm font-semibold truncate">
+                      {user.firstName + " " + user.lastName}
+                    </h1>
+                    <h1 className="text-xs text-gray-400 truncate">
+                      {user.username}
+                    </h1>
+                  </div>
+                  <div className="flex items-center gap-4 shrink-0">
+                    <span
+                      className={`flex items-center justify-center text-sm ${
+                        user.active === true
+                          ? "text-green-600"
+                          : "text-gray-600"
+                      }`}
+                    >
+                      <FaCircle />
+                    </span>
+                    <button
+                      className={`flex items-center justify-center text-base ${
+                        user.blocked === true
+                          ? "text-red-600"
+                          : "text-gray-600"
+                      }`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (user.blocked === false) {
+                          addBlock(user.userId);
+                        } else {
+                          removeBlock(user.userId);
+                        }
+                      }}
+                    >
+                      <ImBlocked />
+                    </button>
+                  </div>
+                </div>
+                <div className="text-xs text-gray-500 mt-3 pt-3 border-t truncate">
+                  {user.email}
+                </div>
+                <div className="flex items-center justify-between gap-3 mt-3 pt-3 border-t">
+                  <div className="text-xs text-gray-500">
+                    {t("registered-on")} : {dateOnly}
+                  </div>
+                  <div className="bg-red-100 rounded-full text-red-700 px-3 py-1 font-semibold text-xs shrink-0">
+                    {user.ordersCount} {t("orders")}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+          <div className="flex justify-center py-3">
+            <button
+              className=" text-red-600 px-5 py-1 rounded-lg"
+              onClick={() => {
+                pageNum.current += 1;
+                getAllUsers();
+              }}
+            >
+              <MdOutlineDownloading className="text-4xl" />
+            </button>
+          </div>
+        </div>
+      <div className="hidden lg:block h-[520px]  mt-3 w-full  overflow-y-scroll">
 
-              <th className="w-[25%] px-10">{t("User")}</th>
-              <th className="w-[20%]">{t("email")}</th>
-              <th className="w-[15%] ">{t("registered-on")}</th>
-              <th className="w-[15%] px-4">{t("orders")}</th>
+        <table className="h-full w-full border  ">
+          <thead className="bg-[#f0eff0] text-xs   text-justify sticky top-0  z-10">
+            <tr className="  h-12  ">
+              {/* <th className="w-[5%]"></th> */}
+              <th className="px-4">{t("status")}</th>
+              <th className=" px-10">{t("User")}</th>
+              <th className="">{t("email")}</th>
+              <th className="">{t("registered-on")}</th>
+              <th className="px-4">{t("orders")}</th>
             </tr>
           </thead>
           <tbody className="bg-white text-md ">
@@ -120,7 +198,7 @@ export default function UsersPage() {
               return (
                 <tr
                   key={index}
-                  className=" text-red-950 border hover:bg-gray-50 cursor-pointer"
+                  className=" text-red-950  hover:bg-gray-50 cursor-pointer"
                 >
                   <td>
                     <div className="flex items-center gap-4  w-[90px]  rounded-full   px-5 py-1 font-semibold  ">
@@ -219,6 +297,7 @@ export default function UsersPage() {
           </tbody>
         </table>
       </div>
-    </div>
+      </div>
+
   );
 }

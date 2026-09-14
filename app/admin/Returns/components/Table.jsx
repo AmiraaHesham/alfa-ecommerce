@@ -153,20 +153,121 @@ return(
              </div>
            </div>
          </div>
-         <div className=" rounded-xl w-full  h-[500px] mt-5  border  overflow-hidden overflow-x-scroll overflow-y-scroll ">
-           <table className="xs:w-[200%] lg:w-full   ">
-             <thead className=" text-xs text-gray-500  text-justify sticky top-0  z-10">
-               <tr className=" text-gray-500 h-12">
+{/* <div className="  "> */}
+           {/* XS mobile card layout */}
+           <div className="lg:hidden mt-5">
+             {loading
+               ? // Skeleton cards
+                 [...Array(6)].map((_, index) => (
+                   <div
+                     key={`mobile-skeleton-${index}`}
+                     className="bg-white border rounded-xl p-3 mb-3"
+                   >
+                     <div className="h-4 bg-gray-200 rounded animate-pulse w-24"></div>
+                     <div className="h-3 bg-gray-200 rounded animate-pulse w-16 mt-2"></div>
+                     <div className="flex items-center gap-3 mt-3 pt-3 border-t">
+                       <div className="h-9 w-9 bg-gray-200 rounded-full animate-pulse shrink-0"></div>
+                       <div className="flex-1 space-y-2">
+                         <div className="h-3 bg-gray-200 rounded animate-pulse w-28"></div>
+                         <div className="h-2 bg-gray-200 rounded animate-pulse w-20"></div>
+                       </div>
+                     </div>
+                     <div className="h-4 bg-gray-200 rounded animate-pulse w-20 mt-3"></div>
+                   </div>
+                 ))
+               : returnOrders.map((order, index) => {
+                   const date = new Date(order.createdDate);
+                   const dateOnly = date.toLocaleDateString("en-GB");
+                   return (
+                     <div
+                       key={`mobile-${index}`}
+                       className="bg-white border rounded-xl p-3 mb-3 hover:bg-gray-50 cursor-pointer"
+                       onClick={() =>
+                         navigate.push(
+                           `/admin/returnorderdetails/${order.returnOrderId}`
+                         )
+                       }
+                     >
+                       <div className="flex items-start justify-between gap-3">
+                         <div className="min-w-0">
+                           <span className="text-sm font-bold text-red-600">
+                             {order.code}
+                           </span>
+                           <div className="text-xs text-gray-500 mt-1">
+                             {dateOnly}
+                           </div>
+                         </div>
+                         <span
+                           className={`text-xs font-semibold shrink-0 ${
+                             order.state === "PROCESSING"
+                               ? "text-blue-500"
+                               : order.state === "SHIPPED"
+                               ? "text-yellow-500"
+                               : order.state === "PENDING"
+                               ? "text-orange-700"
+                               : order.state === "CANCELLED"
+                               ? "text-red-500"
+                               : "text-green-500"
+                           }`}
+                         >
+                           {t(order.state)}
+                         </span>
+                       </div>
+                       <div className="flex items-center gap-3 mt-3 pt-3 border-t">
+                         <span className="w-9 h-9 text-gray-600 shrink-0 bg-gray-50 flex justify-center items-center p-2 rounded-full border ">
+                           <FaUserLarge />
+                         </span>
+                         <div className="min-w-0">
+                           <h1 className="font-semibold text-sm truncate">
+                             {order.user?.firstName + " " + order.user?.lastName}
+                           </h1>
+                           <h1 className="text-xs  text-gray-500 truncate">
+                             {order.user?.email}
+                           </h1>
+                         </div>
+                       </div>
+                       <div className="flex items-center justify-between gap-3 mt-3 pt-3 border-t">
+                         <span className="text-base font-bold break-words">
+                           {order.unitPrice.toLocaleString("en-US") +
+                             " " +
+                             t("currency")}
+                         </span>
+                         <span className="text-xs text-gray-600 font-semibold text-right">
+                           {t(order.reason).length <= 30
+                             ? t(order.reason)
+                             : t(order.reason).slice(0, 30) + " ..."}
+                         </span>
+                       </div>
+                     </div>
+                   );
+                 })}
+             <div className="flex justify-center py-3">
+               <button
+                 className=" text-red-600 w-[100px] py-1 text-center rounded-lg"
+                 onClick={() => {
+                   pageNum.current += 1;
+                   getAllOrders();
+                 }}
+               >
+                 <MdOutlineDownloading className="text-4xl" />
+               </button>
+             </div>
+           </div>
+                 <div className="hidden lg:block h-[520px] border-t mt-3 w-full  overflow-y-scroll">
+
+           <table className="w-full h-full ">
+             <thead className="bg-[#f0eff0] text-xs   text-justify sticky top-0  z-10">
+               <tr className="  h-12">
                  {/* <th className="w-[2%] "></th> */}
-                 <th className="w-[20%] px-5 ">{t("order_id")}</th>
-                 <th className="w-[15%] ">{t("date")}</th>
-                 <th className="w-[25%] ">{t("user")}</th>
-                 <th className="w-[15%] ">{t("price")}</th>
-                 <th className="w-[15%] ">{t("Reason_for_return")}</th>
-                 <th className="w-[20%] ">{t("state_order")}</th>
+                 <th className=" px-5 ">{t("order_id")}</th>
+                 <th className=" ">{t("date")}</th>
+                 <th className=" ">{t("user")}</th>
+                 <th className=" ">{t("price")}</th>
+                 <th className=" ">{t("Reason_for_return")}</th>
+                 <th className=" ">{t("state_order")}</th>
                </tr>
              </thead>
-             <tbody className="bg-white text-md w-full ">
+             <tbody className="bg-white text-md w-full divide-y divide-gray-200">
                {loading
                  ? // Skeleton rows
                    [...Array(7)].map((_, index) => (
@@ -197,7 +298,7 @@ return(
                      return (
                        <tr
                          key={index}
-                         className=" text-red-950 border w-full hover:bg-gray-50 cursor-pointer"
+                         className="  w-full h-5 transition-colors hover:bg-gray-50 cursor-pointer"
                          onClick={() =>
                            navigate.push(
                              `/admin/returnorderdetails/${order.returnOrderId}`

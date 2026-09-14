@@ -96,15 +96,107 @@ export default function AdminsTable({ setIsFormOpen }) {
           </button>
         </div>
       </div>
-      <div className="rounded-xl w-full h-[600px]  border  mt-3 overflow-hidden overflow-y-scroll ">
-        <table className="xs:w-[220%] lg:w-full">
-          <thead className=" text-xs text-justify sticky top-0  z-10">
-            <tr className=" text-gray-500 h-12  ">
+    
+        {/* XS mobile card layout */}
+        <div className="lg:hidden rounded-xl w-full h-[520px]  border  mt-3 overflow-hidden overflow-y-scroll">
+          {loading
+            ? // Skeleton cards
+            [...Array(6)].map((_, index) => (
+              <div
+                key={`mobile-skeleton-${index}`}
+                className="bg-white border-b rounded-xl p-3 my-3 mx-2"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="h-9 w-9 bg-gray-200 rounded-full animate-pulse shrink-0"></div>
+                  <div className="flex-1 space-y-2">
+                    <div className="h-3 bg-gray-200 rounded animate-pulse w-28"></div>
+                    <div className="h-2 bg-gray-200 rounded animate-pulse w-20"></div>
+                  </div>
+                </div>
+                <div className="h-3 bg-gray-200 rounded animate-pulse w-24 mt-3"></div>
+                <div className="h-3 bg-gray-200 rounded animate-pulse w-16 mt-3"></div>
+              </div>
+            ))
+            : users.map((user, index) => {
+              const date = new Date(user.lastLoginDate);
+              const fullDateTime = date.toLocaleDateString("en-GB");
+              return (
+                <div
+                  key={`mobile-${index}`}
+                  className="bg-white border-b rounded-xl p-3 my-3 mx-2 hover:bg-gray-50 cursor-pointer"
+                  onClick={() => {
+                    selectAdminId(user.userId);
+                  }}
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <h1 className="text-sm font-semibold truncate">
+                        {user.firstName + " " + user.lastName}
+                      </h1>
+                      <h1 className="text-xs text-gray-400 truncate">
+                        {user.email}
+                      </h1>
+                    </div>
+                    <div className="flex items-center gap-4 shrink-0">
+                      <span
+                        className={`flex items-center justify-center cursor-default text-sm ${
+                          user.active === true
+                            ? "text-green-600"
+                            : "text-gray-600"
+                        }`}
+                      >
+                        <FaCircle />
+                      </span>
+                      <button
+                        className={`flex items-center justify-center text-base ${
+                          user.blocked === true
+                            ? "text-red-600"
+                            : "text-gray-600"
+                        }`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (user.blocked === false) {
+                            addBlock(user.userId);
+                          } else {
+                            removeBlock(user.userId);
+                          }
+                        }}
+                      >
+                        <ImBlocked />
+                      </button>
+                    </div>
+                  </div>
+                  <div className="text-xs text-gray-500 mt-3 pt-3 border-t truncate">
+                    {t("username")} : {user.username}
+                  </div>
+                  <div className="text-xs text-gray-500 mt-2">
+                    {t("last_login")} : {fullDateTime}
+                  </div>
+                </div>
+              );
+            })}
+          <div className="flex justify-center py-3">
+            <button
+              className=" text-red-600 px-5 py-1 rounded-lg"
+              onClick={() => {
+                pageNum.current += 1;
+                getAllUsers();
+              }}
+            >
+              <MdOutlineDownloading className="text-4xl" />
+            </button>
+          </div>
+        </div>
+      <div className="hidden lg:block h-[570px] mt-3 w-full  overflow-y-scroll">
+
+        <table className="h-auto w-full">
+          <thead className="bg-[#f0eff0] text-xs   text-justify sticky top-0  z-10">
+            <tr className="  h-12 ">
               {/* <th className="w-[5%]"></th> */}
-              <th className="w-[1%] px-4">{t("status")}</th>
-              <th className="w-[30%] px-10">{t("admin")}</th>
-              <th className="w-[25%]">{t("username")}</th>
-              <th className="w-[25%] ">{t("last_login")}</th>
+              <th className=" px-4">{t("status")}</th>
+              <th className=" px-10">{t("admin")}</th>
+              <th className="">{t("username")}</th>
+              <th className=" ">{t("last_login")}</th>
             </tr>
           </thead>
           <tbody className="bg-white text-md ">
@@ -139,6 +231,7 @@ export default function AdminsTable({ setIsFormOpen }) {
                   const fullDateTime = date.toLocaleDateString("en-GB");
 
                   return (
+                    <>
                     <tr
                       key={index}
                       className=" text-red-950 border hover:bg-gray-50 cursor-pointer"
@@ -213,9 +306,12 @@ export default function AdminsTable({ setIsFormOpen }) {
                         </div>
                       </td>
                     </tr>
+                  
+                    
+                    </>
                   );
                 })}
-            <tr className="h-5 text-center">
+            {/* <tr className="h-5 text-center">
               <td colSpan="6">
                 <button
                   className=" text-red-600 px-5 py-1   my-3 rounded-lg"
@@ -227,7 +323,7 @@ export default function AdminsTable({ setIsFormOpen }) {
                   <MdOutlineDownloading className="text-4xl" />
                 </button>
               </td>
-            </tr>
+            </tr> */}
           </tbody>
         </table>
       </div>

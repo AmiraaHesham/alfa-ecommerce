@@ -28,7 +28,7 @@ export default function ProductsTable({ setIsFormOpen, category }) {
   const { setSelectedProductId } = useIdContext();
   const searchInputRef = useRef();
   const [loading, setLoading] = useState(true);
-  
+
   const getAllProducts = async () => {
     try {
       const response = await postRequest(
@@ -41,7 +41,7 @@ export default function ProductsTable({ setIsFormOpen, category }) {
         },
         "",
       );
-      
+
       const resProducts = response.data.content || [];
       if (pageNum.current === 0) {
         setProducts(resProducts);
@@ -54,7 +54,7 @@ export default function ProductsTable({ setIsFormOpen, category }) {
   useEffect(() => {
     setLoading(true);
     getAllProducts();
-  }, [refreshKey,category]);
+  }, [refreshKey, category]);
 
   const productFavorite = async (productId, favorite) => {
     await postRequest(
@@ -178,8 +178,162 @@ export default function ProductsTable({ setIsFormOpen, category }) {
         ref={productTableRef}
         className=" rounded-xl border  "
       > */}
-        <table className=" xs:w-[200%] lg:w-full h-[400px] mt-3 overflow-hidden xs:overflow-x-scroll lg:overflow-x-auto overflow-y-scroll">
-          <thead className="border bg-[#f6f5f8] text-xs text-justify sticky top-0  z-10">
+      {/* XS mobile card layout */}
+      <div className="lg:hidden h-[500px]  mt-3 border p-3 rounded-3xl overflow-y-scroll">
+        {loading
+          ? // Skeleton cards
+          [...Array(6)].map((_, index) => (
+            <div
+              key={`mobile-skeleton-${index}`}
+              className="bg-white border rounded-xl p-3 mb-3"
+            >
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 bg-gray-200 rounded-lg animate-pulse shrink-0"></div>
+                <div className="flex-1 space-y-2">
+                  <div className="h-4 bg-gray-200 rounded animate-pulse w-28"></div>
+                  <div className="h-2 bg-gray-200 rounded animate-pulse w-20"></div>
+                </div>
+              </div>
+              <div className="h-3 bg-gray-200 rounded animate-pulse w-24 mt-3"></div>
+              <div className="h-4 bg-gray-200 rounded animate-pulse w-20 mt-3"></div>
+            </div>
+          ))
+          : products.map((product, index) => (
+            <div
+              key={`mobile-${index}`}
+              className="bg-white border rounded-xl p-3 mb-3 hover:bg-gray-100 cursor-pointer"
+              onClick={() => openForm(product.itemId)}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex items-center gap-3 min-w-0">
+                  <Image
+                    alt=""
+                    src={`${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +
+                      getThumbnailUrl(product.imageURL) || ""
+                      }`}
+                    width={40}
+                    height={40}
+                    className="rounded-xl w-10 h-10 border p-1 shrink-0"
+                  />
+                  <div className="min-w-0">
+                    <h1 className="text-sm font-semibold truncate">
+                      {typeof window !== "undefined"
+                        ? localStorage.lang === "ar"
+                          ? product.nameAr
+                          : product.nameEn
+                        : null}
+                    </h1>
+                    <h1 className="text-xs text-gray-500 truncate">
+                      {t("code")} : {product.code}
+                    </h1>
+                  </div>
+                </div>
+                <button
+                  className={
+                    "flex items-center justify-center shrink-0 text-lg " +
+                    (product.favorite
+                      ? " text-yellow-500"
+                      : " text-gray-500")
+                  }
+                  onClick={async (e) => {
+                    e.stopPropagation();
+                    if (product.favorite === false) {
+                      await productFavorite(product.itemId, true);
+                    } else {
+                      await productFavorite(product.itemId, false);
+                    }
+                  }}
+                >
+                  <GoStarFill />
+                </button>
+              </div>
+              <div className="text-xs text-gray-500 mt-3 pt-3 border-t">
+                {typeof window !== "undefined"
+                  ? localStorage.lang === "ar"
+                    ? product.itemCategory.nameAr
+                    : product.itemCategory.nameEn
+                  : null}
+              </div>
+              <div className="flex items-end justify-between gap-3 mt-2">
+                <div className="min-w-0">
+                  <div className="text-base font-bold">
+                    {product.price.toLocaleString("en-US")}
+                  </div>
+                  <div className="text-xs text-gray-600">
+                    {product.oldPrice
+                      ? product.oldPrice.toLocaleString("en-US") +
+                      " " +
+                      t("currency")
+                      : "--"}
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center justify-between gap-3 mt-3 pt-3 border-t">
+                <div className="flex items-center gap-3">
+                  <button
+                    className={
+                      "flex items-center justify-center text-base " +
+                      (product.active
+                        ? "text-green-600"
+                        : "text-gray-600")
+                    }
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (product.active === false) {
+                        productActive(product.itemId, true);
+                      } else {
+                        productActive(product.itemId, false);
+                      }
+                    }}
+                  >
+                    <FaCircle />
+                  </button>
+                  <button
+                    className={"flex items-center justify-center text-lg "}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (product.available === false) {
+                        productAvailable(product.itemId, true);
+                      } else {
+                        productAvailable(product.itemId, false);
+                      }
+                    }}
+                  >
+                    {product.available ? (
+                      <IoCheckmarkCircleOutline className="text-green-500" />
+                    ) : (
+                      <MdBlock className="text-red-500" />
+                    )}
+                  </button>
+                </div>
+                <button
+                  className="text-red-800 text-sm flex items-center gap-1 bg-red-300 px-2 py-1 font-semibold rounded-md hover:bg-red-400"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    deleteProduct(product);
+                  }}
+                >
+                  <MdDelete />
+                  {t("delete")}
+                </button>
+              </div>
+            </div>
+          ))}
+        <div className="w-full flex justify-center items-center">
+          <button
+            className=" text-red-600 px-5 py-1   my-3 rounded-lg"
+            onClick={() => {
+              pageNum.current += 1;
+              getAllProducts();
+            }}
+          >
+            <MdOutlineDownloading className="text-4xl" />
+          </button>
+        </div>
+      </div>
+      <div className="hidden lg:block h-[520px] mt-3 w-full overflow-y-scroll">
+        <table className="w-full h-full border rounded-3xl">
+          <thead className=" bg-[#ececec] text-xs text-justify sticky top-0  z-10">
             <tr className="  h-12  ">
               <th className=""></th>
               <th className="">{t("PRODUCT_NAME")}</th>
@@ -193,164 +347,163 @@ export default function ProductsTable({ setIsFormOpen, category }) {
           <tbody className="bg-white text-black text-lg w-full ">
             {loading
               ? // Skeleton rows
-                [...Array(9)].map((_, index) => (
-                  <tr key={`skeleton-${index}`} className="border-b">
-                    <td className="px-4 py-2">
-                      <div className="h-4 bg-gray-200 rounded animate-pulse w-20"></div>
-                    </td>
-                    <td className="px-4 py-2 flex items-center gap-2">
-                      <div className="h-12 bg-gray-200 rounded-lg animate-pulse w-16"></div>
-                      <div className="flex flex-col gap-2">
-                        <div className="h-4 bg-gray-200 rounded-lg animate-pulse w-28"></div>
-                        <div className="h-2 bg-gray-200 rounded-md animate-pulse w-20"></div>
-                      </div>
-                    </td>
-                    <td className="px-4 py-2">
-                      <div className="h-4 bg-gray-200 rounded animate-pulse w-24"></div>
-                    </td>
-                    <td className="px-4 py-2">
-                      <div className="h-4 bg-gray-200 rounded animate-pulse w-24"></div>
-                    </td>
-                    <td className="px-4 py-2">
-                      <div className="h-4 bg-gray-200 rounded animate-pulse w-24"></div>
-                    </td>
-                    <td className="px-4 py-2">
-                      <div className="h-4 bg-gray-200 rounded animate-pulse w-16"></div>
-                    </td>
-                  </tr>
-                ))
+              [...Array(9)].map((_, index) => (
+                <tr key={`skeleton-${index}`} className="border-b">
+                  <td className="px-4 py-2">
+                    <div className="h-4 bg-gray-200 rounded animate-pulse w-20"></div>
+                  </td>
+                  <td className="px-4 py-2 flex items-center gap-2">
+                    <div className="h-12 bg-gray-200 rounded-lg animate-pulse w-16"></div>
+                    <div className="flex flex-col gap-2">
+                      <div className="h-4 bg-gray-200 rounded-lg animate-pulse w-28"></div>
+                      <div className="h-2 bg-gray-200 rounded-md animate-pulse w-20"></div>
+                    </div>
+                  </td>
+                  <td className="px-4 py-2">
+                    <div className="h-4 bg-gray-200 rounded animate-pulse w-24"></div>
+                  </td>
+                  <td className="px-4 py-2">
+                    <div className="h-4 bg-gray-200 rounded animate-pulse w-24"></div>
+                  </td>
+                  <td className="px-4 py-2">
+                    <div className="h-4 bg-gray-200 rounded animate-pulse w-24"></div>
+                  </td>
+                  <td className="px-4 py-2">
+                    <div className="h-4 bg-gray-200 rounded animate-pulse w-16"></div>
+                  </td>
+                </tr>
+              ))
               : products.map((product, index) => (
-                  <tr
-                    key={index}
-                    className=" border hover:bg-gray-100 cursor-pointer  "
-                  >
-                    <td>
-                      <div className="flex items-center justify-center gap-3">
-                        <button
-                          className={
-                            "flex items-center justify-center gap-3 text-sm " +
-                            (product.active
-                              ? "text-green-600"
-                              : "text-gray-600")
-                          }
-                          onClick={() => {
-                            if (product.active === false) {
-                              productActive(product.itemId, true);
-                            } else {
-                              productActive(product.itemId, false);
-                            }
-                          }}
-                        >
-                          <FaCircle />
-                        </button>
-                        <button
-                          className={
-                            "flex items-center justify-center " +
-                            (product.favorite
-                              ? " text-yellow-500"
-                              : " text-gray-500")
-                          }
-                          onClick={async () => {
-                            if (product.favorite === false) {
-                              await productFavorite(product.itemId, true);
-                            } else {
-                              await productFavorite(product.itemId, false);
-                            }
-                          }}
-                        >
-                          <GoStarFill />
-                        </button>
-                        <button
-                          className={
-                            "flex items-center justify-center " }
-                          
-                        
-                          onClick={async () => {
-                            if (product.available === false) {
-                              await productAvailable(product.itemId, true);
-                            } else {
-                              await productAvailable(product.itemId, false);
-                            }
-                          }}
-                        >
-                          {product.available ?(
-                          <IoCheckmarkCircleOutline className="text-green-500 text-lg"/> 
-
-                          ):(
-                          <MdBlock className="text-red-500" />
-
-                          )}
-                        </button>
-                      </div>
-                    </td>
-                    <td
-                      className="flex items-center gap-4"
-                      onClick={() => openForm(product.itemId)}
-                    >
-                      <Image
-                        alt=""
-                        src={`${
-                          process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +
-                            getThumbnailUrl(product.imageURL) || ""
-                        }`}
-                        width={40}
-                        height={40}
-                        className="rounded-xl xs:w-10 xs:h-10 md:w-14 md:h-12  border my-1 p-1"
-                      />
-                      <div>
-                        <h1 className="text-sm font-semibold">
-                          {typeof window !== "undefined"
-                            ? localStorage.lang === "ar"
-                              ? product.nameAr
-                              : product.nameEn
-                            : null}
-                        </h1>
-                        <h1 className="text-xs text-gray-500">
-                          {t("code")} : {product.code}
-                        </h1>
-                      </div>
-                    </td>
-
-                    <td onClick={() => openForm(product.itemId)}>
-                      <div className="  text-sm text-gray-500 font-semibold mx-1">
-                        <h1>
-                          {typeof window !== "undefined"
-                            ? localStorage.lang === "ar"
-                              ? product.itemCategory.nameAr
-                              : product.itemCategory.nameEn
-                            : null}
-                        </h1>
-                      </div>
-                    </td>
-                    <td
-                      className="text-sm font-bold"
-                      onClick={() => openForm(product.itemId)}
-                    >
-                      {product.price.toLocaleString("en-US")}
-                    </td>
-                    <td
-                      className="text-sm font-bold text-gray-600"
-                      onClick={() => openForm(product.itemId)}
-                    >
-                      {product.oldPrice
-                        ? product.oldPrice.toLocaleString("en-US") +
-                          " " +
-                          t("currency")
-                        : "--"}
-                    </td>
-                    <td>
+                <tr
+                  key={index}
+                  className=" border hover:bg-gray-100 hover:bg-opacity-40 cursor-pointer  "
+                >
+                  <td>
+                    <div className="flex items-center justify-center gap-3">
                       <button
-                        className="text-red-800 text-sm flex items-center gap-1 bg-red-300 px-2 py-1 font-semibold rounded-md hover:bg-red-400"
+                        className={
+                          "flex items-center justify-center gap-3 text-sm " +
+                          (product.active
+                            ? "text-green-600"
+                            : "text-gray-600")
+                        }
                         onClick={() => {
-                          deleteProduct(product);
+                          if (product.active === false) {
+                            productActive(product.itemId, true);
+                          } else {
+                            productActive(product.itemId, false);
+                          }
                         }}
                       >
-                        <MdDelete />
-                        {t("delete")}
+                        <FaCircle />
                       </button>
-                    </td>
-                  </tr>
-                ))}
+                      <button
+                        className={
+                          "flex items-center justify-center " +
+                          (product.favorite
+                            ? " text-yellow-500"
+                            : " text-gray-500")
+                        }
+                        onClick={async () => {
+                          if (product.favorite === false) {
+                            await productFavorite(product.itemId, true);
+                          } else {
+                            await productFavorite(product.itemId, false);
+                          }
+                        }}
+                      >
+                        <GoStarFill />
+                      </button>
+                      <button
+                        className={
+                          "flex items-center justify-center "}
+
+
+                        onClick={async () => {
+                          if (product.available === false) {
+                            await productAvailable(product.itemId, true);
+                          } else {
+                            await productAvailable(product.itemId, false);
+                          }
+                        }}
+                      >
+                        {product.available ? (
+                          <IoCheckmarkCircleOutline className="text-green-500 text-lg" />
+
+                        ) : (
+                          <MdBlock className="text-red-500" />
+
+                        )}
+                      </button>
+                    </div>
+                  </td>
+                  <td
+                    className="flex items-center gap-4"
+                    onClick={() => openForm(product.itemId)}
+                  >
+                    <Image
+                      alt=""
+                      src={`${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +
+                        getThumbnailUrl(product.imageURL) || ""
+                        }`}
+                      width={40}
+                      height={40}
+                      className="rounded-xl xs:w-10 xs:h-10 md:w-14 md:h-12  border my-1 p-1"
+                    />
+                    <div>
+                      <h1 className="text-sm font-semibold">
+                        {typeof window !== "undefined"
+                          ? localStorage.lang === "ar"
+                            ? product.nameAr
+                            : product.nameEn
+                          : null}
+                      </h1>
+                      <h1 className="text-xs text-gray-500">
+                        {t("code")} : {product.code}
+                      </h1>
+                    </div>
+                  </td>
+
+                  <td onClick={() => openForm(product.itemId)}>
+                    <div className="  text-sm text-gray-500 font-semibold mx-1">
+                      <h1>
+                        {typeof window !== "undefined"
+                          ? localStorage.lang === "ar"
+                            ? product.itemCategory.nameAr
+                            : product.itemCategory.nameEn
+                          : null}
+                      </h1>
+                    </div>
+                  </td>
+                  <td
+                    className="text-sm font-bold"
+                    onClick={() => openForm(product.itemId)}
+                  >
+                    {product.price.toLocaleString("en-US")}
+                  </td>
+                  <td
+                    className="text-sm font-bold text-gray-600"
+                    onClick={() => openForm(product.itemId)}
+                  >
+                    {product.oldPrice
+                      ? product.oldPrice.toLocaleString("en-US") +
+                      " " +
+                      t("currency")
+                      : "--"}
+                  </td>
+                  <td>
+                    <button
+                      className="text-red-800 text-sm flex items-center gap-1 bg-red-300 px-2 py-1 font-semibold rounded-md hover:bg-red-400"
+                      onClick={() => {
+                        deleteProduct(product);
+                      }}
+                    >
+                      <MdDelete />
+                      {t("delete")}
+                    </button>
+                  </td>
+                </tr>
+              ))}
 
             <tr className="h-5 text-center">
               <td colSpan="6">
@@ -367,7 +520,7 @@ export default function ProductsTable({ setIsFormOpen, category }) {
             </tr>
           </tbody>
         </table>
-      {/* </div> */}
+      </div>
     </div>
   );
 }

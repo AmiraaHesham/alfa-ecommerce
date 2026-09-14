@@ -70,8 +70,89 @@ export default function CategorysTable({ setIsFormOpen }) {
         </button>
       </div>
       {/* <div className="bg-white rounded-xl w-full  "> */}
-        <table className=" w-full table-fixed rounded-3xl h-[530px] border mt-3 overflow-hidden overflow-y-scroll ">
-          <thead className="w-full bg-[#f6f5f8] h-12 rounded-lg text-justify sticky top-0  z-10">
+        {/* XS mobile card layout */}
+      <div className="lg:hidden h-[520px] border mt-3 rounded-xl overflow-y-scroll">
+        {loading
+          ? // Skeleton cards
+            [...Array(5)].map((_, index) => (
+              <div
+                key={`mobile-skeleton-${index}`}
+                className="bg-white border-b rounded-xl p-3 my-3 mx-2"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 bg-gray-200 rounded-lg animate-pulse shrink-0"></div>
+                  <div className="flex-1 space-y-2">
+                    <div className="h-3 bg-gray-200 rounded animate-pulse w-28"></div>
+                    <div className="h-2 bg-gray-200 rounded animate-pulse w-16"></div>
+                  </div>
+                </div>
+                <div className="h-8 bg-gray-200 rounded animate-pulse w-24 mt-3"></div>
+              </div>
+            ))
+          : itemCategory.map((category, index) => (
+              <div
+                key={`mobile-${index}`}
+                className="bg-white border-b rounded-xl p-3 my-3 mx-2 hover:bg-gray-100 cursor-pointer"
+                onClick={() => {
+                  setCategoryId(category.itemCategoryId);
+                  setPopupShow(true);
+                }}
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <Image
+                      alt=""
+                      src={
+                        process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +
+                        getThumbnailUrl(category.imageURL)
+                      }
+                      width={40}
+                      height={40}
+                      className="rounded-xl w-10 h-10 border p-1 shrink-0"
+                    />
+                    <div className="min-w-0">
+                      <h1 className="text-sm font-semibold truncate">
+                        {localStorage.lang === "ar"
+                          ? category.nameAr
+                          : category.nameEn}
+                      </h1>
+                      <h1 className="text-xs text-gray-600">
+                        {t("main_category")}
+                      </h1>
+                    </div>
+                  </div>
+                  <div className="bg-red-100 rounded-full text-red-600 px-3 py-1 font-semibold text-xs shrink-0 text-center">
+                    <h1>{category.itemsCount}</h1>
+                    <h2>{t("products_category")}</h2>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 mt-3 pt-3 border-t">
+                  <button
+                    className="text-blue-800 text-sm flex items-center gap-1 bg-blue-300 px-3 py-1 font-semibold rounded-md hover:bg-blue-400"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      openForm(category.itemCategoryId);
+                    }}
+                  >
+                    <MdEdit />
+                    {t("edit")}
+                  </button>
+                  <button
+                    className="text-red-800 text-sm flex items-center gap-1 bg-red-300 px-3 py-1 font-semibold rounded-md hover:bg-red-400"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      deleteCategory(category.itemCategoryId);
+                    }}
+                  >
+                    <MdDelete />
+                    {t("delete")}
+                  </button>
+                </div>
+              </div>
+            ))}
+      </div>
+      <table className=" hidden lg:table w-full table-fixed rounded-3xl  border mt-3  ">
+          <thead className="w-full bg-[#f0eff0] h-12 rounded-lg text-justify sticky top-0  z-10">
             <tr className="  text-xs">
               <th className=" px-5">{t("image")}</th>
               <th className="">{t("category_name_capetal")}</th>

@@ -163,9 +163,106 @@ export default function UserOrders({ userId }) {
         </div>
       </div>
       <div className=" rounded-xl w-full  h-[500px] mt-5  border  overflow-hidden overflow-x-scroll overflow-y-scroll ">
-        <table className="  xs:w-[200%] xl:w-full   ">
-          <thead className="bg-[#f6f5f8] text-xs text-gray-500  text-justify">
-            <tr className=" text-gray-500 h-12">
+        {/* XS mobile card layout */}
+        <div className="lg:hidden">
+          {loading
+            ? // Skeleton cards
+            [...Array(6)].map((_, index) => (
+              <div
+                key={`mobile-skeleton-${index}`}
+                className="bg-white border-b rounded-xl p-3 my-3 mx-2"
+              >
+                <div className="h-4 bg-gray-200 rounded animate-pulse w-24"></div>
+                <div className="h-3 bg-gray-200 rounded animate-pulse w-16 mt-2"></div>
+                <div className="flex items-center gap-3 mt-3 pt-3 border-t">
+                  <div className="h-9 w-9 bg-gray-200 rounded-full animate-pulse shrink-0"></div>
+                  <div className="flex-1 space-y-2">
+                    <div className="h-3 bg-gray-200 rounded animate-pulse w-28"></div>
+                    <div className="h-2 bg-gray-200 rounded animate-pulse w-20"></div>
+                  </div>
+                </div>
+                <div className="h-4 bg-gray-200 rounded animate-pulse w-20 mt-3"></div>
+              </div>
+            ))
+            : orders.map((order, index) => {
+              const date = new Date(order.createdDate);
+              const dateOnly = date.toLocaleDateString("en-GB");
+              return (
+                <div
+                  key={`mobile-${index}`}
+                  className="bg-white border-b rounded-xl p-3 my-3 mx-2 hover:bg-gray-50 cursor-pointer"
+                  onClick={() => {
+                    navigate.push(`/admin/orders/OrdersDetails/${order.orderId}`);
+                    setSelectedNamePage("Orders Management");
+                  }}
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <span className="text-sm font-bold text-red-600">
+                        {order.code}
+                      </span>
+                      <div className="text-xs text-gray-500 mt-1">
+                        {dateOnly}
+                      </div>
+                    </div>
+                    <span
+                      className={`text-xs font-semibold shrink-0 ${
+                        order.state === "PROCESSING"
+                          ? "text-blue-500"
+                          : order.state === "SHIPPED"
+                          ? "text-yellow-500"
+                          : order.state === "PENDING"
+                          ? "text-orange-500"
+                          : order.state === "DELIVERED"
+                          ? "text-green-500"
+                          : "text-red-500"
+                      }`}
+                    >
+                      {t(order.state)}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-3 mt-3 pt-3 border-t">
+                    <span className="w-9 h-9 text-gray-600 shrink-0 bg-gray-50 flex justify-center items-center p-2 rounded-full border ">
+                      <FaUserLarge />
+                    </span>
+                    <div className="min-w-0">
+                      <h1 className="font-semibold text-sm truncate">
+                        {order.user.firstName + " " + order.user.lastName}
+                      </h1>
+                      <h1 className="text-xs  text-gray-500 truncate">
+                        {order.user.email}
+                      </h1>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between gap-3 mt-3 pt-3 border-t">
+                    <span className="py-1 px-3 font-semibold rounded-full bg-red-100 text-red-600 text-xs shrink-0">
+                      {order.orderItemLines.length} {t("items")}
+                    </span>
+                    <span className="text-base font-bold break-words">
+                      {order.total.toLocaleString("en-US")} {t("currency")}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          {orders.length > 5 ? (
+            <div className="flex justify-center py-3">
+              <button
+                className=" text-red-600 w-[100px] py-1 text-center rounded-lg"
+                onClick={() => {
+                  pageNum.current += 1;
+                  getAllOrders();
+                }}
+              >
+                <IoReloadCircle className="text-4xl" />
+              </button>
+            </div>
+          ) : null}
+        </div>
+
+        <table className="hidden lg:table w-full   ">
+          <thead className="bg-[#f0eff0] text-xs text-justify">
+            <tr className=" h-12">
               {/* <th className="w-[2%] "></th> */}
               <th className="w-[20%] px-5 ">{t("order_id")}</th>
               <th className="w-[10%] ">{t("date")}</th>

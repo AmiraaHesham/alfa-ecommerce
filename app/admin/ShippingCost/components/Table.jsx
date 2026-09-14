@@ -44,10 +44,44 @@ export default function Table({
   // }, []);
   return (
     <div className="w-full pt-3 md:px-16 xs:px-0 h-full ">
-      <div className=" rounded-xl w-full h-[580px]   border  overflow-hidden xs:overflow-x-scroll md:overscroll-x-none   overflow-y-scroll ">
-        <table className="w-full   ">
-          <thead className=" bg-[#f6f5f8] w-full text-xs text-gray-500  sticky top-0  z-10 text-justify">
-            <tr className=" text-gray-500 h-12 ">
+      {/* <div className=""> */}
+        {/* XS mobile card layout */}
+        <div className="lg:hidden p-3">
+          {governorates.map((gov) => {
+            return (
+              <div
+                key={gov.shippingRateId}
+                className="bg-white border rounded-xl p-3 mb-3 hover:bg-gray-50"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <h1 className="text-sm font-semibold min-w-0 break-words">
+                    {locale === "ar" ? gov.governorate.nameAr : gov.governorate.nameEn}
+                  </h1>
+                  <button
+                    className="hover:bg-red-200 text-red-600 rounded-full p-2 shrink-0"
+                    onClick={() => {
+                      setGovernorate(locale === "ar" ? gov.governorate.nameAr : gov.governorate.nameEn);
+                      setGovernorateId(gov.shippingRateId);
+                      setShowForm(true);
+                    }}
+                  >
+                    <BiEdit />
+                  </button>
+                </div>
+                <div className="flex items-center justify-between mt-3 pt-3 border-t">
+                  <span className="text-base font-bold">
+                    {t("shippingCost")} : {gov.shippingCost}
+                  </span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      <div className="hidden lg:block h-[570px] mt-3 w-full  overflow-y-scroll">
+
+        <table className="hidden lg:table w-full  border ">
+          <thead className="bg-[#f0eff0] text-xs   text-justify sticky top-0  z-10">
+            <tr className="  h-12 ">
               <th className="p-5 ">{t("governorate")}</th>
               <th className=" ">{t("shippingCost")}</th>
               <th className=" "></th>
@@ -77,7 +111,7 @@ export default function Table({
                       className="  border w-full h-14 hover:bg-gray-50 "
                     >
                       <td className="font-semibold  px-5">{locale === "ar"?gov.governorate.nameAr : gov.governorate.nameEn}</td>
-                      <td className="text-sm font-semibold px-5">{gov.shippingCost} </td>
+                      <td className=" font-semibold px-5">{gov.shippingCost} </td>
                       <td className="text-2xl">
                         <button
                           className="hover:bg-red-200 text-red-600 rounded-full p-2"

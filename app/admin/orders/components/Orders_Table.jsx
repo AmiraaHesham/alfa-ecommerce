@@ -73,6 +73,85 @@ export default function Orders_Table() {
   useEffect(() => {
     getAllOrders();
   }, [selectedState]);
+  const statusSelect = (order, selectClass) => (
+    <Select
+      value={{
+        value: order.state,
+        label: t(order.state),
+      }}
+      onChange={(option) => updateOrderState(order.orderId, option.value)}
+      options={nextStatus[order.state] || []}
+      isSearchable={false}
+      className={selectClass}
+      styles={{
+        control: (base) => ({
+          ...base,
+
+          backgroundColor: "#f3f4f6",
+          border: "none",
+          borderRadius: "0.375rem",
+          minHeight: "36px",
+          cursor: "pointer",
+          boxShadow: "none",
+          "&:hover": {
+            borderColor: "#dc2626",
+          },
+          "&:focus": {
+            borderColor: "#b91c1c",
+            boxShadow: "0 0 0 3px rgba(185, 28, 28, 0.2)",
+            // outline: "none",
+          },
+        }),
+        option: (base, state) => ({
+          ...base,
+          backgroundColor: state.isSelected
+            ? "#dc2626"
+            : state.isFocused
+              ? "#fee2e2"
+              : "#ffffff",
+          color: state.isSelected ? "#ffffff" : "#374151",
+          cursor: "pointer",
+          // padding: "8px 12px",
+          fontSize: "14px",
+          "&:hover": {
+            backgroundColor: state.isSelected ? "#dc2626" : "#fee2e2",
+          },
+        }),
+        menu: (base) => ({
+          ...base,
+          backgroundColor: "#ffffff",
+          borderRadius: "0.375rem",
+          boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
+          zIndex: 9999,
+        }),
+        placeholder: (base) => ({
+          ...base,
+          color: "#374151",
+          fontSize: "14px",
+          fontWeight: "600",
+        }),
+        singleValue: (base) => ({
+          ...base,
+          color:
+            order.state === "PROCESSING"
+              ? "#3b82f6"
+              : order.state === "SHIPPED"
+                ? "#eab308"
+                : order.state === "PENDING"
+                  ? "#c2410c"
+                  : order.state === "CANCELLED"
+                    ? "#f21818"
+                    : "#22c55e",
+          fontSize: "14px",
+          fontWeight: "600",
+        }),
+        input: (base) => ({
+          ...base,
+          color: "#374151",
+        }),
+      }}
+    />
+  );
   return (
     <div>
       <div className="w-full  bg-white mt-3 rounded-lg border flex md:flex-row xs:flex-col gap-5  items-start  p-4 ">
@@ -185,10 +264,111 @@ export default function Orders_Table() {
           </div>
         </div>
       </div>
-      <div className=" rounded-xl w-full  h-[400px] mt-5  border  overflow-hidden overflow-x-scroll overflow-y-scroll ">
-        <table className="  xs:w-[200%] lg:w-full   ">
-          <thead className=" text-xs text-gray-500  text-justify sticky top-0  z-10">
-            <tr className=" text-gray-500 h-12">
+      {/* <div className="  "> */}
+      {/* XS mobile card layout */}
+      <div className="lg:hidden mt-5">
+        {loading
+          ? // Skeleton cards
+          [...Array(6)].map((_, index) => (
+            <div
+              key={`mobile-skeleton-${index}`}
+              className="bg-white border rounded-xl p-3 mb-3"
+            >
+              <div className="h-4 bg-gray-200 rounded animate-pulse w-24"></div>
+              <div className="h-3 bg-gray-200 rounded animate-pulse w-16 mt-2"></div>
+              <div className="flex items-center gap-3 mt-3 pt-3 border-t">
+                <div className="h-9 w-9 bg-gray-200 rounded-full animate-pulse shrink-0"></div>
+                <div className="flex-1 space-y-2">
+                  <div className="h-3 bg-gray-200 rounded animate-pulse w-28"></div>
+                  <div className="h-2 bg-gray-200 rounded animate-pulse w-20"></div>
+                </div>
+              </div>
+              <div className="h-4 bg-gray-200 rounded animate-pulse w-20 mt-3"></div>
+            </div>
+          ))
+          : orders.map((order, index) => {
+            const date = new Date(order.createdDate);
+            const dateOnly = date.toLocaleDateString("en-GB");
+            return (
+              <div
+                key={`mobile-${index}`}
+                className="bg-white border rounded-xl p-3 mb-3 hover:bg-gray-50"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <span
+                      className="text-sm font-bold text-red-600 cursor-pointer"
+                      onClick={() =>
+                        navigate.push(
+                          `/admin/orders/OrdersDetails/${order.orderId}`,
+                        )
+                      }
+                    >
+                      {order.code}
+                    </span>
+                    <div className="text-xs text-gray-500 mt-1">{dateOnly}</div>
+                  </div>
+                  <span className="shrink-0 w-[150px]">
+                    {statusSelect(order, "w-full xs:text-xs text-sm font-semibold")}
+                  </span>
+                </div>
+                <div
+                  className="flex items-center gap-3 mt-3 pt-3 border-t cursor-pointer"
+                  onClick={() =>
+                    navigate.push(
+                      `/admin/orders/OrdersDetails/${order.orderId}`,
+                    )
+                  }
+                >
+                  <span className="w-9 h-9 text-gray-600 shrink-0 bg-gray-50 flex justify-center items-center p-2 rounded-full border ">
+                    <FaUserLarge />
+                  </span>
+                  <div className="min-w-0">
+                    <h1 className="font-semibold text-sm truncate">
+                      {order.user.firstName + " " + order.user.lastName}
+                    </h1>
+                    <h1 className="text-xs  text-gray-500 truncate">
+                      {order.user.email}
+                    </h1>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between mt-3 pt-3 border-t">
+                  <div className="flex items-center gap-3">
+                    <span
+                      className="py-1 px-3 font-semibold rounded-full bg-red-100 text-red-600 text-xs cursor-pointer"
+                      onClick={() =>
+                        navigate.push(
+                          `/admin/orders/OrdersDetails/${order.orderId}`,
+                        )
+                      }
+                    >
+                      {order.orderItemLines.length} {t("items")}
+                    </span>
+                    <span className="text-base font-bold break-words">
+                      {order.netTotal.toLocaleString("en-US")} {t("currency")}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        <div className="flex justify-center py-3">
+          <button
+            className=" text-red-600 w-[100px] py-1 text-center rounded-lg"
+            onClick={() => {
+              pageNum.current += 1;
+              getAllOrders();
+            }}
+          >
+            <MdOutlineDownloading className="text-4xl" />
+          </button>
+        </div>
+      </div>
+      <div className="hidden lg:block h-[520px] border-t mt-3 w-full  overflow-y-scroll">
+
+      <table className="w-full h-full">
+          <thead className="bg-[#f0eff0] text-xs   text-justify sticky top-0  z-10">
+            <tr className="  h-12">
               {/* <th className="w-[2%] "></th> */}
               <th className=" px-5 ">{t("order_id")}</th>
               <th className=" ">{t("date")}</th>
@@ -238,7 +418,7 @@ export default function Orders_Table() {
                 return (
                   <tr
                     key={index}
-                    className=" text-red-950 border w-full hover:bg-gray-50 cursor-pointer"
+                    className=" text-red-950 border-t w-full hover:bg-gray-50 cursor-pointer"
                   >
                     <td
                       className="font-semibold text-red-500 px-5"
@@ -289,87 +469,7 @@ export default function Orders_Table() {
                       {order.netTotal.toLocaleString("en-US")} {t("currency")}
                     </td>
                     <td>
-                      <Select
-                        value={{
-                          value: order.state,
-                          label: t(order.state),
-                        }}
-                        onChange={(option) =>
-                          updateOrderState(order.orderId, option.value)
-                        }
-                        options={nextStatus[order.state] || []}
-                        isSearchable={false}
-                        className="w-[200px] text-sm font-semibold"
-                        styles={{
-                          control: (base) => ({
-                            ...base,
-
-                            backgroundColor: "#f3f4f6",
-                            border: "none",
-                            borderRadius: "0.375rem",
-                            minHeight: "36px",
-                            cursor: "pointer",
-                            boxShadow: "none",
-                            "&:hover": {
-                              borderColor: "#dc2626",
-                            },
-                            "&:focus": {
-                              borderColor: "#b91c1c",
-                              boxShadow: "0 0 0 3px rgba(185, 28, 28, 0.2)",
-                              // outline: "none",
-                            },
-                          }),
-                          option: (base, state) => ({
-                            ...base,
-                            backgroundColor: state.isSelected
-                              ? "#dc2626"
-                              : state.isFocused
-                                ? "#fee2e2"
-                                : "#ffffff",
-                            color: state.isSelected ? "#ffffff" : "#374151",
-                            cursor: "pointer",
-                            // padding: "8px 12px",
-                            fontSize: "14px",
-                            "&:hover": {
-                              backgroundColor: state.isSelected
-                                ? "#dc2626"
-                                : "#fee2e2",
-                            },
-                          }),
-                          menu: (base) => ({
-                            ...base,
-                            backgroundColor: "#ffffff",
-                            borderRadius: "0.375rem",
-                            boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
-                            zIndex: 9999,
-                          }),
-                          placeholder: (base) => ({
-                            ...base,
-                            color: "#374151",
-                            fontSize: "14px",
-                            fontWeight: "600",
-                          }),
-                          singleValue: (base) => ({
-                            ...base,
-                            color:
-                              order.state === "PROCESSING"
-                                ? "#3b82f6"
-                                : order.state === "SHIPPED"
-                                  ? "#eab308"
-                                  : order.state === "PENDING"
-                                    ? "#c2410c"
-                                    : order.state === "CANCELLED"
-                                      ? "#f21818"
-                                      : "#22c55e",
-                            fontSize: "14px",
-                            fontWeight: "600",
-                          }),
-                          input: (base) => ({
-                            ...base,
-                            color: "#374151",
-                          }),
-                        }}
-                      />
+                      {statusSelect(order, "w-[200px] text-sm font-semibold")}
                     </td>
                   </tr>
                 );
