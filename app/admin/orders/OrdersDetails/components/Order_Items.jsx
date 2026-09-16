@@ -48,30 +48,30 @@ export default function OrdersItems({ orderId, orderType }) {
           {t("reasonMessage")}: {reasonMessage}
         </h1>
       
-          <div className={`text-gray-600 ${orderType === "orders" ? "block" : "hidden"}`}>
+          <div className={` ${orderType === "orders" ? "block" : "hidden"}`}>
           {t("shippingCost") }: {"  "}
           <span className="md:text-lg xs:text-base  font-semibold">
             {shippingCost?.toLocaleString("en-US")} {t("currency")}
           </span>{" "}
         </div>
-        <div className="text-gray-600">
-          {t("grandTotal")}: {"  "}
-          <span className="md:text-lg xs:text-base  text-red-500 font-semibold">
+        <div className="">
+          {t("total")}: {"  "}
+          <span className="md:text-lg xs:text-base  text-[#CD4354] font-semibold">
             {orderTotalPrice.toLocaleString("en-US")} {t("currency")}
           </span>
         </div>
       </div>
       <div
-        className={`rounded-b-lg  w-full ${orderType === "orders" ? "h-[435px]  overflow-hidden overflow-x-scroll  overflow-y-scroll" : ""}  border  `}
+        className={`  w-full ${orderType === "orders" ? "h-[435px]  overflow-hidden overflow-x-scroll  overflow-y-scroll" : ""}  border  `}
       >
         {/* XS mobile card layout */}
-      <div className="sm:hidden max-h-[435px] overflow-y-scroll">
+      <div className="">
         {orderType === "orders" ? (
           orderItems.map((item, index) => {
             return (
               <div
                 key={`mobile-${index}`}
-                className="bg-white border rounded-xl p-3 my-3 mx-2"
+                className="bg-white border rounded-xl p-3 my-3 mx-2 lg:hidden max-h-[435px] overflow-y-scroll"
               >
                 <div className="flex items-start gap-3">
                   <Image
@@ -100,7 +100,7 @@ export default function OrdersItems({ orderId, orderType }) {
                     <div className="text-sm font-semibold">
                       {item.unitPrice.toLocaleString("en-US")} {t("currency")}
                     </div>
-                    <div className="text-xs line-through text-gray-500">
+                    <div className="text-xs line-through ">
                       {item.oldUnitPrice.toLocaleString("en-US")} {t("currency")}
                     </div>
                   </div>
@@ -118,7 +118,7 @@ export default function OrdersItems({ orderId, orderType }) {
             );
           })
         ) : (
-          <div className="bg-white border rounded-xl p-3 my-3 mx-2">
+          <div className="bg-white border rounded-xl p-3 my-3 mx-2 lg:hidden max-h-[435px] overflow-y-scroll">
             <div className="flex items-start gap-3">
               <Image
                 alt=""
@@ -152,16 +152,16 @@ export default function OrdersItems({ orderId, orderType }) {
           </div>
         )}
       </div>
-      <table className="hidden sm:table w-full  rounded-lg">
-          <thead className=" text-xs text-gray-500  text-justify">
-            <tr className=" text-gray-500 h-12  ">
-              <th className="w-[2%] "></th>
-              <th className="w-[30%]">{t("product")}</th>
-              <th className="w-[15%] text-center    ">{t("price")}</th>
-              <th className="w-[20%] text-center">{t("quantity")}</th>
+      <table className="hidden lg:table w-full  h-auto rounded-lg">
+          <thead className=" text-xs bg-[#f0eff0] text-justify">
+            <tr className="  h-12  ">
+              <th className=" "></th>
+              <th className="">{t("product")}</th>
+              <th className="   ">{t("price")}</th>
+              <th className="">{t("quantity")}</th>
 
               {orderType === "orders" ? (
-                <th className="w-[15%] text-center ">{t("total")}</th>
+                <th className=" text-center ">{t("total")}</th>
               ) : null}
             </tr>
           </thead>
@@ -169,7 +169,7 @@ export default function OrdersItems({ orderId, orderType }) {
             {orderType === "orders" ? (
               orderItems.map((item, index) => {
                 return (
-                  <tr key={index} className=" text-red-950 border-b w-full">
+                  <tr key={index} className="  border-b w-full">
                     <td></td>
                     <td>
                       <div className="flex items-center gap-3">
@@ -180,39 +180,39 @@ export default function OrdersItems({ orderId, orderType }) {
                               process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +
                               getThumbnailUrl(item.item.mainImageURL)
                             }
-                            width={55}
-                            height={55}
+                            width={80}
+                            height={80}
                             className="rounded-xl  my-1 p-1"
                           />
                         </div>
                         <div>
-                          <h1 className="font-semibold text-sm">
+                          <h1 className="font-semibold mx-2">
                             {localStorage.lang === "ar"
                               ? item.item.nameAr
                               : item.item.nameEn}
                           </h1>
-                          <h1 className="text-xs  text-gray-500">
+                          <h1 className="text-sm mx-2 text-gray-500">
                             {item.item.code}
                           </h1>
                         </div>
                       </div>
                     </td>
-                    <td className=" text-center text-gray-500  ">
-                      <span className="text-sm font-semibold ">
+                    <td className=" text-gray-500  ">
+                      <span className=" font-semibold mx-1 text-black">
                         {item.unitPrice.toLocaleString("en-US")}{" "}
                         {t("currency")}
                       </span>
-                      <span className="text-xs line-through mx-1 ">
+                      {/* <span className="text-sm line-through ">
                         {" "}
                         {item.oldUnitPrice.toLocaleString("en-US")}{" "}
                         {t("currency")}
-                      </span>{" "}
+                      </span>{" "} */}
                     </td>
-                    <td className="text-sm text-center text-gray-500">
+                    <td className="">
                       {item.quantity}
                     </td>
 
-                    <td className="text-sm font-semibold text-center">
+                    <td className="text-[#E76E7D] font-semibold text-center">
                       {item.totalPrice.toLocaleString("en-US")} {t("currency")}
                     </td>
                   </tr>

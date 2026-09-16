@@ -30,7 +30,7 @@ export default function Orders_Details({ orderId , orderType }) {
         </div>
         <div>
           <div className="flex gap-5 mt-5 items-center">
-            <span className="text-2xl text-red-500 bg-gray-100 p-2 rounded-md">
+            <span className="text-2xl text-[#E76E7D] bg-gray-100 p-2 rounded-md">
               <PiUserListFill />
             </span>
 
@@ -42,7 +42,7 @@ export default function Orders_Details({ orderId , orderType }) {
             </div>
           </div>
           <div className="flex gap-5 mt-3 items-center">
-            <span className="text-2xl text-red-500 bg-gray-100 p-2 rounded-md">
+            <span className="text-2xl text-[#E76E7D] bg-gray-100 p-2 rounded-md">
               <MdEmail />
             </span>
             <div>
@@ -53,7 +53,7 @@ export default function Orders_Details({ orderId , orderType }) {
             </div>
           </div>
           <div className="flex gap-5 mt-3 items-center">
-            <span className="text-2xl text-red-500 bg-gray-100 p-2 rounded-md">
+            <span className="text-2xl text-[#E76E7D] bg-gray-100 p-2 rounded-md">
               <MdLocalPhone />
             </span>
 
@@ -65,7 +65,7 @@ export default function Orders_Details({ orderId , orderType }) {
             </div>
           </div>
            <div className="flex gap-5 mt-3 items-center">
-            <span className="text-2xl text-red-500 bg-gray-100 p-2 rounded-md">
+            <span className="text-2xl text-[#E76E7D] bg-gray-100 p-2 rounded-md">
               <MdLocationPin />
             </span>
 

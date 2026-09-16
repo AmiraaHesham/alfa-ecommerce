@@ -57,7 +57,7 @@ export default function CategorysTable({ setIsFormOpen }) {
       <ProductsByCategoryPopup categoryId={categoryId} popupShow={popupShow} setPopupShow={setPopupShow} />
       <div className="bg-white h-[50px] border rounded-lg border-1  w-full mt-2 flex justify-end p-5 items-center">
         <button
-          className="p-2  text-white xs:text-xs md:text-sm rounded-md bg-red-500 text-center flex items-center justify-center gap-2"
+          className="p-2  text-white xs:text-xs md:text-sm rounded-md bg-[#CD4354] text-center flex items-center justify-center gap-2"
           onClick={() => {
             setIsFormOpen(true);
             setSelectedCategoryId(null);
@@ -71,7 +71,7 @@ export default function CategorysTable({ setIsFormOpen }) {
       </div>
       {/* <div className="bg-white rounded-xl w-full  "> */}
         {/* XS mobile card layout */}
-      <div className="lg:hidden h-[520px] border mt-3 rounded-xl overflow-y-scroll">
+      <div className="lg:hidden h-auto border mt-3 rounded-xl overflow-y-scroll">
         {loading
           ? // Skeleton cards
             [...Array(5)].map((_, index) => (
@@ -151,7 +151,7 @@ export default function CategorysTable({ setIsFormOpen }) {
               </div>
             ))}
       </div>
-      <table className=" hidden lg:table w-full table-fixed rounded-3xl  border mt-3  ">
+      <table className=" hidden lg:table w-full h-auto table-fixed rounded-3xl  border mt-3  ">
           <thead className="w-full bg-[#f0eff0] h-12 rounded-lg text-justify sticky top-0  z-10">
             <tr className="  text-xs">
               <th className=" px-5">{t("image")}</th>
@@ -199,7 +199,7 @@ export default function CategorysTable({ setIsFormOpen }) {
                       setPopupShow(true)
                     }}
                   >
-                    <span className="w-[200px]">
+                    <span className="w-[100px]">
                       <Image
                         alt=""
                         src={
@@ -207,7 +207,7 @@ export default function CategorysTable({ setIsFormOpen }) {
                           getThumbnailUrl(category.imageURL)}
                         width={40}
                         height={40}
-                        className="rounded-xl xs:w-10 xs:h-10 md:w-20 md:h-20  border my-1 p-1"
+                        className="rounded-xl xs:w-10 xs:h-10 md:w-16 md:h-16  border my-1 p-1"
                       // decoding="async"
                       />
                     </span>

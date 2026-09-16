@@ -316,11 +316,14 @@
   "Advert5":"Advert 5",
   "saveImages":"Save Images",
   "save_data":"Save Data",
+  "data_saved_successfully":"Data saved successfully",
   "add_advert":"Add Advert",
   "edit_advert":"Edit Advert",
   "option":"option",
   "add-icon":"Add icon",
-  "order":"Order"
+  "order":"Order",
+  "save_images":"Save images"
+
   
 
 

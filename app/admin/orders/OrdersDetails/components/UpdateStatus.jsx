@@ -80,7 +80,7 @@ export default function UpdateStatus({ orderId , orderType  }) {
         style={{
           background: `linear-gradient(${
             lang === "en" ? "to right" : "to left"
-          }, red ${activeStep * orderStepPath}%, #e0e0e0 ${
+          }, #E76E7D ${activeStep * orderStepPath}%, #e0e0e0 ${
             activeStep * orderStepPath
           }%)`,
         }}
@@ -106,7 +106,7 @@ export default function UpdateStatus({ orderId , orderType  }) {
               {/* الأيقونة (ملونة حسب المرحلة النشطة) */}
               <div
                 className={
-                  index + 1 <= activeStep ? "text-red-600" : "text-gray-400"
+                  index + 1 <= activeStep ? "text-[#E76E7D]" : "text-gray-400"
                 }
               >
                 {step.icon}
@@ -143,7 +143,7 @@ export default function UpdateStatus({ orderId , orderType  }) {
               {/* الأيقونة (ملونة حسب المرحلة النشطة) */}
               <div
                 className={
-                  index + 1 <= activeStep ? "text-red-600" : "text-gray-400"
+                  index + 1 <= activeStep ? "text-[#E76E7D]" : "text-gray-400"
                 }
               >
                 {step.icon}

@@ -10,7 +10,7 @@ import {
   getProductDetails,
   getThumbnailUrl,
 } from "../../../../utils/functions.jsx";
-import { postRequest, putRequest } from "../../../../utils/requestsUtils.js";
+import { deleteRequest, postRequest, putRequest } from "../../../../utils/requestsUtils.js";
 import { useRefresh } from "../../../../context/refreshContext.jsx";
 import { useIdContext } from "../../../../context/idContext.jsx";
 import { GoStarFill } from "react-icons/go";
@@ -18,7 +18,7 @@ import { toast } from "react-toastify";
 import Select from "react-select";
 import { ImBlocked } from "react-icons/im";
 
-export default function FormProduct({ isFormOpen, setIsFormOpen }) {
+export default function FormProduct({ isFormOpen, setIsFormOpen, isEditMode }) {
   const [enabledActive, setEnabledActive] = useState(true);
   const [enabledFavorite, setEnabledFavorite] = useState(false);
   const [enabledAvailable, setEnabledAvailable] = useState(true);
@@ -26,6 +26,8 @@ export default function FormProduct({ isFormOpen, setIsFormOpen }) {
   const { triggerRefresh } = useRefresh();
   const { selectedProductId, setSelectedProductId } = useIdContext();
   const [loading, setLoading] = useState(false);
+  const [showImages, setShowImages] = useState(false);
+  const [showProductData, setShowProductData] = useState(true);
   const { t } = useLanguage();
   const isBase64 = (src) => {
     return typeof src === "string" && src.startsWith("data:");
@@ -35,7 +37,7 @@ export default function FormProduct({ isFormOpen, setIsFormOpen }) {
   //   { key: "img2", label: "img2", inputId: "fileInput-img2" },
   //   { key: "img3", label: "img3", inputId: "fileInput-img3" },
   // ];
-  const isEditMode = selectedProductId !== null;
+
   const [product, setProduct] = useState({
     nameEn: "",
     nameAr: "",
@@ -153,55 +155,73 @@ export default function FormProduct({ isFormOpen, setIsFormOpen }) {
     });
     revokeImageUrls();
     setItemImages([]);
+    setShowImages(false);
+    setShowProductData(true);
     setEnabledFavorite(false);
     setEnabledActive(true);
     setEnabledAvailable(true);
   };
 
-    const fields = {
-      nameEn: product.nameEn,
-      nameAr: product.nameAr,
-      code: product.code,
-      price: product.price,
-      oldPrice: product.oldPrice,
-      seoCode: product.seoCode,
-      ram: product.ram,
-      flash: product.flash,
-      company: product.company,
-      contents: product.contents,
-      descriptionAr: product.descriptionAr,
-      descriptionEn: product.descriptionEn,
-      favorite: enabledFavorite,
-      active: enabledActive,
-      available: enabledAvailable,
-      itemCategoryId: product.category.id,
-    };
-  
+  const fields = {
+    nameEn: product.nameEn,
+    nameAr: product.nameAr,
+    code: product.code,
+    price: product.price,
+    oldPrice: product.oldPrice,
+    seoCode: product.seoCode,
+    ram: product.ram,
+    flash: product.flash,
+    company: product.company,
+    contents: product.contents,
+    descriptionAr: product.descriptionAr,
+    descriptionEn: product.descriptionEn,
+    favorite: enabledFavorite,
+    active: enabledActive,
+    available: enabledAvailable,
+    itemCategoryId: product.category.id,
+  };
+
 
   // إضافة منتج جديد
   const addProductData = async () => {
     setLoading(true);
     try {
-     const respose = await postRequest("/api/admin/items", fields, t("message"));
-      // resetFormState();
-      // triggerRefresh();
-      // setSelectedProductId(null);
-      // setIsFormOpen(false);
+      const respose = await postRequest("/api/admin/items", fields, t("message"));
+      if (!respose) return;
       console.log(respose)
-      productData()
+      console.log(respose.itemId)
+      setSelectedProductId(respose.itemId)
+      triggerRefresh();
+      toast.success(t("data_saved_successfully"));
+      setShowProductData(false);
+      setShowImages(true)
     } catch (err) {
     } finally {
       setLoading(false);
     }
   };
 
-  const addProductImges= async()=>{
-    await postRequest("/api/admin/items/{itemId}/images",
-      {
-        itemImages:itemImages
-      }
-    )
+  const addProductImges = async () => {
+    try {
+      console.log(itemImages)
+      const formData = new FormData();
+      itemImages.forEach((img) => {
+        if (img.file) {
+          formData.append("itemImages", img.file);
+        }
+      });
+      await postRequest(`/api/admin/items/${selectedProductId}/images`,
+        formData
+      )
+            triggerRefresh();
 
+    }
+    catch (err) {
+      console.log(err)
+    }
+  }
+  const deleteProductImg = async(imageId)=>{
+await deleteRequest(`/api/admin/items/${selectedProductId}/images/${imageId}`)
   }
   // جلب بيانات المنتج للتعديل
   const productData = async () => {
@@ -210,9 +230,10 @@ export default function FormProduct({ isFormOpen, setIsFormOpen }) {
 
       if (selectedProductId !== null) {
         resetFormState();
+        setShowProductData(isEditMode);
         const res = await getProductDetails(selectedProductId);
         const resData = res.data;
-
+        console.log(resData)
         setProduct((prev) => ({
           ...prev,
           nameEn: resData.nameEn,
@@ -235,8 +256,15 @@ export default function FormProduct({ isFormOpen, setIsFormOpen }) {
           },
         }));
 
+        const existingImages = resData.images.map((img) => ({
+          file: null,
+          preview: process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL + img.imageUrl,
+          existingId: img.itemImageId,
+        }));
+        console.log(existingImages)
+        setItemImages(existingImages);
+        setShowImages(true);
 
-        setItemImages();
 
         setEnabledFavorite(resData.favorite);
         setEnabledActive(resData.active);
@@ -252,7 +280,6 @@ export default function FormProduct({ isFormOpen, setIsFormOpen }) {
 
   // تحديث المنتج
   const updateProduct = async () => {
-    // if (!validateForm()) return;
 
     // التحقق من السعر
     if (
@@ -263,19 +290,18 @@ export default function FormProduct({ isFormOpen, setIsFormOpen }) {
       return;
     }
 
-    const formData = createFormData();
+
     setLoading(true);
     try {
       await putRequest(
         `/api/admin/items/${selectedProductId}`,
-        formData,
+        fields,
         t("message"),
       );
-      resetFormState();
       setSelectedProductId(null);
       triggerRefresh();
-      setIsFormOpen(false);
     } catch (error) {
+      console.log(error)
     } finally {
       setLoading(false);
     }
@@ -332,6 +358,8 @@ export default function FormProduct({ isFormOpen, setIsFormOpen }) {
 
 
         {/* <hr className="my-5" /> */}
+        {showProductData && (
+          <div>
         <div className=" grid grid-cols-4 gap-3 mt-3">
           {/* <div className=" w-full  md:flex-row  xs:flex-col gap-3"> */}
           <div className="flex-1">
@@ -379,7 +407,7 @@ export default function FormProduct({ isFormOpen, setIsFormOpen }) {
               className="w-full  outline-none  text-base  my-1  p-2 border rounded-md focus:border-red-600 transition-colors"
             />
           </div>
-            <div className="w-full">
+          <div className="w-full">
             <label className="text-xs text-gray-600 font-semibold block mb-1">
               {t("Price")}</label>
             <input
@@ -394,14 +422,14 @@ export default function FormProduct({ isFormOpen, setIsFormOpen }) {
           </div>
           <div className="w-full">
             <label className="text-xs text-gray-600 font-semibold block mb-1">
-              {t("old_price") + " "+ "["+t("option")+"]"} </label>
+              {t("old_price") + " " + "[" + t("option") + "]"} </label>
             <input
               type="number"
               value={product.oldPrice || ""}
               onChange={(e) =>
                 setProduct((prev) => ({ ...prev, oldPrice: e.target.value }))
               }
-               className="w-full  outline-none  text-base  my-1  p-2 border rounded-md focus:border-red-600 transition-colors"
+              className="w-full  outline-none  text-base  my-1  p-2 border rounded-md focus:border-red-600 transition-colors"
 
             />
           </div>
@@ -554,7 +582,7 @@ export default function FormProduct({ isFormOpen, setIsFormOpen }) {
           {/* </div> */}
 
           {/* <div className="flex md:flex-row  xs:flex-col items-start  justify-between gap-3"> */}
-        
+
           {/* </div> */}
 
           <div className="w-full">
@@ -681,7 +709,7 @@ export default function FormProduct({ isFormOpen, setIsFormOpen }) {
                 <button
                   type="submit"
                   id="btn-editProduct"
-                  className={`bg-red-600 h-8  px-3 text-white flex-1  hover:bg-red-800 rounded-lg transition-colors ${isEditMode ? "" : "hidden"}`}
+                  className={`bg-[#CD4354] text-sm  w-[150px] my-5 px-3 py-2 text-white flex-1  hover:bg-red-800 rounded-lg transition-colors ${isEditMode ? "" : "hidden"}`}
                   onClick={updateProduct}
                   disabled={loading}
                 >
@@ -704,79 +732,91 @@ export default function FormProduct({ isFormOpen, setIsFormOpen }) {
           </div>
 
         </div>
+        </div>
+          )}
         <div>
-          <hr />
-          <div className="mt-4">
-            <h2 className="text-sm font-semibold text-gray-700 mb-2">
-              {t("item_images")}
-            </h2>
-            <div className="w-full grid lg:grid-cols-6 md:grid-cols-3 xs:grid-cols-2 gap-3">
-              <div className="bg-white rounded-3xl h-[170px] w-full flex flex-col gap-3 p-3 cursor-pointer">
-                <div className="border-dashed flex justify-center p-5 items-center border-2 rounded-3xl border-red-400 bg-gray-50 hover:bg-gray-100 w-full h-full">
-                  <label htmlFor="productImg_fileInput">
-                    <div
-                      id="label-uplod"
-                      className="flex flex-col justify-center items-center cursor-pointer"
+        
+          {showImages && (
+            <div className="animate-fade-in-up  p-4  sm:p-5">
+                <h2 className="text-sm font-semibold text-gray-700 mb-4">
+                  {t("item_images")}
+                </h2>
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 md:gap-4 lg:grid-cols-6">
+                  <div className="group relative h-[150px] w-full cursor-pointer rounded-2xl border-2 border-dashed border-red-300 bg-white transition-colors duration-300 hover:border-red-500 hover:bg-red-50 sm:h-[170px]">
+                    <label
+                      htmlFor="productImg_fileInput"
+                      className="absolute inset-0 flex flex-col items-center justify-center gap-2 cursor-pointer"
                     >
-                      <span className="text-2xl bg-white p-2 rounded-full text-red-500">
-                        <IoCloudUploadSharp />
+                      <span
+                        id="label-uplod"
+                        className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-red-500 shadow-sm transition-transform duration-300 group-hover:scale-110"
+                      >
+                        <IoCloudUploadSharp className="text-xl" />
                       </span>
-                      <span className="flex flex-col gap-2 items-center">
-                        <div className="text-center text-sm">
-                          <h1 className="mb-2">{t("click_to_upload")}</h1>
-                          <h2 className="text-[10px] text-gray-500">
-                            PNG, JPG or GIF
-                          </h2>
-                        </div>
+                      <span className="flex flex-col items-center gap-1">
+                        <h1 className="text-sm font-medium text-gray-700">
+                          {t("click_to_upload")}
+                        </h1>
+                        <h2 className="text-[10px] text-gray-500">
+                          PNG, JPG or GIF
+                        </h2>
                       </span>
-                    </div>
-                  </label>
-
-                  <input
-                    type="file"
-                    accept="image/*"
-                    multiple
-                    onChange={handleItemImagesUpload}
-                    className="hidden"
-                    id="productImg_fileInput"
-                  />
-                </div>
-              </div>
-              {itemImages.map((img, index) => (
-                <div key={index} className="bg-white h-[170px]  rounded-3xl">
-                  <span className="flex justify-end ">
-                    <button
-                      type="button"
-                      className="text-sm text-gray-500 hover:text-red-600"
-                      onClick={() => removeItemImage(index)}
-                    >
-                      <MdCancel />
-                    </button>
-                  </span>
-                  <div className="flex justify-center items-center">
-                    <Image
-                      src={img.preview}
-                      alt=""
-                      width={100}
-                      height={100}
-                      className="h-[140px] w-full rounded-3xl object-cover"
+                    </label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      onChange={handleItemImagesUpload}
+                      className="hidden"
+                      id="productImg_fileInput"
                     />
                   </div>
+                  {itemImages.map((img, index) => (
+                        
+                      <div
+                      key={index}
+                      className="  h-[150px] w-full   bg-white"
+                    >
+                     <button
+                        type="button"
+                        className="  flex  items-center justify-center rounded-full bg-white/90 text-gray-500 shadow-sm backdrop-blur transition-all duration-200 hover:scale-110 hover:bg-red-600 hover:text-white"
+                        onClick={() => {
+                          removeItemImage(index)
+                          if (img.existingId) deleteProductImg(img.existingId)
+                        }}
+                      >
+                        <MdCancel className="text-lg" />
+                      </button>
+                      <Image
+                        src={img.existingId ? getThumbnailUrl(img.preview) : img.preview}
+                        alt=""
+                     height={100}
+                      width={100}
+                        className="h-full w-full  rounded-xl"
+                      />
+                     
+                    </div>
+                    
+                  ))}
                 </div>
-              ))}
-            </div>
-          </div>
 
-          <button
-            type="submit"
-            id="btn-saveProduct"
-            className={`bg-red-600 text-sm w-[150px] my-5 px-3 py-2 text-white flex-1 hover:bg-red-800 rounded-lg transition-colors ${isEditMode ? "hidden" : ""}`}
-            onClick={addProductImges}
-            disabled={loading}
-          >
-            {t("save_images")}
-          </button>
+              <div className="mt-5 flex justify-start">
+                <button
+                  type="submit"
+                  id="btn-saveProduct"
+                  className={`bg-[#CD4354] text-sm w-[150px] my-5 px-3 py-2 text-white  hover:bg-red-800 rounded-lg transition-colors `}
+                  onClick={addProductImges}
+                  disabled={loading}
+                >
+                  {t("save_images")}
+                </button>
+              </div>
+            </div>
+
+
+          )}
         </div>
+
       </form>
     </div>
   );

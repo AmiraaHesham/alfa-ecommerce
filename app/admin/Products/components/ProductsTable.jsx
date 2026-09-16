@@ -18,7 +18,7 @@ import { useRefresh } from "../../../../context/refreshContext.jsx";
 import { getThumbnailUrl } from "../../../../utils/functions.jsx";
 import { IoCheckmarkCircleOutline } from "react-icons/io5";
 
-export default function ProductsTable({ setIsFormOpen, category }) {
+export default function ProductsTable({ setIsFormOpen, category, setIsEditMode }) {
   const { t } = useLanguage();
   const [products, setProducts] = useState([]);
   const productTableRef = useRef();
@@ -28,7 +28,6 @@ export default function ProductsTable({ setIsFormOpen, category }) {
   const { setSelectedProductId } = useIdContext();
   const searchInputRef = useRef();
   const [loading, setLoading] = useState(true);
-
   const getAllProducts = async () => {
     try {
       const response = await postRequest(
@@ -43,6 +42,7 @@ export default function ProductsTable({ setIsFormOpen, category }) {
       );
 
       const resProducts = response.data.content || [];
+      console.log(resProducts)
       if (pageNum.current === 0) {
         setProducts(resProducts);
       } else setProducts((prev) => [...prev, ...resProducts]);
@@ -101,6 +101,7 @@ export default function ProductsTable({ setIsFormOpen, category }) {
 
   const openForm = (productID) => {
     setIsFormOpen(true);
+    setIsEditMode(true)
     setSelectedProductId(productID);
   };
   const deleteProduct = async (product) => {
@@ -161,10 +162,11 @@ export default function ProductsTable({ setIsFormOpen, category }) {
           </button>
         </div>
         <button
-          className="p-2 text-white xs:text-xs md:text-sm rounded-md bg-red-500 text-center flex items-center justify-center gap-2"
+          className="p-2 text-white xs:text-xs md:text-sm rounded-md bg-[#E76E7D] text-center flex items-center justify-center gap-2"
           onClick={() => {
             setIsFormOpen(true);
             setSelectedProductId(null);
+            setIsEditMode(false)
           }}
         >
           <span className="text-base">
@@ -206,15 +208,17 @@ export default function ProductsTable({ setIsFormOpen, category }) {
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="flex items-center gap-3 min-w-0">
-                  <Image
-                    alt=""
-                    src={`${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +
-                      getThumbnailUrl(product.imageURL) || ""
-                      }`}
-                    width={40}
-                    height={40}
-                    className="rounded-xl w-10 h-10 border p-1 shrink-0"
-                  />
+                 <Image
+                      alt=""
+                      src={product.images?.[0]?.imageUrl
+                        ? `${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL}${getThumbnailUrl(
+                          product.images[0].imageUrl
+                        )}`
+                        : ""}
+                      width={50}
+                      height={50}
+                      className="rounded-xl w-14 h-14  border my-1 p-1"
+                    />
                   <div className="min-w-0">
                     <h1 className="text-sm font-semibold truncate">
                       {typeof window !== "undefined"
@@ -257,15 +261,15 @@ export default function ProductsTable({ setIsFormOpen, category }) {
               <div className="flex items-end justify-between gap-3 mt-2">
                 <div className="min-w-0">
                   <div className="text-base font-bold">
-                    {product.price.toLocaleString("en-US")}
+                    {product.price.toLocaleString("en-US") +" "+ t("currency")}
                   </div>
-                  <div className="text-xs text-gray-600">
+                  {/* <div className="text-xs text-gray-600">
                     {product.oldPrice
                       ? product.oldPrice.toLocaleString("en-US") +
                       " " +
                       t("currency")
                       : "--"}
-                  </div>
+                  </div> */}
                 </div>
               </div>
               <div className="flex items-center justify-between gap-3 mt-3 pt-3 border-t">
@@ -339,7 +343,7 @@ export default function ProductsTable({ setIsFormOpen, category }) {
               <th className="">{t("PRODUCT_NAME")}</th>
               <th className="">{t("product_category")}</th>
               <th className="">{t("price")}</th>
-              <th className="">{t("old_price")}</th>
+              {/* <th className="">{t("old_price")}</th> */}
 
               <th className="w-[10%]"></th>
             </tr>
@@ -443,12 +447,14 @@ export default function ProductsTable({ setIsFormOpen, category }) {
                   >
                     <Image
                       alt=""
-                      src={`${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +
-                        getThumbnailUrl(product.imageURL) || ""
-                        }`}
-                      width={40}
-                      height={40}
-                      className="rounded-xl xs:w-10 xs:h-10 md:w-14 md:h-12  border my-1 p-1"
+                      src={product.images?.[0]?.imageUrl
+                        ? `${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL}${getThumbnailUrl(
+                          product.images[0].imageUrl
+                        )}`
+                        : ""}
+                      width={50}
+                      height={50}
+                      className="rounded-xl xs:w-10 xs:h-10 md:w-14 md:h-14  border my-1 p-1"
                     />
                     <div>
                       <h1 className="text-sm font-semibold">
@@ -481,7 +487,7 @@ export default function ProductsTable({ setIsFormOpen, category }) {
                   >
                     {product.price.toLocaleString("en-US")}
                   </td>
-                  <td
+                  {/* <td
                     className="text-sm font-bold text-gray-600"
                     onClick={() => openForm(product.itemId)}
                   >
@@ -490,7 +496,7 @@ export default function ProductsTable({ setIsFormOpen, category }) {
                       " " +
                       t("currency")
                       : "--"}
-                  </td>
+                  </td> */}
                   <td>
                     <button
                       className="text-red-800 text-sm flex items-center gap-1 bg-red-300 px-2 py-1 font-semibold rounded-md hover:bg-red-400"

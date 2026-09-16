@@ -101,7 +101,7 @@
   "upload-new-img": "رفع صورة جديده",
   "click_to_upload": "إضغط للرفع",
   "main_image": "الصورة الرئيسية",
-  "item_images": "صور إضافية",
+  "item_images": "صور المنتج",
   "featured_products": "المنتجات المميزة",
   "live": "مباشر",
   "hide": "إخفاء",
@@ -317,11 +317,13 @@
   "Advert5":"الاعلان الخامس",
   "saveImages":"حفظ الصور",
   "save_data":"حفظ البيانات",
+  "data_saved_successfully":"تم حفظ البيانات بنجاح",
   "add_advert":"إضافة إعلان",
   "edit_advert":"تعديل الإعلان",
   "option":"اختياري",
   "add-icon":"إضافة ايقونة",
-  "order":"الطلب"
+  "order":"الطلب",
+  "save_images":"حفظ الصور"
 
 
 }
