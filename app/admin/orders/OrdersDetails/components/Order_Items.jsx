@@ -73,16 +73,16 @@ export default function OrdersItems({ orderId, orderType }) {
                 key={`mobile-${index}`}
                 className="bg-white border rounded-xl p-3 my-3 mx-2 lg:hidden max-h-[435px] overflow-y-scroll"
               >
-                <div className="flex items-start gap-3">
+                <div className=" relative w-[100px] h-[100px] flex items-start gap-3">
                   <Image
                     alt=""
                     src={
                       process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +
-                      getThumbnailUrl(item.item.mainImageURL)
+                      getThumbnailUrl(item.item.images[0]?.imageUrl)
                     }
-                    width={48}
-                    height={48}
-                    className="rounded-xl w-12 h-12 p-1 shrink-0"
+                    fill
+                    sizes="100px"
+                    className="object-cover rounded-xl  p-1 shrink-0"
                   />
                   <div className="min-w-0">
                     <h1 className="font-semibold text-sm truncate">
