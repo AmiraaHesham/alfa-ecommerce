@@ -53,7 +53,7 @@ export default function Header({ page_title }) {
     if (!validLangs.includes(newLang)) return;
     setLocale(newLang);
     try {
-      await postRequest(`/api/users/langauge/${newLang}`, "", "");
+      await postRequest(`/api/users/language/${newLang}`, "", "");
       setLocale(newLang);
 
       localStorage.setItem("lang", newLang);
