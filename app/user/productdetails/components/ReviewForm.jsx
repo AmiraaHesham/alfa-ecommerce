@@ -1,28 +1,43 @@
 "use client";
 
 import { useState } from "react";
+import { toast } from "react-toastify";
 import { FaStar } from "react-icons/fa";
 import { FaRegStar } from "react-icons/fa6";
 import { useLanguage } from "../../../../context/LanguageContext";
+import { submitItemRating } from "../../../../utils/functions";
 
-export default function ReviewForm({ product }) {
+export default function ReviewForm({ product, itemId, onRatingSubmitted }) {
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
   const [review, setReview] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [saveInfo, setSaveInfo] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 const {t}= useLanguage()
-  const handleSubmit = (e) => {
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log({
-      product: product?.nameEn || product?.nameAr || "",
-      rating,
-      review,
-      name,
-      email,
-      saveInfo,
-    });
+
+    if (submitting) return;
+
+    if (!rating) {
+      toast.error(t("select_rating_first"));
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      await submitItemRating(itemId, rating, review);
+      onRatingSubmitted?.();
+      setRating(0)
+      setReview("")
+    } catch (error) {
+      console.error("Failed to submit rating:", error);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -130,9 +145,10 @@ const {t}= useLanguage()
       {/* Submit */}
       <button
         type="submit"
-        className="rounded-full bg-[#e5485d] px-6 py-3 text-sm font-medium text-white transition-all duration-200 hover:bg-[#d04153] hover:opacity-90"
+        disabled={submitting}
+        className="rounded-full bg-[#e5485d] px-6 py-3 text-sm font-medium text-white transition-all duration-200 hover:bg-[#d04153] hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed"
       >
-        {t("Submit")}
+        {submitting ? t("Submitting") : t("Submit")}
       </button>
     </form>
   );

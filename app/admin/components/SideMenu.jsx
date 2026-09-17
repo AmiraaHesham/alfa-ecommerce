@@ -62,7 +62,7 @@ export default function SideMenu() {
   //   checkAdmin()
   // },[checkAdmin])
   return (
-    <div className="xs:w-[60px] xl:w-[300px] bg-[#0d0625] text-white  ">
+    <div className="xs:w-[60px] xl:w-[300px] bg-[#CD4354] text-white  ">
       <div className=" h-full  ">
         <div className="flex  items-center xs:justify-center xl:justify-start xl:mx-5 xs:mx-0 gap-1 mt-2">
           <span className="p-2 rounded-md  ">

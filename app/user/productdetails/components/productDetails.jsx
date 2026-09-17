@@ -1,6 +1,6 @@
 "use client";
-import { useEffect, useState, useRef } from "react";
-import { getProductDetails } from "../../../../utils/functions";
+import { useEffect, useState, useRef, useCallback } from "react";
+import { getProductDetails, getItemRatings } from "../../../../utils/functions";
 import Image from "next/image";
 import "aos/dist/aos.css";
 import { useLanguage } from "../../../../context/LanguageContext";
@@ -24,6 +24,10 @@ import Link from "next/link";
 
 export default function ProductDetails({ itemId }) {
   const [loading, setLoading] = useState(true);
+  const [ratingRefreshKey, setRatingRefreshKey] = useState(0);
+  const [reviews, setReviews] = useState([]);
+  const [reviewsLoading, setReviewsLoading] = useState(false);
+  const [reviewsError, setReviewsError] = useState(false);
   const { t, locale } = useLanguage();
   const [product, setProduct] = useState({
     nameEn: "",
@@ -41,10 +45,8 @@ export default function ProductDetails({ itemId }) {
     mainImage: "",
     mainImagefile: "",
     available: null,
-    img2: "",
-    img2file: "",
-    img3: "",
-    img3file: "",
+    images: [],
+    
   });
 
 
@@ -63,9 +65,7 @@ export default function ProductDetails({ itemId }) {
         oldPrice: resData.oldPrice,
         descriptionAr: resData.descriptionAr,
         descriptionEn: resData.descriptionEn,
-        mainImage: resData.mainImageURL,
-        img2: resData.images?.[0]?.imageUrl || "",
-        img3: resData.images?.[1]?.imageUrl || "",
+        images: resData.images,
         available: resData.available,
         category: {
           ...prev.category,
@@ -88,9 +88,30 @@ export default function ProductDetails({ itemId }) {
 
 
 
+  const fetchReviews = useCallback(async () => {
+    setReviewsLoading(true);
+    setReviewsError(false);
+    try {
+      const res = await getItemRatings(itemId);
+      setReviews(res?.data || []);
+    } catch (error) {
+      console.error("Failed to load reviews:", error);
+      setReviewsError(true);
+    } finally {
+      setReviewsLoading(false);
+    }
+  }, [itemId]);
+
+
+
+
   useEffect(() => {
     productDetails();
   }, []);
+
+  useEffect(() => {
+    fetchReviews();
+  }, [fetchReviews]);
   return (
     <div className="">
       {/* {loading ? (
@@ -187,11 +208,47 @@ export default function ProductDetails({ itemId }) {
       <div className="flex w-full justify-between p-10">
         <Specification />
         <div className="w-full h-full">
-          <ProductRating />
-          <ReviewForm product={product} />
-          <CustomerReviewCard name={"amira hesham"} date={"1/9/2026"} rating={3} review={"Great product!"} />
+          <ProductRating product={product} itemId={itemId} refreshKey={ratingRefreshKey} />
+          <ReviewForm
+            product={product}
+            itemId={itemId}
+            onRatingSubmitted={() => {
+              setRatingRefreshKey((key) => key + 1);
+              fetchReviews();
+            }}
+          />
+          <div className="w-full px-5 md:px-10 pb-5">
+        <div className="flex items-center justify-between gap-2">
+          <span className="w-2/3">
+            <h1 className="flex items-center font-semibold gap-2 xs:text-base md:text-lg mb-1">
+              {t("reviews_list")}
+            </h1>
+            <hr className="w-24 h-1 border-0 rounded-full bg-gradient-to-l from-red-200 via-red-400 to-red-200" />
+          </span>
         </div>
+
+        {reviewsLoading ? (
+          <div className="mt-6 flex flex-col gap-4">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="bg-[#f6f5f8] rounded-3xl h-32 animate-pulse" />
+            ))}
+          </div>
+        ) : reviewsError ? (
+          <p className="mt-6 text-sm text-gray-500">{t("reviews_error")}</p>
+        ) : reviews.length === 0 ? (
+          <p className="mt-6 text-sm text-gray-500">{t("no_reviews")}</p>
+        ) : (
+          <div className="mt-6 flex flex-col gap-4">
+            {reviews.map((review) => (
+              <CustomerReviewCard key={review.itemRatingId ?? review.rating + review.comment} review={review} />
+            ))}
+          </div>
+        )}
       </div>
+        </div>
+         
+      </div>
+     
       <YouMightLike categoryId={product.category.id} />
     </div>
   );

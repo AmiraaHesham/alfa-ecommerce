@@ -17,9 +17,9 @@ export default function ProductImages({ product }) {
   return (
     <div className="w-full h-[450px] md:col-span-2 col-span-3 relative flex xs:flex-col md:flex-row gap-2">
       <div className="flex md:flex-col xs:flex-row  items-center gap-4 mt-5 xs:order-2 md:order-1 ">
-         <div className={`relative   w-[80px] h-[80px] rounded-xl hover:opacity-50  cursor-pointer select-none `}>
+         {/* <div className={`relative   w-[80px] h-[80px] rounded-xl hover:opacity-50  cursor-pointer select-none `}>
           <Image
-            src={urlImage + getThumbnailUrl(product.img1)}
+            src={urlImage + getThumbnailUrl(product.images[0])}
             alt="mainImage"
             fill
 
@@ -30,13 +30,13 @@ export default function ProductImages({ product }) {
               swiperRef.current?.slideTo(0)
             }}
           />
-        </div>
+        </div> */}
        
-
-        {product.img3 ? (
-          <div className="relative   w-[80px] h-[80px]  rounded-xl hover:opacity-50 cursor-pointer select-none ">
+{product.images.map((img)=>{
+  return(
+    <div className="relative   w-[80px] h-[80px]  rounded-xl hover:opacity-50 cursor-pointer select-none ">
             <Image
-              src={urlImage + getThumbnailUrl(product.img3)}
+              src={urlImage + getThumbnailUrl(img.imageUrl)}
               alt="mainImage"
               fill
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -47,6 +47,11 @@ export default function ProductImages({ product }) {
               }}
             />
           </div>
+  )
+})}
+</div>
+        {/* {product.img3 ? (
+          
         ) : (
           ""
         )}
@@ -67,7 +72,7 @@ export default function ProductImages({ product }) {
         ) : (
           ""
         )}
-      </div>
+      </div> */}
 
       <Swiper
         key={locale}
@@ -84,10 +89,11 @@ export default function ProductImages({ product }) {
       >
 
         {/* <div className="w-full h-full relative  flex justify-center  rounded-3xl    "> */}
-
-        <SwiperSlide>
+|{product.images.map((img)=>{
+  return(
+    <SwiperSlide>
           <Image
-            src={urlImage + product.mainImage}
+            src={urlImage + img.imageUrl}
             alt="mainImage"
             fill
             priority
@@ -95,29 +101,10 @@ sizes="100vw"
             className=" rounded-3xl"
           />
         </SwiperSlide>
-        {product.img3 ? (
-          <SwiperSlide>
-            <Image
-              src={urlImage + product.img3}
-              alt="mainImage"
-              fill
-              priority
-sizes="100vw" 
-              className=" rounded-3xl"
-            />
-          </SwiperSlide>) : ""}
-        {product.img2 ? (
-          <SwiperSlide>
-            <Image
-              src={urlImage + product.img2}
-              alt="mainImage"
-              fill
-              priority
-sizes="100vw" 
-              className=" rounded-3xl"
-            />
-          </SwiperSlide>) : ""}
-        {/* </div> */}
+  )
+})}
+        
+       
 
 
       </Swiper>

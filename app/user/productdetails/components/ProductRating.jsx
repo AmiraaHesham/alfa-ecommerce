@@ -1,29 +1,9 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { FaStar, FaRegStar, FaStarHalfAlt } from "react-icons/fa";
 import { useLanguage } from "../../../../context/LanguageContext";
-
-const ratingData = [
-  { stars: 5, count: 1 },
-  { stars: 4, count: 1 },
-  { stars: 3, count: 0 },
-  { stars: 2, count: 0 },
-  { stars: 1, count: 0 },
-];
-
-const totalReviews = ratingData.reduce((sum, r) => sum + r.count, 0);
-const avgRating =
-  totalReviews > 0
-    ? (
-      ratingData.reduce((sum, r) => sum + r.stars * r.count, 0) / totalReviews
-    ).toFixed(1)
-    : "0.0";
-
-// function StarIcon({ filled, half }) {
-//   if (half) return <FaStarHalfAlt className="text-[#f5b800] text-sm" />;
-//   if (filled) return <FaStar className="text-[#f5b800] text-sm" />;
-//   return <FaRegStar className="text-gray-400 text-sm" />;
-// }
+import { getItemRatingStarDistribution } from "../../../../utils/functions";
 
 function MainStarIcon({ filled, half }) {
   if (half) return <FaStarHalfAlt className="text-[#f5b800] text-2xl" />;
@@ -43,8 +23,51 @@ function renderStars(rating, IconComponent) {
   return stars;
 }
 
-export default function ProductRating({ product }) {
+export default function ProductRating({ product, itemId, refreshKey }) {
   const {t} = useLanguage()
+  const [ratingData, setRatingData] = useState([
+    { stars: 5, count: 0 },
+    { stars: 4, count: 0 },
+    { stars: 3, count: 0 },
+    { stars: 2, count: 0 },
+    { stars: 1, count: 0 },
+  ]);
+
+  useEffect(() => {
+    let active = true;
+
+    const fetchRatings = async () => {
+      if (!itemId) return;
+      try {
+        const res = await getItemRatingStarDistribution(itemId);
+        const distribution = res?.data?.distribution || {};
+        if (!active) return;
+        setRatingData(
+          [5, 4, 3, 2, 1].map((stars) => ({
+            stars,
+            count: distribution[stars] ?? 0,
+          }))
+        );
+      } catch (error) {
+        console.error("Failed to load ratings:", error);
+      }
+    };
+
+    fetchRatings();
+
+    return () => {
+      active = false;
+    };
+  }, [itemId, refreshKey]);
+
+  const totalReviews = ratingData.reduce((sum, r) => sum + r.count, 0);
+  const avgRating =
+    totalReviews > 0
+      ? (
+      ratingData.reduce((sum, r) => sum + r.stars * r.count, 0) / totalReviews
+      ).toFixed(1)
+      : "0.0";
+
   return (
     <div className="w-full bg-white rounded-lg px-4 py-6 md:px-8">
       {/* Header */}

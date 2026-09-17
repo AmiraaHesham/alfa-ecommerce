@@ -2,7 +2,7 @@ import Image from "next/image";
 import { useLanguage } from "../../../../context/LanguageContext";
 import { getThumbnailUrl } from "../../../../utils/functions";
 
-export default function topProducts({ Products ,section }) {
+export default function Top10Products({ Products, section }) {
     const { locale } = useLanguage()
     const { t } = useLanguage()
     return (
@@ -18,7 +18,7 @@ export default function topProducts({ Products ,section }) {
                             <div className="relative w-[70px] h-[70px] ">
                                 <Image src={
                                     process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +
-                                    getThumbnailUrl(product.mainImageURL)
+                                    getThumbnailUrl(product.images[0]?.imageUrl)
                                 } alt=""
                                     fill
                                     priority

@@ -32,6 +32,27 @@ export const getProductDetails = async (productId) => {
   const response = await getRequest(`/api/public/items/${productId}`);
   return await response;
 };
+
+export const submitItemRating = async (itemId, rating, comment = "") => {
+  const response = await postRequest(
+    `/api/itemRatings/item/${itemId}`,
+    { rating, comment },
+    ""
+  );
+  return await response;
+};
+
+export const getItemRatingStarDistribution = async (itemId) => {
+  const response = await getRequest(
+    `/api/public/items/${itemId}/ratings/starDistribution`
+  );
+  return await response;
+};
+
+export const getItemRatings = async (itemId) => {
+  const response = await getRequest(`/api/itemRatings/item/${itemId}`);
+  return await response;
+};
 export const getThumbnailUrl = (imageUrl) => {
   if (!imageUrl) return null;
 

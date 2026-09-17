@@ -39,7 +39,7 @@ export default function CategorySection({ categories }) {
           </div>
         
         </div>
-      <div className="w-full grid xl:grid-cols-6 xs:grid-cols-3 gap-3">
+      <div className="w-full grid xl:grid-cols-3 xs:grid-cols-3 gap-2">
 
           {categories.map((category ,index) => (
           
@@ -56,7 +56,7 @@ export default function CategorySection({ categories }) {
                 }}
               >
                 <div className=" w-full flex flex-col justify-center items-center   ">
-                  <div className="relative rounded-full h-[110px] w-[110px] hover:scale-105 duration-200 ">
+                  <div className="relative rounded-full h-[120px] w-[120px] hover:scale-105 duration-200 ">
                     <Image
                       src={`${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL}${getThumbnailUrl(category.imageURL) || ""
                         }`}
@@ -67,7 +67,7 @@ export default function CategorySection({ categories }) {
                       className="object-fill rounded-full"
                     />
                   </div>
-                  <h1 className="font-medium text-sm  mt-6">
+                  <h1 className="font-medium text-sm  mt-2">
                     {locale === "ar" ? category.nameAr : category.nameEn}
                   </h1>
                 </div>

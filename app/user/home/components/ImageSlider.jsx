@@ -13,7 +13,7 @@ export default function ImageSlider({ sliderImages }) {
   const navigate = useRouter();
 
   return (
-    <div className="w-full h-[500px] rounded-3xl">
+    <div className="lg:w-2/3 xs:w-full h-[600px] rounded-3xl">
       <Swiper
         key={locale}
         dir={locale === "ar" ? "rtl" : "ltr"}

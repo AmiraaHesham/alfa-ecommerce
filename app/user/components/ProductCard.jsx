@@ -13,10 +13,19 @@ import { getThumbnailUrl } from "../../../utils/functions";
 import { IoMdCart, IoMdHeart, IoMdHeartEmpty } from "react-icons/io";
 import StarRating from "./StarRating"
 import { useCartDrawerOpen } from "../../../context/CartDrawerOpenContext";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Navigation } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import { useRef } from "react";
+
 export default function ProductCard({ productInfo, favorite }) {
   const { setSelectedProductId } = useIdContext();
   const navigate = useRouter();
   const { t } = useLanguage();
+  const swiperRef = useRef(null);
+  const [activeSlide, setActiveSlide] = useState(0);
   const [loading, setLoading] = useState();
   const { locale } = useLanguage();
   const { triggerRefresh } = useRefresh();
@@ -156,7 +165,7 @@ export default function ProductCard({ productInfo, favorite }) {
       className="h-[360px] group relative  bg-white  py-2 w-full rounded-3xl cursor-pointer  "
     >
       <div className="flex flex-col justify-around  gap-3  items-center h-full">
-        <div className=" relative h-[200px] w-full  ">
+        <div className=" relative h-[200px] w-full p-2  ">
           <div className="relative w-full h-full">
 
             <div className="absolute  flex justify-center items-center gap-2 z-20 px-3 "
@@ -165,8 +174,6 @@ export default function ProductCard({ productInfo, favorite }) {
                 navigate.push(`/user/productdetails/${productName}/${productInfo?.itemId}`);
               }}
             >
-
-
               {productInfo?.available ?
                 <div className=" flex flex-col gap-1">
                   {productInfo?.oldPrice ? (
@@ -182,10 +189,10 @@ export default function ProductCard({ productInfo, favorite }) {
                   ) : (
                     ""
                   )}
-                  {productInfo?.createdDate && new Date(productInfo?.createdDate) >= new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) ? 
-                  (<span className="font-semibold flex justify-center items-center  text-center bg-[#CD4354] text-sm  w-12 h-6 text-white rounded-full">
-                    {t("hot")}
-                  </span>) : ("")}
+                  {productInfo?.createdDate && new Date(productInfo?.createdDate) >= new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) ?
+                    (<span className="font-semibold flex justify-center items-center  text-center bg-[#CD4354] text-sm  w-12 h-6 text-white rounded-full">
+                      {t("hot")}
+                    </span>) : ("")}
 
                 </div>
 
@@ -195,166 +202,202 @@ export default function ProductCard({ productInfo, favorite }) {
                 </span>}
 
             </div>
-            <div className="w-full h-full flex justify-center px-3 items-center z-10">
-              <div className=" h-full w-full relative  bg-gray-100 rounded-3xl">
-
-
-                <Image
-                  src={
-                    `${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +
-                    getThumbnailUrl(productInfo?.imageUrl) || ""
-                    }`
-
-                  }
-                  alt=""
-                  fill
-                  priority
-                  quality={100}
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                  className="object-fill rounded-3xl"
-                  onClick={() => {
-                    setSelectedProductId(productInfo?.itemId);
-                    navigate.push(`/user/productdetails/${productName}/${productInfo?.itemId}`);
+            <div className="w-full h-full flex justify-center px-3 items-center rounded-3xl z-10">
+              <div className=" h-full w-full relative   bg-white rounded-3xl">
+                <Swiper
+                  key={locale}
+                  slidesPerView={1}
+                  onSwiper={(swiper) => {
+                    swiperRef.current = swiper;
                   }}
-                />
+                  dir={locale === "ar" ? "rtl" : "ltr"}
+                  spaceBetween={10}
+                    className="relative w-full h-full select-none rounded-3xl"
+                >
+                  {productInfo?.images?.map((img, index) => (
+                    <SwiperSlide className="rounded-3xl" key={img?.imageUrl || index}>
+                      <Image
+                        src={
+                          `${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL}${getThumbnailUrl(
+                            img?.imageUrl
+                          )}` || ""
+                        }
+                        alt=""
+                        fill
+                        priority={index === 0}
+                        quality={100}
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                        className="object-fill rounded-3xl"
+                        onClick={() => {
+                          setSelectedProductId(productInfo?.itemId);
+                          navigate.push(
+                            `/user/productdetails/${productName}/${productInfo?.itemId}`
+                          );
+                        }}
+                      />
+                    </SwiperSlide>
+                  ))}
+{/* Hover Zones */}
+<div className="absolute inset-0 z-40 flex">
+  {productInfo?.images?.map((img, index) => (
+    <div
+      key={img?.imageUrl || index}
+      className="flex-1 h-full hover:text-gray-500"
+      onMouseEnter={() => {
+        swiperRef.current?.slideTo(index);
+      }}
+    />
+  ))}
+</div>
+          <div
+  className="
+    absolute bottom-0 left-0
+    w-full
+    z-50
+    lg:opacity-0 lg:invisible
+    lg:group-hover:opacity-100 lg:group-hover:visible
+    xs:opacity-100 xs:visible
+    transition-all duration-300
+  "
+>
+  {/* Indicators */}
+  <div className="w-full ">
+    <div className="w-full flex justify-between gap-1">
+      {productInfo?.images?.map((img, index) => (
+        <span
+          key={img?.imageUrl || index}
+          className="w-full h-1 rounded-full bg-gray-300 "
+        />
+      ))}
+    </div>
+  </div>
+
+  {/* Buttons */}
+  <div className="w-full">
+    <div
+      className="
+        flex items-center justify-center
+        w-full
+        bg-[#E76E7D]
+        rounded-b-3xl
+        overflow-hidden
+      "
+    >
+      {/* Wishlist */}
+      <button
+        id={`btn_fov_${productInfo?.itemId}`}
+        className="
+          group/wishlist
+          flex items-center justify-center
+          text-white
+          w-full
+          py-2
+          text-sm
+          transition-all duration-300
+          hover:bg-[#CD4354]
+        "
+        onClick={(e) => {
+          e.stopPropagation();
+
+          if (favorite === true) {
+            deleteFavoriteItems(productInfo?.itemId);
+          } else {
+            addFavoriteItems(productInfo?.itemId);
+          }
+
+          setSelectedProductId(productInfo?.itemId);
+        }}
+      >
+        <IoMdHeart
+          className="
+            absolute
+            w-5 h-5
+            lg:scale-0
+            transition-all duration-300
+            lg:translate-y-10
+            lg:group-hover/wishlist:-translate-y-0
+            lg:group-hover/wishlist:scale-100
+            xs:scale-100
+          "
+        />
+
+        <span
+          className="
+            transition-all duration-300
+            lg:opacity-100
+            lg:group-hover/wishlist:-translate-y-5
+            lg:group-hover/wishlist:opacity-0
+            xs:opacity-0
+          "
+        >
+          {t("wishlist")}
+        </span>
+      </button>
+
+      {/* Add To Cart */}
+      {productInfo?.available && (
+        <button
+          className="
+            group/cart
+            flex items-center justify-center
+            text-white
+            w-full
+            py-2
+            text-sm
+            transition-all duration-300
+            hover:bg-[#CD4354]
+          "
+          onClick={(e) => {
+            e.stopPropagation();
+            addToCart(productInfo?.itemId);
+            setIsCartOpen(true);
+          }}
+        >
+          <span
+            className="
+              transition-all duration-300
+              lg:opacity-100
+              lg:group-hover/cart:-translate-y-5
+              lg:group-hover/cart:opacity-0
+              xs:opacity-0
+            "
+          >
+            {t("Cart")}
+          </span>
+
+          <MdOutlineAddShoppingCart
+            className="
+              absolute
+              w-5 h-5
+              lg:scale-0
+              transition-all duration-300
+              lg:translate-y-10
+              lg:group-hover/cart:translate-y-0
+              lg:group-hover/cart:scale-100
+              xs:scale-100
+            "
+          />
+        </button>
+      )}
+    </div>
+  </div>
+</div>
+                </Swiper>
+
+
+
+
               </div>
             </div>
           </div>
-          <div className="absolute bottom-0 left-0  px-3 w-full lg:group-hover:visible     lg:opacity-0 lg:invisible
+          {/* <div className="absolute bottom-0 left-0  px-5 py-2 w-full lg:group-hover:visible  z-50   lg:opacity-0 lg:invisible
             transition-all duration-300
             lg:group-hover:opacity-100 
             xs:opacity-100 xs:visible
-            text-center">
+            text-center"> */}
 
 
-            <div className="w-full flex justify-between gap-1 " >
-              <span className="w-full h-1 bg-gray-300"></span>
-              <span className="w-full h-1 bg-gray-300"></span>
-              <span className="w-full h-1 bg-gray-300"></span>
-            </div>
 
-            <div
-              className="
-            
-           w-full
-      
-          "
-            >
-              <div
-                className="
-              flex items-center justify-center
-              w-full
-              bg-[#E76E7D]
-              rounded-b-3xl
-              overflow-hidden
-            "
-              >
-
-                {/* Wish List */}
-                <button
-                  id={`btn_fov_${productInfo?.itemId}`}
-                  className="
-                group/wishlist
-                flex items-center justify-center
-                text-white
-                w-full
-                py-2
-                text-sm
-                transition-all duration-300
-              hover:bg-[#CD4354]
-
-              "
-                  onClick={(e) => {
-                    e.stopPropagation();
-
-                    if (favorite === true) {
-                      deleteFavoriteItems(productInfo?.itemId);
-                    } else {
-                      addFavoriteItems(productInfo?.itemId);
-                    }
-
-                    setSelectedProductId(productInfo?.itemId);
-                  }}
-                >
-                  <IoMdHeart
-                    className="
-                  absolute
-                  w-5 h-5
-                  lg:scale-0
-                  transition-all duration-300
-                  lg:translate-y-10              
-                  lg:group-hover/wishlist:-translate-y-0
-                  lg:group-hover/wishlist:scale-100
-                  xs:scale-100
-                "
-                  />
-
-                  <span
-                    className="
-                transition-all duration-300
-                lg:opacity-100
-                lg:group-hover/wishlist:-translate-y-5
-                lg:group-hover/wishlist:opacity-0
-                xs:opacity-0
-              ">
-                    {t("wishlist")}
-                  </span>
-                </button>
-
-
-                {/* Add To Cart */}
-                {productInfo?.available && (
-                  <button
-                    className="
-                  group/cart
-                  flex items-center justify-center
-                  text-white
-                  w-full
-                  py-2
-                  text-sm
-                  transition-all duration-300
-                hover:bg-[#CD4354]
-
-                "
-
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      addToCart(productInfo?.itemId);
-                      setIsCartOpen(true)
-                    }}
-                  >
-                    {/* Add to Cart */}
-                    <span
-                      className="
-                  transition-all duration-300
-                  lg:opacity-100
-
-                  lg:group-hover/cart:-translate-y-5
-                  lg:group-hover/cart:opacity-0
-                  xs:opacity-0
-                "
-                    >
-                      {t("Cart")}
-                    </span>
-
-                    {/* Cart Icon */}
-                    <MdOutlineAddShoppingCart
-                      className=" absolute
-                      w-5 h-5
-                      lg:scale-0
-                      transition-all duration-300
-                      lg:translate-y-10
-                      lg:group-hover/cart:translate-y-0
-                      lg:group-hover/cart:scale-100
-                      xs:scale-100
-                    "
-                    />
-                  </button>
-                )}
-
-              </div>
-            </div>
-          </div>
         </div>
         {/* </div> */}
 

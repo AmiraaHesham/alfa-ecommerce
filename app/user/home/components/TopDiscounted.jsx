@@ -24,7 +24,7 @@ export default function TopDiscounted({ Products }) {
     priority
     sizes="200vw"
     quality={100}
-    className="object-cover rounded-3xl"
+    className="object-fill rounded-3xl"
   />
       <div className="w-full h-full absolute flex md:flex-row xs:flex-col px-2 justify-center items-center ">
 <div className="w-full h-full flex flex-col justify-center items-center">
@@ -37,7 +37,7 @@ export default function TopDiscounted({ Products }) {
     
 </div>
        
-      <div className=" md:w-4/5 xs:w-full h-full flex justify-center items-center ">
+      <div className=" md:w-3/4 xs:w-full h-full flex justify-center items-center ">
       <Swiper
           key={locale}
           slidesPerView={"auto"}
@@ -53,7 +53,7 @@ export default function TopDiscounted({ Products }) {
             return (
               <SwiperSlide
                 key={product.itemId}
-                className=" md:my-20 xs:my-4 rounded-lg "
+                className=" md:my-20 xs:my-4 !w-[220px] rounded-lg "
               >
                 <div className="rounded-lg  flex justify-center  cursor-pointer">
                   <ProductCard productInfo={product} favorite={false} />

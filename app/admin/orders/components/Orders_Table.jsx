@@ -366,7 +366,7 @@ export default function Orders_Table() {
       </div>
       <div className="hidden lg:block h-[520px] border-t mt-3 w-full  overflow-y-scroll">
 
-      <table className="w-full h-full">
+      <table className="w-full h-auto">
           <thead className="bg-[#f0eff0] text-xs   text-justify sticky top-0  z-10">
             <tr className="  h-12">
               {/* <th className="w-[2%] "></th> */}

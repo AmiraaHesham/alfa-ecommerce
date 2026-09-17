@@ -22,7 +22,7 @@ export default function YouMightLike({categoryId}) {
             },
             "",
           );
-          setProducts(response.data);
+          setProducts(response.data.content);
           console.log(categoryId);
           setLoading(false);
         } catch (error) {
