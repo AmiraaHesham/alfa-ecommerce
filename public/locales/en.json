@@ -189,6 +189,7 @@
   "createdDate": "Created date order",
   "signupWelcomeMessage": "Welcome to Alpha Group, please enter your information to create a new account.",
   "sortBy": "Sort by",
+  "show": "Show",
   "all": "All",
   "priceLowToHigh": "Price: Low to High",
   "priceHighToLow": "Price: High to Low",
@@ -333,7 +334,9 @@
   "option":"option",
   "add-icon":"Add icon",
   "order":"Order",
-  "save_images":"Save images"
+  "save_images":"Save images",
+  "Search_results":"Search results",
+  "relevance":"Relevance"
 
   
 

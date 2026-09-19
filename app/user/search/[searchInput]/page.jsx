@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearshInputContext } from "../../../../context/searshInputContext";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import CategoriesSideManu from "../../components/CategoriseSideMenu";
 import { postRequest } from "../../../../utils/requestsUtils";
 import { useRouter } from "next/navigation";
@@ -11,7 +11,8 @@ import { useLanguage } from "../../../../context/LanguageContext";
 import { BsList } from "react-icons/bs";
 import Select from "react-select";
 import { MdOutlineDownloading } from "react-icons/md";
-
+import { LuColumns2, LuColumns3, LuColumns4 } from "react-icons/lu";
+import Filter from "./components/filter"
 export default function Searchpage({params}) {
     const { searchInput } = params; 
   const [hasMore, setHasMore] = useState(true);
@@ -23,7 +24,24 @@ export default function Searchpage({params}) {
   const [sortBy, setSortBy] = useState();
   const pageNum = useRef(0);
 
+  const showOptions = [9, 12, 18, 24];
+  const [showCount, setShowCount] = useState(12);
+  const [gridColumns, setGridColumns] = useState(3);
+
+  const gridOptions = [
+    { value: 2, icon: LuColumns2 },
+    { value: 3, icon: LuColumns3 },
+    { value: 4, icon: LuColumns4 },
+  ];
+
+  const gridLayoutClasses = {
+    2: "grid grid-cols-2",
+    3: "grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3",
+    4: "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4",
+  };
+
   const sortOptions = [
+    { value: "", label: t("relevance") },
     { value: "true,price", label: t("priceLowToHigh") },
     { value: "false,price", label: t("priceHighToLow") },
   ];
@@ -41,7 +59,7 @@ export default function Searchpage({params}) {
         "/api/public/items/search",
         {
           page: pageNum.current,
-          size: 10,
+          size: showCount,
           searchText: searchInput,
           sortBy: sortBy || null,
           ascending: ascending || true,
@@ -63,18 +81,22 @@ export default function Searchpage({params}) {
     }
   };
   useEffect(() => {
+    pageNum.current = 0;
     getAllProducts(true);
-  }, [searchInput, sortBy, ascending]);
+  }, [searchInput, sortBy, ascending, showCount]);
   return (
-    <div className="mb-20 ">
+    <div className="mb-20 flex w-full">
+      <Filter/>
       <div className="flex flex-col items-start justify-end gap-5 ">
 
         <div
           className={`p-5 w-full`}
         >
-          <div className="flex gap-5 ">
-            <div className="bg-white flex  gap-4 items-center  border rounded-md  px-3 h-10  mb-5">
-              <span>{t("sortBy")}:</span>
+          <span className="text-xl font-bold ">{t("Search_results")}: "{searchInput}" </span>
+          <div className="flex flex-wrap items-center justify-between gap-3 my-5">
+            <div className="flex flex-wrap items-center gap-4">
+            <div className="bg-white flex  gap-4 items-center text-xs z-50 border rounded-full  px-3 h-10">
+              {/* <span>{t("sortBy")}:</span> */}
               <Select
                 isSearchable={false}
                 options={sortOptions}
@@ -88,8 +110,8 @@ export default function Searchpage({params}) {
                     setSortBy(undefined);
                   }
                 }}
-                className="h-full w-[200px]"
-                placeholder={t("select")}
+                className="h-full w-[150px]"
+                placeholder={t("relevance")}
                 styles={{
                   control: (provided) => ({
                     ...provided,
@@ -104,7 +126,7 @@ export default function Searchpage({params}) {
                     ...provided,
                     // backgroundColor: '#b91c1c',
                     color: "white",
-                    fontSize: "18px",
+                    fontSize: "5px",
                     fontWeight: "600",
                   }),
                   input: (base) => ({
@@ -128,10 +150,46 @@ export default function Searchpage({params}) {
                 }}
               />
             </div>
+            <div className="flex items-center gap-1 text-sm">
+              <span className="font-semibold text-gray-900">{t("show")}:</span>
+              {showOptions.map((count, i) => (
+                <Fragment key={count}>
+                  {i > 0 && <span className="text-gray-300">/</span>}
+                  <button
+                    type="button"
+                    onClick={() => setShowCount(count)}
+                    className={`px-1 transition-colors ${
+                      showCount === count
+                        ? "font-bold text-gray-900"
+                        : "font-medium text-gray-400 hover:text-gray-700"
+                    }`}
+                  >
+                    {count}
+                  </button>
+                </Fragment>
+              ))}
+            </div>
+            </div>
+            <div className="flex items-center gap-1">
+              {gridOptions.map((option) => (
+                <button
+                  key={option.value}
+                  type="button"
+                  onClick={() => setGridColumns(option.value)}
+                  className={`p-2 rounded-md transition-colors ${
+                    gridColumns === option.value
+                      ? "text-gray-900 bg-gray-200"
+                      : "text-gray-400 hover:text-gray-700"
+                  }`}
+                >
+                  <option.icon className="w-5 h-5" />
+                </button>
+              ))}
+            </div>
           </div>
 
           {loading ? (
-            <div className="grid xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 xs:grid-cols-1 gap-5 ">
+            <div className={`${gridLayoutClasses[gridColumns]} gap-5 `}>
               {[...Array(8)].map((_, index) => (
                 <div
                   key={`skeleton-${index}`}
@@ -142,7 +200,7 @@ export default function Searchpage({params}) {
           ) : products.length != 0 ? (
             <div>
                 <div
-              className={`grid xl:grid-cols-6 lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 p-2 gap-4`}
+              className={`${gridLayoutClasses[gridColumns]} p-2 gap-4`}
             >
               {products.map((product, index) => (
                 <div key={index}>
@@ -150,7 +208,7 @@ export default function Searchpage({params}) {
                 </div>
               ))}
             </div>
-            <div className={`w-full  justify-center items-center ${products.length < 10 ? "hidden" : "flex"}`}>
+            <div className={`w-full  justify-center items-center ${products.length < showCount ? "hidden" : "flex"}`}>
               {
                   hasMore ? (
                      <button

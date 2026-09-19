@@ -193,6 +193,7 @@
   "addToCart": "إضافة الى سلة التسوق",
   "createdDate": "تاريخ إنشاء الطلب",
   "sortBy": "ترتيب حسب",
+  "show": "عرض",
   "all": "الكل",
   "priceLowToHigh": "من الأقل سعر",
   "priceHighToLow": "من الأعلى سعر",
@@ -334,7 +335,11 @@
   "option":"اختياري",
   "add-icon":"إضافة ايقونة",
   "order":"الطلب",
-  "save_images":"حفظ الصور"
+  "save_images":"حفظ الصور",
+  "Search_results":"نتائج البحث",
+  "relevance":"الاكثر اهمية"
+
+  
 
 
 }
