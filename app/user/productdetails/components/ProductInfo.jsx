@@ -167,7 +167,7 @@ export default function ProductInfo({ product, itemId }) {
                 ) : (
                     ""
                 )}
-                <StarRating rating={10} maxRating={10} />
+                <StarRating rating={product.averageRating} />
 
                 <span className="text-gray-500 text-sm">
                     {locale === "ar" ? product.descriptionAr : product.descriptionEn}

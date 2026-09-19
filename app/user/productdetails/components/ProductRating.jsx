@@ -23,7 +23,7 @@ function renderStars(rating, IconComponent) {
   return stars;
 }
 
-export default function ProductRating({ product, itemId, refreshKey }) {
+export default function ProductRating({ itemId, refreshKey }) {
   const {t} = useLanguage()
   const [ratingData, setRatingData] = useState([
     { stars: 5, count: 0 },

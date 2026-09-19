@@ -112,6 +112,9 @@ export default function Homepage() {
   const [recentWatchedProducts, setRecentWatchedProducts] = useState([]);
   const [ads, setAds] = useState(EMPTY_ADS);
   const [ad1Product, setAd1Product] = useState(null);
+  const [ad3Product, setAd3Product] = useState(null);
+  const [ad4Product, setAd4Product] = useState(null);
+  const [ad5Product, setAd5Product] = useState(null);
   const [loading, setLoading] = useState(true);
 
   // ==============================
@@ -171,8 +174,40 @@ export default function Homepage() {
         } catch (error) {
           console.error("Failed to fetch first ad product:", error);
         }
+      } const ad3ItemId = (adsRes.data || []).find(
+        (ad) => ad.number === 3,
+      )?.itemId;
+      if (ad3ItemId) {
+        try {
+          const ad3ProductRes = await getProductDetails(ad3ItemId);
+          console.log(ad3ProductRes)
+          setAd3Product(ad3ProductRes.data.company || null);
+        } catch (error) {
+          console.error("Failed to fetch first ad product:", error);
+        }
       }
-
+ const ad4ItemId = (adsRes.data || []).find(
+        (ad) => ad.number === 4,
+      )?.itemId;
+      if (ad4ItemId) {
+        try {
+          const ad4ProductRes = await getProductDetails(ad4ItemId);
+          setAd4Product(ad4ProductRes.data.company || null);
+        } catch (error) {
+          console.error("Failed to fetch first ad product:", error);
+        }
+      }
+       const ad5ItemId = (adsRes.data || []).find(
+        (ad) => ad.number === 5,
+      )?.itemId;
+      if (ad5ItemId) {
+        try {
+          const ad5ProductRes = await getProductDetails(ad5ItemId);
+          setAd5Product(ad5ProductRes.data.company || null);
+        } catch (error) {
+          console.error("Failed to fetch first ad product:", error);
+        }
+      }
       const newProductsRes = await getRequest("/api/public/items/recent");
       setNewProducts(newProductsRes.data || []);
 
@@ -189,6 +224,7 @@ export default function Homepage() {
         const recentWatchedProductsRes = await getRequest(
           "/api/users/recentWatchedItems");
         setRecentWatchedProducts(recentWatchedProductsRes.data || []);
+        console.log(recentWatchedProductsRes)
       }
 
     } catch (error) {
@@ -248,11 +284,11 @@ export default function Homepage() {
             {/* Slider */}
             <ImageSlider sliderImages={imagesSliders} />
 
-            <div className="flex flex-col gap-3 w-full">
+            <div className="flex flex-col  gap-3 w-full">
               <div className="w-full h-full">
-                <div className="flex h-full">
+                <div className="flex md:flex-row xs:flex-col justify-center items-center h-full  w-full">
                   {/* Ads */}
-                  <div className="group w-[550px] h-[400px] rounded-3xl cursor-pointer text-[#EAEBB8] bg-[#263F40] flex flex-col justify-between items-center relative overflow-hidden">
+                  <div className="group md:w-[550px] xs:w-full h-[400px] rounded-3xl  cursor-pointer text-[#EAEBB8] bg-[#263F40] flex flex-col justify-between items-center relative overflow-hidden">
                     <div className="w-full text-center p-5">
                       <span>Special Offer</span>
                       {ad1Product && (
@@ -421,11 +457,16 @@ export default function Homepage() {
             ) : (
               <div className="w-full h-full" />
             )}
-            <h1 className=" text-center mt-10">{ads.ad3.title} </h1>
-            <button className="text-white rounded-full bg-[#CD4354] hover:bg-[#c13b4a]  py-3 px-5 mt-2 text-sm font-semibold ">{t("shopNow")} </button>
+             <div className="flex flex-col justify-around items-center w-full">
+            <h1 className="text-3xl font-bold">{ad3Product} </h1>
 
+            <h1 className=" text-center my-5">{ads.ad3.title} </h1>
+            <button className="text-white rounded-full bg-[#CD4354] hover:bg-[#c13b4a] w-[120px] py-3 px-5 mt-2 text-sm font-semibold ">{t("shopNow")} </button>
+
+            </div>
+           
           </div>
-          <div className="group cursor-pointer w-full flex flex-col justify-center items-center h-[500px] bg-black rounded-3xl  overflow-hidden p-5">
+          <div className="group cursor-pointer text-white w-full flex flex-col justify-center items-center h-[500px] bg-black rounded-3xl  overflow-hidden p-5">
             {ads.ad4.imageUrl ? (
               <div className="w-full h-[300px] relative group-hover:scale-105 duration-500 transition-all">
                 <Image
@@ -440,8 +481,13 @@ export default function Homepage() {
             ) : (
               <div className="w-full h-full" />
             )}
-            <h1 className="text-white text-center mt-10">{ads.ad4.title} </h1>
-            <button className="text-white rounded-full bg-[#CD4354] hover:bg-[#c13b4a]  py-3 px-5 mt-2 text-sm font-semibold ">{t("shopNow")} </button>
+             <div className="flex flex-col justify-around items-center w-full">
+            <h1 className="text-3xl font-bold">{ad4Product} </h1>
+
+            <h1 className=" text-center my-5">{ads.ad4.title} </h1>
+            <button className="text-white rounded-full bg-[#CD4354] hover:bg-[#c13b4a] w-[120px] py-3 px-5 mt-2 text-sm font-semibold ">{t("shopNow")} </button>
+
+            </div>
           </div>
           <div className="group cursor-pointer w-full flex flex-col justify-center items-center h-[500px] bg-white rounded-3xl  overflow-hidden p-5">
             {ads.ad5.imageUrl ? (
@@ -458,9 +504,14 @@ export default function Homepage() {
             ) : (
               <div className="w-full h-full" />
             )}
-            <h1 className=" text-center mt-10">{ads.ad5.title} </h1>
-            <button className="text-white rounded-full bg-[#CD4354] hover:bg-[#c13b4a]  py-3 px-5 mt-2 text-sm font-semibold ">{t("shopNow")} </button>
+            <div className="flex flex-col justify-around items-center w-full">
+            <h1 className="text-3xl font-bold">{ad5Product} </h1>
 
+            <h1 className=" text-center my-5">{ads.ad5.title} </h1>
+            <button className="text-white rounded-full bg-[#CD4354] hover:bg-[#c13b4a] w-[120px] py-3 px-5 mt-2 text-sm font-semibold ">{t("shopNow")} </button>
+
+            </div>
+           
           </div>
         </div>
       </section>

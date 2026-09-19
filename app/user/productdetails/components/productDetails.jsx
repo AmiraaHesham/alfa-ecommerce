@@ -46,7 +46,9 @@ export default function ProductDetails({ itemId }) {
     mainImagefile: "",
     available: null,
     images: [],
-    
+    averageRating: 0,
+    ratingCount: 0
+
   });
 
 
@@ -67,11 +69,14 @@ export default function ProductDetails({ itemId }) {
         descriptionEn: resData.descriptionEn,
         images: resData.images,
         available: resData.available,
+          ratingCount: resData.ratingCount,
+          averageRating: resData.averageRating,
         category: {
           ...prev.category,
           id: resData.itemCategory.itemCategoryId,
           nameAr: resData.itemCategory.nameAr,
           nameEn: resData.itemCategory.nameEn,
+        
         },
       }));
       setLoading(false);
@@ -84,9 +89,6 @@ export default function ProductDetails({ itemId }) {
       setLoading(false);
     }
   };
-
-
-
 
   const fetchReviews = useCallback(async () => {
     setReviewsLoading(true);
@@ -101,9 +103,6 @@ export default function ProductDetails({ itemId }) {
       setReviewsLoading(false);
     }
   }, [itemId]);
-
-
-
 
   useEffect(() => {
     productDetails();
@@ -140,7 +139,7 @@ export default function ProductDetails({ itemId }) {
           <Link href={"user/home"}>Home </Link> /<Link href={"/user/products/category/" +
             product.category.nameEn +
             "/" +
-            product.category.id}> {locale == "ar" ? product.category.nameAr : product.category.nameEn} </Link> / <span className="font-semibold text-black">  {locale =="ar"? product.nameAr : product.nameEn}</span>
+            product.category.id}> {locale == "ar" ? product.category.nameAr : product.category.nameEn} </Link> / <span className="font-semibold text-black">  {locale == "ar" ? product.nameAr : product.nameEn}</span>
         </span>
       </div>
       <div className="grid xl:grid-cols-5 md:grid-cols-4 xs:grid-cols-1 w-full gap-1  h-full bg-white py-5 px-3 ">
@@ -218,37 +217,37 @@ export default function ProductDetails({ itemId }) {
             }}
           />
           <div className="w-full px-5 md:px-10 pb-5">
-        <div className="flex items-center justify-between gap-2">
-          <span className="w-2/3">
-            <h1 className="flex items-center font-semibold gap-2 xs:text-base md:text-lg mb-1">
-              {t("reviews_list")}
-            </h1>
-            <hr className="w-24 h-1 border-0 rounded-full bg-gradient-to-l from-red-200 via-red-400 to-red-200" />
-          </span>
+            <div className="flex items-center justify-between gap-2">
+              <span className="w-2/3">
+                <h1 className="flex items-center font-semibold gap-2 xs:text-base md:text-lg mb-1">
+                  {t("reviews_list")}
+                </h1>
+                <hr className="w-24 h-1 border-0 rounded-full bg-gradient-to-l from-red-200 via-red-400 to-red-200" />
+              </span>
+            </div>
+
+            {reviewsLoading ? (
+              <div className="mt-6 flex flex-col gap-4">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="bg-[#f6f5f8] rounded-3xl h-32 animate-pulse" />
+                ))}
+              </div>
+            ) : reviewsError ? (
+              <p className="mt-6 text-sm text-gray-500">{t("reviews_error")}</p>
+            ) : reviews.length === 0 ? (
+              <p className="mt-6 text-sm text-gray-500">{t("no_reviews")}</p>
+            ) : (
+              <div className="mt-6 flex flex-col gap-4">
+                {reviews.map((review) => (
+                  <CustomerReviewCard key={review.itemRatingId ?? review.rating + review.comment} review={review} />
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
-        {reviewsLoading ? (
-          <div className="mt-6 flex flex-col gap-4">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="bg-[#f6f5f8] rounded-3xl h-32 animate-pulse" />
-            ))}
-          </div>
-        ) : reviewsError ? (
-          <p className="mt-6 text-sm text-gray-500">{t("reviews_error")}</p>
-        ) : reviews.length === 0 ? (
-          <p className="mt-6 text-sm text-gray-500">{t("no_reviews")}</p>
-        ) : (
-          <div className="mt-6 flex flex-col gap-4">
-            {reviews.map((review) => (
-              <CustomerReviewCard key={review.itemRatingId ?? review.rating + review.comment} review={review} />
-            ))}
-          </div>
-        )}
       </div>
-        </div>
-         
-      </div>
-     
+
       <YouMightLike categoryId={product.category.id} />
     </div>
   );

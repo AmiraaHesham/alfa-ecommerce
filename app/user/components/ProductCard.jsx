@@ -292,7 +292,7 @@ export default function ProductCard({ productInfo, favorite }) {
           text-white
           w-full
           py-2
-          text-sm
+          text-xs
           transition-all duration-300
           hover:bg-[#CD4354]
         "
@@ -343,7 +343,7 @@ export default function ProductCard({ productInfo, favorite }) {
             text-white
             w-full
             py-2
-            text-sm
+            text-xs
             transition-all duration-300
             hover:bg-[#CD4354]
           "
@@ -422,7 +422,7 @@ export default function ProductCard({ productInfo, favorite }) {
         </div>
 
         <div>
-          <StarRating rating={10} maxRating={10} />
+          <StarRating rating={Number(productInfo?.averageRating ) || 0} />
         </div>
 
         <div className="w-full">

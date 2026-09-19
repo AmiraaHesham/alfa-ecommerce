@@ -38,7 +38,7 @@ export default function RecentlyViewed({ Products }) {
                 <div>
                   <span className="text-xs font-semibold cursor-pointer">{locale === "ar" ? product.item.nameAr : product.item.nameEn}</span>
                   <div>
-                    <StarRating rating={10} maxRating={10} />
+                    <StarRating rating={product.averageRating || 0} />
                   </div>
                   <div className="flex  justify-start gap-2 items-center ">
                     {product.item.oldPrice ? (

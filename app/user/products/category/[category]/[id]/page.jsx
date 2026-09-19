@@ -50,7 +50,7 @@ export default function ProductsByCategory({ params }) {
         setHasMore(false);
       }
       else{
-         const resProducts = response.data || [];
+         const resProducts = response.data.content || [];
       if (pageNum.current === 0) {
         setProducts(resProducts);
       } else setProducts((prev) => [...prev, ...resProducts]);

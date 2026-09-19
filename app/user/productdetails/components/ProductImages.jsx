@@ -17,7 +17,7 @@ export default function ProductImages({ product }) {
   return (
     <div className="w-full h-[450px] md:col-span-2 col-span-3 relative flex xs:flex-col md:flex-row gap-2">
       <div className="flex md:flex-col xs:flex-row  items-center gap-4 mt-5 xs:order-2 md:order-1 ">
-         {/* <div className={`relative   w-[80px] h-[80px] rounded-xl hover:opacity-50  cursor-pointer select-none `}>
+        {/* <div className={`relative   w-[80px] h-[80px] rounded-xl hover:opacity-50  cursor-pointer select-none `}>
           <Image
             src={urlImage + getThumbnailUrl(product.images[0])}
             alt="mainImage"
@@ -31,26 +31,26 @@ export default function ProductImages({ product }) {
             }}
           />
         </div> */}
-       
-{product.images.map((img)=>{
-  return(
-    <div className="relative   w-[80px] h-[80px]  rounded-xl hover:opacity-50 cursor-pointer select-none ">
-            <Image
-              src={urlImage + getThumbnailUrl(img.imageUrl)}
-              alt="mainImage"
-              fill
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              priority
-              className="object-fill  rounded-xl"
-              onClick={() => {
-                swiperRef.current?.slideTo(1);
-              }}
-            />
-          </div>
-  )
-})}
-</div>
-        {/* {product.img3 ? (
+
+        {product.images.map((img, index) => {
+          return (
+            <div className="relative   w-[80px] h-[80px]  rounded-xl hover:opacity-50 cursor-pointer select-none ">
+              <Image
+                src={urlImage + getThumbnailUrl(img.imageUrl)}
+                alt="mainImage"
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                priority
+                className="object-fill  rounded-xl"
+                onClick={() => {
+                  swiperRef.current?.slideTo(index);
+                }}
+              />
+            </div>
+          )
+        })}
+      </div>
+      {/* {product.img3 ? (
           
         ) : (
           ""
@@ -89,22 +89,22 @@ export default function ProductImages({ product }) {
       >
 
         {/* <div className="w-full h-full relative  flex justify-center  rounded-3xl    "> */}
-|{product.images.map((img)=>{
-  return(
-    <SwiperSlide>
-          <Image
-            src={urlImage + img.imageUrl}
-            alt="mainImage"
-            fill
-            priority
-sizes="100vw" 
-            className=" rounded-3xl"
-          />
-        </SwiperSlide>
-  )
-})}
-        
-       
+        |{product.images.map((img) => {
+          return (
+            <SwiperSlide>
+              <Image
+                src={urlImage + img.imageUrl}
+                alt="mainImage"
+                fill
+                priority
+                sizes="100vw"
+                className=" rounded-3xl"
+              />
+            </SwiperSlide>
+          )
+        })}
+
+
 
 
       </Swiper>

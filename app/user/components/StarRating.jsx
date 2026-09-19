@@ -1,7 +1,7 @@
 import React from 'react'
 import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
 
-const StarRating = ({ rating, maxRating = (10) }) => {
+const StarRating = ({ rating, maxRating = (5) }) => {
 
     const stars = (rating / maxRating) * 5;
 

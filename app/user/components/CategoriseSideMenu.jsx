@@ -21,7 +21,7 @@ export default function CategoriesSideMenu({ category }) {
       setLoading(true);
 
       const res = await getCategories();
-      setCategoriesList(res.data);
+      setCategoriesList(res.data.content);
     } catch (error) {
       console.log(error);
     } finally {

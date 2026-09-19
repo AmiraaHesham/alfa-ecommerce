@@ -1,12 +1,9 @@
 "use client";
 import Image from "next/image";
-import { MdBlock, MdCancel, MdEdit } from "react-icons/md";
+import { MdBlock, MdCancel } from "react-icons/md";
 import {
-  IoArrowBack,
-  IoArrowForward,
   IoCheckmarkCircleOutline,
   IoCloudUploadSharp,
-  IoDocumentTextOutline,
 } from "react-icons/io5";
 import React, { useEffect, useRef, useState } from "react";
 import { useLanguage } from "../../../../context/LanguageContext.js";
@@ -34,9 +31,7 @@ export default function FormProduct({ isFormOpen, setIsFormOpen, isEditMode }) {
   const [loading, setLoading] = useState(false);
   const [showImages, setShowImages] = useState(false);
   const [showProductData, setShowProductData] = useState(true);
-  const [editSection, setEditSection] = useState(null);
   const { t } = useLanguage();
-  const isAr = localStorage.getItem("lang") === "ar";
   const isBase64 = (src) => {
     return typeof src === "string" && src.startsWith("data:");
   };
@@ -201,7 +196,6 @@ export default function FormProduct({ isFormOpen, setIsFormOpen, isEditMode }) {
       setSelectedProductId(respose.itemId)
       triggerRefresh();
       toast.success(t("data_saved_successfully"));
-      setShowProductData(false);
       setShowImages(true)
     } catch (err) {
     } finally {
@@ -232,22 +226,6 @@ export default function FormProduct({ isFormOpen, setIsFormOpen, isEditMode }) {
 await deleteRequest(`/api/admin/items/${selectedProductId}/images/${imageId}`)
   }
 
-  // اختيار قسم التعديل في وضع التحديث
-  const chooseEditImages = () => {
-    setEditSection("images");
-    setShowProductData(false);
-    setShowImages(true);
-  };
-  const chooseEditData = () => {
-    setEditSection("data");
-    setShowProductData(true);
-    setShowImages(false);
-  };
-  const goBackToChoice = () => {
-    setEditSection(null);
-    setShowProductData(false);
-    setShowImages(false);
-  };
   // جلب بيانات المنتج للتعديل
   const productData = async () => {
     try {
@@ -293,14 +271,8 @@ await deleteRequest(`/api/admin/items/${selectedProductId}/images/${imageId}`)
         setEnabledActive(resData.active);
         setEnabledAvailable(resData.available);
 
-        if (isEditMode) {
-          setEditSection(null);
-          setShowProductData(false);
-          setShowImages(false);
-        } else {
-          setShowProductData(false);
-          setShowImages(true);
-        }
+        setShowProductData(true);
+        setShowImages(true);
       } else {
         resetFormState();
       }
@@ -379,7 +351,6 @@ await deleteRequest(`/api/admin/items/${selectedProductId}/images/${imageId}`)
             onClick={() => {
               setIsFormOpen(false);
               setSelectedProductId(null);
-              setEditSection(null);
               resetFormState()
             }}
             type="button"
@@ -389,62 +360,11 @@ await deleteRequest(`/api/admin/items/${selectedProductId}/images/${imageId}`)
         </div>
         <hr className="h-1"></hr>
 
-        {isEditMode && editSection === null && (
-          <div className="flex flex-col items-center justify-center pt-14">
-            <div className="animate-fade-in-up w-full max-w-md rounded-2xl border border-gray-200 bg-white p-6 shadow-lg sm:p-8">
-              <div className="mb-8 text-center">
-                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-red-50">
-                  <MdEdit className="text-2xl text-red-600" />
-                </div>
-                <h2 className="text-xl font-bold text-gray-900">
-                  {t("edit_product")}
-                </h2>
-                <p className="mt-2 text-sm text-gray-500">
-                  {t("choose_edit_section")}
-                </p>
-              </div>
-              <div className="flex flex-col gap-4 sm:flex-row">
-                <button
-                  type="button"
-                  onClick={chooseEditImages}
-                  className="flex flex-1 flex-col items-center gap-3 rounded-2xl border-2 border-dashed border-red-300 bg-white px-4 py-8 transition-colors duration-300 hover:border-red-500 hover:bg-red-50"
-                >
-                  <IoCloudUploadSharp className="text-3xl text-red-500" />
-                  <span className="text-sm font-semibold text-gray-800">
-                    {t("edit_images")}
-                  </span>
-                </button>
-                <button
-                  type="button"
-                  onClick={chooseEditData}
-                  className="flex flex-1 flex-col items-center gap-3 rounded-2xl border-2 border-gray-200 bg-white px-4 py-8 transition-colors duration-300 hover:border-red-500 hover:bg-red-100"
-                >
-                  <IoDocumentTextOutline className="text-3xl text-gray-500" />
-                  <span className="text-sm font-semibold text-gray-800">
-                    {t("edit_data")}
-                  </span>
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
         {/* <hr className="my-5" /> */}
+        <div className="flex flex-col lg:flex-row w-full items-start gap-0 lg:gap-6">
         {showProductData && (
-          <div>
-            {isEditMode && (
-              <div className="flex justify-end pt-2">
-                <button
-                  type="button"
-                  onClick={goBackToChoice}
-                  className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium text-gray-500 transition-colors hover:bg-gray-100 hover:text-red-600"
-                >
-                  {isAr ? <IoArrowForward /> : <IoArrowBack />}
-                  {t("back")}
-                </button>
-              </div>
-            )}
-        <div className=" grid grid-cols-4 gap-3 mt-3">
+          <div className={showImages ? "w-full lg:flex-1" : "w-full"}>
+        <div className=" grid grid-cols-3 gap-3 mt-3">
           {/* <div className=" w-full  md:flex-row  xs:flex-col gap-3"> */}
           <div className="flex-1">
             <label className="text-xs text-gray-600 font-semibold block mb-1">
@@ -818,34 +738,22 @@ await deleteRequest(`/api/admin/items/${selectedProductId}/images/${imageId}`)
         </div>
         </div>
           )}
-        <div>
-        
-          {showImages && (
-            <div className="animate-fade-in-up p-4 sm:p-5">
-              <div className="mb-4 flex items-center justify-between">
+        {showImages && (
+          <div className={`${showProductData ? "w-full lg:flex-1" : "w-full"} animate-fade-in-up p-4 sm:p-5`}>
+              <div className="mb-4 w-full flex items-center justify-between">
                 <h2 className="text-sm font-semibold text-gray-700">
                   {t("item_images")}
                 </h2>
-                {isEditMode && (
-                  <button
-                    type="button"
-                    onClick={goBackToChoice}
-                    className="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium text-gray-500 transition-colors hover:bg-gray-100 hover:text-red-600"
-                  >
-                    {isAr ? <IoArrowForward /> : <IoArrowBack />}
-                    {t("back")}
-                  </button>
-                )}
               </div>
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 md:gap-4 lg:grid-cols-6">
+                <div className="grid grid-cols-3 gap-5">
                   <div className="group relative h-[150px] w-full cursor-pointer rounded-2xl border-2 border-dashed border-red-300 bg-white transition-colors duration-300 hover:border-red-500 hover:bg-red-50 sm:h-[170px]">
                     <label
                       htmlFor="productImg_fileInput"
-                      className="absolute inset-0 flex flex-col items-center justify-center gap-2 cursor-pointer"
+                      className="absolute inset-0 flex flex-col items-center  justify-center gap-2 cursor-pointer"
                     >
                       <span
                         id="label-uplod"
-                        className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-red-500 shadow-sm transition-transform duration-300 group-hover:scale-110"
+                        className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-red-500 shadow-sm transition-transform duration-300 group-hover:scale-110"
                       >
                         <IoCloudUploadSharp className="text-xl" />
                       </span>
@@ -908,8 +816,6 @@ await deleteRequest(`/api/admin/items/${selectedProductId}/images/${imageId}`)
                 </button>
               </div>
             </div>
-
-
           )}
         </div>
 

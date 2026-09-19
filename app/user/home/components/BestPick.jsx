@@ -13,12 +13,12 @@ export default function BestPick({ Products }) {
     return (
         <div className="w-full  bg-white rounded-2xl p-5">
             <h1 className="font-semibold text-lg sticky z-10 py-2">{t("Best_pick_of_the_week")}</h1>
-            <div className=" h-[100px] flex justify-between items-center p-1  gap-5 mt-2">
+            <div className=" h-auto grid md:grid-cols-4 xs:grid-cols-2 p-1  gap-5 mt-2">
 
                 {Products?.map((product, index) => {
                     return (
 
-                        <div key={index} className={`${index < 4 ? "flex" : "hidden"}  gap-2 items-center  `}
+                        <div key={index} className={`${index < 4 ? "flex" : "hidden"}   gap-2 items-center  `}
                             onClick={() => {
                                 setSelectedProductId(product.itemId);
                                 navigate.push(`/user/productdetails/${product.nameEn}/${product.itemId}`);
@@ -38,7 +38,7 @@ export default function BestPick({ Products }) {
                             <div className="flex flex-col gap-2">
                                 <span className="text-sm font-bold cursor-pointer">{locale === "ar" ? product.nameAr : product.nameEn}</span>
 
-                                <StarRating maxRating={10} rating={10} />
+                                <StarRating  rating={product.averageRating || 0} />
                                 <div className="flex flex-col  justify-start  items-start">
                                     {product.oldPrice ? (
                                         <div className="flex gap-2">
