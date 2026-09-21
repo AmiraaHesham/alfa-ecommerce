@@ -53,7 +53,7 @@ export default function TopDiscounted({ Products }) {
             return (
               <SwiperSlide
                 key={product.itemId}
-                className=" md:my-20 xs:my-4 !w-[220px] rounded-lg "
+                className=" md:my-20 xs:my-4 !w-[250px] rounded-lg select-none"
               >
                 <div className="rounded-lg  flex justify-center  cursor-pointer">
                   <ProductCard productInfo={product} favorite={false} />

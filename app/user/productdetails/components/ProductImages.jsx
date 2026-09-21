@@ -34,7 +34,7 @@ export default function ProductImages({ product }) {
 
         {product.images.map((img, index) => {
           return (
-            <div className="relative   w-[80px] h-[80px]  rounded-xl hover:opacity-50 cursor-pointer select-none ">
+            <div key={index} className="relative   w-[80px] h-[80px]  rounded-xl hover:opacity-50 cursor-pointer select-none ">
               <Image
                 src={urlImage + getThumbnailUrl(img.imageUrl)}
                 alt="mainImage"
@@ -91,7 +91,7 @@ export default function ProductImages({ product }) {
         {/* <div className="w-full h-full relative  flex justify-center  rounded-3xl    "> */}
         |{product.images.map((img) => {
           return (
-            <SwiperSlide>
+            <SwiperSlide key={img.imageUrl}>
               <Image
                 src={urlImage + img.imageUrl}
                 alt="mainImage"

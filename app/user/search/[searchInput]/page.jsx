@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearshInputContext } from "../../../../context/searshInputContext";
-import { Fragment, useCallback, useEffect, useRef, useState } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import CategoriesSideManu from "../../components/CategoriseSideMenu";
 import { postRequest } from "../../../../utils/requestsUtils";
 import { useRouter } from "next/navigation";
@@ -10,19 +10,27 @@ import ProductCard from "../../components/ProductCard";
 import { useLanguage } from "../../../../context/LanguageContext";
 import { BsList } from "react-icons/bs";
 import Select from "react-select";
-import { MdOutlineDownloading } from "react-icons/md";
+import { MdFilterAlt } from "react-icons/md";
 import { LuColumns2, LuColumns3, LuColumns4 } from "react-icons/lu";
 import Filter from "./components/filter"
+import Pagination from "./components/Pagination"
 export default function Searchpage({params}) {
-    const { searchInput } = params; 
-  const [hasMore, setHasMore] = useState(true);
+    const { searchInput } = params;
 
   const { t } = useLanguage();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
+  const [appliedFilters, setAppliedFilters] = useState(null);
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const [ascending, setAscending] = useState();
   const [sortBy, setSortBy] = useState();
-  const pageNum = useRef(0);
+  const requestSeq = useRef(0);
+  const lastQueryKey = useRef(null);
+  const lastFetchedKey = useRef("");
+  const resultsRef = useRef(null);
 
   const showOptions = [9, 12, 18, 24];
   const [showCount, setShowCount] = useState(12);
@@ -50,15 +58,40 @@ export default function Searchpage({params}) {
     ? sortOptions.find((option) => option.value === `${ascending},${sortBy}`)
     : null;
 
-  // const { selectedSearchInput } = useSearshInputContext();
-  const getAllProducts = async (loading) => {
-    try {
-      setLoading(loading);
+  const normalizePage = (payload, fallbackSize) => {
+    const data = payload?.data ?? payload ?? {};
+    const content = Array.isArray(data)
+      ? data
+      : Array.isArray(data?.content)
+        ? data.content
+        : Array.isArray(data?.items)
+          ? data.items
+          : [];
+    const size = Number(data?.size ?? fallbackSize) || fallbackSize;
+    const totalElements =
+      Number(
+        data?.totalElements ??
+          data?.totalItems ??
+          data?.totalCount ??
+          data?.total ??
+          0,
+      ) || 0;
+    const totalPages =
+      Number(data?.totalPages ?? data?.totalPage ?? 0) ||
+      (content.length > 0 ? Math.max(1, Math.ceil(totalElements / size)) : 0);
+    const number =
+      Number(data?.number ?? data?.pageNumber ?? data?.currentPage ?? 0) || 0;
+    return { content, number, size, totalElements, totalPages };
+  };
 
+  const fetchPage = async (page) => {
+    const seq = ++requestSeq.current;
+    try {
+      setLoading(true);
       const response = await postRequest(
         "/api/public/items/search",
         {
-          page: pageNum.current,
+          page,
           size: showCount,
           searchText: searchInput,
           sortBy: sortBy || null,
@@ -66,34 +99,107 @@ export default function Searchpage({params}) {
         },
         "",
       );
-    if(response.data.length === 0){
-        setHasMore(false);
-      }
-      else{
-         const resProducts = response.data.content || [];
-      if (pageNum.current === 0) {
-        setProducts(resProducts);
-      } else setProducts((prev) => [...prev, ...resProducts]);
-      }
+      if (seq !== requestSeq.current) return; // ignore stale responses
+      const normalized = normalizePage(response, showCount);
+      setProducts(normalized.content);
+      setCurrentPage(normalized.number);
+      setTotalPages(normalized.totalPages);
+      setTotalElements(normalized.totalElements);
     } catch (error) {
+      // errors are shown by the shared toast system in postRequest
     } finally {
-      setLoading(false);
+      if (seq === requestSeq.current) setLoading(false);
     }
   };
+
   useEffect(() => {
-    pageNum.current = 0;
-    getAllProducts(true);
-  }, [searchInput, sortBy, ascending, showCount]);
+    const queryKey = `${searchInput}|${sortBy}|${ascending}|${showCount}`;
+    const page = lastQueryKey.current !== queryKey ? 0 : currentPage;
+    if (lastQueryKey.current !== queryKey) {
+      lastQueryKey.current = queryKey;
+      setCurrentPage(0);
+    }
+    const fetchKey = `${queryKey}|${page}`;
+    if (lastFetchedKey.current === fetchKey) return;
+    lastFetchedKey.current = fetchKey;
+    fetchPage(page);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage, searchInput, sortBy, ascending, showCount]);
+
+  useEffect(() => {
+    setAppliedFilters(null);
+  }, [searchInput]);
+
+  const getProductBrand = (product) => {
+    const brand =
+      product?.brand ||
+      product?.brandName ||
+      product?.itemBrand ||
+      product?.manufacturer ||
+      null;
+    if (!brand) return null;
+    if (typeof brand === "string") return brand;
+    return (
+      brand?.nameEn ||
+      brand?.nameAr ||
+      null
+    );
+  };
+
+  const filteredProducts = useMemo(() => {
+    if (!appliedFilters) return products;
+    return products.filter((product) => {
+      const withinPrice =
+        product?.price >= appliedFilters.min &&
+        product?.price <= appliedFilters.max;
+      const brand = getProductBrand(product);
+      const withinBrand = appliedFilters.brand
+        ? brand &&
+          brand.toLowerCase().includes(appliedFilters.brand.toLowerCase())
+        : true;
+      const withinRating = appliedFilters.rating
+        ? Number(product?.averageRating) >= appliedFilters.rating
+        : true;
+      return withinPrice && withinBrand && withinRating;
+    });
+  }, [products, appliedFilters]);
+
+  const handlePageChange = (page) => {
+    if (page === currentPage || page < 0 || page >= totalPages) return;
+    setCurrentPage(page);
+    resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  const handleApplyFilters = (filters) => {
+    setAppliedFilters(filters);
+    if (currentPage !== 0) setCurrentPage(0);
+  };
+
   return (
-    <div className="mb-20 flex w-full">
-      <Filter/>
-      <div className="flex flex-col items-start justify-end gap-5 ">
+    <div className="mb-20 flex flex-col md:flex-row w-full min-h-screen gap-5 p-5 md:p-0">
+      <Filter
+        products={products}
+        appliedFilters={appliedFilters}
+        onFilter={handleApplyFilters}
+        drawerOpen={filtersOpen}
+        onDrawerClose={() => setFiltersOpen(false)}
+      />
+      <div className="flex flex-col items-start justify-end gap-5 h-full w-full">
 
         <div
-          className={`p-5 w-full`}
+          ref={resultsRef}
+          className={`p-5 w-full scroll-mt-4`}
         >
           <span className="text-xl font-bold ">{t("Search_results")}: "{searchInput}" </span>
-          <div className="flex flex-wrap items-center justify-between gap-3 my-5">
+          <div className="flex flex-wrap items-center justify-start gap-3 my-5">
+            <button
+              type="button"
+              onClick={() => setFiltersOpen(true)}
+              className="md:hidden bg-white flex items-center gap-2 text-xs font-semibold text-gray-700 border rounded-full px-4 h-10 hover:border-red-400 hover:text-red-600 active:scale-95 transition-all"
+            >
+              <MdFilterAlt className="w-4 h-4 text-red-600" />
+              {t("filters")}
+            </button>
             <div className="flex flex-wrap items-center gap-4">
             <div className="bg-white flex  gap-4 items-center text-xs z-50 border rounded-full  px-3 h-10">
               {/* <span>{t("sortBy")}:</span> */}
@@ -127,7 +233,7 @@ export default function Searchpage({params}) {
                     // backgroundColor: '#b91c1c',
                     color: "white",
                     fontSize: "5px",
-                    fontWeight: "600",
+                    fontWeight: "500",
                   }),
                   input: (base) => ({
                     ...base,
@@ -136,21 +242,21 @@ export default function Searchpage({params}) {
                   option: (base, state) => ({
                     ...base,
                     backgroundColor: state.isSelected
-                      ? "#dc2626"
-                      : state.isFocused
-                        ? "#fee2e2"
+                      ? "#1967d2"
+                     
                         : "#ffffff",
                     color: state.isSelected ? "#ffffff" : "#374151",
                     cursor: "pointer",
-                    padding: "10px",
+                    // padding: "px",
                     "&:hover": {
-                      backgroundColor: state.isSelected ? "#dc2626" : "#fee2e2",
+                      backgroundColor: state.isSelected ? "#ffffff" : "#1967d2",
+                      color: state.isSelected ? "#1967d2" : "#ffffff"
                     },
                   }),
                 }}
               />
             </div>
-            <div className="flex items-center gap-1 text-sm">
+            <div className="md:flex xs:hidden items-center gap-1 text-sm">
               <span className="font-semibold text-gray-900">{t("show")}:</span>
               {showOptions.map((count, i) => (
                 <Fragment key={count}>
@@ -170,7 +276,7 @@ export default function Searchpage({params}) {
               ))}
             </div>
             </div>
-            <div className="flex items-center gap-1">
+            <div className="md:flex xs:hidden items-center gap-1">
               {gridOptions.map((option) => (
                 <button
                   key={option.value}
@@ -197,35 +303,26 @@ export default function Searchpage({params}) {
                 ></div>
               ))}
             </div>
-          ) : products.length != 0 ? (
+          ) : filteredProducts.length != 0 ? (
             <div>
                 <div
               className={`${gridLayoutClasses[gridColumns]} p-2 gap-4`}
             >
-              {products.map((product, index) => (
-                <div key={index}>
+              {filteredProducts.map((product, index) => (
+                <div key={index} className="">
                   <ProductCard productInfo={product} />
                 </div>
               ))}
             </div>
-            <div className={`w-full  justify-center items-center ${products.length < showCount ? "hidden" : "flex"}`}>
-              {
-                  hasMore ? (
-                     <button
-                  className=" text-red-600 px-5 py-1 shadow-md  my-3 rounded-lg"
-                  onClick={() => {
-                    pageNum.current += 1;
-                    getAllProducts(false);
-                  }}
-                >
-                  <MdOutlineDownloading className="text-4xl" />
-                </button>
-                  ):(
-                    <span className="text-gray-500 my-3">{t("no_more_products")}</span>
-                  )
-                }
-            </div>
-            
+
+            {totalPages > 1 && (
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
+            )}
+
             </div>
           
           ) : (

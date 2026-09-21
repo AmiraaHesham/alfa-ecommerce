@@ -162,10 +162,10 @@ export default function ProductCard({ productInfo, favorite }) {
   return (
     <div
       id={`div_${productInfo?.itemId}`}
-      className="h-[360px] group relative  bg-white  py-2 w-full rounded-3xl cursor-pointer  "
+      className="h-[400px] group relative  bg-white  py-2 w-full rounded-3xl cursor-pointer  "
     >
       <div className="flex flex-col justify-around  gap-3  items-center h-full">
-        <div className=" relative h-[200px] w-full p-2  ">
+        <div className=" relative h-2/3 w-full p-1  ">
           <div className="relative w-full h-full">
 
             <div className="absolute  flex justify-center items-center gap-2 z-20 px-3 "

@@ -336,7 +336,17 @@
   "order":"Order",
   "save_images":"Save images",
   "Search_results":"Search results",
-  "relevance":"Relevance"
+  "relevance":"Relevance",
+  "filters": "Filters",
+  "apply_filter": "Apply Filter",
+  "brand": "Brand",
+  "search_brand": "Search brand...",
+  "clear": "Clear",
+  "rating": "Rating",
+  "and_up": "& up",
+  "all_ratings": "All ratings",
+  "previous": "Previous",
+  "next": "Next"
 
   
 

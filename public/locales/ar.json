@@ -337,7 +337,17 @@
   "order":"الطلب",
   "save_images":"حفظ الصور",
   "Search_results":"نتائج البحث",
-  "relevance":"الاكثر اهمية"
+  "relevance":"الاكثر اهمية",
+  "filters": "الفلاتر",
+  "apply_filter": "تطبيق التصفية",
+  "brand": "العلامة التجارية",
+  "search_brand": "ابحث عن العلامة التجارية...",
+  "clear": "مسح",
+  "rating": "التقييم",
+  "and_up": "فما فوق",
+  "all_ratings": "جميع التقييمات",
+  "previous": "السابق",
+  "next": "التالي"
 
   
 

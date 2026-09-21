@@ -110,7 +110,10 @@ export default function Header() {
     const lastName =
       typeof window !== "undefined" ? localStorage.getItem("lastName") : "";
     setUsername(firstName + " " + lastName);
-
+    if(window.location.pathname.includes("search")){
+const lastPort = window.location.pathname.split("/").filter(Boolean).pop();
+setSearchInput(lastPort)
+    }
     // const userInfo = async()=>{
     //  const res = await getUserInfo()
     //  console.lo(res)

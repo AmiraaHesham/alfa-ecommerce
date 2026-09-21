@@ -211,20 +211,20 @@ export default function Homepage() {
       const newProductsRes = await getRequest("/api/public/items/recent");
       setNewProducts(newProductsRes.data || []);
 
-      const mustWatchedRes = await getRequest("/api/public/items/mustWatched");
+      const mustWatchedRes = await getRequest("/api/public/items/topWatched");
       setMustWatchedItems(mustWatchedRes.data.content || []);
 
       const topDiscountedRes = await getRequest("/api/public/items/topDiscounted");
       setTopDiscountedItems(topDiscountedRes.data.content || []);
 
-      // const soldItemRes = await getRequest("/api/public/items/topSold")
-      // setTopSoldItems(soldItemRes.data.content)
+      const soldItemRes = await getRequest("/api/public/items/topSold")
+      setTopSoldItems(soldItemRes.data.content)
 
       if (isLoggedIn) {
         const recentWatchedProductsRes = await getRequest(
           "/api/users/recentWatchedItems");
         setRecentWatchedProducts(recentWatchedProductsRes.data || []);
-        console.log(recentWatchedProductsRes)
+        // console.log(recentWatchedProductsRes)
       }
 
     } catch (error) {
@@ -423,9 +423,9 @@ export default function Homepage() {
           </div>
         )}
         <section id="newProducts" className="w-full">
-          <div className="flex justify-between px-5 items-center gap-2 text-center">
+          {/* <div className="flex justify-between px-5 items-center gap-2 text-center">
             <div className=""></div>
-          </div>
+          </div> */}
 
           {loading ? (
             <div className="w-full h-full">

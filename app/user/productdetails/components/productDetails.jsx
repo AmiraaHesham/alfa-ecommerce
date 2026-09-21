@@ -238,7 +238,7 @@ export default function ProductDetails({ itemId }) {
               <p className="mt-6 text-sm text-gray-500">{t("no_reviews")}</p>
             ) : (
               <div className="mt-6 flex flex-col gap-4">
-                {reviews.map((review) => (
+                {reviews?.map((review) => (
                   <CustomerReviewCard key={review.itemRatingId ?? review.rating + review.comment} review={review} />
                 ))}
               </div>
