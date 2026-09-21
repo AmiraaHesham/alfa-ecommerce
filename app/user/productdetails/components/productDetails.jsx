@@ -10,7 +10,7 @@ import YouMightLike from "./YouMightLike"
 import Specification from "./Specification"
 import ProductRating from "./ProductRating"
 import ReviewForm from "./ReviewForm"
-import CustomerReviewCard from "./CustomerReviewCard"
+import ReviewsList from "./ReviewsList";
 
 import "swiper/css";
 import "swiper/css/navigation";
@@ -95,7 +95,7 @@ export default function ProductDetails({ itemId }) {
     setReviewsError(false);
     try {
       const res = await getItemRatings(itemId);
-      setReviews(res?.data || []);
+      setReviews(res?.data.content || []);
     } catch (error) {
       console.error("Failed to load reviews:", error);
       setReviewsError(true);
@@ -205,20 +205,11 @@ export default function ProductDetails({ itemId }) {
       {/* // )} */}
       <hr></hr>
       <div className="flex w-full justify-between p-10">
-        <Specification />
-        <div className="w-full h-full">
-          <ProductRating product={product} itemId={itemId} refreshKey={ratingRefreshKey} />
-          <ReviewForm
-            product={product}
-            itemId={itemId}
-            onRatingSubmitted={() => {
-              setRatingRefreshKey((key) => key + 1);
-              fetchReviews();
-            }}
-          />
-          <div className="w-full px-5 md:px-10 pb-5">
-            <div className="flex items-center justify-between gap-2">
-              <span className="w-2/3">
+        <div className="w-full flex flex-col">
+           <Specification />
+         <div className="w-full  pb-5 mt-10">
+            <div className="flex w-full items-center justify-between gap-2">
+              <span className="w-full">
                 <h1 className="flex items-center font-semibold gap-2 xs:text-base md:text-lg mb-1">
                   {t("reviews_list")}
                 </h1>
@@ -237,13 +228,22 @@ export default function ProductDetails({ itemId }) {
             ) : reviews.length === 0 ? (
               <p className="mt-6 text-sm text-gray-500">{t("no_reviews")}</p>
             ) : (
-              <div className="mt-6 flex flex-col gap-4">
-                {reviews?.map((review) => (
-                  <CustomerReviewCard key={review.itemRatingId ?? review.rating + review.comment} review={review} />
-                ))}
-              </div>
+              <ReviewsList reviews={reviews} />
             )}
           </div>
+        </div>
+       
+        <div className="w-full h-full">
+          <ProductRating product={product} itemId={itemId} refreshKey={ratingRefreshKey} />
+          <ReviewForm
+            product={product}
+            itemId={itemId}
+            onRatingSubmitted={() => {
+              setRatingRefreshKey((key) => key + 1);
+              fetchReviews();
+            }}
+          />
+         
         </div>
 
       </div>

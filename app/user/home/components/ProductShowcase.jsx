@@ -12,22 +12,29 @@ export default function RecentlyViewed({ Products  , title}) {
     const navigate = useRouter()
   return (
     <div className="lg:w-[300px] h-full xs:w-full bg-white rounded-3xl">
-      <div className="flex w-full flex-col gap-5 p-5">
+      <div className="flex w-full flex-col gap-2 p-5">
+                    <div className="w-full flex justify-between items-center">
+
         <h1 className="font-semibold text-lg sticky z-10 py-2 bg-white">{t(title)} </h1>
+        <div className="text-xs font-semibold">
+<button>{t("shopMore")} </button>
+<hr className="bg-red-500 h-[2px] border-none w-auto "/>
+</div>
+</div>
         <div className="w-full h-full flex flex-col gap-3 ">
           {Products?.map((product, index) => {
             return (
 
-              <div key={index} className={` ${index < 3 ? "flex" : "hidden"} gap-2 items-center `}
+              <div key={index} className={` ${title === "recentViewed" ? index < 3 ? "flex" : "hidden" :index < 7 ? "flex" : "hidden"} gap-2 items-center `}
                 onClick={() => {
-                  setSelectedProductId(product.itemId);
-                  navigate.push(`/user/productdetails/${product.nameEn}/${product.itemId}`);
+                  setSelectedProductId(product.item ? product.item.itemId :product.itemId);
+                  navigate.push(`/user/productdetails/${product.item ? product.item.nameEn : product.nameEn}/${product.item ? product.item.itemId:product.itemId}`);
                 }}
               >
                 <div className="relative w-[70px] h-[70px] hover:scale-105 duration-200 cursor-pointer select-none rounded-full ">
                   <Image src={
                     process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +
-                    getThumbnailUrl(product.item.images[0]?.imageUrl)
+                    getThumbnailUrl(product.item ? product.item.images[0]?.imageUrl : product.images[0]?.imageUrl)
                   } alt=""
                     fill
                     priority
@@ -36,22 +43,22 @@ export default function RecentlyViewed({ Products  , title}) {
                     className="object-fill rounded-full" />
                 </div>
                 <div>
-                  <span className="text-xs font-semibold cursor-pointer">{locale === "ar" ? product.item.nameAr : product.item.nameEn}</span>
+                  <span className="text-xs font-semibold cursor-pointer">{locale === "ar" ? product.item ? product.item.nameAr : product.nameEn : product.item ? product.item.nameEn : product.nameEn}</span>
                   <div>
-                    <StarRating rating={product.averageRating || 0} />
+                    <StarRating rating={product.item ? product.item.averageRating :product.averageRating || 0} />
                   </div>
                   <div className="flex  justify-start gap-2 items-center ">
-                    {product.item.oldPrice ? (
+                    {product.item ? product.item.oldPrice : product.oldPrice ? (
                       <div className="flex gap-2">
                         <span className=" line-through text-xs  flex text-gray-400">
-                          {product.item.oldPrice?.toLocaleString("en-US")}{" "}{t("currency")}
+                          {product.item ?product.item.oldPrice?.toLocaleString("en-US") :product.oldPrice?.toLocaleString("en-US")}{" "}{t("currency")}
                         </span>
                       </div>
                     ) : (
-                      <span className="p-[11px]"></span>
+                      ""
                     )}
                     <span className="text-sm font-semibold text-red-600 ">
-                      {product.item.price.toLocaleString("en-US")}.00 {t("currency")}
+                      {product.item ? product.item.price.toLocaleString("en-US") : product.price.toLocaleString("en-US")}.00 {t("currency")}
                     </span>
 
                   </div>

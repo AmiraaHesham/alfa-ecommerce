@@ -169,6 +169,7 @@ export default function Homepage() {
         try {
           const ad1ProductRes = await getProductDetails(ad1ItemId);
           setAd1Product(ad1ProductRes.data || null);
+          console.log(ad1ProductRes)
         } catch (error) {
           console.error("Failed to fetch first ad product:", error);
         }
@@ -179,29 +180,29 @@ export default function Homepage() {
         try {
           const ad3ProductRes = await getProductDetails(ad3ItemId);
           console.log(ad3ProductRes)
-          setAd3Product(ad3ProductRes.data.company || null);
+          setAd3Product(ad3ProductRes.data.brand || null);
         } catch (error) {
           console.error("Failed to fetch first ad product:", error);
         }
       }
- const ad4ItemId = (adsRes.data || []).find(
+      const ad4ItemId = (adsRes.data || []).find(
         (ad) => ad.number === 4,
       )?.itemId;
       if (ad4ItemId) {
         try {
           const ad4ProductRes = await getProductDetails(ad4ItemId);
-          setAd4Product(ad4ProductRes.data.company || null);
+          setAd4Product(ad4ProductRes.data.brand || null);
         } catch (error) {
           console.error("Failed to fetch first ad product:", error);
         }
       }
-       const ad5ItemId = (adsRes.data || []).find(
+      const ad5ItemId = (adsRes.data || []).find(
         (ad) => ad.number === 5,
       )?.itemId;
       if (ad5ItemId) {
         try {
           const ad5ProductRes = await getProductDetails(ad5ItemId);
-          setAd5Product(ad5ProductRes.data.company || null);
+          setAd5Product(ad5ProductRes.data.brand || null);
         } catch (error) {
           console.error("Failed to fetch first ad product:", error);
         }
@@ -209,9 +210,12 @@ export default function Homepage() {
       const categoryRes = await getRequest("/api/public/itemCategory/latest")
       setCategories(categoryRes.data || []);
 
-      const newProductsRes = await getRequest("/api/public/items/recent");
+      const newProductsRes = await getRequest("/api/public/items/recent", {
+        page: 0,
+        size: 7,
+      });
       setNewProducts(newProductsRes.data || []);
-
+      // console.log(newProductsRes)
       const mustWatchedRes = await getRequest("/api/public/items/topWatched");
       setMustWatchedItems(mustWatchedRes.data.content || []);
 
@@ -223,7 +227,10 @@ export default function Homepage() {
 
       if (isLoggedIn) {
         const recentWatchedProductsRes = await getRequest(
-          "/api/users/recentWatchedItems");
+          "/api/users/recentWatchedItems", {
+          page: 0,
+          size: 3,
+        });
         setRecentWatchedProducts(recentWatchedProductsRes.data || []);
         // console.log(recentWatchedProductsRes)
       }
@@ -340,7 +347,7 @@ export default function Homepage() {
       <SiteFeatures />
 
       {/* ========================= Featured Products ========================= */}
-      <div className="flex lg:flex-row xs:flex-col my-20 gap-5 items-start w-full">
+      <div className="flex lg:flex-row xs:flex-col my-10 gap-5 items-start w-full">
         {loading ? (
           <div className="w-[400px] h-[440px]">
             <ListSkeleton />
@@ -348,58 +355,56 @@ export default function Homepage() {
         ) : (
           <div className="flex flex-col xs:w-full lg:w-auto items-center gap-5">
             <ProductShowcase Products={recentWatchedProducts} title={"recentViewed"} />
-            <div className="bg-white w-[300px] h-[700px] rounded-3xl relative overflow-hidden">
-              {ads.ad2.imageUrl && (
-                <Image
-                  src={IMAGE_BASE_URL + ads.ad2.imageUrl}
-                  alt="Advertisement"
-                  fill
-                  sizes="300px"
-                  className="object-cover"
-                />
-              )}
+            <div className="w-full lg:flex-col sm:flex-row xs:flex-col flex gap-10">
+              <div className="bg-white lg:w-[300px] xs:w-full h-[670px] rounded-3xl relative overflow-hidden">
+                {ads.ad2.imageUrl && (
+                  <Image
+                    src={IMAGE_BASE_URL + ads.ad2.imageUrl}
+                    alt="Advertisement"
+                    fill
+                    sizes="300px"
+                    className="object-cover"
+                  />
+                )}
+              </div>
+              <section id="newProducts" className="w-full">
+                {loading ? (
+                  <div className="w-full h-full">
+                    <ListSkeleton className="w-full h-[440px] bg-white rounded-3xl p-5 space-y-5" />
+                  </div>
+                ) : (
+                  <div className="w-full h-[670px] ">
+                    <ProductShowcase Products={newProducts} title={"latest_products"} />
+                  </div>
+                )}
+              </section>
             </div>
-            <section id="newProducts" className="w-full">
-          {/* <div className="flex justify-between px-5 items-center gap-2 text-center">
-            <div className=""></div>
-          </div> */}
-
-          {loading ? (
-            <div className="w-full h-full">
-              <ListSkeleton className="w-full h-[440px] bg-white rounded-3xl p-5 space-y-5" />
-            </div>
-          ) : (
-            <div className="w-auto h-[670px] mt-2">
-               <ProductShowcase Products={recentWatchedProducts} title={"latest_products"} />
-            </div>
-          )}
-        </section>
           </div>
         )}
         <section className="w-full">
-          <div className="w-full flex md:flex-row xs:flex-col justify-between items-start gap-2">
-            <div className="w-2/3">
+          <div className="w-full flex md:flex-row xs:flex-col justify-between items-center gap-2">
+            <div className="w-full">
               <h1 className="flex items-center font-semibold gap-2 xs:text-base md:text-lg mb-1">
                 {t("featured_products")}
               </h1>
               <hr className="w-24 h-1 border-0 rounded-full bg-gradient-to-l from-red-200 via-red-400 to-red-200" />
             </div>
-            <div className="flex items-center w-full md:text-base xs:text-[13px] font-medium">
+            <div className="flex items-center gap-5 justify-end w-full md:text-sm xs:text-[13px] font-bold">
               <button
-                className="flex w-full items-center justify-center rounded-full p-1 font-medium hover:text-red-600 hover:scale-105 duration-200"
+                className=" items-center justify-center rounded-full p-1  hover:text-red-600 hover:scale-105 duration-200"
                 onClick={handleShowPopularProducts}
               >
                 {t("popular_products")}
               </button>
 
               <button
-                className="flex items-center w-full justify-center rounded-full p-1 font-medium hover:text-red-600 hover:scale-105 duration-200"
+                className=" items-center  justify-center rounded-full p-1  hover:text-red-600 hover:scale-105 duration-200"
                 onClick={handleShowTopSoldItems}
               >
                 {t("Top_selling")}
               </button>
               <button
-                className="flex items-center w-full justify-center rounded-full p-1 font-medium hover:text-red-600 hover:scale-105 duration-200"
+                className=" items-center  justify-center rounded-full p-1  hover:text-red-600 hover:scale-105 duration-200"
                 onClick={handleShowMustWatchedItems}
               >
                 {t("Most_viewed_products")}
@@ -419,32 +424,32 @@ export default function Homepage() {
           ) : (
             <div className="xs:mt-6 md:mt-5">
               <FeaturedProducts Products={items} type={"FeaturedProducts"} />
-                    <TopDiscounted Products={topDiscountedItems} />
+              <TopDiscounted Products={topDiscountedItems} />
 
             </div>
           )}
-           <div className="flex lg:flex-row xs:flex-col mt-10 gap-10 items-start w-full h-[440px]">
-        <div className="w-full h-full bg-white rounded-3xl">
+          <div className="flex lg:flex-row xs:flex-col mt-10 gap-5 items-start w-full h-[440px]">
+            <div className="w-full h-full bg-white rounded-3xl">
 
-        </div>
-        {loading ? (
-          <div className="w-full h-full">
-            <ListSkeleton className="w-full h-[440px] bg-white rounded-3xl p-5 space-y-5" />
+            </div>
+            {loading ? (
+              <div className="w-full h-full">
+                <ListSkeleton className="w-full h-[440px] bg-white rounded-3xl p-5 space-y-5" />
+              </div>
+            ) : (
+              <div className="flex flex-col items-center gap-5 w-3/4">
+                <Top10Products Products={newProducts} section={"top-product"} />
+              </div>
+            )}
+
           </div>
-        ) : (
-          <div className="flex flex-col items-center gap-5 w-2/4">
-            <Top10Products Products={newProducts} section={"latest_products"} />
-          </div>
-        )}
-       
-      </div>
         </section>
       </div>
 
       {/* ========================= Top Discounted ========================= */}
- 
+
       {/* ========================= Latest Products & Top 100 ========================= */}
-     
+
 
       {/* ========================= Promo Banner ========================= */}
       <section className="my-20">
@@ -464,14 +469,14 @@ export default function Homepage() {
             ) : (
               <div className="w-full h-full" />
             )}
-             <div className="flex flex-col justify-around items-center w-full">
-            <h1 className="text-3xl font-bold">{ad3Product} </h1>
+            <div className="flex flex-col justify-around items-center w-full">
+              <h1 className="text-3xl font-bold">{ad3Product} </h1>
 
-            <h1 className=" text-center my-5">{ads.ad3.title} </h1>
-            <button className="text-white rounded-full bg-[#CD4354] hover:bg-[#c13b4a] w-[120px] py-3 px-5 mt-2 text-sm font-semibold ">{t("shopNow")} </button>
+              <h1 className=" text-center my-5">{ads.ad3.title} </h1>
+              <button className="text-white rounded-full bg-[#CD4354] hover:bg-[#c13b4a] w-[120px] py-3 px-5 mt-2 text-sm font-semibold ">{t("shopNow")} </button>
 
             </div>
-           
+
           </div>
           <div className="group cursor-pointer text-white w-full flex flex-col justify-center items-center h-[500px] bg-black rounded-3xl  overflow-hidden p-5">
             {ads.ad4.imageUrl ? (
@@ -488,11 +493,11 @@ export default function Homepage() {
             ) : (
               <div className="w-full h-full" />
             )}
-             <div className="flex flex-col justify-around items-center w-full">
-            <h1 className="text-3xl font-bold">{ad4Product} </h1>
+            <div className="flex flex-col justify-around items-center w-full">
+              <h1 className="text-3xl font-bold">{ad4Product} </h1>
 
-            <h1 className=" text-center my-5">{ads.ad4.title} </h1>
-            <button className="text-white rounded-full bg-[#CD4354] hover:bg-[#c13b4a] w-[120px] py-3 px-5 mt-2 text-sm font-semibold ">{t("shopNow")} </button>
+              <h1 className=" text-center my-5">{ads.ad4.title} </h1>
+              <button className="text-white rounded-full bg-[#CD4354] hover:bg-[#c13b4a] w-[120px] py-3 px-5 mt-2 text-sm font-semibold ">{t("shopNow")} </button>
 
             </div>
           </div>
@@ -512,24 +517,32 @@ export default function Homepage() {
               <div className="w-full h-full" />
             )}
             <div className="flex flex-col justify-around items-center w-full">
-            <h1 className="text-3xl font-bold">{ad5Product} </h1>
+              <h1 className="text-3xl font-bold">{ad5Product} </h1>
 
-            <h1 className=" text-center my-5">{ads.ad5.title} </h1>
-            <button className="text-white rounded-full bg-[#CD4354] hover:bg-[#c13b4a] w-[120px] py-3 px-5 mt-2 text-sm font-semibold ">{t("shopNow")} </button>
+              <h1 className=" text-center my-5">{ads.ad5.title} </h1>
+              <button className="text-white rounded-full bg-[#CD4354] hover:bg-[#c13b4a] w-[120px] py-3 px-5 mt-2 text-sm font-semibold ">{t("shopNow")} </button>
 
             </div>
-           
+
           </div>
         </div>
       </section>
 
       {/* ========================= More Recommended Products ========================= */}
       <section id="newProducts" className="w-full pb-20">
-        <div>
-          <h1 className="flex items-center font-semibold gap-2 xs:text-base md:text-lg mb-1">
-            {t("More_recommended_products")}
-          </h1>
-          <hr className="w-24 h-1 border-0 rounded-full bg-gradient-to-l from-red-200 via-red-400 to-red-200" />
+        <div className="w-full flex justify-between items-center">
+
+          <div>
+            <h1 className="flex items-center font-semibold gap-2 xs:text-base md:text-lg mb-1">
+              {t("More_recommended_products")}
+            </h1>
+            <hr className="w-24 h-1 border-0 rounded-full bg-gradient-to-l from-red-200 via-red-400 to-red-200" />
+          </div>
+          <div className="text-xs font-semibold">
+            <button>{t("shopMore")} </button>
+            <hr className="bg-red-500 h-[2px] border-none w-auto " />
+          </div>
+
         </div>
 
         {loading ? (

@@ -16,7 +16,7 @@ export default function SiteFeatures() {
     const { locale } = useLanguage()
     const { t } = useLanguage()
     return (
-        <div className=" text-white bg-[#0d0625] w-full rounded-full  p-2 flex justify-center items-center ">
+        <div className=" text-white bg-[#0d0625] w-full rounded-full  p-5 flex justify-center items-center ">
 
             <Swiper
                 key={locale}
@@ -24,10 +24,7 @@ export default function SiteFeatures() {
                 slidesOffsetBefore={10}
                 slidesOffsetAfter={10}
                 modules={[Navigation, Autoplay]}
-                navigation={{
-                    nextEl: ".next-btn1",
-                    prevEl: ".prev-btn1",
-                }}
+                navigation={true}
                 dir={locale === "ar" ? "rtl" : "ltr"}
                 spaceBetween={10}
                 className="w-full h-full">

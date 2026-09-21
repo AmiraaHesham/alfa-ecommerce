@@ -93,7 +93,6 @@ const {t}= useLanguage()
           value={review}
           onChange={(e) => setReview(e.target.value)}
           rows={8}
-          required
           placeholder={t("Your_review_placeholder")}
           className="w-full h-[190px] resize-y rounded-3xl border border-gray-300 bg-white p-4 text-sm text-gray-800 outline-none transition-colors focus:border-[#e5485d]/60"
         />

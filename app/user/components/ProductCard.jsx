@@ -168,7 +168,7 @@ export default function ProductCard({ productInfo, favorite }) {
         <div className=" relative h-2/3 w-full p-1  ">
           <div className="relative w-full h-full">
 
-            <div className="absolute  flex justify-center items-center gap-2 z-20 px-3 "
+            <div className="absolute text-sm  flex justify-center items-center gap-2 z-20 px-3 "
               onClick={() => {
                 setSelectedProductId(productInfo?.itemId);
                 navigate.push(`/user/productdetails/${productName}/${productInfo?.itemId}`);
@@ -190,7 +190,7 @@ export default function ProductCard({ productInfo, favorite }) {
                     ""
                   )}
                   {productInfo?.createdDate && new Date(productInfo?.createdDate) >= new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) ?
-                    (<span className="font-semibold flex justify-center items-center  text-center bg-[#CD4354] text-sm  w-12 h-6 text-white rounded-full">
+                    (<span className="font-semibold flex justify-center items-center  text-center bg-[#CD4354] text-xs  w-12 h-6 text-white rounded-full">
                       {t("hot")}
                     </span>) : ("")}
 

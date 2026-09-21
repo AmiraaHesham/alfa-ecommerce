@@ -7,9 +7,14 @@ export default function Top10Products({ Products, section }) {
     const { t } = useLanguage()
     return (
         <div className="w-full h-full bg-white rounded-3xl p-5  overflow-hidden overflow-y-scroll ">
-            <h1 className="font-semibold text-lg sticky z-10 ">{t(section)}</h1>
-
-            <div className="w-full h-[350px] mt-5 overflow-hidden overflow-y-scroll gap-5 xs:grid-cols-1 lg:grid-cols-2 grid ">
+            <div className="w-full flex justify-between items-center">
+                <h1 className="font-semibold text-lg sticky z-10 ">{t(section)}</h1>
+                <div className="text-xs font-semibold">
+                    <button>{t("shopMore")} </button>
+                    <hr className="bg-red-500 h-[2px] border-none w-auto " />
+                </div>
+            </div>
+            <div className="w-full h-[350px] mt-5 overflow-hidden overflow-y-scroll gap-5 xs:grid-cols-1 md:grid-cols-2 grid ">
 
                 {Products?.map((product, index) => {
                     return (

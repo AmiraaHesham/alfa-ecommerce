@@ -286,6 +286,7 @@
   "top_discount": "Top Discount",
   "text_for_discounts": "Shop more and enjoy amazing discounts every day.",
   "shopNow": "Shop now",
+  "shopMore": "Shop More",
   "More_recommended_products": "More recommended products",
   "Most_viewed_products": "Most-viewed products",
   "Top_selling": "Top selling",
@@ -348,7 +349,8 @@
   "previous": "Previous",
   "next": "Next",
   "showing_results": "Showing {start}–{end} of {total} results",
-  "results": "results"
+  "results": "results",
+  "view_all_reviews": "View all reviews"
 
   
 

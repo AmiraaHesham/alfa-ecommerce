@@ -5,7 +5,7 @@ export const getCategories = async () => {
     "/api/public/itemCategory/search",
     {
       page: 0,
-      size: 100,
+      size: 10,
     },
     ""
   );

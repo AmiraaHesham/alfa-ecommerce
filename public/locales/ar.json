@@ -287,6 +287,7 @@
   "top_discount": "أفضل الخصومات",
   "text_for_discounts": "تسوق أكثر واستمتع بخصومات مذهلة كل يوم.",
   "shopNow": "تسوق الأن",
+  "shopMore": "تسوق المزيد",
   "More_recommended_products": "منتجات أخرى موصى بها",
   "Most_viewed_products": "المنتجات الأكثر مشاهدة",
   "Top_selling": "الأكثر مبيعاً",
@@ -349,7 +350,8 @@
   "previous": "السابق",
   "next": "التالي",
   "showing_results": "عرض {start}–{end} من أصل {total} نتائج",
-  "results": "نتائج"
+  "results": "نتائج",
+  "view_all_reviews": "عرض جميع التقييمات"
 
   
 

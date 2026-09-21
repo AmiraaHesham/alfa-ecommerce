@@ -8,11 +8,17 @@ import { useRouter } from "next/navigation";
 export default function BestPick({ Products }) {
     const { locale } = useLanguage()
     const { t } = useLanguage()
-    const {setSelectedProductId} = useIdContext()
+    const { setSelectedProductId } = useIdContext()
     const navigate = useRouter()
     return (
         <div className="w-full  bg-white rounded-2xl p-5">
-            <h1 className="font-semibold text-lg sticky z-10 py-2">{t("Best_pick_of_the_week")}</h1>
+            <div className="w-full flex justify-between items-center">
+                <h1 className="font-semibold text-lg sticky z-10 py-2">{t("Best_pick_of_the_week")}</h1>
+                <div className="text-xs font-semibold">
+                    <button>{t("shopMore")} </button>
+                    <hr className="bg-red-500 h-[2px] border-none w-auto " />
+                </div>
+            </div>
             <div className=" h-auto grid md:grid-cols-4 xs:grid-cols-2 p-1  gap-5 mt-2">
 
                 {Products?.map((product, index) => {
@@ -38,7 +44,7 @@ export default function BestPick({ Products }) {
                             <div className="flex flex-col gap-2">
                                 <span className="text-sm font-bold cursor-pointer">{locale === "ar" ? product.nameAr : product.nameEn}</span>
 
-                                <StarRating  rating={product.averageRating || 0} />
+                                <StarRating rating={product.averageRating || 0} />
                                 <div className="flex flex-col  justify-start  items-start">
                                     {product.oldPrice ? (
                                         <div className="flex gap-2">

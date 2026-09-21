@@ -57,7 +57,7 @@ export default function FormProduct({ isFormOpen, setIsFormOpen, isEditMode }) {
     code: "",
     ram: "",
     flash: "",
-    company: "",
+    brand: "",
     contents: "",
     // mainImage: "",
     // mainImagefile: "",
@@ -153,7 +153,7 @@ export default function FormProduct({ isFormOpen, setIsFormOpen, isEditMode }) {
       code: "",
       ram: "",
       flash: "",
-      company: "",
+      brand: "",
       contents: "",
     });
     revokeImageUrls();
@@ -174,7 +174,7 @@ export default function FormProduct({ isFormOpen, setIsFormOpen, isEditMode }) {
     seoCode: product.seoCode,
     ram: product.ram,
     flash: product.flash,
-    company: product.company,
+    brand: product.brand,
     contents: product.contents,
     descriptionAr: product.descriptionAr,
     descriptionEn: product.descriptionEn,
@@ -247,7 +247,7 @@ await deleteRequest(`/api/admin/items/${selectedProductId}/images/${imageId}`)
           seoCode: resData.seoCode,
           ram: resData.ram,
           flash: resData.flash,
-          company: resData.company,
+          brand: resData.brand,
           contents: resData.contents,
           descriptionEn: resData.descriptionEn,
           category: {
@@ -481,13 +481,13 @@ await deleteRequest(`/api/admin/items/${selectedProductId}/images/${imageId}`)
           </div>
           <div className="w-full">
             <label className="text-xs text-gray-600 font-semibold block mb-1">
-              {t("company")}
+              {t("brand")}
             </label>
             <input
               type="text"
-              value={product.company || ""}
+              value={product.brand || ""}
               onChange={(e) =>
-                setProduct((prev) => ({ ...prev, company: e.target.value }))
+                setProduct((prev) => ({ ...prev, brand: e.target.value }))
               }
               required
               className="w-full  outline-none  text-base  my-1  p-2 border rounded-md focus:border-red-600 transition-colors"
