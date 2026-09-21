@@ -42,7 +42,7 @@ export default function FeatuerProducts({ Products, type }) {
             {Products?.map((product, index) => {
               return (
 
-                <div  key={index} className="rounded-lg h-[370px] flex justify-center  cursor-pointer">
+                <div  key={index} className="rounded-lg flex justify-center  cursor-pointer">
                   <ProductCard productInfo={product} favorite={false} />
                 </div>
               );

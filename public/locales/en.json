@@ -346,7 +346,9 @@
   "and_up": "& up",
   "all_ratings": "All ratings",
   "previous": "Previous",
-  "next": "Next"
+  "next": "Next",
+  "showing_results": "Showing {start}–{end} of {total} results",
+  "results": "results"
 
   
 

@@ -34,7 +34,7 @@ export default function Searchpage({params}) {
 
   const showOptions = [9, 12, 18, 24];
   const [showCount, setShowCount] = useState(12);
-  const [gridColumns, setGridColumns] = useState(3);
+  const [gridColumns, setGridColumns] = useState(4);
 
   const gridOptions = [
     { value: 2, icon: LuColumns2 },
@@ -170,6 +170,16 @@ export default function Searchpage({params}) {
     resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
+  const totalResultsText = () => {
+    if (!totalElements) return `0 ${t("results")}`;
+    const start = currentPage * showCount + 1;
+    const end = Math.min((currentPage + 1) * showCount, totalElements);
+    return t("showing_results")
+      .replace("{start}", start)
+      .replace("{end}", end)
+      .replace("{total}", totalElements);
+  };
+
   const handleApplyFilters = (filters) => {
     setAppliedFilters(filters);
     if (currentPage !== 0) setCurrentPage(0);
@@ -191,6 +201,7 @@ export default function Searchpage({params}) {
           className={`p-5 w-full scroll-mt-4`}
         >
           <span className="text-xl font-bold ">{t("Search_results")}: "{searchInput}" </span>
+          <div className="w-full flex justify-between items-center">
           <div className="flex flex-wrap items-center justify-start gap-3 my-5">
             <button
               type="button"
@@ -294,6 +305,12 @@ export default function Searchpage({params}) {
             </div>
           </div>
 
+          {!loading && totalElements > 0 && (
+            <p className="text-sm text-gray-600 mb-4">
+              {totalResultsText()}
+            </p>
+          )}
+</div>
           {loading ? (
             <div className={`${gridLayoutClasses[gridColumns]} gap-5 `}>
               {[...Array(8)].map((_, index) => (

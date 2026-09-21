@@ -347,7 +347,9 @@
   "and_up": "فما فوق",
   "all_ratings": "جميع التقييمات",
   "previous": "السابق",
-  "next": "التالي"
+  "next": "التالي",
+  "showing_results": "عرض {start}–{end} من أصل {total} نتائج",
+  "results": "نتائج"
 
   
 
