@@ -10,7 +10,7 @@ import Image from "next/image";
 // Imports - Components
 // ==============================
 import BestPick from "./components/BestPick";
-import RecentlyViewed from "./components/RecentlyViewed";
+import ProductShowcase from "./components/ProductShowcase";
 import Top10Products from "./components/Top10Products";
 import SiteFeatures from "./components/SiteFeatures";
 import TopDiscounted from "./components/TopDiscounted";
@@ -150,16 +150,14 @@ export default function Homepage() {
     try {
       setLoading(true);
 
-      const [imagesRes, categoriesRes, productsRes, adsRes] =
+      const [imagesRes, productsRes, adsRes] =
         await Promise.all([
           getSliderImage(),
-          getCategories(),
+          // getCategories(),
           getFeatuerProducts(),
           getRequest("/api/public/offers"),
         ]);
-
       setImagesSliders(imagesRes);
-      setCategories(categoriesRes.data.content || []);
       setFeaturedProducts(productsRes.data.content || []);
       setAds((prev) => ({ ...prev, ...buildAdsMap(adsRes.data) }));
       setItems(productsRes.data.content || []);
@@ -208,6 +206,9 @@ export default function Homepage() {
           console.error("Failed to fetch first ad product:", error);
         }
       }
+      const categoryRes = await getRequest("/api/public/itemCategory/latest")
+      setCategories(categoryRes.data || []);
+
       const newProductsRes = await getRequest("/api/public/items/recent");
       setNewProducts(newProductsRes.data || []);
 
@@ -286,7 +287,7 @@ export default function Homepage() {
 
             <div className="flex flex-col  gap-3 w-full">
               <div className="w-full h-full">
-                <div className="flex md:flex-row xs:flex-col justify-center items-center h-full  w-full">
+                <div className="flex md:flex-row xs:flex-col gap-5 justify-center items-center h-full  w-full">
                   {/* Ads */}
                   <div className="group md:w-[550px] xs:w-full h-[400px] rounded-3xl  cursor-pointer text-[#EAEBB8] bg-[#263F40] flex flex-col justify-between items-center relative overflow-hidden">
                     <div className="w-full text-center p-5">
@@ -346,8 +347,8 @@ export default function Homepage() {
           </div>
         ) : (
           <div className="flex flex-col xs:w-full lg:w-auto items-center gap-5">
-            <RecentlyViewed Products={recentWatchedProducts} />
-            <div className="bg-white w-[300px] h-[600px] rounded-3xl relative overflow-hidden">
+            <ProductShowcase Products={recentWatchedProducts} title={"recentViewed"} />
+            <div className="bg-white w-[300px] h-[700px] rounded-3xl relative overflow-hidden">
               {ads.ad2.imageUrl && (
                 <Image
                   src={IMAGE_BASE_URL + ads.ad2.imageUrl}
@@ -358,6 +359,21 @@ export default function Homepage() {
                 />
               )}
             </div>
+            <section id="newProducts" className="w-full">
+          {/* <div className="flex justify-between px-5 items-center gap-2 text-center">
+            <div className=""></div>
+          </div> */}
+
+          {loading ? (
+            <div className="w-full h-full">
+              <ListSkeleton className="w-full h-[440px] bg-white rounded-3xl p-5 space-y-5" />
+            </div>
+          ) : (
+            <div className="w-auto h-[670px] mt-2">
+               <ProductShowcase Products={recentWatchedProducts} title={"latest_products"} />
+            </div>
+          )}
+        </section>
           </div>
         )}
         <section className="w-full">
@@ -403,41 +419,32 @@ export default function Homepage() {
           ) : (
             <div className="xs:mt-6 md:mt-5">
               <FeaturedProducts Products={items} type={"FeaturedProducts"} />
+                    <TopDiscounted Products={topDiscountedItems} />
+
             </div>
           )}
-        </section>
-      </div>
+           <div className="flex lg:flex-row xs:flex-col mt-10 gap-10 items-start w-full h-[440px]">
+        <div className="w-full h-full bg-white rounded-3xl">
 
-      {/* ========================= Top Discounted ========================= */}
-      <TopDiscounted Products={topDiscountedItems} />
-
-      {/* ========================= Latest Products & Top 100 ========================= */}
-      <div className="flex lg:flex-row xs:flex-col my-20 gap-10 items-start w-full">
+        </div>
         {loading ? (
           <div className="w-full h-full">
             <ListSkeleton className="w-full h-[440px] bg-white rounded-3xl p-5 space-y-5" />
           </div>
         ) : (
-          <div className="flex flex-col items-center gap-5 w-full">
+          <div className="flex flex-col items-center gap-5 w-2/4">
             <Top10Products Products={newProducts} section={"latest_products"} />
           </div>
         )}
-        <section id="newProducts" className="w-full">
-          {/* <div className="flex justify-between px-5 items-center gap-2 text-center">
-            <div className=""></div>
-          </div> */}
-
-          {loading ? (
-            <div className="w-full h-full">
-              <ListSkeleton className="w-full h-[440px] bg-white rounded-3xl p-5 space-y-5" />
-            </div>
-          ) : (
-            <div className="w-auto">
-              <Top10Products Products={newProducts} section={"top_100_products"} />
-            </div>
-          )}
+       
+      </div>
         </section>
       </div>
+
+      {/* ========================= Top Discounted ========================= */}
+ 
+      {/* ========================= Latest Products & Top 100 ========================= */}
+     
 
       {/* ========================= Promo Banner ========================= */}
       <section className="my-20">

@@ -16,7 +16,7 @@ export default function TopDiscounted({ Products }) {
   useEffect(() => {
   }, []);
   return (
-    <div className="relative w-full md:h-[500px] xs:h-[600px] flex justify-center items-center rounded-3xl ">
+    <div className="relative w-full md:h-[450px] xs:h-[600px] my-10 flex justify-center items-center rounded-3xl ">
         <Image
     src="/Images/img.png"
     alt="banner"
@@ -29,8 +29,8 @@ export default function TopDiscounted({ Products }) {
       <div className="w-full h-full absolute flex md:flex-row xs:flex-col px-2 justify-center items-center ">
 <div className="w-full h-full flex flex-col justify-center items-center">
    <div className=" text-center  text-white ">
-          <h1 className="text-5xl mb-3"> {t("top_discount")} </h1>
-          <h2>{t("text_for_discounts")}    </h2>
+          <h1 className="text-4xl mb-3"> {t("top_discount")} </h1>
+          <h2 className="text-sm">{t("text_for_discounts")}    </h2>
         </div>
       
           <button className="bg-white rounded-2xl p-2 font-medium flex items-center mt-10">{t("shopNow")}  {locale === "ar"? <IoIosArrowRoundBack/>:<IoIosArrowRoundForward/>}</button>
@@ -53,7 +53,7 @@ export default function TopDiscounted({ Products }) {
             return (
               <SwiperSlide
                 key={product.itemId}
-                className=" md:my-20 xs:my-4 !w-[250px] rounded-lg select-none"
+                className="my-10 !w-[250px] rounded-lg select-none"
               >
                 <div className="rounded-lg  flex justify-center  cursor-pointer">
                   <ProductCard productInfo={product} favorite={false} />

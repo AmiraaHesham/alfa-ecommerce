@@ -6,7 +6,7 @@ export default function Top10Products({ Products, section }) {
     const { locale } = useLanguage()
     const { t } = useLanguage()
     return (
-        <div className="w-full h-[440px] bg-white rounded-3xl p-5  overflow-hidden overflow-y-scroll ">
+        <div className="w-full h-full bg-white rounded-3xl p-5  overflow-hidden overflow-y-scroll ">
             <h1 className="font-semibold text-lg sticky z-10 ">{t(section)}</h1>
 
             <div className="w-full h-[350px] mt-5 overflow-hidden overflow-y-scroll gap-5 xs:grid-cols-1 lg:grid-cols-2 grid ">
@@ -23,7 +23,7 @@ export default function Top10Products({ Products, section }) {
                                     fill
                                     priority
                                     quality={100}
-                                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                                     className="object-fill rounded-full" />
                             </div>
                             <div>
@@ -37,7 +37,7 @@ export default function Top10Products({ Products, section }) {
                                             </span>
                                         </div>
                                     ) : (
-                                        <span className="p-[11px]"></span>
+                                        ""
                                     )}
                                     <span className="text-sm font-semibold text-red-600 ">
                                         {product.price.toLocaleString("en-US")}.00 {t("currency")}
@@ -51,6 +51,6 @@ export default function Top10Products({ Products, section }) {
                 }
 
             </div></div>
-   
+
     )
 }

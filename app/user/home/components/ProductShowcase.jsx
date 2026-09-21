@@ -5,16 +5,16 @@ import StarRating from "../../components/StarRating";
 import { useIdContext } from "../../../../context/idContext";
 import { useRouter } from "next/navigation";
 
-export default function RecentlyViewed({ Products }) {
+export default function RecentlyViewed({ Products  , title}) {
   const { locale } = useLanguage()
   const { t } = useLanguage()
       const {setSelectedProductId} = useIdContext()
     const navigate = useRouter()
   return (
-    <div className="lg:w-[300px] xs:w-full bg-white rounded-3xl">
+    <div className="lg:w-[300px] h-full xs:w-full bg-white rounded-3xl">
       <div className="flex w-full flex-col gap-5 p-5">
-        <h1 className="font-semibold text-lg sticky z-10 py-2 bg-white">{t("recentViewed")} </h1>
-        <div className="w-full h-[250px] flex flex-col gap-3 ">
+        <h1 className="font-semibold text-lg sticky z-10 py-2 bg-white">{t(title)} </h1>
+        <div className="w-full h-full flex flex-col gap-3 ">
           {Products?.map((product, index) => {
             return (
 

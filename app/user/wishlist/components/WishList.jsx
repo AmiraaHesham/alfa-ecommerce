@@ -52,7 +52,7 @@ export default function WishList() {
     try {
       if (userId) {
         setLoading(true);
-        const response = await getRequest(`/api/users/${userId}/favoriteItems`);
+        const response = await getRequest(`/api/users/favoriteItems`);
         setProducts(response.data);
       } else {
         const favoriteItems = JSON.parse(

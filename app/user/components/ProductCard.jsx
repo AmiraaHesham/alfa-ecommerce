@@ -162,7 +162,7 @@ export default function ProductCard({ productInfo, favorite }) {
   return (
     <div
       id={`div_${productInfo?.itemId}`}
-      className="h-[400px] group relative  bg-white  py-2 w-full rounded-3xl cursor-pointer  "
+      className="h-[360px] group relative  bg-white  py-2 w-full rounded-3xl cursor-pointer  "
     >
       <div className="flex flex-col justify-around  gap-3  items-center h-full">
         <div className=" relative h-2/3 w-full p-1  ">
@@ -212,7 +212,7 @@ export default function ProductCard({ productInfo, favorite }) {
                   }}
                   dir={locale === "ar" ? "rtl" : "ltr"}
                   spaceBetween={10}
-                    className="relative w-full h-full select-none rounded-3xl"
+                  className="relative w-full h-full select-none rounded-3xl"
                 >
                   {productInfo?.images?.map((img, index) => (
                     <SwiperSlide className="rounded-3xl" key={img?.imageUrl || index}>
@@ -237,20 +237,20 @@ export default function ProductCard({ productInfo, favorite }) {
                       />
                     </SwiperSlide>
                   ))}
-{/* Hover Zones */}
-<div className="absolute inset-0 z-40 flex">
-  {productInfo?.images?.map((img, index) => (
-    <div
-      key={img?.imageUrl || index}
-      className="flex-1 h-full hover:text-gray-500"
-      onMouseEnter={() => {
-        swiperRef.current?.slideTo(index);
-      }}
-    />
-  ))}
-</div>
-          <div
-  className="
+                  {/* Hover Zones */}
+                  <div className="absolute inset-0 z-40 flex">
+                    {productInfo?.images?.map((img, index) => (
+                      <div
+                        key={img?.imageUrl || index}
+                        className="flex-1 h-full hover:text-gray-500"
+                        onMouseEnter={() => {
+                          swiperRef.current?.slideTo(index);
+                        }}
+                      />
+                    ))}
+                  </div>
+                  <div
+                    className="
     absolute bottom-0 left-0
     w-full
     z-50
@@ -259,34 +259,34 @@ export default function ProductCard({ productInfo, favorite }) {
     xs:opacity-100 xs:visible
     transition-all duration-300
   "
->
-  {/* Indicators */}
-  <div className="w-full ">
-    <div className="w-full flex justify-between gap-1">
-      {productInfo?.images?.map((img, index) => (
-        <span
-          key={img?.imageUrl || index}
-          className="w-full h-1 rounded-full bg-gray-300 "
-        />
-      ))}
-    </div>
-  </div>
+                  >
+                    {/* Indicators */}
+                    <div className="w-full ">
+                      <div className="w-full flex justify-between gap-1">
+                        {productInfo?.images?.map((img, index) => (
+                          <span
+                            key={img?.imageUrl || index}
+                            className="w-full h-1 rounded-full bg-gray-300 "
+                          />
+                        ))}
+                      </div>
+                    </div>
 
-  {/* Buttons */}
-  <div className="w-full">
-    <div
-      className="
+                    {/* Buttons */}
+                    <div className="w-full">
+                      <div
+                        className="
         flex items-center justify-center
         w-full
         bg-[#E76E7D]
         rounded-b-3xl
         overflow-hidden
       "
-    >
-      {/* Wishlist */}
-      <button
-        id={`btn_fov_${productInfo?.itemId}`}
-        className="
+                      >
+                        {/* Wishlist */}
+                        <button
+                          id={`btn_fov_${productInfo?.itemId}`}
+                          className="
           group/wishlist
           flex items-center justify-center
           text-white
@@ -296,20 +296,20 @@ export default function ProductCard({ productInfo, favorite }) {
           transition-all duration-300
           hover:bg-[#CD4354]
         "
-        onClick={(e) => {
-          e.stopPropagation();
+                          onClick={(e) => {
+                            e.stopPropagation();
 
-          if (favorite === true) {
-            deleteFavoriteItems(productInfo?.itemId);
-          } else {
-            addFavoriteItems(productInfo?.itemId);
-          }
+                            if (favorite === true) {
+                              deleteFavoriteItems(productInfo?.itemId);
+                            } else {
+                              addFavoriteItems(productInfo?.itemId);
+                            }
 
-          setSelectedProductId(productInfo?.itemId);
-        }}
-      >
-        <IoMdHeart
-          className="
+                            setSelectedProductId(productInfo?.itemId);
+                          }}
+                        >
+                          <IoMdHeart
+                            className="
             absolute
             w-5 h-5
             lg:scale-0
@@ -319,25 +319,25 @@ export default function ProductCard({ productInfo, favorite }) {
             lg:group-hover/wishlist:scale-100
             xs:scale-100
           "
-        />
+                          />
 
-        <span
-          className="
+                          <span
+                            className="
             transition-all duration-300
             lg:opacity-100
             lg:group-hover/wishlist:-translate-y-5
             lg:group-hover/wishlist:opacity-0
             xs:opacity-0
           "
-        >
-          {t("wishlist")}
-        </span>
-      </button>
+                          >
+                            {t("wishlist")}
+                          </span>
+                        </button>
 
-      {/* Add To Cart */}
-      {productInfo?.available && (
-        <button
-          className="
+                        {/* Add To Cart */}
+                        {productInfo?.available && (
+                          <button
+                            className="
             group/cart
             flex items-center justify-center
             text-white
@@ -347,26 +347,26 @@ export default function ProductCard({ productInfo, favorite }) {
             transition-all duration-300
             hover:bg-[#CD4354]
           "
-          onClick={(e) => {
-            e.stopPropagation();
-            addToCart(productInfo?.itemId);
-            setIsCartOpen(true);
-          }}
-        >
-          <span
-            className="
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              addToCart(productInfo?.itemId);
+                              setIsCartOpen(true);
+                            }}
+                          >
+                            <span
+                              className="
               transition-all duration-300
               lg:opacity-100
               lg:group-hover/cart:-translate-y-5
               lg:group-hover/cart:opacity-0
               xs:opacity-0
             "
-          >
-            {t("Cart")}
-          </span>
+                            >
+                              {t("Cart")}
+                            </span>
 
-          <MdOutlineAddShoppingCart
-            className="
+                            <MdOutlineAddShoppingCart
+                              className="
               absolute
               w-5 h-5
               lg:scale-0
@@ -376,34 +376,21 @@ export default function ProductCard({ productInfo, favorite }) {
               lg:group-hover/cart:scale-100
               xs:scale-100
             "
-          />
-        </button>
-      )}
-    </div>
-  </div>
-</div>
+                            />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
                 </Swiper>
-
-
-
-
               </div>
             </div>
           </div>
-          {/* <div className="absolute bottom-0 left-0  px-5 py-2 w-full lg:group-hover:visible  z-50   lg:opacity-0 lg:invisible
-            transition-all duration-300
-            lg:group-hover:opacity-100 
-            xs:opacity-100 xs:visible
-            text-center"> */}
-
-
-
         </div>
-        {/* </div> */}
-
+        <div className="flex flex-col gap-2 items-center justify-center">
         <div className="w-full flex flex-col justify-center items-center">
           <h1
-            className="text-sm font-semibold"
+            className="text-sm font-bold"
             onClick={() => {
               setSelectedProductId(productInfo?.itemId);
               navigate.push(`/user/productdetails/${productName}/${productInfo?.itemId}`);
@@ -422,7 +409,7 @@ export default function ProductCard({ productInfo, favorite }) {
         </div>
 
         <div>
-          <StarRating rating={Number(productInfo?.averageRating ) || 0} />
+          <StarRating rating={Number(productInfo?.averageRating) || 0} />
         </div>
 
         <div className="w-full">
@@ -462,6 +449,7 @@ export default function ProductCard({ productInfo, favorite }) {
 
         </div>
 
+      </div>
       </div>
     </div>
     // </div>

@@ -20,7 +20,7 @@ export const getFeatuerProducts = async () => {
     "/api/public/items/search",
     {
       page: 0,
-      size: 50,
+      size: 10,
       isFavorite: true,
     },
     ""
