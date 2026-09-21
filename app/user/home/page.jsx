@@ -116,7 +116,7 @@ export default function Homepage() {
   const [ad4Product, setAd4Product] = useState(null);
   const [ad5Product, setAd5Product] = useState(null);
   const [loading, setLoading] = useState(true);
-const []
+
   // ==============================
   // Derived values
   // ==============================
