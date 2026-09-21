@@ -428,7 +428,7 @@ export default function ProductCard({ productInfo, favorite }) {
                       </span>
                     </div>
                   ) : (
-                    <span className="p-[11px]"></span>
+                    ""
                   )}
                   <span className=" font-semibold text-red-600 ">
                     {productInfo?.price.toLocaleString("en-US")}.00 {t("currency")}
