@@ -116,7 +116,7 @@ export default function Homepage() {
   const [ad4Product, setAd4Product] = useState(null);
   const [ad5Product, setAd5Product] = useState(null);
   const [loading, setLoading] = useState(true);
-
+const []
   // ==============================
   // Derived values
   // ==============================
@@ -245,9 +245,9 @@ export default function Homepage() {
   // ==============================
   // Event handlers
   // ==============================
-  const handleShowPopularProducts = () => setItems(featuredProducts);
-  const handleShowTopSoldItems = () => setItems(topSoldItems);
-  const handleShowMustWatchedItems = () => setItems(mustWatchedItems);
+  const handleShowPopularProducts = () =>{ setItems(featuredProducts)};
+  const handleShowTopSoldItems = () => {setItems(topSoldItems)};
+  const handleShowMustWatchedItems = () => {setItems(mustWatchedItems)};
 
   // ==============================
   // useEffect
@@ -356,7 +356,7 @@ export default function Homepage() {
           <div className="flex flex-col xs:w-full lg:w-auto items-center gap-5">
             <ProductShowcase Products={recentWatchedProducts} title={"recentViewed"} />
             <div className="w-full lg:flex-col sm:flex-row xs:flex-col flex gap-10">
-              <div className="bg-white lg:w-[300px] xs:w-full h-[670px] rounded-3xl relative overflow-hidden">
+              <div className="bg-white mt-5 lg:w-[300px] xs:w-full h-[670px] rounded-3xl relative overflow-hidden">
                 {ads.ad2.imageUrl && (
                   <Image
                     src={IMAGE_BASE_URL + ads.ad2.imageUrl}

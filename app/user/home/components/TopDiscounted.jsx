@@ -7,16 +7,18 @@ import "swiper/css/pagination";
 import { IoIosArrowRoundBack, IoIosArrowRoundForward } from "react-icons/io";
 import { useLanguage } from "../../../../context/LanguageContext";
 import ProductCard from "../../components/ProductCard";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa6";
+import { MdOutlineArrowBackIosNew, MdOutlineArrowForwardIos } from "react-icons/md";
 
 export default function TopDiscounted({ Products }) {
   const { locale ,t } = useLanguage();
-
+const swiperRef = useRef()
   useEffect(() => {
   }, []);
   return (
-    <div className="relative w-full md:h-[450px] xs:h-[600px] my-10 flex justify-center items-center rounded-3xl ">
+    <div className="relative w-full  md:h-[450px] xs:h-[600px] my-10 flex justify-center items-center rounded-3xl ">
         <Image
     src="/Images/img2.png"
     alt="banner"
@@ -29,26 +31,31 @@ export default function TopDiscounted({ Products }) {
       <div className="w-full h-full absolute flex md:flex-row xs:flex-col px-2 justify-center items-center ">
 <div className="w-full h-full flex flex-col justify-center items-center">
    <div className=" text-center  text-white ">
-          <h1 className="text-4xl mb-3"> {t("top_discount")} </h1>
+          <h1 className="text-4xl font-semibold mb-3"> {t("top_discount")} </h1>
           <h2 className="text-sm">{t("text_for_discounts")}    </h2>
         </div>
       
-          <button className="bg-white rounded-2xl p-2 font-medium flex items-center mt-10">{t("shopNow")}  {locale === "ar"? <IoIosArrowRoundBack/>:<IoIosArrowRoundForward/>}</button>
+          <button className="bg-white rounded-2xl  p-2 font-medium flex items-center mt-10">{t("shopNow")}  {locale === "ar"? <IoIosArrowRoundBack/>:<IoIosArrowRoundForward/>}</button>
     
 </div>
        
-      <div className=" md:w-3/4 xs:w-full h-full flex justify-center items-center ">
+      <div className="group/swiper relative overflow-visible px-10 md:w-3/4 xs:w-full h-full flex justify-center items-center ">
       <Swiper
           key={locale}
           slidesPerView={"auto"}
-          slidesOffsetBefore={16}
-          slidesOffsetAfter={16}
+          // slidesOffsetBefore={5}
+          // slidesOffsetAfter={5}
           modules={[Navigation, Autoplay]}
-          navigation={true}
-          dir={locale === "ar" ? "rtl" : "ltr"}
-          spaceBetween={10}
-          className="w-full h-full   "
-        >
+    navigation={{
+      prevEl: ".custom-prev",
+      nextEl: ".custom-next",
+    }}          dir={locale === "ar" ? "rtl" : "ltr"}
+          spaceBetween={15}
+           onSwiper={(swiper) => {
+      swiperRef.current = swiper;
+    }}
+          className="w-full h-full "
+        >   
           { Products.map((product) => {
             return (
               <SwiperSlide
@@ -63,8 +70,38 @@ export default function TopDiscounted({ Products }) {
           })
       
         }
-     
+    
+         
       </Swiper>
+      <div className=" lg:opacity-0 lg:invisible
+    lg:group-hover/swiper:opacity-100 lg:group-hover/swiper:visible
+    xs:opacity-100 xs:visible
+    transition-all duration-300 ">
+          <button
+      type="button"
+      onClick={() => swiperRef.current?.slideNext()}
+      className="absolute left-0 top-1/2 -translate-y-1/2 z-50
+                  text-2xl
+                flex items-center justify-center 
+                text-gray-700 hover:text-black"
+    >
+      < MdOutlineArrowBackIosNew />
+    </button>
+        <button
+      type="button"
+      onClick={() => swiperRef.current?.slidePrev()}
+      className="absolute right-0 top-1/2 -translate-y-1/2 z-50
+              
+                text-2xl
+                flex items-center justify-center  text-gray-700 hover:text-black"
+    >
+      < MdOutlineArrowForwardIos />
+    </button>
+      </div>
+      
+
+  {/* السهم الشمال */}
+  
       </div>
 
 

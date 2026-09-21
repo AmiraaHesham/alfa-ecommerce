@@ -215,7 +215,13 @@ export default function ProductCard({ productInfo, favorite }) {
                   className="relative w-full h-full select-none rounded-3xl"
                 >
                   {productInfo?.images?.map((img, index) => (
-                    <SwiperSlide className="rounded-3xl" key={img?.imageUrl || index}>
+                    <SwiperSlide className="rounded-3xl z-50" key={img?.imageUrl || index}
+                     onClick={() => {
+              setSelectedProductId(productInfo?.itemId);
+              navigate.push(`/user/productdetails/${productName}/${productInfo?.itemId}`);
+
+            }}
+                    >
                       <Image
                         src={
                           `${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL}${getThumbnailUrl(
@@ -387,15 +393,17 @@ export default function ProductCard({ productInfo, favorite }) {
             </div>
           </div>
         </div>
-        <div className="flex flex-col gap-2 items-center justify-center">
-        <div className="w-full flex flex-col justify-center items-center">
-          <h1
-            className="text-sm font-bold"
-            onClick={() => {
+        <div className="flex flex-col gap-2 items-center justify-center"
+         onClick={() => {
               setSelectedProductId(productInfo?.itemId);
               navigate.push(`/user/productdetails/${productName}/${productInfo?.itemId}`);
 
             }}
+        >
+        <div className="w-full flex flex-col justify-center items-center">
+          <h1
+            className="text-sm font-bold"
+           
           >
             {productName?.length <= 29
               ? productName

@@ -75,7 +75,7 @@ export default function Sliders({setIsFormOpen}) {
           </div>
           <button
             id="btn-livePreview"
-            className="p-2  bg-red-600 text-white hover:bg-red-300 text-sm rounded-md"
+            className="p-2  bg-[#CD4354] text-white hover:bg-red-300 text-sm rounded-md"
             onClick={() => {
               const LivePreview = document.querySelector("#LivePreview");
               LivePreview.classList.remove("hidden");

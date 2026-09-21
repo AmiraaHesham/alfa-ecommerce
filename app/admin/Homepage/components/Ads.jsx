@@ -8,8 +8,8 @@ import { useRefresh } from "../../../../context/refreshContext.jsx";
 import Image from "next/image"
 
 export default function Ads() {
-    const { refreshKey } = useRefresh();
-  
+  const { refreshKey } = useRefresh();
+
   const { t, locale } = useLanguage()
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [adNumber, setAdNumber] = useState()
@@ -17,24 +17,24 @@ export default function Ads() {
   const [options, setOptions] = useState([]);
   const [ads, setAds] = useState({
     ad1: {
-      img:"",
-      id:"",
+      img: "",
+      id: "",
     },
-    ad2:{
-      img:"",
-      id:"",
+    ad2: {
+      img: "",
+      id: "",
     },
     ad3: {
-      img:"",
-      id:"",
+      img: "",
+      id: "",
     },
     ad4: {
-      img:"",
-      id:"",
+      img: "",
+      id: "",
     },
     ad5: {
-      img:"",
-      id:"",
+      img: "",
+      id: "",
     },
   })
 
@@ -57,38 +57,38 @@ export default function Ads() {
     respose.forEach((res) => {
       if (res.number === 1) setAds((prev) => ({
         ...prev,
-        ad1:{
-          img :res.imageUrl,
+        ad1: {
+          img: res.imageUrl,
           id: res.offerId
-        } 
+        }
       }))
       if (res.number === 2) setAds((prev) => ({
         ...prev,
         ad2: {
-          img :res.imageUrl,
+          img: res.imageUrl,
           id: res.offerId
-        } 
+        }
       }))
       if (res.number === 3) setAds((prev) => ({
         ...prev,
         ad3: {
-          img :res.imageUrl,
+          img: res.imageUrl,
           id: res.offerId
-        } 
+        }
       }))
       if (res.number === 4) setAds((prev) => ({
         ...prev,
         ad4: {
-          img :res.imageUrl,
+          img: res.imageUrl,
           id: res.offerId
-        } 
+        }
       }))
       if (res.number === 5) setAds((prev) => ({
         ...prev,
         ad5: {
-          img :res.imageUrl,
+          img: res.imageUrl,
           id: res.offerId
-        } 
+        }
       }))
     })
   }
@@ -98,11 +98,11 @@ export default function Ads() {
   }, [refreshKey]);
   return (
     <>
-      <AdsForm setIsFormOpen={setIsFormOpen} isFormOpen={isFormOpen} productsOptions={options} adNumber={adNumber} offerId={offerId} mode={offerId ? "update" : "create"}/>
-      <div className="w-full h-full grid md:grid-cols-3 xs:grid-cols-1 gap-5">
+      <AdsForm setIsFormOpen={setIsFormOpen} isFormOpen={isFormOpen} productsOptions={options} adNumber={adNumber} offerId={offerId} mode={offerId ? "update" : "create"} />
+      <div className="w-full h-full grid md:grid-cols-5 xs:grid-cols-1 gap-5">
         <div className="w-full h-full">
           <h1 className="mb-4 text-xl font-semibold">{t("Advert1")} </h1>
-          <div className="w-[350px] h-[400px] rounded-3xl bg-white p-5 cursor-pointer"
+          <div className="w-[200px] h-[200px] rounded-3xl bg-white p-5 cursor-pointer"
             onClick={() => {
               setIsFormOpen(true)
               setAdNumber(1)
@@ -149,25 +149,23 @@ export default function Ads() {
           </div>
         </div>
         <div className="w-full h-full">
-          <h1 className="mb-4 text-xl font-semibold mx-5">{t("Advert2")} </h1>
-          <div className="w-[300px] h-[500px] rounded-3xl bg-white p-5 mx-5  cursor-pointer"
+          <h1 className="mb-4 text-xl font-semibold ">{t("Advert2")} </h1>
+          <div className="w-[200px] h-[300px] rounded-3xl bg-white p-5   cursor-pointer"
             onClick={() => {
               setIsFormOpen(true)
               setAdNumber(2)
               fetchRecentItems()
               setOfferId(ads.ad2.id)
-
-
             }}
           >
-            {ads.ad2 ?<div className="w-full h-full relative">
+            {ads.ad2 ? <div className="w-full h-full relative">
               <Image
                 src={process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL + ads.ad2.img}
                 alt=""
                 fill
                 className="object-fill rounded-3xl"
               />
-            </div> :   <label className="border-dashed flex justify-center p-5 items-center border-2 h-full w-full rounded-3xl cursor-pointer hover:bg-gray-100">
+            </div> : <label className="border-dashed flex justify-center p-5 items-center border-2 h-full w-full rounded-3xl cursor-pointer hover:bg-gray-100">
               <div
                 id="label-uplod"
                 className="flex flex-col justify-center items-center "
@@ -185,7 +183,7 @@ export default function Ads() {
                 </span>
               </div>
             </label>}
-         
+
 
             <input
               type="file"
@@ -196,9 +194,10 @@ export default function Ads() {
             />
           </div>
         </div>
+        
         <div className="w-full h-full">
           <h1 className="mb-4 text-xl font-semibold">{t("Advert3")} </h1>
-          <div className="w-[350px] h-[400px] rounded-3xl bg-white p-5 cursor-pointer"
+          <div className="w-[200px] h-[200px] rounded-3xl bg-white p-5 cursor-pointer"
             onClick={() => {
               setIsFormOpen(true)
               setAdNumber(3)
@@ -206,35 +205,35 @@ export default function Ads() {
               setOfferId(ads.ad3.id)
 
             }}>
-              {
-                ads.ad3 ? <div className="w-full h-full relative">
-              <Image
-                src={process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL + ads.ad3.img}
-                alt=""
-                fill
-                className="object-fill rounded-3xl"
-              />
-            </div>:
-             <label className="border-dashed flex justify-center p-5 items-center border-2 h-full w-full rounded-3xl cursor-pointer hover:bg-gray-100">
-              <div
-                id="label-uplod"
-                className="flex flex-col justify-center items-center "
-              >
-                <span className="text-2xl bg-white p-2 rounded-full text-red-500">
-                  <IoCloudUploadSharp />
-                </span>
-                <span className="flex flex-col gap-2 items-center">
-                  <div className="text-center text-sm">
-                    <h1 className="mb-2">{t("click_to_upload")}</h1>
-                    <h2 className="text-[10px] text-gray-500">
-                      PNG, JPG or GIF
-                    </h2>
+            {
+              ads.ad3 ? <div className="w-full h-full relative">
+                <Image
+                  src={process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL + ads.ad3.img}
+                  alt=""
+                  fill
+                  className="object-fill rounded-3xl"
+                />
+              </div> :
+                <label className="border-dashed flex justify-center p-5 items-center border-2 h-full w-full rounded-3xl cursor-pointer hover:bg-gray-100">
+                  <div
+                    id="label-uplod"
+                    className="flex flex-col justify-center items-center "
+                  >
+                    <span className="text-2xl bg-white p-2 rounded-full text-red-500">
+                      <IoCloudUploadSharp />
+                    </span>
+                    <span className="flex flex-col gap-2 items-center">
+                      <div className="text-center text-sm">
+                        <h1 className="mb-2">{t("click_to_upload")}</h1>
+                        <h2 className="text-[10px] text-gray-500">
+                          PNG, JPG or GIF
+                        </h2>
+                      </div>
+                    </span>
                   </div>
-                </span>
-              </div>
-            </label>
-              }
-           
+                </label>
+            }
+
 
             <input
               type="file"
@@ -247,7 +246,7 @@ export default function Ads() {
         </div>
         <div className="w-full h-full">
           <h1 className="mb-4 text-xl font-semibold">{t("Advert4")} </h1>
-          <div className="w-[350px] h-[400px] rounded-3xl bg-white p-5 cursor-pointer"
+          <div className="w-[200px] h-[200px] rounded-3xl bg-white p-5 cursor-pointer"
             onClick={() => {
               setIsFormOpen(true)
               setAdNumber(4)
@@ -255,36 +254,36 @@ export default function Ads() {
               setOfferId(ads.ad4.id)
 
             }}>
-              {
-                ads.ad4 ? <div className="w-full h-full relative">
-              <Image
-                src={process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL + ads.ad4.img}
-                alt=""
-                fill
-                className="object-fill rounded-3xl"
-              />
-            </div>
-            :
-                <label className="border-dashed flex justify-center p-5 items-center border-2 h-full w-full rounded-3xl cursor-pointer hover:bg-gray-100">
-              <div
-                id="label-uplod"
-                className="flex flex-col justify-center items-center "
-              >
-                <span className="text-2xl bg-white p-2 rounded-full text-red-500">
-                  <IoCloudUploadSharp />
-                </span>
-                <span className="flex flex-col gap-2 items-center">
-                  <div className="text-center text-sm">
-                    <h1 className="mb-2">{t("click_to_upload")}</h1>
-                    <h2 className="text-[10px] text-gray-500">
-                      PNG, JPG or GIF
-                    </h2>
-                  </div>
-                </span>
+            {
+              ads.ad4 ? <div className="w-full h-full relative">
+                <Image
+                  src={process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL + ads.ad4.img}
+                  alt=""
+                  fill
+                  className="object-fill rounded-3xl"
+                />
               </div>
-            </label>
-              }
-        
+                :
+                <label className="border-dashed flex justify-center p-5 items-center border-2 h-full w-full rounded-3xl cursor-pointer hover:bg-gray-100">
+                  <div
+                    id="label-uplod"
+                    className="flex flex-col justify-center items-center "
+                  >
+                    <span className="text-2xl bg-white p-2 rounded-full text-red-500">
+                      <IoCloudUploadSharp />
+                    </span>
+                    <span className="flex flex-col gap-2 items-center">
+                      <div className="text-center text-sm">
+                        <h1 className="mb-2">{t("click_to_upload")}</h1>
+                        <h2 className="text-[10px] text-gray-500">
+                          PNG, JPG or GIF
+                        </h2>
+                      </div>
+                    </span>
+                  </div>
+                </label>
+            }
+
 
             <input
               type="file"
@@ -297,7 +296,7 @@ export default function Ads() {
         </div>
         <div className="w-full h-full">
           <h1 className="mb-4 text-xl font-semibold">{t("Advert5")} </h1>
-          <div className="w-[350px] h-[400px] rounded-3xl bg-white p-5 cursor-pointer"
+          <div className="w-[200px] h-[200px] rounded-3xl bg-white p-5 cursor-pointer"
             onClick={() => {
               setIsFormOpen(true)
               setAdNumber(5)
@@ -305,36 +304,34 @@ export default function Ads() {
               setOfferId(ads.ad5.id)
 
             }}>
-              {
-                ads.ad5 ? <div className="w-full h-full relative">
-              <Image
-                src={process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL + ads.ad5.img}
-                alt=""
-                fill
-                className="object-fill rounded-3xl"
-              />
-            </div>:
-            <label className="border-dashed flex justify-center p-5 items-center border-2 h-full w-full rounded-3xl cursor-pointer hover:bg-gray-100">
-              <div
-                id="label-uplod"
-                className="flex flex-col justify-center items-center "
-              >
-                <span className="text-2xl bg-white p-2 rounded-full text-red-500">
-                  <IoCloudUploadSharp />
-                </span>
-                <span className="flex flex-col gap-2 items-center">
-                  <div className="text-center text-sm">
-                    <h1 className="mb-2">{t("click_to_upload")}</h1>
-                    <h2 className="text-[10px] text-gray-500">
-                      PNG, JPG or GIF
-                    </h2>
+            {
+              ads.ad5 ? <div className="w-full h-full relative">
+                <Image
+                  src={process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL + ads.ad5.img}
+                  alt=""
+                  fill
+                  className="object-fill rounded-3xl"
+                />
+              </div> :
+                <label className="border-dashed flex justify-center p-5 items-center border-2 h-full w-full rounded-3xl cursor-pointer hover:bg-gray-100">
+                  <div
+                    id="label-uplod"
+                    className="flex flex-col justify-center items-center "
+                  >
+                    <span className="text-2xl bg-white p-2 rounded-full text-red-500">
+                      <IoCloudUploadSharp />
+                    </span>
+                    <span className="flex flex-col gap-2 items-center">
+                      <div className="text-center text-sm">
+                        <h1 className="mb-2">{t("click_to_upload")}</h1>
+                        <h2 className="text-[10px] text-gray-500">
+                          PNG, JPG or GIF
+                        </h2>
+                      </div>
+                    </span>
                   </div>
-                </span>
-              </div>
-            </label>
-              }
-            
-
+                </label>
+            }
             <input
               type="file"
               accept="image/*"
