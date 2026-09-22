@@ -16,6 +16,7 @@ import SiteFeatures from "./components/SiteFeatures";
 import TopDiscounted from "./components/TopDiscounted";
 import ImageSlider from "./components/ImageSlider";
 import CategoriesSection from "./components/CategoriesSection";
+import ProductAdsSlider from "./components/ProductAdsSlider";
 import FeaturedProducts from "./components/FeatuerProducts";
 import Link from "next/link";
 
@@ -429,17 +430,17 @@ const [productType ,setProductType] = useState("featuredProducts")
 
             </div>
           )}
-          <div className="flex lg:flex-row xs:flex-col mt-10 gap-5 items-start w-full h-[440px]">
-            <div className="w-full h-full bg-white rounded-3xl">
-
+          <div className="flex lg:flex-row xs:flex-col mt-10 gap-5 justify-between h-[430px] items-start w-full">
+            <div className="md:w-[700px] xs:w-full h-full bg-white rounded-3xl">
+              <ProductAdsSlider />
             </div>
             {loading ? (
               <div className="w-full h-full">
                 <ListSkeleton className="w-full h-[440px] bg-white rounded-3xl p-5 space-y-5" />
               </div>
             ) : (
-              <div className="flex flex-col items-center gap-5 w-3/4">
-                <Top10Products Products={newProducts} section={"top-product"} />
+              <div className="flex flex-col items-center gap-5 w-full">
+                <Top10Products Products={newProducts} section={"top_product"} />
               </div>
             )}
 
