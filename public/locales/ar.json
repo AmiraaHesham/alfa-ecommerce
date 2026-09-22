@@ -333,7 +333,7 @@
   "data_saved_successfully":"تم حفظ البيانات بنجاح",
   "add_advert":"إضافة إعلان",
   "edit_advert":"تعديل الإعلان",
-  "product_ads":"إعلانات المنتجات",
+  "product_ads":" المنتجات المميزة في الشرائح",
   "add_product_ad":"إضافة إعلان منتج",
   "edit_product_ad":"تعديل إعلان المنتج",
   "upload_ad_image":"ارفع صورة مميزة للإعلان",
@@ -358,7 +358,15 @@
   "next": "التالي",
   "showing_results": "عرض {start}–{end} من أصل {total} نتائج",
   "results": "نتائج",
-  "view_all_reviews": "عرض جميع التقييمات"
+  "view_all_reviews": "عرض جميع التقييمات",
+  "top_products":"افضل المنتجات",
+  "Special_Offer" :"عرض خاص",
+  "orderSummary":"ملخص الطلب",
+  "Select_quantity":"حدد الكمية",
+  "returnSummary":"ملخص المرتجع",
+  "totalProducts":"جميع المنتجات",
+  "return_cancel":"إلغاء المرتجع",
+  "images_saved_successfully":"تم حفظ الصور بنجاح"
 
   
 

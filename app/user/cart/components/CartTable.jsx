@@ -155,8 +155,8 @@ export default function CartTable({
       </div>
 
       {/* ── Desktop / Tablet table layout ───────────────────────── */}
-      <div className="xs:hidden md:flex w-full overflow-x-auto overflow-hidden rounded-3xl bg-white">
-        <table className="w-full min-w-[640px]">
+      <div className="xs:hidden md:flex w-full h-auto overflow-x-auto overflow-hidden rounded-3xl bg-white">
+        <table className="w-full min-w-[640px] h-full">
           <thead className="text-center uppercase tracking-wide">
             <tr className="h-20 border-b border-b-gray-200 border-gray-100">
               <th className="w-12"></th>
@@ -216,10 +216,10 @@ export default function CartTable({
                         <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gray-100">
                           <Image
                             alt=""
-                            src={`${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL}${getThumbnailUrl(product.mainImageURL)}`}
+                            src={`${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL}${getThumbnailUrl(product.images[0]?.imageUrl)}`}
                             width={80}
                             height={80}
-                            className="h-full w-full object-contain"
+                            className="h-full w-full object-fill"
                           />
                         </div>
 

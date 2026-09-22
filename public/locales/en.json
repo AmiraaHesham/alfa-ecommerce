@@ -225,7 +225,7 @@
   "return_order": "Product return",
   "return": "Return",
   "returns": "Returns",
-  "Returned_quantityA": "Returned quantity",
+  "Returned_quantity": "Returned quantity",
   "addToWishList": "Add to wishlist",
 "Overview":"Overview",
 "General":"General",
@@ -357,7 +357,18 @@
   "next": "Next",
   "showing_results": "Showing {start}–{end} of {total} results",
   "results": "results",
-  "view_all_reviews": "View all reviews"
+  "view_all_reviews": "View all reviews",
+  "top_products":"Top products",
+  "Special_Offer" :"Special Offer",
+  "orderSummary":"Order summary",
+  "Select_quantity" :"Select quantity",
+  "returnSummary":"Return summary",
+  "totalProducts":"Total products",
+  "return_cancel":"Return cancel",
+  "images_saved_successfully":"Images saved successfully"
+
+
+
 
   
 

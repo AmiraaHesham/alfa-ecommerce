@@ -3,19 +3,16 @@ import Image from "next/image";
 import { MdCancel } from "react-icons/md";
 import { getRequest, postRequest } from "../../../../utils/requestsUtils";
 import { useEffect, useState } from "react";
-import { useLanguage } from "../../../../context/LanguageContext";
 import { useIdContext } from "../../../../context/idContext";
 import { useRouter } from "next/navigation";
 import { FaBox, FaCheck, FaTruck } from "react-icons/fa";
 import { getThumbnailUrl } from "../../../../utils/functions";
-import Select from "react-select";
 import { TfiTimer } from "react-icons/tfi";
-
+import ProductReturnForm from './ProductReturnForm'
+import { useLanguage } from "../../../../context/LanguageContext";
 export default function OrderDetails({ orderId }) {
   const [order, setOrder] = useState([]);
 
-  const [quantity, setQuantity] = useState();
-  const [reason, setReason] = useState();
   const [orderSummary, setOrderSummary] = useState({
     total: "",
     state: "",
@@ -26,14 +23,13 @@ export default function OrderDetails({ orderId }) {
     paymentMethod: "",
     shippingCost: "",
   });
-  const [reasonMessage, setReasonMessage] = useState();
+  
   const [isOpenPopup, setOpenPopup] = useState(false);
   const { setSelectedProductId } = useIdContext();
   const navigate = useRouter();
-  const { t } = useLanguage();
+  const { t ,locale} = useLanguage();
 
-  const lang =
-    typeof window !== "undefined" ? localStorage.getItem("lang") : null;
+
   const steps = [
     { icon: <TfiTimer size={20} />, label: t("PENDING") },
     { icon: <FaBox size={20} />, label: t("PROCESSING") },
@@ -72,23 +68,12 @@ export default function OrderDetails({ orderId }) {
           "",
           t("message"),
         );
-                  window.location.reload();
+      window.location.reload();
 
     } catch (error) {
     }
   };
 
-  const returnOrder = async () => {
-    try {
-      await postRequest("/api/users/return-orders", {
-        orderItemLineId: productdata.id,
-        quantity: quantity.value,
-        reason: reason.value,
-        reasonMessage: reasonMessage,
-      },t("message"));
-    } catch (error) {
-    }
-  };
 
   useEffect(() => {
     getOrder();
@@ -111,45 +96,19 @@ export default function OrderDetails({ orderId }) {
       setOrderStepPath(1);
     }
   }, [orderSummary.state]);
-  const quantityOptions = Array.from(
-    { length: productdata.quantity },
-    (_, i) => ({ value: i + 1, label: i + 1 }),
-  );
-  const reasons = [
-    "DAMAGED",
-    "DEFECTIVE",
-    "WRONG_ITEM",
-    "MISSING_ACCESSORIES",
-    "NOT_AS_DESCRIBED",
-    "PERFORMANCE_ISSUES",
-    "CONNECTIVITY_ISSUES",
-    "COMPATIBILITY_ISSUES",
-    "SOFTWARE_ISSUES",
-    "CHANGED_MIND",
-    "FOUND_BETTER_PRICE",
-    "ORDERED_BY_MISTAKE",
-    "ARRIVED_LATE",
-    "WARRANTY_CLAIM",
-    "OTHER",
-  ];
 
-  const ReasonOptions = reasons.map((reason) => ({
-    value: reason,
-    label: t(reason),
-  }));
   const date = new Date(orderSummary.createdDate);
   const dateOnly = date.toLocaleDateString("en-GB");
   return (
-    <div className="w-full h-full p-10">
+    <div className="w-full h-full p-5">
+      <ProductReturnForm productdata ={productdata}  isOpenPopup ={isOpenPopup} setOpenPopup={setOpenPopup}/>
       <div className="relative flex items-center h-16 px-4 my-5">
         <div
           className="absolute top-1/2 left-0 right-0 h-0.5"
           style={{
-            background: `linear-gradient(${
-              lang === "en" ? "to right" : "to left"
-            }, red ${activeStep * orderStepPath}%, #e0e0e0 ${
-              activeStep * orderStepPath
-            }%)`,
+            background: `linear-gradient(${locale === "en" ? "to right" : "to left"
+              }, red ${activeStep * orderStepPath}%, #e0e0e0 ${activeStep * orderStepPath
+              }%)`,
           }}
         ></div>
         <div className="flex justify-between w-full relative z-10">
@@ -164,11 +123,10 @@ export default function OrderDetails({ orderId }) {
             >
               {/* الدائرة المحيطة بالأيقونة */}
               <div
-                className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${
-                  index + 1 <= activeStep
+                className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${index + 1 <= activeStep
                     ? "bg-red-100 border-2 border-red-300"
                     : "bg-gray-100 border-2 border-gray-300"
-                }`}
+                  }`}
               >
                 {/* الأيقونة (ملونة حسب المرحلة النشطة) */}
                 <div
@@ -181,11 +139,10 @@ export default function OrderDetails({ orderId }) {
               </div>
               {/* العنوان تحت الأيقونة */}
               <span
-                className={`text-xs mt-1 font-medium transition-opacity ${
-                  index + 1 <= activeStep
+                className={`text-xs mt-1 font-medium transition-opacity ${index + 1 <= activeStep
                     ? "text-red-600 opacity-100"
                     : "text-gray-500 opacity-70"
-                }`}
+                  }`}
               >
                 {step.label}
               </span>
@@ -194,86 +151,69 @@ export default function OrderDetails({ orderId }) {
         </div>
       </div>
       <div className="relative flex md:flex-row xs:flex-col gap-7 ">
-        <div className="re rounded-xl w-full h-[420px]  border overflow-hidden overflow-x-auto md:overflow-x-hidden overflow-y-scroll ">
-          <table className="  xs:w-[200%] lg:w-full  ">
-            <thead className=" text-xs text-gray-500  text-justify">
-              <tr className=" text-gray-500 h-12">
-                <th className="w-[30%] px-5">{t("product")} </th>
-                <th className="w-[20%]">{t("price")} </th>
-                <th className="w-[10%] ">{t("discount")} </th>
-                <th className="w-[10%] px-2 ">{t("quantity")} </th>
-                {orderSummary.state === "DELIVERED" ? (
-                  <th className="w-[10%] ">{t("Returned_quantity")} </th>
-                ) : (
-                  ""
-                )}
-                <th className="w-[10%] ">{t("total")} </th>
-                {orderSummary.state === "DELIVERED" ? (
-                  <th className="w-[20%] ">{t("return_order")} </th>
-                ) : (
-                  ""
-                )}
-              </tr>
-            </thead>
-            <tbody className="bg-white text-md w-full  ">
-              {/* {order.length != 0 ? ( */}
-              {order.map((product, index) => {
-                return (
-                  <tr
-                    key={index}
-                    className=" text-red-950 border h-14 w-full  hover:bg-gray-100"
+        {/* ── Mobile (XS) card layout ─────────────────────────────── */}
+        <div className="xs:flex md:hidden flex-col gap-0 w-full rounded-3xl bg-white overflow-hidden">
+          {order.map((product, index) => {
+            const productImage = `${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL}${getThumbnailUrl(
+              product.item?.images?.[0]?.imageUrl
+            )}`;
+            const openProduct = () => {
+              setSelectedProductId(product.item.itemId);
+              navigate.push(`/user/productdetails/${product.item.itemId}`);
+            };
+            return (
+              <div key={index} className="flex p-4 border-b border-gray-100">
+                <div className="flex gap-4 w-full">
+                  <div
+                    className="flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gray-100 cursor-pointer"
+                    onClick={openProduct}
                   >
-                    <td
-                      className="px-5 cursor-pointer"
-                      onClick={() => {
-                        setSelectedProductId(product.item.itemId);
-                        navigate.push(
-                          `/user/productdetails/${product.item.itemId}`,
-                        );
-                      }}
-                    >
-                      <div className="flex orderss-center gap-3">
-                        <Image
-                          alt=""
-                          src={`${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL}${getThumbnailUrl(product.item.mainImageURL)}`}
-                          width={100}
-                          height={100}
-                          className="rounded-full border w-[45px] h-[45px]  "
-                        />
+                    <Image
+                      alt=""
+                      src={productImage}
+                      width={96}
+                      height={96}
+                      className="h-full w-full object-contain"
+                    />
+                  </div>
 
-                        <div>
-                          <h1 className="font-semibold text-sm">
-                            {localStorage.lang === "ar"
-                              ? product.item.nameAr
-                              : product.item.nameEn}
-                          </h1>
-                          <h1 className="text-xs  text-gray-500">
-                            {product.item.code}
-                          </h1>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="font-semibold text-red-500">
-                      <div>
-                        <span>
+                  <div className="flex-1 min-w-0 flex flex-col">
+                    <div
+                      className="flex items-start justify-between gap-2 cursor-pointer"
+                      onClick={openProduct}
+                    >
+                      <h1 className="font-semibold text-lg text-gray-900 leading-snug break-words">
+                        {localStorage.locale === "ar"
+                          ? product.item.nameAr
+                          : product.item.nameEn}
+                      </h1>
+                    </div>
+
+                    <div className="flex flex-col divide-y divide-dotted divide-gray-200 mt-2">
+                      <div className="flex items-center justify-between py-2">
+                        <span className="text-sm text-gray-500">
+                          {t("price")}
+                        </span>
+                        <span className="text-sm font-medium text-gray-900">
                           {product.unitPrice.toLocaleString("en-US")}{" "}
                           {t("currency")}
+                          {product.oldUnitPrice ? (
+                            <span className="text-xs text-gray-400 line-through mx-2">
+                              {product.oldUnitPrice.toLocaleString("en-US")}{" "}
+                              {t("currency")}
+                            </span>
+                          ) : (
+                            ""
+                          )}
                         </span>
-
-                        {product.oldUnitPrice ? (
-                          <span className="text-gray-400 line-through text-sm mx-2 opacity-90">
-                            {product.oldUnitPrice.toLocaleString("en-US")}{" "}
-                            {t("currency")}
-                          </span>
-                        ) : (
-                          ""
-                        )}
                       </div>
-                    </td>
-                    <td className="">
-                      <div className="flex gap-5">
+
+                      {/* <div className="flex items-center justify-between py-2">
+                        <span className="text-sm text-gray-500">
+                          {t("discount")}
+                        </span>
                         {product.oldUnitPrice ? (
-                          <span className="bg-red-600 text-sm px-2 text-white rounded-md">
+                          <span className="bg-red-600 text-sm px-2 py-0.5 text-white rounded-md">
                             {(
                               ((product.oldUnitPrice - product.unitPrice) /
                                 product.oldUnitPrice) *
@@ -284,19 +224,175 @@ export default function OrderDetails({ orderId }) {
                         ) : (
                           "--"
                         )}
+                      </div> */}
+
+                      <div className="flex items-center justify-between py-2">
+                        <span className="text-sm text-gray-500">
+                          {t("quantity")}
+                        </span>
+                        <div className="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-3 py-1 text-gray-700 min-w-[50px]">
+                          <span className="font-medium text-sm">
+                            {product.quantity}
+                          </span>
+                        </div>
+                      </div>
+
+                      {orderSummary.state === "DELIVERED" ? (
+                        <div className="flex items-center justify-between py-2">
+                          <span className="text-sm text-gray-500">
+                            {t("Returned_quantity")}
+                          </span>
+                          <div className="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-3 py-1 text-gray-700 min-w-[50px]">
+                            <span className="font-medium text-sm">
+                              {product.returnedQuantity}
+                            </span>
+                          </div>
+                        </div>
+                      ) : (
+                        ""
+                      )}
+
+                      <div className="flex items-center justify-between py-2">
+                        <span className="text-sm text-gray-500">
+                          {t("total")}
+                        </span>
+                        <span className="text-sm font-bold text-[#da643b]">
+                          {product.totalPrice.toLocaleString("en-US")}{" "}
+                          {t("currency")}
+                        </span>
+                      </div>
+                    </div>
+
+                    {orderSummary.state === "DELIVERED" ? (
+                      <button
+                        className={`${product.returnedQuantity !== product.quantity
+                            ? "bg-red-600"
+                            : "bg-gray-500 cursor-not-allowed"
+                          } px-3 py-1.5 text-sm text-center rounded-lg text-white mt-2 self-end`}
+                        onClick={() => {
+                          if (
+                            product.returnedQuantity !== product.quantity
+                          ) {
+                            setOpenPopup(true);
+                            setProductData((prev) => ({
+                              ...prev,
+                              id: product.itemLineId,
+                              image:
+                                process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +
+                                getThumbnailUrl(
+                                  product.item?.images?.[0]?.imageUrl                                   
+                                ),
+                              name:
+                                localStorage.locale === "ar"
+                                  ? product.item.nameAr
+                                  : product.item.nameEn,
+                              quantity: product.quantity,
+                            }));
+                          }
+                        }}
+                      >
+                        {t("return")}
+                      </button>
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* ── Desktop / Tablet table layout ───────────────────────── */}
+        <div className="xs:hidden md:flex w-full overflow-x-auto overflow-hidden rounded-3xl bg-white">
+          <table className="w-full ">
+            <thead className="text-center uppercase tracking-wide">
+              <tr className="h-20 border-b border-b-gray-200 border-gray-100">
+                <th className=" ">{t("product")}</th>
+                <th className=" ">{t("price")}</th>
+                {/* <th className="px-5 text-start">{t("discount")}</th> */}
+                <th className=" ">{t("quantity")}</th>
+                {orderSummary.state === "DELIVERED" ? (
+                  <th className="">{t("Returned_quantity")} </th>
+                ) : (
+                  ""
+                )}
+                <th className=" ">{t("total")}</th>
+                {orderSummary.state === "DELIVERED" ? (
+                  <th className=" "> </th>
+                ) : (
+                  ""
+                )}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200 bg-white text-md w-full">
+              {order.map((product, index) => {
+                return (
+                  <tr
+                    key={index}
+                    className="transition-colors hover:bg-gray-50/60"
+                  >
+                    <td
+                      className="py-5 px-5 cursor-pointer"
+                      onClick={() => {
+                        setSelectedProductId(product.item.itemId);
+                        navigate.push(
+                          `/user/productdetails/${product.item.itemId}`,
+                        );
+                      }}
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gray-100">
+                          <Image
+                            alt=""
+                            src={`${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL}${getThumbnailUrl(
+                              product.item.images[0]?.imageUrl
+                            )}`}
+                            width={80}
+                            height={80}
+                            className="h-full w-full object-fill"
+                          />
+                        </div>
+
+                        <div>
+                          <h1 className="font-semibold text-sm text-gray-900">
+                            {localStorage.locale === "ar"
+                              ? product.item.nameAr
+                              : product.item.nameEn}
+                          </h1>
+
+                        </div>
                       </div>
                     </td>
-                    <td className="text-sm">
-                      <div className="  gap-3 rounded-lg h-full text-center w-[50px] border text-gray-600 bg-white">
-                        <span className="font-medium  text-sm w-10 text-center">
+                    <td className="py-5 px-5">
+                      <div className="flex flex-col gap-1">
+                        <span className="font-semibold text-gray-900">
+                          {product.unitPrice.toLocaleString("en-US")}{" "}
+                          {t("currency")}
+                        </span>
+
+                        {product.oldUnitPrice ? (
+                          <span className="text-xs text-gray-400 line-through">
+                            {product.oldUnitPrice.toLocaleString("en-US")}{" "}
+                            {t("currency")}
+                          </span>
+                        ) : (
+                          ""
+                        )}
+                      </div>
+                    </td>
+
+                    <td className="py-5 px-5">
+                      <div className="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-3 py-1 text-gray-700 min-w-[50px]">
+                        <span className="font-medium text-sm">
                           {product.quantity}
                         </span>
                       </div>
                     </td>
                     {orderSummary.state === "DELIVERED" ? (
-                      <td className="text-sm">
-                        <div className="  gap-3 rounded-lg h-full text-center w-[50px] border text-gray-600 bg-white">
-                          <span className="font-medium  text-sm w-10 text-center">
+                      <td className="text-center">
+                        <div className="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-3 py-1 text-gray-700 min-w-[50px]">
+                          <span className="font-medium text-sm">
                             {product.returnedQuantity}
                           </span>
                         </div>
@@ -304,25 +400,34 @@ export default function OrderDetails({ orderId }) {
                     ) : (
                       ""
                     )}
-                    <td className="text-sm font-semibold">
-                      {product.totalPrice.toLocaleString("en-US")}{" "}
-                      {t("currency")}
+                    <td className="py-5 px-5 text-end">
+                      <span className="font-semibold text-[#da643b]">
+                        {product.totalPrice.toLocaleString("en-US")}{" "}
+                        {t("currency")}
+                      </span>
                     </td>
                     {orderSummary.state === "DELIVERED" ? (
-                      <td>
+                      <td className="py-5 px-5 text-end">
                         <button
-                          className={`${product.returnedQuantity !== product.quantity ? "bg-red-600" : "bg-gray-500 cursor-not-allowed"} px-3 py-1 text-sm text-center rounded-lg text-white`}
+                          className={`${product.returnedQuantity !== product.quantity
+                              ? "bg-[#e14a5c]"
+                              : "bg-gray-500 cursor-not-allowed"
+                            } px-3 py-1.5 text-sm text-center rounded-full text-white`}
                           onClick={() => {
-                            if (product.returnedQuantity !== product.quantity) {
+                            if (
+                              product.returnedQuantity !== product.quantity
+                            ) {
                               setOpenPopup(true);
                               setProductData((prev) => ({
                                 ...prev,
                                 id: product.itemLineId,
                                 image:
                                   process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +
-                                  getThumbnailUrl(product.item.mainImageURL),
+                                  getThumbnailUrl(
+                                    product.item?.images?.[0]?.imageUrl
+                                  ),
                                 name:
-                                  localStorage.lang === "ar"
+                                  localStorage.locale === "ar"
                                     ? product.item.nameAr
                                     : product.item.nameEn,
                                 quantity: product.quantity,
@@ -342,164 +447,10 @@ export default function OrderDetails({ orderId }) {
             </tbody>
           </table>
         </div>
-        <div
-          className={`fixed  inset-0 bg-black/40 ${isOpenPopup ? "flex" : "hidden"} items-center justify-center z-50`}
-        >
-          <div className=" w-[450px] p-5 rounded-lg bg-white">
-            <div className="flex justify-between items-center mb-3">
-              <span className="font-semibold text-gray-600">
-                {t("return_order")}
-              </span>
-              <button
-                className="text-xl text-red-600"
-                onClick={() => {
-                  setOpenPopup(false);
-                  setQuantity("");
-                  setReason("");
-                  setReasonMessage("");
-                }}
-              >
-                <MdCancel />
-              </button>
-            </div>
-            <hr />
-            <div className="flex flex-col justify-center items-center gap-7  p-7">
-              <div className="flex flex-col justify-center items-center gap-5">
-                <Image
-                  src={productdata.image}
-                  width={200}
-                  height={200}
-                  alt=""
-                  className="w-[120px] h-[120px] border-2 rounded-md "
-                />
-                <span className="">{productdata.name} </span>
-              </div>
 
-              <div className="w-full flex justify-between items-center">
-                <label>إختر الكمية</label>
-                <Select
-                  options={quantityOptions}
-                  isSearchable={false}
-                  value={quantity}
-                  onChange={(selectedOption) => {
-                    setQuantity(selectedOption);
-                  }}
-                  placeholder={t("select")}
-                  className="h-full w-[70%] border rounded-md "
-                  //  onMenuOpen={() => {}}
-                  styles={{
-                    control: (provided) => ({
-                      ...provided,
-                      border: "none",
-                      boxShadow: "none",
-                      background: "transparent",
-                      fontWeight: "600",
-                      height: "100%",
-                      width: "100%",
-                    }),
-                    option: (provided) => ({
-                      ...provided,
-                      // backgroundColor: '#b91c1c',
-                      color: "white",
-                      fontSize: "18px",
-                      fontWeight: "600",
-                    }),
-                    input: (base) => ({
-                      ...base,
-                      color: "#374151",
-                    }),
-                    option: (base, state) => ({
-                      ...base,
-                      backgroundColor: state.isSelected
-                        ? "#dc2626"
-                        : state.isFocused
-                          ? "#fee2e2"
-                          : "#ffffff",
-                      color: state.isSelected ? "#ffffff" : "#374151",
-                      cursor: "pointer",
-                      padding: "10px",
-                      "&:hover": {
-                        backgroundColor: state.isSelected
-                          ? "#dc2626"
-                          : "#fee2e2",
-                      },
-                    }),
-                  }}
-                />
-              </div>
-              <div className="w-full flex justify-between items-center">
-                <label> {t("Reason_for_return")}</label>
-                <Select
-                  isSearchable={false}
-                  options={ReasonOptions}
-                  value={reason}
-                  onChange={(selectedOption) => {
-                    setReason(selectedOption);
-                  }}
-                  placeholder={t("select")}
-                  className="h-full w-[70%] border rounded-md"
-                  //  onMenuOpen={() => {}}
-                  styles={{
-                    control: (provided) => ({
-                      ...provided,
-                      border: "none",
-                      boxShadow: "none",
-                      background: "transparent",
-                      fontWeight: "600",
-                      height: "100%",
-                      width: "100%",
-                    }),
-                    option: (provided) => ({
-                      ...provided,
-                      // backgroundColor: '#b91c1c',
-                      color: "white",
-                      fontSize: "18px",
-                      fontWeight: "600",
-                    }),
-                    input: (base) => ({
-                      ...base,
-                      color: "#374151",
-                    }),
-                    option: (base, state) => ({
-                      ...base,
-                      backgroundColor: state.isSelected
-                        ? "#dc2626"
-                        : state.isFocused
-                          ? "#fee2e2"
-                          : "#ffffff",
-                      color: state.isSelected ? "#ffffff" : "#374151",
-                      cursor: "pointer",
-                      padding: "10px",
-                      "&:hover": {
-                        backgroundColor: state.isSelected
-                          ? "#dc2626"
-                          : "#fee2e2",
-                      },
-                    }),
-                  }}
-                />
-              </div>
-              <div className="w-full">
-                <label className="text-sm font-semibold ">
-                  {t("message_reason")}
-                </label>
-                <textarea
-                  className="w-full border p-1 rounded-md mt-2 "
-                  onChange={(e) => setReasonMessage(e.target.value)}
-                ></textarea>
-              </div>
-              <button
-                className="w-full rounded-lg py-1 text-white bg-red-500"
-                onClick={returnOrder}
-              >
-                {t("return")}
-              </button>
-            </div>
-          </div>
-        </div>
 
         <div className=" md:w-[40%]  xs:w-full">
-          <div className=" p-7  w-full bg-white rounded-lg border">
+          <div className=" p-7  w-full bg-white rounded-3xl">
             <div className="flex justify-between items-center mb-10">
               <h1 className=" text-2xl font-bold">{t("orderSummary")} </h1>
               {orderSummary.state === "CANCELLED" ? (
@@ -523,22 +474,15 @@ export default function OrderDetails({ orderId }) {
               </span>
 
               <span className="font-semibold">
-                {orderSummary.total.toLocaleString("en-US") +
+                {(orderSummary.total - orderSummary.totalDiscount).toLocaleString("en-US") +
                   " " +
                   t("currency")}
               </span>
             </div>
+
             <div className="flex justify-between items-center mb-5">
-              <span className="text-gray-600">{t("totalDiscount")} </span>
-              <span className="font-semibold">
-                {orderSummary.totalDiscount.toLocaleString("en-US") +
-                  " " +
-                  t("currency")}{" "}
-              </span>
-            </div>
-            <div className="flex justify-between items-center mb-5">
-              <span className="text-gray-600">{t("payment_method")}</span>
-              <span>{t(orderSummary.paymentMethod)}</span>
+              <span className="text-gray-600 font">{t("payment_method")}</span>
+              <span className="font-semibold">{t(orderSummary.paymentMethod)}</span>
             </div>
 
             <div className="flex justify-between items-center">
@@ -550,7 +494,7 @@ export default function OrderDetails({ orderId }) {
 
             <hr className="my-6" />
             <div className="flex justify-between orderss-center text-2xl font-semibold">
-              <span>{t("grandTotal")} </span>
+              <span>{t("total")} </span>
               <span className="">
                 {orderSummary.totalOrder.toLocaleString("en-US") +
                   " " +
@@ -558,11 +502,10 @@ export default function OrderDetails({ orderId }) {
               </span>
             </div>
             <button
-              className={`w-full h-7  mt-7 rounded-md text-white ${
-                orderSummary.state === "PENDING"
-                  ? "bg-red-500 hover:bg-red-600"
+              className={`w-full h-8  mt-7 rounded-full text-white ${orderSummary.state === "PENDING"
+                  ? "bg-[#e14a5c] hover:bg-red-600"
                   : "bg-gray-500 cursor-not-allowed"
-              }`}
+                }`}
               onClick={orderCancel}
             >
               {t("order_cancel")}

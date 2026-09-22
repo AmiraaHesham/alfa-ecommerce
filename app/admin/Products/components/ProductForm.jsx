@@ -21,7 +21,7 @@ import { toast } from "react-toastify";
 import Select from "react-select";
 import { ImBlocked } from "react-icons/im";
 
-export default function FormProduct({ isFormOpen, setIsFormOpen, isEditMode }) {
+export default function FormProduct({ isFormOpen, setIsFormOpen, isEditMode ,setIsEditMode }) {
   const [enabledActive, setEnabledActive] = useState(true);
   const [enabledFavorite, setEnabledFavorite] = useState(false);
   const [enabledAvailable, setEnabledAvailable] = useState(true);
@@ -191,12 +191,12 @@ export default function FormProduct({ isFormOpen, setIsFormOpen, isEditMode }) {
     try {
       const respose = await postRequest("/api/admin/items", fields, t("message"));
       if (!respose) return;
-      console.log(respose)
-      console.log(respose.itemId)
+  
       setSelectedProductId(respose.itemId)
       triggerRefresh();
       toast.success(t("data_saved_successfully"));
       setShowImages(true)
+      setIsEditMode(true)
     } catch (err) {
     } finally {
       setLoading(false);
@@ -205,25 +205,40 @@ export default function FormProduct({ isFormOpen, setIsFormOpen, isEditMode }) {
 
   const addProductImges = async () => {
     try {
-      console.log(itemImages)
       const formData = new FormData();
       itemImages.forEach((img) => {
-        if (img.file) {
+        if (img.file) { 
           formData.append("itemImages", img.file);
         }
       });
       await postRequest(`/api/admin/items/${selectedProductId}/images`,
-        formData
+        formData,""
       )
-            triggerRefresh();
+            toast.success(t("images_saved_successfully"));
 
+            triggerRefresh();
+productData()
     }
     catch (err) {
       console.log(err)
     }
   }
-  const deleteProductImg = async(imageId)=>{
-await deleteRequest(`/api/admin/items/${selectedProductId}/images/${imageId}`)
+  const deleteProductImg = async(imageId ,index)=>{
+    try{
+      if(imageId) {
+      const res =  await deleteRequest(`/api/admin/items/${selectedProductId}/images/${imageId}` ,t("message"))
+     console.log(res)
+     if(res.success){
+       removeItemImage(index)
+     }
+     
+      }else{
+        removeItemImage(index)
+      }
+      
+
+    }
+    catch(err){}
   }
 
   // جلب بيانات المنتج للتعديل
@@ -284,7 +299,6 @@ await deleteRequest(`/api/admin/items/${selectedProductId}/images/${imageId}`)
 
   // تحديث المنتج
   const updateProduct = async () => {
-
     // التحقق من السعر
     if (
       product.oldPrice !== null &&
@@ -293,8 +307,6 @@ await deleteRequest(`/api/admin/items/${selectedProductId}/images/${imageId}`)
       toast.error(t("check_oldPrice"));
       return;
     }
-
-
     setLoading(true);
     try {
       await putRequest(
@@ -302,7 +314,6 @@ await deleteRequest(`/api/admin/items/${selectedProductId}/images/${imageId}`)
         fields,
         t("message"),
       );
-      setSelectedProductId(null);
       triggerRefresh();
     } catch (error) {
       console.log(error)
@@ -361,7 +372,7 @@ await deleteRequest(`/api/admin/items/${selectedProductId}/images/${imageId}`)
         <hr className="h-1"></hr>
 
         {/* <hr className="my-5" /> */}
-        <div className="flex flex-col lg:flex-row w-full items-start gap-0 lg:gap-6">
+        <div className="flex flex-col lg:flex-row w-full justify-between items-start gap-0 lg:gap-6">
         {showProductData && (
           <div className={showImages ? "w-full lg:flex-1" : "w-full"}>
         <div className=" grid grid-cols-3 gap-3 mt-3">
@@ -739,14 +750,14 @@ await deleteRequest(`/api/admin/items/${selectedProductId}/images/${imageId}`)
         </div>
           )}
         {showImages && (
-          <div className={`${showProductData ? "w-full lg:flex-1" : "w-full"} animate-fade-in-up p-4 sm:p-5`}>
+          <div className={`${showProductData ? "lg:w-1/3 xs:w-full " : "lg:w-1/3 xs:w-full"} animate-fade-in-up p-4 sm:p-5`}>
               <div className="mb-4 w-full flex items-center justify-between">
                 <h2 className="text-sm font-semibold text-gray-700">
                   {t("item_images")}
                 </h2>
               </div>
                 <div className="grid grid-cols-3 gap-5">
-                  <div className="group relative h-[150px] w-full cursor-pointer rounded-2xl border-2 border-dashed border-red-300 bg-white transition-colors duration-300 hover:border-red-500 hover:bg-red-50 sm:h-[170px]">
+                  <div className="group relative h-[150px] w-full cursor-pointer rounded-2xl border-2 border-dashed border-red-300 bg-white transition-colors duration-300 hover:border-red-500 hover:bg-red-50 ">
                     <label
                       htmlFor="productImg_fileInput"
                       className="absolute inset-0 flex flex-col items-center  justify-center gap-2 cursor-pointer"
@@ -779,14 +790,15 @@ await deleteRequest(`/api/admin/items/${selectedProductId}/images/${imageId}`)
                         
                       <div
                       key={index}
-                      className="  h-[150px] w-full   bg-white"
+                      className="  h-[130px] w-full   bg-white"
                     >
                      <button
                         type="button"
                         className="  flex  items-center justify-center rounded-full bg-white/90 text-gray-500 shadow-sm backdrop-blur transition-all duration-200 hover:scale-110 hover:bg-red-600 hover:text-white"
                         onClick={() => {
-                          removeItemImage(index)
-                          if (img.existingId) deleteProductImg(img.existingId)
+                          
+                           deleteProductImg(img.existingId , index)
+                            
                         }}
                       >
                         <MdCancel className="text-lg" />

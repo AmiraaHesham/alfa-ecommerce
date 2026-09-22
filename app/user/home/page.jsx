@@ -234,7 +234,7 @@ const [productType ,setProductType] = useState("featuredProducts")
           size: 3,
         });
         setRecentWatchedProducts(recentWatchedProductsRes.data || []);
-        // console.log(recentWatchedProductsRes)
+        console.log(recentWatchedProductsRes)
       }
 
     } catch (error) {
@@ -264,7 +264,7 @@ const [productType ,setProductType] = useState("featuredProducts")
   return (
     <div className="w-full px-3">
       {/* ========================= Hero Section (Slider + Ads + Categories + Best Pick) ========================= */}
-      <div className="py-10">
+      <div className="py-7">
         {loading ? (
           <div className="w-full md:h-[500px] md:px-10 xs:px-3 xs:h-[300px] flex justify-between items-center gap-5">
             <div className="w-full h-full bg-gray-200 rounded-2xl animate-pulse"></div>
@@ -296,29 +296,31 @@ const [productType ,setProductType] = useState("featuredProducts")
 
             <div className="flex flex-col  gap-3 w-full">
               <div className="w-full h-full">
-                <div className="flex md:flex-row xs:flex-col gap-5 justify-center items-center h-full  w-full">
+                <div className="flex md:flex-row xs:flex-col gap-3 justify-center items-center h-full  w-full">
                   {/* Ads */}
-                  <div className="group md:w-[550px] xs:w-full h-[400px] rounded-3xl  cursor-pointer text-[#EAEBB8] bg-[#263F40] flex flex-col justify-between items-center relative overflow-hidden">
+                  <div className="group md:w-[600px] xs:w-full h-[360px] rounded-2xl  cursor-pointer 
+                  text-[#EAEBB8] bg-gradient-to-b from-[#2F4D4C] via-[#263F40] to-[#0F1B1B] 
+                  flex flex-col justify-between items-center relative overflow-hidden">
                     <div className="w-full text-center p-5">
-                      <span>Special Offer</span>
+                      <span className="text-sm">{t("Special_Offer")} </span>
                       {ad1Product && (
-                        <div className="flex flex-col items-center gap-2 my-2 px-4 text-center">
-                          <p className="text-3xl font-semibold">
+                        <div className="flex flex-col items-center gap-2 my-3 px-4 text-center">
+                          <p className="text-2xl font-semibold">
                             {locale === "ar"
                               ? ad1Product.nameAr || ad1Product.nameEn
                               : ad1Product.nameEn || ad1Product.nameAr}
                           </p>
                           <div className="flex items-center gap-2">
 
-                            <span className=" font-semibold ">
+                            <span className="text-sm ">
                               {ad1Product.price?.toLocaleString("en-US")}.00{" "}
-                              {t("currency")}
+                              {t("currency")} 
                             </span>
                           </div>
                         </div>
                       )}
                     </div>
-                    <div className="w-[250px] h-[250px] group-hover:scale-105 duration-500 transition-all relative">
+                    <div className="w-[230px] h-[270px] group-hover:scale-105 duration-500 transition-all relative">
                       <Image
                         src={formatAdImageUrl(ads.ad1.imageUrl)}
                         alt="Advertisement"
@@ -349,7 +351,7 @@ const [productType ,setProductType] = useState("featuredProducts")
       <SiteFeatures />
 
       {/* ========================= Featured Products ========================= */}
-      <div className="flex lg:flex-row xs:flex-col my-10 gap-5 items-start w-full">
+      <div className="flex lg:flex-row xs:flex-col my-10 gap-5 items-start w-full mt-20">
         {loading ? (
           <div className="w-[400px] h-[440px]">
             <ListSkeleton />
@@ -386,31 +388,31 @@ const [productType ,setProductType] = useState("featuredProducts")
         <section className="w-full">
           <div className="w-full flex md:flex-row xs:flex-col justify-between items-center gap-2">
             <div className="w-full">
-              <h1 className="flex items-center font-semibold gap-2 xs:text-base md:text-base mb-1">
+              <h1 className="flex items-center font-semibold gap-2 xs:text-base md:text-xl mb-1">
                 {t("featured_products")}
               </h1>
-              <hr className="w-24 h-1 border-0 rounded-full bg-gradient-to-l from-red-200 via-red-400 to-red-200" />
+              {/* <hr className="w-24 h-1 border-0 rounded-full bg-gradient-to-l from-red-200 via-red-400 to-red-200" /> */}
             </div>
-            <div className="flex items-center gap-5 justify-end w-full md:text-sm xs:text-[13px] font-bold">
+            <div className="flex items-center gap-5 justify-end w-full md:text-sm xs:text-[13px] font-semibold">
               <button
                 className={` items-center justify-center rounded-full p-1  hover:text-red-600 hover:scale-105 ${productType === "featuredProducts" ?"text-red-600" : "text-black"} duration-200`}
                 onClick={handleShowPopularProducts}
               >
                 {t("popular_products")}
               </button>
-
+<button
+                className={`items-center  justify-center rounded-full p-1  hover:text-red-600 hover:scale-105 duration-200 ${productType === "mustWatchedItems" ?"text-red-600" : "text-black"}`}
+                onClick={handleShowMustWatchedItems}
+              >
+                {t("Most_viewed_products")}
+              </button>
               <button
                 className={`items-center  justify-center rounded-full p-1  hover:text-red-600 hover:scale-105 duration-200 ${productType === "topSoldItems" ?"text-red-600" : "text-black"}`}
                 onClick={handleShowTopSoldItems}
               >
                 {t("Top_selling")}
               </button>
-              <button
-                className={`items-center  justify-center rounded-full p-1  hover:text-red-600 hover:scale-105 duration-200 ${productType === "mustWatchedItems" ?"text-red-600" : "text-black"}`}
-                onClick={handleShowMustWatchedItems}
-              >
-                {t("Most_viewed_products")}
-              </button>
+              
             </div>
           </div>
 
@@ -425,13 +427,13 @@ const [productType ,setProductType] = useState("featuredProducts")
             </div>
           ) : (
             <div className="xs:mt-6 md:mt-5">
-              <FeaturedProducts Products={items} type={"FeaturedProducts"} />
+              <FeaturedProducts Products={featuredProducts} type={"FeaturedProducts"} />
               <TopDiscounted Products={topDiscountedItems} />
 
             </div>
           )}
-          <div className="flex lg:flex-row xs:flex-col mt-10 gap-5 justify-between h-[430px] items-start w-full">
-            <div className="md:w-[700px] xs:w-full h-full bg-white rounded-3xl">
+          <div className="flex lg:flex-row xs:flex-col mt-10 gap-5 justify-between  items-start w-full">
+            <div className="md:w-[670px] xs:w-full h-[400px] bg-white rounded-3xl">
               <ProductAdsSlider />
             </div>
             {loading ? (
@@ -440,7 +442,7 @@ const [productType ,setProductType] = useState("featuredProducts")
               </div>
             ) : (
               <div className="flex flex-col items-center gap-5 w-full">
-                <Top10Products Products={newProducts} section={"top_product"} />
+                <Top10Products Products={newProducts} section={"top_products"} />
               </div>
             )}
 
@@ -526,17 +528,17 @@ const [productType ,setProductType] = useState("featuredProducts")
       </section>
 
       {/* ========================= More Recommended Products ========================= */}
-      <section id="newProducts" className="w-full pb-20">
+      <section id="newProducts" className="w-full pb-20 mt-20">
         <div className="w-full flex justify-between items-center">
 
           <div>
-            <h1 className="flex items-center font-semibold gap-2 xs:text-base md:text-lg mb-1">
+            <h1 className="flex items-center font-semibold gap-2 xs:text-base md:text-xl mb-1">
               {t("More_recommended_products")}
             </h1>
-            <hr className="w-24 h-1 border-0 rounded-full bg-gradient-to-l from-red-200 via-red-400 to-red-200" />
+            {/* <hr className="w-24 h-1 border-0 rounded-full bg-gradient-to-l from-red-200 via-red-400 to-red-200" /> */}
           </div>
           <div className="text-xs font-semibold">
-            <Link href="/user/products/section/newProducts">{t("shopMore")} </Link>
+            <Link href="/user/products/section/MoreRecommendedProducts">{t("shopMore")} </Link>
             <hr className="bg-red-500 h-[2px] border-none w-auto " />
           </div>
 

@@ -53,7 +53,7 @@ export default function WishList() {
       if (userId) {
         setLoading(true);
         const response = await getRequest(`/api/users/favoriteItems`);
-        setProducts(response.data);
+        setProducts(response.data.content);
       } else {
         const favoriteItems = JSON.parse(
           localStorage.getItem("favoriteItems") || "[]",
@@ -93,7 +93,7 @@ export default function WishList() {
           className="text-sm font-semibold text-red-600 flex items-center gap-2"
         >
           <h1>{t("continueShopping")} </h1>
-          <span className="mt-2">
+          <span className="">
             {locale === "ar" ? <FaArrowLeft /> : <FaArrowRight />}
           </span>
         </Link>

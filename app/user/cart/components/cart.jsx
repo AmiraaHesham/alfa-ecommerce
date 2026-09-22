@@ -25,7 +25,7 @@ export default function Cart({ setShowSignUp }) {
     totalDiscount: "",
     shappingCost: "",
     netTotal: "",
-    address:""
+    address: ""
   });
 
   const [itemNum, setItemNum] = useState(0);
@@ -90,7 +90,7 @@ export default function Cart({ setShowSignUp }) {
           totalDiscount: rseData.totalDiscount,
           shappingCost: rseData.shippingCost,
           netTotal: rseData.netTotal,
-          address :rseData.user.governorate.nameAr +" "+ rseData.user.address
+          address: rseData.user.governorate.nameAr + " " + rseData.user.address
         }));
       } else {
         const cart = JSON.parse(localStorage.getItem("cart") || "[]");
@@ -173,26 +173,19 @@ export default function Cart({ setShowSignUp }) {
     try {
       if (userId) {
         if (items.length != 0) {
-          if(!paymentMethod){
+          if (!paymentMethod) {
             toast.error(t("selectPaymentMethod"));
             return;
           }
-          if (isFirstAction) {
-            await getProductInCart();
-            setCheckout(true)
-          } else {
-            setLoading(true);
-
-            const res = await postRequest(
-              `/api/users/orders/place-order`,
-              {
-                paymentMethod: paymentMethod.value,
-              },
-              "",
-            );
-            navigate.push("/user/ordershistory");
-          }
-          setIsFirstAction(!isFirstAction);
+          setLoading(true);
+          await postRequest(
+            `/api/users/orders/place-order`,
+            {
+              paymentMethod: paymentMethod.value,
+            },
+            "",
+          );
+          navigate.push("/user/ordershistory");
         } else {
           toast.error(t("noProductsInCart"));
         }
@@ -240,7 +233,7 @@ export default function Cart({ setShowSignUp }) {
         </Link>
       </div> */}
       <div className="flex lg:flex-row xs:flex-col gap-5 ">
-   <CartTable items={items} loading={loading} onRemove={deleteItemFormCart} onQuantityChange={changeQuantity}/>
+        <CartTable items={items} loading={loading} onRemove={deleteItemFormCart} onQuantityChange={changeQuantity} />
         <div className="lg:w-[40%]  xs:w-full">
           {loading ? (
             // Skeleton rows
@@ -266,7 +259,7 @@ export default function Cart({ setShowSignUp }) {
                   {" "}
                 </span>
               </div>
-                 <div className="flex justify-between items-center mb-5">
+              <div className="flex justify-between items-center mb-5">
                 <span className="text-gray-600">{t("payment_method")} </span>
                 <span className="h-4 bg-gray-200 rounded animate-pulse w-20">
                   {" "}
@@ -278,15 +271,14 @@ export default function Cart({ setShowSignUp }) {
                 <span className="h-4 bg-gray-200 rounded animate-pulse w-20"></span>
               </div>
               <button
-                className={`flex justify-center items-center w-full  py-2 rounded-full mt-10 text-white   ${
-                  items.length === 0
+                className={`flex justify-center items-center w-full  py-2 rounded-full mt-10 text-white   ${items.length === 0
                     ? "bg-gray-400 cursor-not-allowed"
                     : "bg-red-600 hover:bg-red-700"
-                }`}
+                  }`}
               >
                 {t("proceedToCheckout")}
               </button>
-            
+
             </div>
           ) : (
             <div className="  p-7  w-full bg-white rounded-3xl ">
@@ -302,28 +294,28 @@ export default function Cart({ setShowSignUp }) {
                     t("currency")}{" "}
                 </span>
               </div>
-              <hr className="my-5"/>
-              
+              <hr className="my-5" />
+
               {
-                userId?
-                (<div>
-                  <div className="flex justify-between items-center mb-5">
-                <span className="">{t("ShippingTo")} </span>
-                <span className="font-semibold text-gray-600">{summery.address} </span>
-              </div>
-              <div className="flex justify-between items-center mb-5">
-                <span className="">{t("shippingCost")} </span>
-                <span className="font-semibold text-gray-600">
-                  {  items.length === 0 ? 0 : summery.shappingCost + " " + t("currency")}
-                </span>
-              </div>
-                </div>
-                  
-                ):(
-                  ""
-                )
+                userId ?
+                  (<div>
+                    <div className="flex justify-between items-center mb-5">
+                      <span className="">{t("ShippingTo")} </span>
+                      <span className="font-semibold text-gray-600">{summery.address} </span>
+                    </div>
+                    <div className="flex justify-between items-center mb-5">
+                      <span className="">{t("shippingCost")} </span>
+                      <span className="font-semibold text-gray-600">
+                        {items.length === 0 ? 0 : summery.shappingCost + " " + t("currency")}
+                      </span>
+                    </div>
+                  </div>
+
+                  ) : (
+                    ""
+                  )
               }
-              
+
               <div className="flex justify-between items-center mb-5">
                 <span className="">{t("payment_method")}</span>
 
@@ -383,15 +375,15 @@ export default function Cart({ setShowSignUp }) {
               <div className="flex justify-between items-center text-xl font-semibold">
                 <span>{t("Total")} </span>
                 <span className="text-[#da643b]">
-                  {  items.length === 0 ? 0 :summery.netTotal + " " + t("currency")}
+                  {items.length === 0 ? 0 : summery.netTotal + " " + t("currency")}
                 </span>
               </div>
               <button
-                className={`flex justify-center items-center w-full  py-2 rounded-full mt-10 text-white   ${
-                  items.length === 0
+                className={`flex justify-center items-center w-full  py-2 rounded-full mt-10 text-white 
+                    ${items.length === 0
                     ? "bg-gray-400 cursor-not-allowed"
-                    : Checkout?  "bg-green-600 hover:bg-green-700" :"bg-[#E76E7D] hover:bg-[#CD4354]"
-                }`}
+                    : "bg-[#E76E7D] hover:bg-[#CD4354]"
+                  }`}
                 onClick={placeOrder}
               >
                 {isFirstAction ? (
@@ -402,7 +394,7 @@ export default function Cart({ setShowSignUp }) {
                   t("confirmOrder")
                 )}
               </button>
-            
+
             </div>
           )}
         </div>

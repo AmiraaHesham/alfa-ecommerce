@@ -24,6 +24,7 @@ export default function Header() {
   const { t } = useLanguage();
   const navigate = useRouter();
   const [netTotal, setNetTotal] = useState(0);
+  const [shippingCost, setShippingCost] = useState(0);
   const [searchInput, setSearchInput] = useState();
   const { locale, setLocale } = useLanguage();
   const [username, setUsername] = useState();
@@ -56,9 +57,11 @@ export default function Header() {
       if (userId) {
         const res = await getRequest(`/api/shopCarts`);
         const rseData = res.data;
+        console.log(rseData)
         setNetTotal(rseData.netTotal);
         setItemNum(rseData.itemLines.length);
         setCartItems(rseData.itemLines);
+        setShippingCost(rseData.shippingCost)
       } else {
         const cart = JSON.parse(localStorage.getItem("cart") || "[]");
         setItemNum(cart.length);
@@ -211,7 +214,7 @@ setSearchInput(lastPort)
 
         >
           <button
-            className="text-white h-full border-2 rounded-full text-2xl bg-[#CD4354] p-1 "
+            className="text-white h-full border-2 rounded-full text-2xl bg-[#e14a5c] p-1 "
             onClick={() => {
               searchInput
                 ? navigate.push("/user/search/" + searchInput)
@@ -270,7 +273,7 @@ setSearchInput(lastPort)
               className="w-[1px] h-7 border-0  bg-gray-500"
             />
             <div className="flex flex-col text-sm justify-start items-start">
-              <span className="text-[#CD4354]">
+              <span className="text-[#E76E7D]">
                 { netTotal.toLocaleString("en-US") + " " + t("currency")}
               </span>
                <span className=" text-xs">
@@ -292,17 +295,17 @@ setSearchInput(lastPort)
           </div>
         </div>
       </div>
-      <div className="w-full px-3 bg-[#CD4354]  p-2">
+      <div className="w-full px-6 bg-[#e14a5c]  py-3">
         <div className="xs:hidden lg:flex text-white">
           <div className="w-full flex justify-between ">
             <div className="w-full flex"></div>
             <div className="w-full flex justify-end items-center gap-5">
-              <div className="flex items-center gap-2">
-                <Link href="/user/wishlist" className="xs:hidden lg:block">
-                  <FiHeart className="w-6 h-6 " />
-                </Link>
-                <span>{t("wishlist")} </span>
-
+              <div className="">
+                <Link href="/user/wishlist" className="xs:hidden lg:flex items-center gap-1">
+                  <FiHeart className="w-5 h-5 " />
+               
+                <span className=" font-semibold ">{t("wishlist")} </span>
+ </Link>
               </div>
               <hr className="w-px h-5 bg-gray-50 "></hr>
               <div className=" items-center gap-1 cursor-pointer flex  "
@@ -316,10 +319,10 @@ setSearchInput(lastPort)
                   }
                 }}
               >
-                <span className="w-8 h-8">
+                <span className="w-6 h-6 font-bold">
                   <PiUser className="w-full h-full " />
                 </span>
-                <span className=" font-semibold text-center xs:hidden lg:block">
+                <span className=" font-semibold  text-center xs:hidden lg:block">
                   {username ? username : (t("login") + " / " + t("register"))}
                 </span>
               </div>
@@ -334,7 +337,7 @@ setSearchInput(lastPort)
 
         >
           <button
-            className="text-white h-full border-2 rounded-full text-2xl bg-[#CD4354] p-1 "
+            className="text-white h-full border-2 rounded-full text-2xl bg-[#e14a5c] p-1 "
             onClick={() => {
               searchInput
                 ? navigate.push("/user/search/" + searchInput)
@@ -388,6 +391,7 @@ setSearchInput(lastPort)
         itemNum={itemNum}
         onRemove={deleteItemFormCart}
         freeShippingThreshold={null}
+        shippingCost={shippingCost}
       />
     </header>
   );

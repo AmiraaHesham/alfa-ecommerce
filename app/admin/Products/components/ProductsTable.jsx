@@ -28,6 +28,7 @@ export default function ProductsTable({ setIsFormOpen, category, setIsEditMode }
   const { setSelectedProductId } = useIdContext();
   const searchInputRef = useRef();
   const [loading, setLoading] = useState(true);
+  
   const getAllProducts = async () => {
     try {
       const response = await postRequest(

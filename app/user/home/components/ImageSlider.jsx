@@ -7,13 +7,14 @@ import "swiper/css/pagination";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useLanguage } from "../../../../context/LanguageContext";
+import { getThumbnailUrl } from "../../../../utils/functions";
 
 export default function ImageSlider({ sliderImages }) {
   const { locale } = useLanguage();
   const navigate = useRouter();
 
   return (
-    <div className="lg:w-2/3 xs:w-full h-[600px] rounded-3xl">
+    <div className="lg:w-2/3 xs:w-full h-[570px] rounded-3xl">
       <Swiper
         key={locale}
         dir={locale === "ar" ? "rtl" : "ltr"}
@@ -39,7 +40,7 @@ export default function ImageSlider({ sliderImages }) {
               className="relative w-full h-full block cursor-pointer"
             >
               <Image
-                src={`${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL}${img.imageUrl}`}
+                src={process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL + getThumbnailUrl(img.imageUrl) }
                 alt={`Slide ${index + 1}`}
                 fill
                 priority

@@ -151,63 +151,130 @@ const navigate = useRouter();
         </div>
       </div>
       <div className="relative flex md:flex-row xs:flex-col gap-7 ">
-        <div className="re rounded-xl w-full h-[420px]  border overflow-hidden overflow-x-auto md:overflow-x-hidden overflow-y-scroll ">
-          <table className="  xs:w-[200%] lg:w-full  ">
-            <thead className="bg-[#f0eff0] text-xs text-gray-500  text-justify">
-              <tr className=" text-gray-500 h-12">
-                <th className="w-[30%] px-5">{t("product")} </th>
-                <th className="w-[20%]">{t("price")} </th>
-                <th className="w-[10%] ">{t("discount")} </th>
-                <th className="w-[10%] px-2 ">{t("quantity")} </th>
-                {orderSummary.state === "DELIVERED" ? (
-                  <th className="w-[10%] ">{t("Returned_quantity")} </th>
-                ) : (
-                  ""
-                )}
-                <th className="w-[10%] ">{t("total")} </th>
-                {orderSummary.state === "DELIVERED" ? (
-                  <th className="w-[20%] ">{t("return_order")} </th>
-                ) : (
-                  ""
-                )}
+        {/* ── Mobile (XS) card layout ─────────────────────────────── */}
+        <div className="xs:flex md:hidden flex-col gap-0 w-full rounded-3xl bg-white overflow-hidden">
+          <div className="flex p-4 border-b border-gray-100">
+            <div className="flex gap-4 w-full">
+              <div
+                className="flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gray-100 cursor-pointer"
+                onClick={() =>
+                  navigate.push(`/user/productdetails/${order.itemId}`)
+                }
+              >
+                <Image
+                  alt=""
+                  src={`${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL}${getThumbnailUrl(
+                    order.images?.[0]?.imageUrl || order.mainImageURL
+                  )}`}
+                  width={96}
+                  height={96}
+                  className="h-full w-full object-contain"
+                />
+              </div>
+
+              <div className="flex-1 min-w-0 flex flex-col">
+                <div
+                  className="flex items-start justify-between gap-2 cursor-pointer"
+                  onClick={() =>
+                    navigate.push(`/user/productdetails/${order.itemId}`)
+                  }
+                >
+                  <h1 className="font-semibold text-lg text-gray-900 leading-snug break-words">
+                    {locale === "ar" ? order.nameAr : order.nameEn}
+                  </h1>
+                </div>
+
+                <div className="flex flex-col divide-y divide-dotted divide-gray-200 mt-2">
+                  <div className="flex items-center justify-between py-2">
+                    <span className="text-sm text-gray-500">{t("price")}</span>
+                    <span className="text-sm font-medium text-gray-900">
+                      {order.price?.toLocaleString("en-US")} {t("currency")}
+                      {order.oldPrice ? (
+                        <span className="text-xs text-gray-400 line-through mx-2">
+                          {order.oldPrice.toLocaleString("en-US")}{" "}
+                          {t("currency")}
+                        </span>
+                      ) : (
+                        ""
+                      )}
+                    </span>
+                  </div>
+
+
+                  <div className="flex items-center justify-between py-2">
+                    <span className="text-sm text-gray-500">
+                      {t("quantity")}
+                    </span>
+                    <div className="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-3 py-1 text-gray-700 min-w-[50px]">
+                      <span className="font-medium text-sm">
+                        {orderSummary.quantity}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between py-2">
+                    <span className="text-sm text-gray-500">{t("total")}</span>
+                    <span className="text-sm font-bold text-[#da643b]">
+                      {(order.price * orderSummary.quantity).toLocaleString(
+                        "en-US"
+                      )}{" "}
+                      {t("currency")}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Desktop / Tablet table layout ───────────────────────── */}
+        <div className="xs:hidden md:flex w-full overflow-x-auto overflow-hidden rounded-3xl bg-white">
+          <table className="w-full min-w-[640px]">
+            <thead className="text-center uppercase tracking-wide">
+              <tr className="h-20 border-b border-b-gray-200 border-gray-100">
+                <th className="px-5 text-start">{t("product")}</th>
+                <th className="px-5 text-start">{t("price")}</th>
+                <th className="px-5 text-start">{t("quantity")}</th>
+                <th className="px-5 text-end">{t("total")}</th>
               </tr>
             </thead>
-            <tbody className="bg-white text-md w-full  ">
-              <tr className=" text-red-950 border h-14 w-full  hover:bg-gray-100">
+            <tbody className="divide-y divide-gray-200 bg-white text-md w-full">
+              <tr className="transition-colors hover:bg-gray-50/60">
                 <td
-                  className="px-5 cursor-pointer"
-                  onClick={() => {
-                    // setSelectedProductId(order.itemId);
-                    navigate.push(`/user/productdetails/${order.itemId}`);
-                  }}
-                  f
+                  className="py-5 px-5 cursor-pointer"
+                  onClick={() =>
+                    navigate.push(`/user/productdetails/${order.itemId}`)
+                  }
                 >
-                  <div className="flex orderss-center gap-3">
-                    <Image
-                      alt=""
-                      src={`${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL}${getThumbnailUrl(order.mainImageURL)}`}
-                      width={45}
-                      height={45}
-                      className="rounded-full border my-1 p-1"
-                    />
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gray-100">
+                      <Image
+                        alt=""
+                        src={`${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL}${getThumbnailUrl(
+                          order.images?.[0]?.imageUrl || order.mainImageURL
+                        )}`}
+                        width={80}
+                        height={80}
+                        className="h-full w-full object-fill"
+                      />
+                    </div>
 
                     <div>
-                      <h1 className="font-semibold text-sm">
+                      <h1 className="font-semibold text-sm text-gray-900">
                         {locale === "ar" ? order.nameAr : order.nameEn}
                       </h1>
-                      <h1 className="text-xs  text-gray-500">{order.code}</h1>
+                      <h1 className="text-xs text-gray-500">{order.code}</h1>
                     </div>
                   </div>
                 </td>
-                <td className="font-semibold text-red-500">
-                  <div>
-                    <span>
-                      {order.price?.toLocaleString("en-US")}{" "}
-                      {t("currency")}
+                <td className="py-5 px-5">
+                  <div className="flex flex-col gap-1">
+                    <span className="font-semibold text-gray-900">
+                      {order.price?.toLocaleString("en-US")} {t("currency")}
                     </span>
 
                     {order.oldPrice ? (
-                      <span className="text-gray-400 line-through text-sm mx-2 opacity-90">
+                      <span className="text-xs text-gray-400 line-through">
                         {order.oldPrice.toLocaleString("en-US")}{" "}
                         {t("currency")}
                       </span>
@@ -216,32 +283,21 @@ const navigate = useRouter();
                     )}
                   </div>
                 </td>
-                <td className="">
-                  <div className="flex gap-5">
-                    {order.oldPrice ? (
-                      <span className="bg-red-600 text-sm px-2 text-white rounded-md">
-                        {(
-                          ((order.oldPrice - order.price) / order.oldPrice) *
-                          100
-                        ).toFixed()}
-                        %
-                      </span>
-                    ) : (
-                      "--"
-                    )}
-                  </div>
-                </td>
-                <td className="text-sm">
-                  <div className="  gap-3 rounded-lg h-full text-center w-[50px] border text-gray-600 bg-white">
-                    <span className="font-medium  text-sm w-10 text-center">
+                
+                <td className="py-5 px-5">
+                  <div className="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-3 py-1 text-gray-700 min-w-[50px]">
+                    <span className="font-medium text-sm">
                       {orderSummary.quantity}
                     </span>
                   </div>
                 </td>
-
-                <td className="text-sm font-semibold">
-                  {order.price*orderSummary.quantity.toLocaleString("en-US")}{" "}
-                  {t("currency")}
+                <td className="py-5 px-5 text-end">
+                  <span className="font-semibold text-[#da643b]">
+                    {(order.price * orderSummary.quantity).toLocaleString(
+                      "en-US"
+                    )}{" "}
+                    {t("currency")}
+                  </span>
                 </td>
               </tr>
             </tbody>
@@ -249,9 +305,9 @@ const navigate = useRouter();
         </div>
 
         <div className=" md:w-[40%]  xs:w-full">
-          <div className=" p-7  w-full bg-white rounded-lg border">
+          <div className=" p-7  w-full bg-white rounded-3xl">
             <div className="flex justify-between items-center mb-10">
-              <h1 className=" text-2xl font-bold">{t("orderSummary")} </h1>
+              <h1 className=" text-2xl font-bold">{t("returnSummary")} </h1>
               {orderSummary.state === "CANCELLED" ? (
                 <h1 className="flex items-center gap-2 text-lg font-bold text-red-600">
                   <MdCancel />
@@ -267,17 +323,7 @@ const navigate = useRouter();
               <span className="font-semibold">{dateOnly}</span>
             </div>
 
-            <div className="flex justify-between orderss-center mb-5">
-              <span className="text-gray-600">
-                {t("totalProducts") + " " + `[${orderSummary.quantity}]`}
-              </span>
-
-              <span className="font-semibold">
-                {orderSummary.unitPrice.toLocaleString("en-US") +
-                  " " +
-                  t("currency")}
-              </span>
-            </div>
+           
             <div className="flex justify-between items-center mb-5">
               <span className="text-gray-600">{t("reason")} </span>
               <span className="font-semibold">{t(orderSummary.reason)}</span>
@@ -292,7 +338,7 @@ const navigate = useRouter();
 
             <hr className="my-6" />
             <div className="flex justify-between orderss-center text-2xl font-semibold">
-              <span>{t("grandTotal")} </span>
+              <span>{t("total")} </span>
               <span className="">
                 {orderSummary.total.toLocaleString("en-US") +
                   " " +
@@ -300,14 +346,14 @@ const navigate = useRouter();
               </span>
             </div>
             <button
-              className={`w-full h-7  mt-7 rounded-md text-white ${
+              className={`w-full h-8  mt-7 rounded-full text-white ${
                 orderSummary.state === "PENDING"
-                  ? "bg-red-500 hover:bg-red-600"
+                  ? "bg-[#e14a5c] hover:bg-red-600"
                   : "bg-gray-500 cursor-not-allowed"
               }`}
               onClick={orderCancel}
             >
-              {t("order_cancel")}
+              {t("return_cancel")}
             </button>
           </div>
         </div>

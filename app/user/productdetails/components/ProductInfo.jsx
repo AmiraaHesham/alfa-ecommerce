@@ -167,11 +167,17 @@ export default function ProductInfo({ product, itemId }) {
                 ) : (
                     ""
                 )}
-                <StarRating rating={product.averageRating} />
-
-                <span className="text-gray-500 text-sm">
+                {product.averageRating === 0 ? "" : <div className="flex gap-2">
+                    <StarRating rating={product.averageRating} /> 
+                    <span className="text-sm text-gray-500">({product.ratingCount})</span> 
+                    </div>} 
+                
+{product.descriptionEn === "" ? <span className="text-gray-500 text-sm">
                     {locale === "ar" ? product.descriptionAr : product.descriptionEn}
-                </span>
+                </span> :<span className="text-gray-500 text-sm">
+                   
+                </span> }
+               
 
                 <span className="text-red-600">
                     {product.available ? "" : t("Currently_unavailable")}

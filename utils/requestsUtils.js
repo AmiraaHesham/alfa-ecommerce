@@ -35,7 +35,6 @@ export const postRequest = async (endpoint, dataBody, message) => {
       const token = getToken();
 
       const response = await request(token)
-      toast.success(response.data.message);
       return response.data;
 
 

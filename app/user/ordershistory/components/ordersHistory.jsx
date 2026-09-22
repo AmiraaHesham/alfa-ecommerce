@@ -10,36 +10,36 @@ import { useLanguage } from "../../../../context/LanguageContext";
 import { useRouter } from "next/navigation";
 import { useIdContext } from "../../../../context/idContext";
 import { getThumbnailUrl } from "../../../../utils/functions";
+import Pagination from "../../search/[searchInput]/components/Pagination";
 export default function OrdersHistory() {
   const { t } = useLanguage();
   const [orders, setOrders] = useState([]);
   const [inputSearch, setInputSearch] = useState(null);
-  const [state, setState] = useState("");
-    const { locale } = useLanguage();
+  const [state, setState] = useState(null);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const { locale } = useLanguage();
 
   const [loading, setLoading] = useState(true);
   const navigate = useRouter();
   const { setSelectedProductId } = useIdContext();
-  useEffect(() => {
-  
-    getOrders();
-  }, [state, inputSearch]);
+  const PAGE_SIZE = 5;
   const getOrders = async () => {
     try {
       setLoading(true)
       const res = await postRequest(
         "/api/orders/search",
         {
-          page: 0,
-          size: 100,
+          page: currentPage,
+          size: PAGE_SIZE,
           searchText: inputSearch,
           orderState: state,
         },
         ""
       );
       console.log(res.data);
-      setOrders(res.data);
-      // setLength(res.data.length)
+      setOrders(res.data.content);
+      setTotalPages(res.data.totalPages || 0);
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -49,21 +49,24 @@ export default function OrdersHistory() {
     }
   };
 
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
   useEffect(() => {
-  
     getOrders();
-  }, [state, inputSearch]);
+  }, [state, inputSearch, currentPage]);
   return (
     <div >
-      <div className="md:flex xs:block justify-between  items-center  mb-16">
+      <div className="md:flex xs:block justify-between  items-center  mb-10">
         <div className="flex flex-col gap-2">
           <span className="text-3xl font-bold">{t("orderHistory")} </span>
           <span className=" text-gray-500 opacity-90">
             {t("trackAndManage")}
           </span>
         </div>
-        <div className="flex justify-start items-center bg-white border rounded-md">
-          <span className="text-gray-500 h-full  rounded-s-md text-2xl p-2 ">
+        <div className="flex justify-start items-center mt-5 bg-white border rounded-full">
+          <span className="text-[#e14a5c] h-full  rounded-s-full text-2xl p-2 ">
             <IoMdSearch />
           </span>
           <input
@@ -73,23 +76,25 @@ export default function OrdersHistory() {
               if (e.key === "Enter") {
                 e.preventDefault();
                 setInputSearch(e.target.value);
+                setCurrentPage(0);
               }
             }}
-            className="w-[300px] bg-none p-2 outline-none rounded-lg"
+            className="w-[250px] bg-none p-2 outline-none rounded-full text-sm"
           />
         </div>
       </div>
       <div className="relative">
-        <div className="flex gap-8 md:text-lg xs:text-sm items-center  ">
+        <div className="flex gap-6 md:text-lg xs:text-sm items-center  ">
           <span
             className={` border-b hover:text-red-600 hover:border-red-600 py-4 cursor-pointer 
-               ${state === "" ? "text-red-600 border-red-600" : "text-gray-500"}
+               ${state === null ? "text-red-600 border-red-600" : "text-gray-500"}
               `}
             onClick={() => {
-              setState("");
+              setState(null);
+              setCurrentPage(0);
             }}
           >
-            {t("allOrders")}
+            {t("all")}
           </span>
           <span
             className={`border-b hover:text-red-600 hover:border-red-600 py-4 cursor-pointer
@@ -101,6 +106,7 @@ export default function OrdersHistory() {
               `}
             onClick={() => {
               setState("PENDING");
+              setCurrentPage(0);
             }}
           >
             {t("PENDING")}
@@ -115,6 +121,7 @@ export default function OrdersHistory() {
               `}
             onClick={() => {
               setState("PROCESSING");
+              setCurrentPage(0);
             }}
           >
             {t("PROCESSING")}
@@ -129,6 +136,7 @@ export default function OrdersHistory() {
             `}
             onClick={() => {
               setState("SHIPPED");
+              setCurrentPage(0);
             }}
           >
             {t("SHIPPED")}
@@ -143,9 +151,25 @@ export default function OrdersHistory() {
               `}
             onClick={() => {
               setState("DELIVERED");
+              setCurrentPage(0);
             }}
           >
             {t("DELIVERED")}
+          </span>
+          <span
+            className={` border-b hover:text-red-600 hover:border-red-600 py-4 cursor-pointer 
+              ${
+                state === "CANCELLED"
+                  ? "text-red-600 border-red-600"
+                  : "text-gray-500"
+              }
+              `}
+            onClick={() => {
+              setState("CANCELLED");
+              setCurrentPage(0);
+            }}
+          >
+            {t("CANCELLED")}
           </span>
         </div>
         <hr className=""></hr>
@@ -184,7 +208,7 @@ export default function OrdersHistory() {
             return (
               <div
                 key={index}
-                className="w-full bg-white   rounded-md shadow-sm p-5"
+                className="w-full bg-white   rounded-3xl shadow-sm p-5"
               >
                 <div className="flex justify-between items-baseline">
                   <div className="flex md:flex-row xs:flex-col gap-5">
@@ -192,7 +216,7 @@ export default function OrdersHistory() {
                       {order.code}
                     </span>
                     <div className="flex items-center gap-2">
-                       <span className="p-1 text-sm text-gray-700 rounded-md font-semibold flex  items-center gap-2">
+                       <span className=" text-sm text-gray-700 rounded-md font-semibold flex  items-center gap-2">
                       <FaRegCalendar /> {dateOnly}
                     </span>
                     <br/>
@@ -215,9 +239,9 @@ export default function OrdersHistory() {
                     </div>
                    
                   </div>
-                  <div className="flex items-center gap-1 mx-5">
+                  <div className="flex items-center text-lg gap-1 mx-5">
                     <span className=" text-gray-600">{t("Total")}: </span>
-                    <span className="text-xl font-semibold">
+                    <span className="text-[#e14a5c] font-semibold">
                       {order.netTotal.toLocaleString("en-US")} {t("currency")}
                     </span>
                   </div>
@@ -227,7 +251,7 @@ export default function OrdersHistory() {
                     {order.orderItemLines.map((itemLine, index) => {
                       return (
                         <div
-                          className="bg-gray-50 p-2 rounded-md flex items-center gap-3 cursor-pointer"
+                          className="bg-gray-50 p-2 rounded-3xl flex items-center gap-3 cursor-pointer"
                           key={index}
                           onClick={() => {
                             setSelectedProductId(itemLine.item.itemId);
@@ -239,23 +263,21 @@ export default function OrdersHistory() {
                           <Image
                             src={
                               process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +
-                             getThumbnailUrl(itemLine.item.mainImageURL)
+                             getThumbnailUrl(itemLine.item.images[0]?.imageUrl)
                             }
                             alt=""
-                            width={100}
-                            height={100}
-                            className="rounded-md w-[50px] h-[50px]"
+                            width={60}
+                            height={60}
+                            className="object-fill rounded-3xl"
                           />
-                          <div className="flex flex-col text-sm ">
+                          <div className="flex flex-col  font-semibold ">
                             <span className="">
                               {locale === "ar"
                                 ? itemLine.item.nameAr
                                 : itemLine.item.nameEn}
                             </span>
-                            <div className="flex xs:flex-col lg:flex-row gap-3 mt-2 lg:text-sm xs:text-xs">
-                              <span className="text-gray-500  ">
-                                {t("code")} : {itemLine.item.code}
-                              </span>
+                            <div className="flex xs:flex-col lg:flex-row gap-3 mt-2 text-xs">
+                             
                               <span className="text-gray-500 ">
                                 {t("quantity")} : {itemLine.quantity}
                               </span>
@@ -267,12 +289,12 @@ export default function OrdersHistory() {
                   </div>
 
                   <div
-                    className="w-[200px] h-[35px] flex justify-end xs:text-sm md:text-base  mt-10"
+                    className="w-[200px] h-[30px] text-sm flex justify-end xs:text-sm md:text-base rounded-full  mt-10"
                     onClick={() => {
                       navigate.push(`/user/orderdetails/${order.orderId}`);
                     }}
                   >
-                    <button className="px-2 bg-red-600 text-white rounded-md hover:bg-red-700">
+                    <button className="px-2 bg-red-600 text-white rounded-full hover:bg-red-700">
                 {t("orderDetails")}
                     </button    >
                   </div>
@@ -281,6 +303,13 @@ export default function OrdersHistory() {
             );
           })}
         </div>
+      )}
+      {totalPages > 1 && !loading && orders.length > 0 && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
       )}
     </div>
   );

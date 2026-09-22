@@ -12,15 +12,15 @@ export default function BestPick({ Products }) {
     const { setSelectedProductId } = useIdContext()
     const navigate = useRouter()
     return (
-        <div className="w-full  bg-white rounded-2xl p-5">
+        <div className="w-full  bg-white rounded-2xl p-4">
             <div className="w-full flex justify-between items-center">
-                <h1 className="font-semibold text-lg sticky z-10 py-2">{t("Best_pick_of_the_week")}</h1>
+                <h1 className="font-semibold  sticky z-10 ">{t("Best_pick_of_the_week")}</h1>
                 <div className="text-xs font-semibold">
                     <Link href="/user/products/section/featured">{t("shopMore")} </Link>
                     <hr className="bg-red-500 h-[2px] border-none w-auto " />
                 </div>
             </div>
-            <div className=" h-auto grid md:grid-cols-4 xs:grid-cols-2 p-1  gap-5 mt-2">
+            <div className=" h-auto grid md:grid-cols-4 xs:grid-cols-2   gap-1 mt-5">
 
                 {Products?.map((product, index) => {
                     return (
@@ -43,9 +43,9 @@ export default function BestPick({ Products }) {
                                     className="object-fill rounded-full" />
                             </div>
                             <div className="flex flex-col gap-2">
-                                <span className="text-sm font-bold cursor-pointer">{locale === "ar" ? product.nameAr : product.nameEn}</span>
+                                <span className="text-sm font-semibold cursor-pointer">{locale === "ar" ? product.nameAr : product.nameEn}</span>
+                                {product.averageRating === 0 ? "" : <StarRating rating={product.averageRating || 0} />}
 
-                                <StarRating rating={product.averageRating || 0} />
                                 <div className="flex flex-col  justify-start  items-start">
                                     {product.oldPrice ? (
                                         <div className="flex gap-2">

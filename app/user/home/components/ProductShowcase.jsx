@@ -13,10 +13,10 @@ export default function RecentlyViewed({ Products, title }) {
   const navigate = useRouter()
   return (
     <div className="lg:w-[280px] h-full xs:w-full bg-white rounded-3xl">
-      <div className="flex w-full flex-col gap-2 p-5">
+      <div className="flex w-full flex-col gap-2 p-3">
         <div className="w-full flex justify-between items-center">
 
-          <h1 className="font-semibold text-lg sticky z-10 py-2 bg-white">{t(title)} </h1>
+          <h1 className="font-semibold  sticky z-10 py-2 bg-white">{t(title)} </h1>
           <div className="text-xs font-semibold">
             <Link
               href={`/user/products/section/${title === "recentViewed" ? "recentWatched" : "newProducts"}`}
@@ -25,7 +25,7 @@ export default function RecentlyViewed({ Products, title }) {
             <hr className="bg-red-500 h-[2px] border-none w-auto " />
           </div>
         </div>
-        <div className="w-full h-full flex flex-col gap-3 ">
+        <div className="w-full h-full flex flex-col gap-5 ">
           {Products?.map((product, index) => {
             return (
 
@@ -35,7 +35,7 @@ export default function RecentlyViewed({ Products, title }) {
                   navigate.push(`/user/productdetails/${product.item ? product.item.nameEn : product.nameEn}/${product.item ? product.item.itemId : product.itemId}`);
                 }}
               >
-                <div className="relative w-[70px] h-[70px] hover:scale-105 duration-200 cursor-pointer select-none rounded-full ">
+                <div className="relative w-[60px] h-[60px] hover:scale-105 duration-200 cursor-pointer select-none rounded-full ">
                   <Image src={
                     process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +
                     getThumbnailUrl(product.item ? product.item.images[0]?.imageUrl : product.images[0]?.imageUrl)

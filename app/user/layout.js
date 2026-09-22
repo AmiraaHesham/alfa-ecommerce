@@ -24,7 +24,7 @@ export default function UserLayout({ children }) {
     setRole(localStorage.role)
   }, [role])
   return (
-    <div>
+    <>
 
       {
         role === 'ADMIN' ? (
@@ -43,7 +43,7 @@ export default function UserLayout({ children }) {
           <div className="w-full">
             <Header />
             
-            <main className="  w-full pb-20 sm:pb-0 ">
+            <main className=" px-4 w-full pb-20 sm:pb-0 ">
               {children}
               <a
                 href={whatsAppUrl}
@@ -63,7 +63,7 @@ export default function UserLayout({ children }) {
           </div>
         )
       }
-    </div>
+    </>
 
 
   );

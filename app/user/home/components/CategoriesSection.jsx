@@ -33,7 +33,7 @@ export default function CategorySection({ categories }) {
           <div className="flex items-center gap-2">
            
             <span className="text-[#7354EF] text-xl"> <AiFillFire/> </span>
-             <h1 className="flex items-center font-medium gap-2 xs:text-base md:text-2xl ">
+             <h1 className="flex items-center font-semibold gap-2 xs:text-base md:text-[22px] ">
               {t("hot_categorios")}
             </h1>
           </div>
@@ -56,7 +56,7 @@ export default function CategorySection({ categories }) {
                 }}
               >
                 <div className=" w-full flex flex-col justify-center items-center   ">
-                  <div className="relative rounded-full h-[120px] w-[120px] hover:scale-105 duration-200 ">
+                  <div className="relative rounded-full h-[110px] w-[110px] hover:scale-105 duration-200 ">
                     <Image
                       src={`${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL}${getThumbnailUrl(category.imageURL) || ""
                         }`}
@@ -67,7 +67,7 @@ export default function CategorySection({ categories }) {
                       className="object-fill rounded-full"
                     />
                   </div>
-                  <h1 className="font-medium text-sm  mt-2">
+                  <h1 className="font-semibold text-xs  mt-2">
                     {locale === "ar" ? category.nameAr : category.nameEn}
                   </h1>
                 </div>

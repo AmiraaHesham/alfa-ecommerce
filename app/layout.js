@@ -26,24 +26,47 @@ export const metadata = {
 //   subsets: ["arabic", "latin"],
 //   weight: ["400", "500", "700"],
 // });
-// import { IBM_Plex_Sans_Arabic } from "next/font/google";
+import { IBM_Plex_Sans_Arabic } from "next/font/google";
 
-// const plex = IBM_Plex_Sans_Arabic({
-//   subsets: ["arabic", "latin"],
-//   weight: ["400", "500", "600", "700"],
-// });
-
-import { Cairo } from "next/font/google";
-
-const cairo = Cairo({
+const plex = IBM_Plex_Sans_Arabic({
   subsets: ["arabic", "latin"],
   weight: ["400", "500", "600", "700"],
+  variable: "--font-plex",
+});
+
+import { Cairo } from "next/font/google";
+import localFont from "next/font/local";
+
+// const cairo = plex({
+//   subsets: ["arabic", "latin"],
+//   weight: ["400", "500", "600", "700"],
+//   variable: "--font-cairo",
+// });
+
+const albertSans = localFont({
+  src: "./font/AlbertSans-Regular.woff2",
+  weight: "400",
+  variable: "--font-albert-sans",
+});
+
+const urbanistSemiBold = localFont({
+  src: "./font/Urbanist-SemiBold.woff2",
+  weight: "600",
+  variable: "--font-urbanist-semibold",
+});
+
+const urbanistBold = localFont({
+  src: "./font/Urbanist-Bold.woff2",
+  weight: "700",
+  variable: "--font-urbanist-bold",
 });
 
 export default function RootLayout({ children }) {
   return (
     <html lang="ar" dir="rtl">
-      <body className={`${cairo.className} bg-[#f6f5f8]`} >
+      <body
+        className={`${plex.variable} ${albertSans.variable} ${urbanistSemiBold.variable} ${urbanistBold.variable} bg-[#f6f5f8]`}
+      >
 
         <ToastContainer
           position={"bottom-center"} />

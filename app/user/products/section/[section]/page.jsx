@@ -1,10 +1,6 @@
 "use client";
-import { useSearshInputContext } from "../../../../../context/searshInputContext";
-import { useCallback, useEffect, useRef, useState } from "react";
-import CategoriesSideManu from "../../../components/CategoriseSideMenu";
+import { useEffect, useRef, useState } from "react";
 import { getRequest, postRequest } from "../../../../../utils/requestsUtils";
-import { useRouter } from "next/navigation";
-import { useIdContext } from "../../../../../context/idContext";
 import ProductCard from "../../../components/ProductCard";
 import { useLanguage } from "../../../../../context/LanguageContext";
 import { BsList, BsStarFill, BsClockHistory, BsFire } from "react-icons/bs";
@@ -33,6 +29,7 @@ export default function ProductsBySection({ params }) {
     { value: "false,price", label: t("priceHighToLow") },
   ];
 
+  
   const currentValue = sortBy
     ? sortOptions.find((option) => option.value === `${ascending},${sortBy}`)
     : null;
@@ -46,7 +43,7 @@ export default function ProductsBySection({ params }) {
           ? t("view_all_products")
           : section === "newProducts"
             ? t("New_arrivals")
-            : t("New_arrivals");
+            : t("More_recommended_products");
 
   const sectionIcon =
     section === "featured"
@@ -95,6 +92,8 @@ export default function ProductsBySection({ params }) {
           ? await postRequest(
               "/api/public/items/search",
               {
+                 page,
+                    size: PAGE_SIZE,
                 isFavorite: true,
                 sortBy: sortBy || null,
                 ascending: ascending || true,
@@ -105,12 +104,14 @@ export default function ProductsBySection({ params }) {
             ? await getRequest(
                 "/api/users/recentWatchedItems",
                 {
+                   page,
+                    size: PAGE_SIZE,
                   sortBy: sortBy || null,
                   ascending: ascending || true,
                 },
                 "",
               )
-            : section === "all" || section === "newProducts"
+            : section === "all" 
               ? await postRequest(
                   "/api/public/items/search",
                   {
@@ -124,20 +125,20 @@ export default function ProductsBySection({ params }) {
               : await getRequest(
                   "/api/public/items/recent",
                   {
+                     page,
+                    size: PAGE_SIZE,
                     sortBy: sortBy || null,
                     ascending: ascending || true,
                   },
                   "",
                 );
-      if (section === "all" || section === "newProducts") {
+      
         const normalized = normalizePage(response, PAGE_SIZE);
         setProducts(normalized.content);
         setCurrentPage(normalized.number);
         setTotalPages(normalized.totalPages);
         setTotalElements(normalized.totalElements);
-      } else {
-        setProducts(response.data);
-      }
+      
     } catch (error) {
     } finally {
       setLoading(false);
@@ -184,8 +185,7 @@ export default function ProductsBySection({ params }) {
             <hr className="w-24 h-1 border-0 rounded-full bg-gradient-to-l from-red-200 via-red-400 to-red-200" />
           </div>
           <div className="flex gap-5 ">
-            <div className="bg-white flex  gap-4 items-center  border rounded-md  px-3 h-10  mb-5">
-              <span>{t("sortBy")}:</span>
+            <div className="bg-white flex  gap-4 items-center  border rounded-full  px-3 h-10  mb-5">
               <Select
                 isSearchable={false}
                 options={sortOptions}
@@ -265,14 +265,13 @@ export default function ProductsBySection({ params }) {
                   </div>
                 ))}
               </div>
-              {section === "all" || section === "newProducts" ? (
-                totalPages > 1 && (
+           
                   <Pagination
                     currentPage={currentPage}
                     totalPages={totalPages}
                     onPageChange={handlePageChange}
                   />
-                )
+                {/* )
               ) : (
               <div
                 className={`w-full  justify-center items-center ${products.length < 10 ? "hidden" : "flex"}`}
@@ -291,10 +290,10 @@ export default function ProductsBySection({ params }) {
                   ) : (
                     <span className="text-gray-500 my-3">{t("no_more_products")}</span>
                   )
-                }
+                } */}
 
-              </div>
-              )}
+              {/* </div> */}
+              {/* )} */}
             </div>
           ) : (
             <div className="h-screen w-full">

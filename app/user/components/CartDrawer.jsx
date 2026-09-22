@@ -11,6 +11,7 @@ export default function CartDrawer({
   items = [],
   netTotal = 0,
   itemNum = 0,
+  shippingCost=0,
   onRemove,
   freeShippingThreshold = null,
   viewCartHref = "/user/cart",
@@ -34,9 +35,9 @@ export default function CartDrawer({
   };
 
   const getThumb = (product) =>
-    product?.mainImageURL
+    product?.images
       ? `${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL}${getThumbnailUrl(
-        product.mainImageURL,
+        product.images[0]?.imageUrl,
       )}`
       : null;
 
@@ -115,7 +116,7 @@ export default function CartDrawer({
                           src={thumb}
                           width={70}
                           height={70}
-                          className="h-full w-full object-contain"
+                          className="h-full w-full object-fill"
                         />
                       ) : (
                         <span className="text-3xl text-gray-300">
@@ -159,11 +160,16 @@ export default function CartDrawer({
 
         {/* Fixed bottom summary */}
         <footer className="border-t border-gray-200 bg-white px-5 py-4">
-
+ <div className="mb-4 flex items-center justify-between">
+            <span className=" font-semibold">{t("shippingCost")}</span>
+             <span className=" font-bold ">
+              {items.length === 0 ? 0: formatPrice(shippingCost)} {t("currency")}
+            </span>
+          </div>
           <div className="mb-4 flex items-center justify-between">
             <span className="text-xl font-semibold">{t("subtotal")}</span>
-            <span className="text-xl font-bold text-[#CD4354]">
-              {formatPrice(netTotal)} {t("currency")}
+             <span className="text-xl font-bold text-[#CD4354]">
+              {items.length === 0 ? 0: formatPrice(netTotal)} {t("currency")}
             </span>
           </div>
 

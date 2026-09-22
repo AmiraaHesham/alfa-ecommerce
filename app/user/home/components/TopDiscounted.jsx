@@ -19,7 +19,7 @@ const swiperRef = useRef()
   useEffect(() => {
   }, []);
   return (
-    <div className="relative w-full  md:h-[450px] xs:h-[600px] my-10 flex justify-center items-center rounded-3xl ">
+    <div className="relative w-full  md:h-[450px] xs:h-[650px] my-10 flex justify-center items-center rounded-3xl ">
         <Image
     src="/Images/img2.png"
     alt="banner"
@@ -29,20 +29,26 @@ const swiperRef = useRef()
     quality={100}
     className="object-fill rounded-3xl"
   />
-      <div className="w-full h-full absolute flex md:flex-row xs:flex-col px-2 justify-center items-center ">
-<div className="relative w-full mt-16 h-full flex flex-col justify-center items-center">
-   <div className="absolute xs:-top-2 md:top-4 lg:top-10 flex justify-center w-full pointer-events-none">
+      <div className="w-full h-full absolute top-0  flex md:flex-row xs:flex-col px-2 justify-center items-center ">
+<div className=" w-full  h-full  flex xs:flex-row md:flex-col gap-5 p-5 xs:justify-between md:justify-center items-center">
+   <div className=" md:order-1 xs:order-2 flex justify-end  ">
      <div className="w-20 h-20 rounded-full bg-red-500 shadow-lg shadow-red-500/40 flex flex-col items-center justify-center text-white gap-1">
        <span className="text-[10px] font-medium leading-none tracking-wide">Save up to</span>
        <span className="text-xl font-bold leading-none">-45%</span>
      </div>
    </div>
-   <div className=" text-center  text-white ">
-          <h1 className="text-4xl font-semibold mb-3"> {t("top_discount")} </h1>
-          <h2 className="text-sm">{t("text_for_discounts")} </h2>
+   <div className=" md:order-2 xs:order-1 w-full flex flex-col md:items-center xs:items-start justify-center">
+    <div className=" md:text-center xs:text-start  w-full text-white ">
+          <h1 className="text-4xl font-bold mb-3"> {t("top_discount")} </h1>
+          <h2 className="text-sm xs:w-2/3 md:w-full">{t("text_for_discounts")} </h2>
         </div>
       
-          <Link href="/user/products/section/all" className="bg-white rounded-2xl p-2 font-medium flex items-center mt-10">{t("shopNow")}  {locale === "ar"? <IoIosArrowRoundBack/>:<IoIosArrowRoundForward/>}</Link>
+          <Link href="/user/products/section/all"
+           className="bg-white rounded-full w-[100px] text-xs py-2 text-center font-medium  mt-5">
+          {t("shopNow")} 
+       </Link>
+   </div>
+   
     
 </div>
        
@@ -57,7 +63,7 @@ const swiperRef = useRef()
       prevEl: ".custom-prev",
       nextEl: ".custom-next",
     }}          dir={locale === "ar" ? "rtl" : "ltr"}
-          spaceBetween={20}
+          spaceBetween={25}
            onSwiper={(swiper) => {
       swiperRef.current = swiper;
     }}
@@ -67,7 +73,7 @@ const swiperRef = useRef()
             return (
               <SwiperSlide
                 key={product.itemId}
-                className="my-10 !w-[250px] rounded-lg select-none"
+                className="my-10 !w-[240px] rounded-lg select-none"
               >
                 <div className="rounded-lg  flex justify-center  cursor-pointer">
                   <ProductCard productInfo={product} favorite={false} />

@@ -206,7 +206,7 @@ export default function ProductAdsSlider() {
                 key={slide.offerId || index}
                 className="h-full"
               >
-                <div className="w-full h-[430px]">
+                <div className="w-full h-[400px]">
                   <div className="relative w-full h-full rounded-[22px] overflow-hidden">
 
                     {largeSrc ? (
@@ -234,8 +234,18 @@ export default function ProductAdsSlider() {
           DOTS
       ================================= */}
 
-      <div className="absolute z-10 flex items-center gap-2 bottom-5 left-[20%] -translate-x-1/2">
-        {slides.map((slide, index) => (
+<div
+  className={`
+    absolute
+    z-10
+    flex
+    items-center
+    gap-2
+    bottom-5
+    ${locale === "ar" ? "right-[13%]" : "left-[20%]"}
+    -translate-x-1/2
+  `}
+>        {slides.map((slide, index) => (
           <button
             key={slide.offerId || index}
             aria-label={`Slide ${index + 1}`}
