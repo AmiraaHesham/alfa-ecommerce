@@ -37,7 +37,7 @@ export default function AdminLayout({ children }) {
               <SideMenu homepage={"bg-red-100 text-red-500"} />
               <div className="w-full h-full ">
                 <Header page_title={"Homepage Management"} />
-                <div className=" h-full ">{children}</div>
+                <div className="  ">{children}</div>
               </div>
             </main>
           ) : (

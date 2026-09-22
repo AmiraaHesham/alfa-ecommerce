@@ -24,7 +24,7 @@ export default function FeatuerProducts({ Products, type }) {
       <div className=" w-full">
 
         {type === "MoreRecommended" ?
-          <div className="grid  xl:grid-cols-6 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 ">
+          <div className="grid  xl:grid-cols-6 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 ">
             {Products.map((product,index) => {
               return (
 
@@ -37,7 +37,7 @@ export default function FeatuerProducts({ Products, type }) {
           </div>
 
           :
-          <div className={`grid ${type === "FeaturedProducts" ?"2xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 xs:grid-cols-2" :"xl:grid-cols-3 2xl:grid-cols-3 lg:grid-cols-3 md:grid-cols-3 xs:grid-cols-2"} gap-3 `}>
+          <div className={`grid 2xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 xs:grid-cols-2 gap-5 `}>
 
             {Products?.map((product, index) => {
               return (

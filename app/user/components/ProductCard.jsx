@@ -416,8 +416,10 @@ export default function ProductCard({ productInfo, favorite }) {
 
         </div>
 
-        <div>
-          <StarRating rating={Number(productInfo?.averageRating) || 0} />
+        <div>{
+          productInfo?.averageRating === 0 ? "" :<StarRating rating={productInfo?.averageRating} />
+          }
+          
         </div>
 
         <div className="w-full">

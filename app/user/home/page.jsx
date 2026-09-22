@@ -17,6 +17,7 @@ import TopDiscounted from "./components/TopDiscounted";
 import ImageSlider from "./components/ImageSlider";
 import CategoriesSection from "./components/CategoriesSection";
 import FeaturedProducts from "./components/FeatuerProducts";
+import Link from "next/link";
 
 // ==============================
 // Imports - Contexts / hooks
@@ -116,7 +117,7 @@ export default function Homepage() {
   const [ad4Product, setAd4Product] = useState(null);
   const [ad5Product, setAd5Product] = useState(null);
   const [loading, setLoading] = useState(true);
-
+const [productType ,setProductType] = useState("featuredProducts")
   // ==============================
   // Derived values
   // ==============================
@@ -245,9 +246,9 @@ export default function Homepage() {
   // ==============================
   // Event handlers
   // ==============================
-  const handleShowPopularProducts = () =>{ setItems(featuredProducts)};
-  const handleShowTopSoldItems = () => {setItems(topSoldItems)};
-  const handleShowMustWatchedItems = () => {setItems(mustWatchedItems)};
+  const handleShowPopularProducts = () =>{ setItems(featuredProducts) , setProductType("featuredProducts")};
+  const handleShowTopSoldItems = () => {setItems(topSoldItems) , setProductType("topSoldItems")};
+  const handleShowMustWatchedItems = () => {setItems(mustWatchedItems) , setProductType("mustWatchedItems")};
 
   // ==============================
   // useEffect
@@ -356,7 +357,7 @@ export default function Homepage() {
           <div className="flex flex-col xs:w-full lg:w-auto items-center gap-5">
             <ProductShowcase Products={recentWatchedProducts} title={"recentViewed"} />
             <div className="w-full lg:flex-col sm:flex-row xs:flex-col flex gap-10">
-              <div className="bg-white mt-5 lg:w-[300px] xs:w-full h-[670px] rounded-3xl relative overflow-hidden">
+              <div className="bg-white mt-5 lg:w-[270px] xs:w-full h-[670px] rounded-3xl relative overflow-hidden">
                 {ads.ad2.imageUrl && (
                   <Image
                     src={IMAGE_BASE_URL + ads.ad2.imageUrl}
@@ -384,27 +385,27 @@ export default function Homepage() {
         <section className="w-full">
           <div className="w-full flex md:flex-row xs:flex-col justify-between items-center gap-2">
             <div className="w-full">
-              <h1 className="flex items-center font-semibold gap-2 xs:text-base md:text-lg mb-1">
+              <h1 className="flex items-center font-semibold gap-2 xs:text-base md:text-base mb-1">
                 {t("featured_products")}
               </h1>
               <hr className="w-24 h-1 border-0 rounded-full bg-gradient-to-l from-red-200 via-red-400 to-red-200" />
             </div>
             <div className="flex items-center gap-5 justify-end w-full md:text-sm xs:text-[13px] font-bold">
               <button
-                className=" items-center justify-center rounded-full p-1  hover:text-red-600 hover:scale-105 duration-200"
+                className={` items-center justify-center rounded-full p-1  hover:text-red-600 hover:scale-105 ${productType === "featuredProducts" ?"text-red-600" : "text-black"} duration-200`}
                 onClick={handleShowPopularProducts}
               >
                 {t("popular_products")}
               </button>
 
               <button
-                className=" items-center  justify-center rounded-full p-1  hover:text-red-600 hover:scale-105 duration-200"
+                className={`items-center  justify-center rounded-full p-1  hover:text-red-600 hover:scale-105 duration-200 ${productType === "topSoldItems" ?"text-red-600" : "text-black"}`}
                 onClick={handleShowTopSoldItems}
               >
                 {t("Top_selling")}
               </button>
               <button
-                className=" items-center  justify-center rounded-full p-1  hover:text-red-600 hover:scale-105 duration-200"
+                className={`items-center  justify-center rounded-full p-1  hover:text-red-600 hover:scale-105 duration-200 ${productType === "mustWatchedItems" ?"text-red-600" : "text-black"}`}
                 onClick={handleShowMustWatchedItems}
               >
                 {t("Most_viewed_products")}
@@ -446,13 +447,8 @@ export default function Homepage() {
         </section>
       </div>
 
-      {/* ========================= Top Discounted ========================= */}
-
-      {/* ========================= Latest Products & Top 100 ========================= */}
-
-
       {/* ========================= Promo Banner ========================= */}
-      <section className="my-20">
+      <section className="my-10">
         <div className="w-full flex flex-col md:flex-row lg:justify-between items-stretch gap-5">
           <div className="group cursor-pointer w-full flex flex-col justify-center items-center h-[500px] bg-white rounded-3xl  overflow-hidden p-5">
             {ads.ad3.imageUrl ? (
@@ -539,7 +535,7 @@ export default function Homepage() {
             <hr className="w-24 h-1 border-0 rounded-full bg-gradient-to-l from-red-200 via-red-400 to-red-200" />
           </div>
           <div className="text-xs font-semibold">
-            <button>{t("shopMore")} </button>
+            <Link href="/user/products/section/newProducts">{t("shopMore")} </Link>
             <hr className="bg-red-500 h-[2px] border-none w-auto " />
           </div>
 

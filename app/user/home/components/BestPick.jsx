@@ -4,6 +4,7 @@ import { getThumbnailUrl } from "../../../../utils/functions";
 import StarRating from "../../components/StarRating";
 import { useIdContext } from "../../../../context/idContext";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function BestPick({ Products }) {
     const { locale } = useLanguage()
@@ -15,7 +16,7 @@ export default function BestPick({ Products }) {
             <div className="w-full flex justify-between items-center">
                 <h1 className="font-semibold text-lg sticky z-10 py-2">{t("Best_pick_of_the_week")}</h1>
                 <div className="text-xs font-semibold">
-                    <button>{t("shopMore")} </button>
+                    <Link href="/user/products/section/featured">{t("shopMore")} </Link>
                     <hr className="bg-red-500 h-[2px] border-none w-auto " />
                 </div>
             </div>

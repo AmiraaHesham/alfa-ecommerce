@@ -9,6 +9,7 @@ import { useLanguage } from "../../../../context/LanguageContext";
 import ProductCard from "../../components/ProductCard";
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa6";
 import { MdOutlineArrowBackIosNew, MdOutlineArrowForwardIos } from "react-icons/md";
 
@@ -29,13 +30,19 @@ const swiperRef = useRef()
     className="object-fill rounded-3xl"
   />
       <div className="w-full h-full absolute flex md:flex-row xs:flex-col px-2 justify-center items-center ">
-<div className="w-full h-full flex flex-col justify-center items-center">
+<div className="relative w-full mt-16 h-full flex flex-col justify-center items-center">
+   <div className="absolute xs:-top-2 md:top-4 lg:top-10 flex justify-center w-full pointer-events-none">
+     <div className="w-20 h-20 rounded-full bg-red-500 shadow-lg shadow-red-500/40 flex flex-col items-center justify-center text-white gap-1">
+       <span className="text-[10px] font-medium leading-none tracking-wide">Save up to</span>
+       <span className="text-xl font-bold leading-none">-45%</span>
+     </div>
+   </div>
    <div className=" text-center  text-white ">
           <h1 className="text-4xl font-semibold mb-3"> {t("top_discount")} </h1>
-          <h2 className="text-sm">{t("text_for_discounts")}    </h2>
+          <h2 className="text-sm">{t("text_for_discounts")} </h2>
         </div>
       
-          <button className="bg-white rounded-2xl  p-2 font-medium flex items-center mt-10">{t("shopNow")}  {locale === "ar"? <IoIosArrowRoundBack/>:<IoIosArrowRoundForward/>}</button>
+          <Link href="/user/products/section/all" className="bg-white rounded-2xl p-2 font-medium flex items-center mt-10">{t("shopNow")}  {locale === "ar"? <IoIosArrowRoundBack/>:<IoIosArrowRoundForward/>}</Link>
     
 </div>
        
@@ -50,7 +57,7 @@ const swiperRef = useRef()
       prevEl: ".custom-prev",
       nextEl: ".custom-next",
     }}          dir={locale === "ar" ? "rtl" : "ltr"}
-          spaceBetween={15}
+          spaceBetween={20}
            onSwiper={(swiper) => {
       swiperRef.current = swiper;
     }}
