@@ -12,6 +12,7 @@ import { RiShoppingBag4Fill } from "react-icons/ri";
 import { TbTruckReturn } from "react-icons/tb";
 import Select from "react-select";
 import { getRequest, putRequest } from "../../../../utils/requestsUtils";
+import ResetPasswordForm from "./ResetPasswordForm";
 export default function Profile() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -21,31 +22,29 @@ export default function Profile() {
   const [phone, setPhone] = useState("");
   const [governorateId, setGovernorateId] = useState("");
   const [governorate, setGovernorate] = useState("");
-  const [userId, setUserId] = useState("");
   const navigate = useRouter();
-  const { t } = useLanguage();
+  const { t , locale} = useLanguage();
   const [governorates, setGovernorates] = useState([]);
   const [value, setValue] = useState();
+  const [isFormOpen, setIsFormOpen] = useState(false);
 
-  useEffect(() => {
-    const firstName = localStorage.getItem("firstName");
-    setFirstName(firstName);
-    const lastName = localStorage.getItem("lastName");
-    setLastName(lastName);
-    const username = localStorage.getItem("username");
-    setUsername(username);
-    const address = localStorage.getItem("address");
-    setAddress(address);
-    const phone = localStorage.getItem("phone");
-    setPhone(phone);
-    const emailAdress = localStorage.getItem("email");
-    setEmail(emailAdress);
-    const userId = localStorage.getItem("id");
-    setUserId(userId);
-    const governorateId = localStorage.getItem("governorateId");
-    setGovernorateId(governorateId);
-  }, [firstName,lastName,username,address,phone,email,governorateId]);
+ 
 
+ const  getUserData =async()=>{
+
+  const responce = await getRequest("/api/users")
+  console.log(responce)
+const resData = responce.data
+  setFirstName(resData.firstName)
+  setLastName(resData.lastName)
+  setUsername(resData.username)
+  setPhone(resData.phone)
+  setAddress(resData.address)
+  setEmail(resData.email)
+  setGovernorateId(resData.governorate.governorateId)
+  setGovernorate(locale ==="ar"? resData.governorate.nameAr
+ : resData.governorate.nameEn)
+}
   const updateProfile = async (e) => {
     e.preventDefault();
     try {
@@ -57,15 +56,7 @@ export default function Profile() {
         address: address,
         governorateId: value ? value.value : null,
       }, t("message"));
-if(res.success){
-      localStorage.setItem("firstName", firstName);
-      localStorage.setItem("lastName", lastName);
-      localStorage.setItem("address", address);
-      localStorage.setItem("phone", phone);
-      localStorage.setItem("email", email);
-      localStorage.setItem("username", username);
-      localStorage.setItem("governorateId",  value.value);
-}
+getUserData()
     } catch (err) {}
   };
   const getGovernorate = async () => {
@@ -92,15 +83,21 @@ if(res.success){
       console.error("Error loading governorates:", error);
     }
   };
+
 useEffect(() => {
   if (governorateId) {
     getGovernorate();
   }
 }, [governorateId]);
+ useEffect(() => {
+getUserData()
+  }, []);
   return (
     <div className="p-10">
+              <ResetPasswordForm isFormOpen={isFormOpen} setIsFormOpen={setIsFormOpen}/>
+
       <div className="flex xs:flex-col md:flex-row  h-full gap-10 justify-between">
-        <div className="bg-white md:w-[50%] xl:w-[30%] h-[400px] flex   flex-col gap-3   p-7 rounded-3xl">
+        <div className="bg-white md:w-[50%] xl:w-[30%] h-[350px] flex   flex-col gap-3   p-7 rounded-3xl">
           <div className="flex items-center bg-red-600 p-2 rounded-md text-white gap-3 cursor-pointer">
             <span className="text-xl">
               <FaUser />
@@ -131,7 +128,7 @@ useEffect(() => {
               <span> {t("wishlist")} </span>
             </div>
           </Link>
-          <hr className="my-10"></hr>
+          <hr className="my-5"></hr>
           <div className="flex justify-start cursor-pointer hover:scale-105 duration-200 items-center gap-1  text-red-600">
             <span>
               <PiSignOutBold />
@@ -161,9 +158,9 @@ useEffect(() => {
                 <span className="text-xl font-semibold">
                   {firstName + " " + lastName}
                 </span>
-                <span className="bg-red-200 px-3 py-2 text-xs font-semibold text-red-700 rounded-md">
+                {/* <span className="bg-red-200 px-3 py-2 text-xs font-semibold text-red-700 rounded-md">
                   {t("unverifiedAccount")}
-                </span>
+                </span> */}
               </div>
 
               <div className="flex md:flex-row xs:flex-col gap-5 text-gray-600">
@@ -219,7 +216,7 @@ useEffect(() => {
                   <input
                     type="text"
                     value={username}
-                    className="bg-slate-50 p- outline-none p-2 rounded-lg border "
+                    className="bg-slate-50  outline-none p-2 rounded-lg border "
                     onChange={(e) => setUsername(e.target.value)}
                   />
                 </div>
@@ -230,7 +227,7 @@ useEffect(() => {
                   <input
                     type="text"
                     value={phone}
-                    className="bg-slate-50 p- outline-none p-2 rounded-lg border "
+                    className="bg-slate-50 outline-none p-2 rounded-lg border "
                     onChange={(e) => setPhone(e.target.value)}
                   />
                 </div>
@@ -322,10 +319,7 @@ useEffect(() => {
               <button
                 className="text-red-500 text-sm font-semibold"
                 onClick={() => {
-                  const resetpasswordform =
-                    document.querySelector("#resetpasswordform");
-                  resetpasswordform.classList.remove("hidden");
-                  resetpasswordform.classList.add("flex");
+              setIsFormOpen(true)
                 }}
               >
                 {t("updatePassword")}

@@ -15,12 +15,12 @@ export const getSliderImage = async () => {
   const response = await getRequest("/api/public/sliderImages");
   return await response.data;
 };
-export const getFeatuerProducts = async () => {
+export const getFeatuerProducts = async (size) => {
   const response = await postRequest(
     "/api/public/items/search",
     {
       page: 0,
-      size: 10,
+      size: size,
       isFavorite: true,
     },
     ""

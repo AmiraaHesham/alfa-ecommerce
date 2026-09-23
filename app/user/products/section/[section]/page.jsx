@@ -29,7 +29,7 @@ export default function ProductsBySection({ params }) {
     { value: "false,price", label: t("priceHighToLow") },
   ];
 
-  
+
   const currentValue = sortBy
     ? sortOptions.find((option) => option.value === `${ascending},${sortBy}`)
     : null;
@@ -43,7 +43,7 @@ export default function ProductsBySection({ params }) {
           ? t("view_all_products")
           : section === "newProducts"
             ? t("New_arrivals")
-            : t("More_recommended_products");
+            : t("morerecommendedproducts");
 
   const sectionIcon =
     section === "featured"
@@ -69,10 +69,10 @@ export default function ProductsBySection({ params }) {
     const totalElements =
       Number(
         data?.totalElements ??
-          data?.totalItems ??
-          data?.totalCount ??
-          data?.total ??
-          0,
+        data?.totalItems ??
+        data?.totalCount ??
+        data?.total ??
+        0,
       ) || 0;
     const totalPages =
       Number(data?.totalPages ?? data?.totalPage ?? 0) ||
@@ -90,29 +90,41 @@ export default function ProductsBySection({ params }) {
       const response =
         section === "featured"
           ? await postRequest(
+            "/api/public/items/search",
+            {
+              page,
+              size: PAGE_SIZE,
+              isFavorite: true,
+              sortBy: sortBy || null,
+              ascending: ascending || true,
+            },
+            "",
+          ) :
+          section === "morerecommendedproducts"
+            ? await postRequest(
               "/api/public/items/search",
               {
-                 page,
-                    size: PAGE_SIZE,
+                page,
+                size: PAGE_SIZE,
                 isFavorite: true,
                 sortBy: sortBy || null,
                 ascending: ascending || true,
               },
               "",
             )
-          : section === "recentWatched"
-            ? await getRequest(
+            : section === "recentWatched"
+              ? await getRequest(
                 "/api/users/recentWatchedItems",
                 {
-                   page,
-                    size: PAGE_SIZE,
+                  page,
+                  size: PAGE_SIZE,
                   sortBy: sortBy || null,
                   ascending: ascending || true,
                 },
                 "",
               )
-            : section === "all" 
-              ? await postRequest(
+              : section === "all"
+                ? await postRequest(
                   "/api/public/items/search",
                   {
                     page,
@@ -122,23 +134,23 @@ export default function ProductsBySection({ params }) {
                   },
                   "",
                 )
-              : await getRequest(
+                : await getRequest(
                   "/api/public/items/recent",
                   {
-                     page,
+                    page,
                     size: PAGE_SIZE,
                     sortBy: sortBy || null,
                     ascending: ascending || true,
                   },
                   "",
                 );
-      
-        const normalized = normalizePage(response, PAGE_SIZE);
-        setProducts(normalized.content);
-        setCurrentPage(normalized.number);
-        setTotalPages(normalized.totalPages);
-        setTotalElements(normalized.totalElements);
-      
+
+      const normalized = normalizePage(response, PAGE_SIZE);
+      setProducts(normalized.content);
+      setCurrentPage(normalized.number);
+      setTotalPages(normalized.totalPages);
+      setTotalElements(normalized.totalElements);
+
     } catch (error) {
     } finally {
       setLoading(false);
@@ -245,33 +257,33 @@ export default function ProductsBySection({ params }) {
             </div>
           ) : products.length != 0 ? (
             <div>
-              {(section === "all" || section === "newProducts") && (
+              {/* {(section === "all" || section === "newProducts") && ( */}
                 <p className="text-sm text-gray-600 mb-4">
                   {totalResultsText()}
                 </p>
-              )}
+              {/* )} */}
               <div
                 className="grid xl:grid-cols-6 lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 p-2 gap-5"
               >
-                {section === "featured" || section === "newProducts" || section === "all" ? products.map((product, index) => (
+                {section === "featured" || section === "newProducts" || section === "all" || section=== "morerecommendedproducts" ? products.map((product, index) => (
                   <div key={index}>
                     <ProductCard productInfo={product} />
                   </div>
                 ))
-              : 
-              products.map((product, index) => (
-                  <div key={index}>
-                    <ProductCard productInfo={product.item} />
-                  </div>
-                ))}
+                  :
+                  products.map((product, index) => (
+                    <div key={index}>
+                      <ProductCard productInfo={product.item} />
+                    </div>
+                  ))}
               </div>
-           
-                  <Pagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    onPageChange={handlePageChange}
-                  />
-                {/* )
+
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
+              {/* )
               ) : (
               <div
                 className={`w-full  justify-center items-center ${products.length < 10 ? "hidden" : "flex"}`}

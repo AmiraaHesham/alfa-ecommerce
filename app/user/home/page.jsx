@@ -111,6 +111,7 @@ export default function Homepage() {
   const [topSoldItems, setTopSoldItems] = useState([]);
   const [topDiscountedItems, setTopDiscountedItems] = useState([]);
   const [items, setItems] = useState();
+  const [topRatingItems, setTopRatingItems] = useState();
   const [recentWatchedProducts, setRecentWatchedProducts] = useState([]);
   const [ads, setAds] = useState(EMPTY_ADS);
   const [ad1Product, setAd1Product] = useState(null);
@@ -156,13 +157,13 @@ const [productType ,setProductType] = useState("featuredProducts")
         await Promise.all([
           getSliderImage(),
           // getCategories(),
-          getFeatuerProducts(),
+          getFeatuerProducts(12),
           getRequest("/api/public/offers"),
         ]);
       setImagesSliders(imagesRes);
       setFeaturedProducts(productsRes.data.content || []);
       setAds((prev) => ({ ...prev, ...buildAdsMap(adsRes.data) }));
-      setItems(productsRes.data.content || []);
+     
 
       const ad1ItemId = (adsRes.data || []).find(
         (ad) => ad.number === 1,
@@ -212,12 +213,14 @@ const [productType ,setProductType] = useState("featuredProducts")
       const categoryRes = await getRequest("/api/public/itemCategory/latest")
       setCategories(categoryRes.data || []);
 
-      const newProductsRes = await getRequest("/api/public/items/recent", {
-        page: 0,
-        size: 7,
-      });
+      const newProductsRes = await getRequest("/api/public/items/recent");
       setNewProducts(newProductsRes.data || []);
       // console.log(newProductsRes)
+      
+      const topRatingProductsRes = await getRequest("/api/public/items/topRated");
+      setItems(topRatingProductsRes.data.content || []); 
+      setTopRatingItems(topRatingProductsRes.data.content || []);
+
       const mustWatchedRes = await getRequest("/api/public/items/topWatched");
       setMustWatchedItems(mustWatchedRes.data.content || []);
 
@@ -247,7 +250,7 @@ const [productType ,setProductType] = useState("featuredProducts")
   // ==============================
   // Event handlers
   // ==============================
-  const handleShowPopularProducts = () =>{ setItems(featuredProducts) , setProductType("featuredProducts")};
+  const handleShowPopularProducts = () =>{ setItems(topRatingItems) , setProductType("popularProducts")};
   const handleShowTopSoldItems = () => {setItems(topSoldItems) , setProductType("topSoldItems")};
   const handleShowMustWatchedItems = () => {setItems(mustWatchedItems) , setProductType("mustWatchedItems")};
 
@@ -395,7 +398,7 @@ const [productType ,setProductType] = useState("featuredProducts")
             </div>
             <div className="flex items-center gap-5 justify-end w-full md:text-sm xs:text-[13px] font-semibold">
               <button
-                className={` items-center justify-center rounded-full p-1  hover:text-red-600 hover:scale-105 ${productType === "featuredProducts" ?"text-red-600" : "text-black"} duration-200`}
+                className={` items-center justify-center rounded-full p-1  hover:text-red-600 hover:scale-105 ${productType === "popularProducts" ?"text-red-600" : "text-black"} duration-200`}
                 onClick={handleShowPopularProducts}
               >
                 {t("popular_products")}
@@ -427,7 +430,7 @@ const [productType ,setProductType] = useState("featuredProducts")
             </div>
           ) : (
             <div className="xs:mt-6 md:mt-5">
-              <FeaturedProducts Products={featuredProducts} type={"FeaturedProducts"} />
+              <FeaturedProducts Products={items} type={"FeaturedProducts"} />
               <TopDiscounted Products={topDiscountedItems} />
 
             </div>
@@ -533,12 +536,12 @@ const [productType ,setProductType] = useState("featuredProducts")
 
           <div>
             <h1 className="flex items-center font-semibold gap-2 xs:text-base md:text-xl mb-1">
-              {t("More_recommended_products")}
+              {t("morerecommendedproducts")}
             </h1>
             {/* <hr className="w-24 h-1 border-0 rounded-full bg-gradient-to-l from-red-200 via-red-400 to-red-200" /> */}
           </div>
           <div className="text-xs font-semibold">
-            <Link href="/user/products/section/MoreRecommendedProducts">{t("shopMore")} </Link>
+            <Link href="/user/products/section/morerecommendedproducts">{t("shopMore")} </Link>
             <hr className="bg-red-500 h-[2px] border-none w-auto " />
           </div>
 
@@ -554,7 +557,7 @@ const [productType ,setProductType] = useState("featuredProducts")
           </div>
         ) : (
           <div className="mt-5">
-            <FeaturedProducts Products={newProducts} type={"MoreRecommended"} />
+            <FeaturedProducts Products={featuredProducts} type={"MoreRecommended"} />
           </div>
         )}
       </section>

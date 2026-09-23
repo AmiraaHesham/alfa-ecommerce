@@ -43,12 +43,7 @@ export default function SignIn({ popUp, setShowSignUp, setShowSignIn,setOpenForm
       localStorage.setItem("accessToken", response.data.accessToken);
       localStorage.setItem("refreshToken", response.data.refreshToken);
       localStorage.setItem("id", response.data.userDetails.userId);
-      localStorage.setItem("firstName", response.data.userDetails.firstName);
-      localStorage.setItem("lastName", response.data.userDetails.lastName);
-      localStorage.setItem("address", response.data.userDetails.address);
-      localStorage.setItem("phone", response.data.userDetails.phone);
-      localStorage.setItem("email", response.data.userDetails.email);
-      localStorage.setItem("username", response.data.userDetails.username);
+
       localStorage.setItem("lang", response.data.userDetails.language);
       setLocale(response.data.userDetails.language);
       localStorage.setItem("role", response.data.userDetails.role);
