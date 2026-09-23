@@ -13,21 +13,29 @@
     --foreground: #ededed;
   }
 } */
-
 body {
-  cursor: default;
-  /* height: 100%;
-  overflow: hidden;
-  margin: 0;
-  padding: 0; */
-  /* height: auto; */
+  font-family: var(--font-urbanist-sans), sans-serif;
 }
 
-@layer utilities {
+html[dir="rtl"] body {
+  font-family: var(--font-plex), sans-serif;
+}
+
+html[dir="ltr"] .font-semibold {
+  font-family: var(--font-urbanist-semibold), sans-serif;
+}
+
+html[dir="ltr"] .font-bold,
+html[dir="ltr"] .font-extrabold,
+html[dir="ltr"] .font-black {
+  font-family: var(--font-urbanist-bold), sans-serif;
+}
+
+/* @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
-}
+} */
 html {
   scrollbar-width: thin;
   scrollbar-color: var(--primary) transparent;
@@ -62,6 +70,13 @@ html {
   outline: 1px solid red;
 } */
 /* إخفاء الأيقونة الافتراضية */
+.swiper-button-prev svg{
+  left: -45px !important;
+}
+
+.swiper-button-next svg{
+  right: -45px !important;
+}
 .swiper-button-prev,
 .swiper-button-next {
   color: rgb(84, 81, 81) !important;
@@ -75,8 +90,8 @@ html {
 
 .swiper-button-prev svg,
 .swiper-button-next svg {
-  width: 30px !important;
-  height: 30px !important;
+  width: 20px !important;
+  height: 20px !important;
 }
 .swiper:hover .swiper-button-prev,
 .swiper:hover .swiper-button-next {
@@ -96,6 +111,7 @@ html {
   width: auto !important;
   border-radius: 999px !important;
   margin: 5px;
+  
 }
 .swiper-pagination-bullet-active {
   width: 10px !important;
