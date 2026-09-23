@@ -61,7 +61,7 @@ export default function CartTable({
                   <div className="flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gray-100">
                     <Image
                       alt=""
-                      src={`${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL}${getThumbnailUrl(product.mainImageURL)}`}
+                      src={`${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL}${getThumbnailUrl(product.images[0]?.imageUrl)}`}
                       width={96}
                       height={96}
                       className="h-full w-full object-contain"

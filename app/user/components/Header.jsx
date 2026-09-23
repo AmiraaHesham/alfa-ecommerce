@@ -56,12 +56,11 @@ export default function Header() {
     try {
       if (userId) {
         const res = await getRequest(`/api/shopCarts`);
-        const rseData = res.data.content;
-        console.log(rseData)
-        setNetTotal(rseData.netTotal);
-        setItemNum(rseData.itemLines.length);
-        setCartItems(rseData.itemLines);
-        setShippingCost(rseData.shippingCost)
+        const resData = res.data;
+        setNetTotal(resData.netTotal);
+        setItemNum(resData.itemLines.length);
+        setCartItems(resData.itemLines);
+        setShippingCost(resData.shippingCost)
       } else {
         const cart = JSON.parse(localStorage.getItem("cart") || "[]");
         setItemNum(cart.length);
