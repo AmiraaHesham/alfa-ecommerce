@@ -19,7 +19,7 @@ const swiperRef = useRef()
   useEffect(() => {
   }, []);
   return (
-    <div className="relative w-full  md:h-[450px] xs:h-[600px] my-10 flex justify-center items-center rounded-3xl ">
+    <div className="relative w-full  md:h-[450px] xs:h-[630px] my-10 flex justify-center items-center rounded-3xl ">
         <Image
     src="/Images/img2.png"
     alt="banner"

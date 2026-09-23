@@ -18,6 +18,8 @@ import ImageSlider from "./components/ImageSlider";
 import CategoriesSection from "./components/CategoriesSection";
 import ProductAdsSlider from "./components/ProductAdsSlider";
 import FeaturedProducts from "./components/FeatuerProducts";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
 import Link from "next/link";
 
 // ==============================
@@ -265,7 +267,7 @@ const [productType ,setProductType] = useState("popularProducts")
   // Return / JSX
   // ==============================
   return (
-    <div className="w-full px-3">
+    <div className="w-full lg:px-3 xs:px-0">
       {/* ========================= Hero Section (Slider + Ads + Categories + Best Pick) ========================= */}
       <div className="py-7">
         {loading ? (
@@ -455,79 +457,88 @@ const [productType ,setProductType] = useState("popularProducts")
 
       {/* ========================= Promo Banner ========================= */}
       <section className="my-10">
-        <div className="w-full flex flex-col md:flex-row lg:justify-between items-stretch gap-5">
-          <div className="group cursor-pointer w-full flex flex-col justify-center items-center h-[500px] bg-white rounded-3xl  overflow-hidden p-5">
-            {ads.ad3.imageUrl ? (
-              <div className="w-full h-[300px] relative group-hover:scale-105 duration-500 transition-all">
+        <Swiper
+          key={locale}
+          dir={locale === "ar" ? "rtl" : "ltr"}
+          slidesPerView={1}
+          spaceBetween={20}
+          breakpoints={{
+            768: { slidesPerView: 2 },
+            1024: { slidesPerView: 3 },
+          }}
+          navigation={true}
+          className="w-full"
+        >
+          <SwiperSlide>
+            <div className="group cursor-pointer w-full flex flex-col justify-center items-center h-[500px] bg-white rounded-3xl overflow-hidden p-5">
+              {ads.ad3.imageUrl ? (
+                <div className="w-full h-[300px] relative group-hover:scale-105 duration-500 transition-all">
+                  <Image
+                    src={IMAGE_BASE_URL + ads.ad3.imageUrl}
+                    alt="Advertisement"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                    className="object-fill"
+                  />
+                </div>
+              ) : (
+                <div className="w-full h-full" />
+              )}
+              <div className="flex flex-col justify-around items-center w-full">
+                <h1 className="text-3xl font-bold">{ad3Product} </h1>
 
-                <Image
-                  src={IMAGE_BASE_URL + ads.ad3.imageUrl}
-                  alt="Advertisement"
-                  fill
-                  sizes="(max-width: 768px) 100vw, 33vw"
-                  className="object-fill"
-                />
+                <h1 className=" text-center my-5">{ads.ad3.title} </h1>
+                <button className="text-white rounded-full bg-[#CD4354] hover:bg-[#c13b4a] w-[120px] py-3 px-5 mt-2 text-sm font-semibold ">{t("shopNow")} </button>
               </div>
-            ) : (
-              <div className="w-full h-full" />
-            )}
-            <div className="flex flex-col justify-around items-center w-full">
-              <h1 className="text-3xl font-bold">{ad3Product} </h1>
-
-              <h1 className=" text-center my-5">{ads.ad3.title} </h1>
-              <button className="text-white rounded-full bg-[#CD4354] hover:bg-[#c13b4a] w-[120px] py-3 px-5 mt-2 text-sm font-semibold ">{t("shopNow")} </button>
-
             </div>
+          </SwiperSlide>
+          <SwiperSlide>
+            <div className="group cursor-pointer text-white w-full flex flex-col justify-center items-center h-[500px] bg-black rounded-3xl overflow-hidden p-5">
+              {ads.ad4.imageUrl ? (
+                <div className="w-full h-[300px] relative group-hover:scale-105 duration-500 transition-all">
+                  <Image
+                    src={IMAGE_BASE_URL + ads.ad4.imageUrl}
+                    alt="Advertisement"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                    className="object-fill"
+                  />
+                </div>
+              ) : (
+                <div className="w-full h-full" />
+              )}
+              <div className="flex flex-col justify-around items-center w-full">
+                <h1 className="text-3xl font-bold">{ad4Product} </h1>
 
-          </div>
-          <div className="group cursor-pointer text-white w-full flex flex-col justify-center items-center h-[500px] bg-black rounded-3xl  overflow-hidden p-5">
-            {ads.ad4.imageUrl ? (
-              <div className="w-full h-[300px] relative group-hover:scale-105 duration-500 transition-all">
-                <Image
-                  src={IMAGE_BASE_URL + ads.ad4.imageUrl}
-                  alt="Advertisement"
-                  fill
-                  sizes="(max-width: 768px) 100vw, 33vw"
-                  className="object-fill"
-                />
+                <h1 className=" text-center my-5">{ads.ad4.title} </h1>
+                <button className="text-white rounded-full bg-[#CD4354] hover:bg-[#c13b4a] w-[120px] py-3 px-5 mt-2 text-sm font-semibold ">{t("shopNow")} </button>
               </div>
-
-            ) : (
-              <div className="w-full h-full" />
-            )}
-            <div className="flex flex-col justify-around items-center w-full">
-              <h1 className="text-3xl font-bold">{ad4Product} </h1>
-
-              <h1 className=" text-center my-5">{ads.ad4.title} </h1>
-              <button className="text-white rounded-full bg-[#CD4354] hover:bg-[#c13b4a] w-[120px] py-3 px-5 mt-2 text-sm font-semibold ">{t("shopNow")} </button>
-
             </div>
-          </div>
-          <div className="group cursor-pointer w-full flex flex-col justify-center items-center h-[500px] bg-white rounded-3xl  overflow-hidden p-5">
-            {ads.ad5.imageUrl ? (
-              <div className="w-full h-[300px] relative group-hover:scale-105 duration-500 transition-all">
+          </SwiperSlide>
+          <SwiperSlide>
+            <div className="group cursor-pointer w-full flex flex-col justify-center items-center h-[500px] bg-white rounded-3xl overflow-hidden p-5">
+              {ads.ad5.imageUrl ? (
+                <div className="w-full h-[300px] relative group-hover:scale-105 duration-500 transition-all">
+                  <Image
+                    src={IMAGE_BASE_URL + ads.ad5.imageUrl}
+                    alt="Advertisement"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                    className="object-fill"
+                  />
+                </div>
+              ) : (
+                <div className="w-full h-full" />
+              )}
+              <div className="flex flex-col justify-around items-center w-full">
+                <h1 className="text-3xl font-bold">{ad5Product} </h1>
 
-                <Image
-                  src={IMAGE_BASE_URL + ads.ad5.imageUrl}
-                  alt="Advertisement"
-                  fill
-                  sizes="(max-width: 768px) 100vw, 33vw"
-                  className="object-fill"
-                />
+                <h1 className=" text-center my-5">{ads.ad5.title} </h1>
+                <button className="text-white rounded-full bg-[#CD4354] hover:bg-[#c13b4a] w-[120px] py-3 px-5 mt-2 text-sm font-semibold ">{t("shopNow")} </button>
               </div>
-            ) : (
-              <div className="w-full h-full" />
-            )}
-            <div className="flex flex-col justify-around items-center w-full">
-              <h1 className="text-3xl font-bold">{ad5Product} </h1>
-
-              <h1 className=" text-center my-5">{ads.ad5.title} </h1>
-              <button className="text-white rounded-full bg-[#CD4354] hover:bg-[#c13b4a] w-[120px] py-3 px-5 mt-2 text-sm font-semibold ">{t("shopNow")} </button>
-
             </div>
-
-          </div>
-        </div>
+          </SwiperSlide>
+        </Swiper>
       </section>
 
       {/* ========================= More Recommended Products ========================= */}
