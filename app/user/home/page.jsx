@@ -293,7 +293,7 @@ const [productType ,setProductType] = useState("popularProducts")
             </div>
           </div>
         ) : (
-          <div className="flex xl:flex-row xs:flex-col justify-center gap-5 items-center w-full">
+          <div className="flex lg:flex-row xs:flex-col justify-center gap-5 items-center w-full">
             {/* Slider */}
             <ImageSlider sliderImages={imagesSliders} />
 
@@ -301,7 +301,7 @@ const [productType ,setProductType] = useState("popularProducts")
               <div className="w-full h-full">
                 <div className="flex md:flex-row xs:flex-col gap-3 justify-center items-center h-full  w-full">
                   {/* Ads */}
-                  <div className="group md:w-[600px] xs:w-full h-[350px] rounded-2xl  cursor-pointer 
+                  <div className="group xl:w-[600px] lg:w-[500px] xs:w-full h-[350px] rounded-2xl  cursor-pointer 
                   text-[#EAEBB8] bg-gradient-to-b from-[#2F4D4C] via-[#263F40] to-[#0F1B1B] 
                   flex flex-col justify-between items-center relative overflow-hidden">
                     <div className="w-full text-center p-5">
@@ -323,7 +323,7 @@ const [productType ,setProductType] = useState("popularProducts")
                         </div>
                       )}
                     </div>
-                    <div className="w-[230px] h-[260px] group-hover:scale-105 duration-500 transition-all relative">
+                    <div className="w-[230px] h-[270px] group-hover:scale-105 duration-500 transition-all relative">
                       <Image
                         src={formatAdImageUrl(ads.ad1.imageUrl)}
                         alt="Advertisement"

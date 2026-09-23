@@ -70,22 +70,22 @@ html {
   outline: 1px solid red;
 } */
 /* إخفاء الأيقونة الافتراضية */
-.swiper-button-prev svg{
+.swiper-button-prev svg {
   left: -45px !important;
 }
 
-.swiper-button-next svg{
+.swiper-button-next svg {
   right: -45px !important;
 }
+
 .swiper-button-prev,
 .swiper-button-next {
   color: rgb(84, 81, 81) !important;
   width: 40px !important;
   height: 40px !important;
-    opacity: 0 !important;
+  opacity: 0 !important;
   visibility: hidden !important;
   transition: opacity 0.3s ease !important;
-  
 }
 
 .swiper-button-prev svg,
@@ -93,10 +93,21 @@ html {
   width: 20px !important;
   height: 20px !important;
 }
+
+/* Desktop: تظهر عند hover */
 .swiper:hover .swiper-button-prev,
 .swiper:hover .swiper-button-next {
   opacity: 1 !important;
   visibility: visible !important;
+}
+
+/* XS: الأسهم ظاهرة دائمًا */
+@media (max-width: 639px) {
+  .swiper-button-prev,
+  .swiper-button-next {
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
 }
 .swiper-pagination-bullet {
   width: 10px !important;

@@ -56,7 +56,7 @@ export default function CategorySection({ categories }) {
                 }}
               >
                 <div className=" w-full flex flex-col justify-center items-center   ">
-                  <div className="relative rounded-full  h-[100px] w-[100px] hover:scale-105 duration-200 ">
+                  <div className="relative rounded-full  xl:h-[100px] xl:w-[100px] xs:h-[80px] xs:w-[80px] hover:scale-105 duration-200 ">
                     <Image
                       src={`${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL}${getThumbnailUrl(category.imageURL) || ""
                         }`}

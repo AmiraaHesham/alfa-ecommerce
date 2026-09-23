@@ -21,7 +21,7 @@ export default function BestPick({ Products }) {
   return (
     <div className="w-full  bg-white rounded-2xl p-4">
       <div className="w-full flex justify-between items-center">
-        <h1 className="font-semibold  sticky z-10 ">{t("Best_pick_of_the_week")}</h1>
+        <h1 className="font-semibold text-base  sticky z-10 ">{t("Best_pick_of_the_week")}</h1>
         <div className="text-xs font-semibold">
           <Link href="/user/products/section/topLast30Days">{t("shopMore")} </Link>
           <hr className="bg-red-500 h-[2px] border-none w-auto " />
