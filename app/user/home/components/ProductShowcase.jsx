@@ -29,7 +29,7 @@ export default function RecentlyViewed({ Products, title }) {
           {Products?.map((product, index) => {
             return (
 
-              <div key={index} className={` ${title === "recentViewed" ? index < 3 ? "flex" : "hidden" : index < 7 ? "flex" : "hidden"} gap-2 items-center `}
+              <div key={index} className={` ${title === "recentViewed" ? index < 5 ? "flex" : "hidden" : index < 7 ? "flex" : "hidden"} gap-2 items-center `}
                 onClick={() => {
                   setSelectedProductId(product.item ? product.item.itemId : product.itemId);
                   navigate.push(`/user/productdetails/${product.item ? product.item.nameEn : product.nameEn}/${product.item ? product.item.itemId : product.itemId}`);
@@ -47,7 +47,7 @@ export default function RecentlyViewed({ Products, title }) {
                     className="object-fill rounded-full" />
                 </div>
                 <div>
-                  <span className="text-xs font-semibold cursor-pointer">{locale === "ar" ? product.item ? product.item.nameAr : product.nameEn : product.item ? product.item.nameEn : product.nameEn}</span>
+                  <span className="text-sm font-semibold cursor-pointer">{locale === "ar" ? product.item ? product.item.nameAr : product.nameEn : product.item ? product.item.nameEn : product.nameEn}</span>
                   {/* <div>{
                     productInfo?.averageRating === 0 ? "" : <StarRating rating={productInfo?.averageRating} />
                   }

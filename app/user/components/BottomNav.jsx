@@ -5,10 +5,31 @@ import { useEffect, useState } from "react";
 import { useLanguage } from "../../../context/LanguageContext";
 import { useRefresh } from "../../../context/refreshContext";
 import { getRequest } from "../../../utils/requestsUtils";
-import { MdOutlineShoppingCart, MdClose } from "react-icons/md";
+import { getCategories } from "../../../utils/functions";
+import {
+  MdOutlineShoppingCart,
+  MdDevices,
+  MdOutlineKitchen,
+  MdYard,
+  MdChildCare,
+  MdOutlineSpa,
+} from "react-icons/md";
 import { FiHeart } from "react-icons/fi";
-import { PiListBold, PiUser, PiHouse } from "react-icons/pi";
+import { PiListBold, PiUser, PiHouse, PiSquaresFour } from "react-icons/pi";
 import { RiShoppingBag4Fill, RiTruckLine } from "react-icons/ri";
+
+const getCategoryIcon = (name) => {
+  const n = (name || "").toLowerCase();
+  if (n.includes("electron")) return <MdDevices />;
+  if (n.includes("appliance")) return <MdOutlineKitchen />;
+  if (n.includes("home") || n.includes("garden") || n.includes("furniture"))
+    return <MdYard />;
+  if (n.includes("baby") || n.includes("kid") || n.includes("toy") || n.includes("children"))
+    return <MdChildCare />;
+  if (n.includes("beauty") || n.includes("care") || n.includes("cosme") || n.includes("spa"))
+    return <MdOutlineSpa />;
+  return <PiSquaresFour />;
+};
 
 export default function BottomNav() {
   const { t ,locale} = useLanguage();
@@ -16,6 +37,15 @@ export default function BottomNav() {
   const { refreshKey } = useRefresh();
   const [itemNum, setItemNum] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("categories");
+  const [categoriesList, setCategoriesList] = useState([]);
+  const [categoriesLoading, setCategoriesLoading] = useState(false);
+
+  const openMenu = () => {
+    setMenuOpen(true);
+    setActiveTab("categories");
+    if (!categoriesList.length) getCategoriesList();
+  };
 
   const userId =
     typeof window !== "undefined" ? localStorage.getItem("id") : "";
@@ -47,6 +77,18 @@ export default function BottomNav() {
     }
   };
 
+  const getCategoriesList = async () => {
+    try {
+      setCategoriesLoading(true);
+      const res = await getCategories();
+      setCategoriesList(res.data.content || []);
+    } catch (err) {
+      console.error("Failed to get categories", err);
+    } finally {
+      setCategoriesLoading(false);
+    }
+  };
+
   const menuLinks = [
     { href: "/user/home", label: t("homepage"), icon: <PiHouse /> },
     { href: "/user/wishlist", label: t("wishlist"), icon: <FiHeart /> },
@@ -66,7 +108,7 @@ export default function BottomNav() {
         <div className="flex w-full h-16 max-w-lg mx-auto">
           <button
             type="button"
-            onClick={() => setMenuOpen(true)}
+            onClick={openMenu}
             className="flex-1 flex flex-col items-center justify-center gap-1 py-1 text-gray-700"
           >
             <span className="text-[22px] leading-none">
@@ -119,27 +161,98 @@ export default function BottomNav() {
             className="absolute inset-0 bg-black/40"
             onClick={() => setMenuOpen(false)}
           ></div>
-          <div className={`absolute top-0 bottom-0 ${locale === "ar"? "right-0" :"left-0"}  w-72 max-w-[80%] bg-white shadow-xl flex flex-col transition-transform duration-300`}>
-            <div className="flex items-center justify-between p-4 border-b border-gray-200">
-              <span className="font-semibold text-gray-800">{t("menu")}</span>
-              <MdClose
-                className="w-6 h-6 text-gray-600 cursor-pointer"
-                onClick={() => setMenuOpen(false)}
-              />
+          <div
+            className={`absolute top-0 bottom-0 ${
+              locale === "ar" ? "right-0" : "left-0"
+            } w-80 max-w-[90%] bg-white flex flex-col`}
+          >
+            <div className="flex w-full border-b border-gray-300 shrink-0">
+              <button
+                type="button"
+                onClick={() => setActiveTab("categories")}
+                className={`flex-1 h-12 flex items-center justify-center text-sm font-semibold uppercase tracking-wide transition-colors ${
+                  activeTab === "categories"
+                    ? "bg-gray-200 text-gray-900 border-b-2 border-red-600"
+                    : "bg-gray-100 text-gray-500 border-b-2 border-transparent"
+                }`}
+              >
+                {t("categories")}
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab("menu")}
+                className={`flex-1 h-12 flex items-center justify-center text-sm font-semibold uppercase tracking-wide transition-colors ${
+                  activeTab === "menu"
+                    ? "bg-gray-200 text-gray-900 border-b-2 border-red-600"
+                    : "bg-gray-100 text-gray-500 border-b-2 border-transparent"
+                }`}
+              >
+                {t("menu")}
+              </button>
             </div>
-            <div className="flex flex-col p-3 gap-1 overflow-y-auto">
-              {menuLinks.map((link, idx) => (
+
+            {activeTab === "categories" ? (
+              <div className="flex-1 overflow-y-auto bg-white">
                 <Link
-                  key={idx}
-                  href={link.href}
+                  href="/user/products/category/all/null"
                   onClick={() => setMenuOpen(false)}
-                  className="flex items-center gap-3 px-3 py-3 rounded-lg text-gray-700 hover:bg-gray-100 text-sm"
+                  className="flex items-center gap-3 px-4 h-14 border-b border-gray-200"
                 >
-                  {link.icon && <span className="text-xl">{link.icon}</span>}
-                  <span className="font-medium">{link.label}</span>
+                  <span className="text-2xl text-gray-500 shrink-0">
+                    <PiSquaresFour />
+                  </span>
+                  <span className="text-sm font-semibold text-gray-800">
+                    {t("all")}
+                  </span>
                 </Link>
-              ))}
-            </div>
+                {categoriesLoading ? (
+                  [...Array(4)].map((_, i) => (
+                    <div
+                      key={`cat-skeleton-${i}`}
+                      className="h-14 border-b border-gray-200 bg-gray-100 animate-pulse"
+                    ></div>
+                  ))
+                ) : (
+                  categoriesList.map((item) => (
+                    <Link
+                      key={item.itemCategoryId}
+                      href={`/user/products/category/${encodeURIComponent(
+                        item.nameEn
+                      )}/${item.itemCategoryId}`}
+                      onClick={() => setMenuOpen(false)}
+                      className="flex items-center gap-3 px-4 h-14 border-b border-gray-200 hover:bg-gray-50"
+                    >
+                      <span className="text-2xl text-gray-500 shrink-0">
+                        {getCategoryIcon(item.nameEn)}
+                      </span>
+                      <span className="text-sm font-semibold text-gray-800">
+                        {locale === "ar" ? item.nameAr : item.nameEn}
+                      </span>
+                    </Link>
+                  ))
+                )}
+              </div>
+            ) : (
+              <div className="flex-1 overflow-y-auto bg-white py-2">
+                {menuLinks.map((link, idx) => (
+                  <Link
+                    key={idx}
+                    href={link.href}
+                    onClick={() => setMenuOpen(false)}
+                    className="flex items-center gap-3 px-4 py-3.5 border-b border-gray-200 hover:bg-gray-50"
+                  >
+                    {link.icon && (
+                      <span className="text-xl text-gray-600 shrink-0">
+                        {link.icon}
+                      </span>
+                    )}
+                    <span className="text-sm font-semibold text-gray-800">
+                      {link.label}
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       )}

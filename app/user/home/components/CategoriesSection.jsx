@@ -33,19 +33,19 @@ export default function CategorySection({ categories }) {
           <div className="flex items-center gap-2">
            
             <span className="text-[#7354EF] text-xl"> <AiFillFire/> </span>
-             <h1 className="flex items-center font-semibold gap-2 xs:text-base md:text-[22px] ">
+             <h1 className="flex items-center font-semibold gap-2 text-2xl  ">
               {t("hot_categorios")}
             </h1>
           </div>
         
         </div>
-      <div className="w-full grid xl:grid-cols-4 xs:grid-cols-3 gap-2">
+      <div className="w-full grid grid-cols-4 xl:grid-cols-4 gap-2">
 
           {categories.map((category ,index) => (
           
               <div
               key={index}
-                className="mt-4 flex justify-center items-center text-center cursor-pointer rounded-md  "
+                className="mt-4 flex justify-center items-center text-center cursor-pointer rounded-md  min-w-0 px-1"
                 onClick={() => {
                   navigate.push(
                     "/user/products/category/" +
@@ -56,7 +56,7 @@ export default function CategorySection({ categories }) {
                 }}
               >
                 <div className=" w-full flex flex-col justify-center items-center   ">
-                  <div className="relative rounded-full h-[110px] w-[110px] hover:scale-105 duration-200 ">
+                  <div className="relative rounded-full  h-[100px] w-[100px] hover:scale-105 duration-200 ">
                     <Image
                       src={`${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL}${getThumbnailUrl(category.imageURL) || ""
                         }`}
@@ -67,7 +67,7 @@ export default function CategorySection({ categories }) {
                       className="object-fill rounded-full"
                     />
                   </div>
-                  <h1 className="font-semibold text-xs  mt-2">
+                  <h1 className="font-semibold text-sm  mt-2 break-words w-full line-clamp-2">
                     {locale === "ar" ? category.nameAr : category.nameEn}
                   </h1>
                 </div>

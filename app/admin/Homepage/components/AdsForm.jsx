@@ -22,7 +22,8 @@ export default function AdsForm({ isFormOpen, setIsFormOpen, productsOptions, ad
     const [adData, setAdData] = useState({
         id: "",
         imageUrl: "",
-        title: "",
+        titleAr: "",
+        titleEn: "",
         itemId: ""
     });
     const [selectedProduct, setSelectedProduct] = useState(null);
@@ -105,11 +106,12 @@ export default function AdsForm({ isFormOpen, setIsFormOpen, productsOptions, ad
     const loadFromProps = useCallback((data) => {
         const id = data?.offerId ?? data?.id ?? "";
         const imageUrl = data?.imageUrl ?? data?.img ?? "";
-        const title = data?.title ?? "";
+        const titleAr = data?.titleAr ?? data?.title ?? "";
+        const titleEn = data?.titleEn ?? "";
         const itemIdNum = data?.itemId ?? "";
 
-        setAdData({ id, imageUrl, title, itemId: itemIdNum });
-        if (itemIdNum) selectProductOption(itemIdNum, title);
+        setAdData({ id, imageUrl, titleAr, titleEn, itemId: itemIdNum });
+        if (itemIdNum) selectProductOption(itemIdNum, titleAr);
     }, [selectProductOption]);
 
     const getAdData = useCallback(async () => {
@@ -137,10 +139,10 @@ export default function AdsForm({ isFormOpen, setIsFormOpen, productsOptions, ad
             } else if (offerId) {
                 getAdData();
             } else {
-                setAdData({ id: "", imageUrl: "", title: "", itemId: "" });
+                setAdData({ id: "", imageUrl: "", titleAr: "", titleEn: "", itemId: "" });
             }
         } else {
-            setAdData({ id: "", imageUrl: "", title: "", itemId: "" });
+            setAdData({ id: "", imageUrl: "", titleAr: "", titleEn: "", itemId: "" });
         }
     }, [isFormOpen, isUpdateMode, offerId, adDataKey, adDataProp, clearNewImage, loadFromProps, getAdData]);
 
@@ -170,7 +172,9 @@ export default function AdsForm({ isFormOpen, setIsFormOpen, productsOptions, ad
             formData.append("imageFile", photo.AdImageFile);
         }
         formData.append("itemId", itemId);
-        formData.append("title", adData.title);
+        formData.append("title", adData.titleAr);
+        formData.append("titleAr", adData.titleAr);
+        formData.append("titleEn", adData.titleEn);
         formData.append("number", adNumber)
 
         try {
@@ -213,13 +217,13 @@ export default function AdsForm({ isFormOpen, setIsFormOpen, productsOptions, ad
                     />
                 </div>
             )}
-            <div className="bg-white p-5  xs:w-full lg:w-[500px] flex flex-col  rounded-3xl">
+            <div className="bg-white w-[95%] xs:w-full lg:w-[550px] max-h-[95vh] overflow-y-auto flex flex-col rounded-3xl shadow-2xl">
                 <div className="m-4 flex justify-between items-center">
-                    <h1 id="nameFormCategory" className="text-lg font-semibold">
+                    <h1 id="nameFormCategory" className="text-xl font-bold text-gray-800">
                         {isUpdateMode ? t("edit_advert") : t("add_advert") + " " + "[" + adNumber + "]"}
                     </h1>
                     <button
-                        className="text-3xl text-red-950  hover:text-red-800"
+                        className="text-3xl text-red-950  hover:text-red-800 transition-transform hover:scale-110"
                         onClick={() => {
                             setIsFormOpen(false);
                             clearNewImage();
@@ -231,39 +235,47 @@ export default function AdsForm({ isFormOpen, setIsFormOpen, productsOptions, ad
                     </button>
                 </div>
                 <hr className="h-1 mb-3"></hr>
-                <div className="flex justify-center items-center ">
+                <div className="flex justify-center items-center px-4">
                     <form
-                        className=" md:w-[60%] xs:w-[80%] "
+                        className="w-full"
                         onSubmit={(e) => {
                             e.preventDefault();
                         }}
                     >
-                        {photo.AdImageFile ? <div>
-                            <button type="button" onClick={clearNewImage}>X</button>
-                            <div className="flex items-center relative h-[150px] justify-center border-2 border-dashed border-red-300 rounded-lg hover:bg-gray-50">
+                        {photo.AdImageFile ? <div className="relative">
+                            <button
+                                type="button"
+                                onClick={clearNewImage}
+                                className="absolute top-2 right-2 z-10 bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm hover:bg-red-800"
+                            >X</button>
+                            <div className="flex items-center relative h-[170px] justify-center border-2 border-dashed border-red-300 rounded-xl hover:bg-gray-50">
                                 <div className="w-full h-full relative">
                                     <Image
                                         alt=""
                                         src={photo.AdImage}
                                         fill
-                                        sizes="(max-width: 768px) 80vw, 300px"
-                                        className="w-full h-full object-contain rounded-lg"
+                                        sizes="(max-width: 768px) 80vw, 500px"
+                                        className="w-full h-full object-contain rounded-xl"
                                     />
                                 </div>
 
                             </div>
                         </div>
 
-                            : adData.imageUrl ? <div>
-                                <button type="button" onClick={deleteImage}>X</button>
-                                <div className="flex items-center relative h-[150px] justify-center border-2 border-dashed border-red-300 rounded-lg hover:bg-gray-50">
+                            : adData.imageUrl ? <div className="relative">
+                                <button
+                                    type="button"
+                                    onClick={deleteImage}
+                                    className="absolute top-2 right-2 z-10 bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm hover:bg-red-800"
+                                >X</button>
+                                <div className="flex items-center relative h-[170px] justify-center border-2 border-dashed border-red-300 rounded-xl hover:bg-gray-50">
                                     <div className="w-full h-full relative">
                                         <Image
                                             alt=""
                                             src={process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL + adData.imageUrl}
                                             fill
-                                            sizes="(max-width: 768px) 80vw, 300px"
-                                            className="w-full h-full object-contain rounded-lg"
+                                            sizes="(max-width: 768px) 80vw, 500px"
+                                            className="w-full h-full object-contain rounded-xl"
                                         />
                                     </div>
 
@@ -271,13 +283,13 @@ export default function AdsForm({ isFormOpen, setIsFormOpen, productsOptions, ad
                             </div>
 
                                 : <label htmlFor="AdFileInput" className="cursor-pointer ">
-                                    <div className="flex flex-col items-center relative  justify-center p-3 border-2 border-dashed border-red-300 rounded-lg hover:bg-gray-50">
+                                    <div className="flex flex-col items-center relative  justify-center p-5 border-2 border-dashed border-red-300 rounded-xl hover:bg-red-50 transition-colors">
                                         {!photo.AdImage ? (
                                             <div className="flex flex-col justify-center items-center">
                                                 <span className="text-4xl text-red-600">
                                                     <IoCloudUploadSharp />
                                                 </span>
-                                                <span className="text-sm ">
+                                                <span className="text-sm text-gray-500 mt-2">
                                                     {t("add-photo")}
                                                 </span>
                                             </div>
@@ -303,91 +315,112 @@ export default function AdsForm({ isFormOpen, setIsFormOpen, productsOptions, ad
                             className="hidden"
                             id="AdFileInput"
                         />
-                        <div className="mt-4">
-                            <div className="flex flex-col gap-2 ">
-                                <label className="text-md text-gray-500">
-                                    {t("title")}
-                                </label>
-                                <input
-                                    type="text"
-                                    value={adData.title}
-                                    onChange={(e) => setAdData((prev) => ({
-                                        ...prev,
-                                        title: e.target.value
-                                    }))}
-                                    placeholder={t("title_placeholder")}
-                                    className="w-full outline-none text-gray-900 text-lg p-1 border rounded-md placeholder:text-sm"
-                                />
-                                <label className="text-md ">
-                                    {t("choose_product")}
-                                </label>
-                                <div className="border rounded-lg border-red-300 px-1 ">
+                        <div className="mt-5">
+                            <div className="flex flex-col gap-4 ">
+                                <div className="flex flex-col gap-1.5">
+                                    <label className="text-md font-semibold text-gray-600">
+                                        {t("title_ar")}
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={adData.titleAr}
+                                        onChange={(e) => setAdData((prev) => ({
+                                            ...prev,
+                                            titleAr: e.target.value
+                                        }))}
+                                        placeholder={t("title_placeholder")}
+                                        className="w-full outline-none text-gray-900 text-sm p-2.5 border border-gray-300 rounded-lg focus:border-red-500 focus:ring-2 focus:ring-red-100 transition-all"
+                                    />
+                                </div>
+                                <div className="flex flex-col gap-1.5">
+                                    <label className="text-md font-semibold text-gray-600">
+                                        {t("title_en")}
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={adData.titleEn}
+                                        onChange={(e) => setAdData((prev) => ({
+                                            ...prev,
+                                            titleEn: e.target.value
+                                        }))}
+                                        placeholder={t("title_en_placeholder")}
+                                        dir="ltr"
+                                        className="w-full outline-none text-gray-900 text-sm p-2.5 border border-gray-300 rounded-lg focus:border-red-500 focus:ring-2 focus:ring-red-100 transition-all"
+                                    />
+                                </div>
+                                <div className="flex flex-col gap-1.5">
+                                    <label className="text-md font-semibold text-gray-600">
+                                        {t("choose_product")}
+                                    </label>
+                                    <div className="border rounded-xl border-red-300 px-1 focus-within:border-red-500">
 
-                                    <Select
-                                        options={options}
-                                        value={selectedProduct}
-                                        inputValue={search}
-                                        isSearchable
-                                        placeholder={t("search")}
-                                        onInputChange={(value, actionMeta) => {
-                                            if (actionMeta.action === "input-change") {
-                                                setSearch(value);
-                                            }
-                                            return value;
-                                        }}
+                                        <Select
+                                            options={options}
+                                            value={selectedProduct}
+                                            inputValue={search}
+                                            isSearchable
+                                            placeholder={t("search")}
+                                            onInputChange={(value, actionMeta) => {
+                                                if (actionMeta.action === "input-change") {
+                                                    setSearch(value);
+                                                }
+                                                return value;
+                                            }}
 
-                                        onKeyDown={(e) => {
-                                            if (e.key === "Enter") {
-                                                e.preventDefault();
-                                                handleSearch();
-                                            }
-                                        }}
+                                            onKeyDown={(e) => {
+                                                if (e.key === "Enter") {
+                                                    e.preventDefault();
+                                                    handleSearch();
+                                                }
+                                            }}
 
-                                        onChange={(selected) => {
-                                            setItemId(selected.value)
-                                            setSelectedProduct(selected);
-                                            setSearch("");
-                                        }}
+                                            onChange={(selected) => {
+                                                setItemId(selected.value)
+                                                setSelectedProduct(selected);
+                                                setSearch("");
+                                            }}
 
-                                        noOptionsMessage={() => "لا توجد منتجات"}
-                                        styles={{
-                                            control: (provided) => ({
-                                                ...provided,
-                                                border: "none",
-                                                boxShadow: "none",
-                                                fontWeight: "600",
-                                                height: "100%",
-                                                width: "100%",
-                                            }),
-                                            option: (provided) => ({
-                                                ...provided,
-                                                // backgroundColor: '#b91c1c',
-                                                color: "white",
-                                                fontSize: "18px",
-                                                fontWeight: "600",
-                                            }),
-                                            input: (base) => ({
-                                                ...base,
-                                                color: "#374151",
-                                            }),
-                                            option: (base, state) => ({
-                                                ...base,
-                                                backgroundColor: state.isSelected
-                                                    ? "#dc2626"
-                                                    : state.isFocused
-                                                        ? "#fee2e2"
-                                                        : "#ffffff",
-                                                color: state.isSelected ? "#ffffff" : "#374151",
-                                                cursor: "pointer",
-                                                padding: "10px",
-                                                "&:hover": {
+                                            noOptionsMessage={() => t("no_products") || "لا توجد منتجات"}
+                                            styles={{
+                                                control: (provided) => ({
+                                                    ...provided,
+                                                    border: "none",
+                                                    boxShadow: "none",
+                                                    fontWeight: "600",
+                                                    height: "100%",
+                                                    width: "100%",
+                                                    padding: "4px",
+                                                }),
+                                                option: (base) => ({
+                                                    ...base,
+                                                    // backgroundColor: '#b91c1c',
+                                                    color: "white",
+                                                    fontSize: "15px",
+                                                    fontWeight: "600",
+                                                }),
+                                                input: (base) => ({
+                                                    ...base,
+                                                    color: "#374151",
+                                                }),
+                                                option: (base, state) => ({
+                                                    ...base,
                                                     backgroundColor: state.isSelected
                                                         ? "#dc2626"
-                                                        : "#fee2e2",
-                                                },
-                                            }),
-                                        }}
-                                    />
+                                                        : state.isFocused
+                                                            ? "#fee2e2"
+                                                            : "#ffffff",
+                                                    color: state.isSelected ? "#ffffff" : "#374151",
+                                                    cursor: "pointer",
+                                                    padding: "10px",
+                                                    "&:hover": {
+                                                        backgroundColor: state.isSelected
+                                                            ? "#dc2626"
+                                                            : "#fee2e2",
+                                                    },
+                                                }),
+                                            }}
+                                        />
+                                    </div>
                                 </div>
 
                             </div>
@@ -395,11 +428,11 @@ export default function AdsForm({ isFormOpen, setIsFormOpen, productsOptions, ad
 
 
 
-                        <div className="flex justify-center items-center">
+                        <div className="flex justify-center items-center pb-4">
                             <button
                                 type="submit"
                                 id="btn-saveCategory"
-                                className={`bg-red-600 py-2 px-3 text-white mt-7  hover:bg-red-800 rounded-lg `}
+                                className={`bg-red-600 py-2.5 px-10 text-white mt-7  hover:bg-red-800 rounded-xl font-semibold transition-colors shadow-md hover:shadow-lg `}
                                 onClick={handleSubmit}
                             >
                                 {isUpdateMode ? t("save-changes") : t("save")}

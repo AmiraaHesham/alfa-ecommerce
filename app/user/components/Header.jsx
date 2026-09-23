@@ -56,7 +56,7 @@ export default function Header() {
     try {
       if (userId) {
         const res = await getRequest(`/api/shopCarts`);
-        const rseData = res.data;
+        const rseData = res.data.content;
         console.log(rseData)
         setNetTotal(rseData.netTotal);
         setItemNum(rseData.itemLines.length);

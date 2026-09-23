@@ -110,6 +110,7 @@ export default function Homepage() {
   const [mustWatchedItems, setMustWatchedItems] = useState([]);
   const [topSoldItems, setTopSoldItems] = useState([]);
   const [topDiscountedItems, setTopDiscountedItems] = useState([]);
+  const [topLast30DayItems, setTopLast30DayItems] = useState([]);
   const [items, setItems] = useState();
   const [topRatingItems, setTopRatingItems] = useState();
   const [recentWatchedProducts, setRecentWatchedProducts] = useState([]);
@@ -119,7 +120,7 @@ export default function Homepage() {
   const [ad4Product, setAd4Product] = useState(null);
   const [ad5Product, setAd5Product] = useState(null);
   const [loading, setLoading] = useState(true);
-const [productType ,setProductType] = useState("featuredProducts")
+const [productType ,setProductType] = useState("popularProducts")
   // ==============================
   // Derived values
   // ==============================
@@ -230,12 +231,11 @@ const [productType ,setProductType] = useState("featuredProducts")
       const soldItemRes = await getRequest("/api/public/items/topSold")
       setTopSoldItems(soldItemRes.data.content)
 
+    const topLast30DaysRes = await getRequest("/api/public/items/topRated/last30Days")
+    console.log("topLast30DaysRes" ,topLast30DaysRes.data)
+      setTopLast30DayItems(topLast30DaysRes.data.content)
       if (isLoggedIn) {
-        const recentWatchedProductsRes = await getRequest(
-          "/api/users/recentWatchedItems", {
-          page: 0,
-          size: 3,
-        });
+        const recentWatchedProductsRes = await getRequest("/api/users/recentWatchedItems");
         setRecentWatchedProducts(recentWatchedProductsRes.data || []);
         console.log(recentWatchedProductsRes)
       }
@@ -301,7 +301,7 @@ const [productType ,setProductType] = useState("featuredProducts")
               <div className="w-full h-full">
                 <div className="flex md:flex-row xs:flex-col gap-3 justify-center items-center h-full  w-full">
                   {/* Ads */}
-                  <div className="group md:w-[600px] xs:w-full h-[360px] rounded-2xl  cursor-pointer 
+                  <div className="group md:w-[600px] xs:w-full h-[350px] rounded-2xl  cursor-pointer 
                   text-[#EAEBB8] bg-gradient-to-b from-[#2F4D4C] via-[#263F40] to-[#0F1B1B] 
                   flex flex-col justify-between items-center relative overflow-hidden">
                     <div className="w-full text-center p-5">
@@ -323,7 +323,7 @@ const [productType ,setProductType] = useState("featuredProducts")
                         </div>
                       )}
                     </div>
-                    <div className="w-[230px] h-[270px] group-hover:scale-105 duration-500 transition-all relative">
+                    <div className="w-[230px] h-[260px] group-hover:scale-105 duration-500 transition-all relative">
                       <Image
                         src={formatAdImageUrl(ads.ad1.imageUrl)}
                         alt="Advertisement"
@@ -343,7 +343,7 @@ const [productType ,setProductType] = useState("featuredProducts")
 
               {/* Best pick of the week */}
               <div>
-                <BestPick Products={newProducts} />
+                <BestPick Products={topLast30DayItems} />
               </div>
             </div>
           </div>
@@ -354,16 +354,16 @@ const [productType ,setProductType] = useState("featuredProducts")
       <SiteFeatures />
 
       {/* ========================= Featured Products ========================= */}
-      <div className="flex lg:flex-row xs:flex-col my-10 gap-5 items-start w-full mt-20">
+      <div className=" flex lg:flex-row xs:flex-col my-10 gap-5 items-start w-full mt-20">
         {loading ? (
           <div className="w-[400px] h-[440px]">
             <ListSkeleton />
           </div>
         ) : (
-          <div className="flex flex-col xs:w-full lg:w-auto items-center gap-5">
+          <div className="xs:order-2 lg:order-1 flex flex-col xs:w-full lg:w-auto items-center gap-5">
             <ProductShowcase Products={recentWatchedProducts} title={"recentViewed"} />
-            <div className="w-full lg:flex-col sm:flex-row xs:flex-col flex gap-10">
-              <div className="bg-white mt-5 lg:w-[270px] xs:w-full h-[670px] rounded-3xl relative overflow-hidden">
+            <div className="w-full lg:flex-col sm:flex-row xs:flex-col flex gap-5">
+              <div className="bg-white mt-2 lg:w-[280px] xs:w-full h-[660px] rounded-3xl relative overflow-hidden">
                 {ads.ad2.imageUrl && (
                   <Image
                     src={IMAGE_BASE_URL + ads.ad2.imageUrl}
@@ -380,7 +380,7 @@ const [productType ,setProductType] = useState("featuredProducts")
                     <ListSkeleton className="w-full h-[440px] bg-white rounded-3xl p-5 space-y-5" />
                   </div>
                 ) : (
-                  <div className="w-full h-[670px] ">
+                  <div className="w-full h-[660px] ">
                     <ProductShowcase Products={newProducts} title={"latest_products"} />
                   </div>
                 )}
@@ -388,15 +388,15 @@ const [productType ,setProductType] = useState("featuredProducts")
             </div>
           </div>
         )}
-        <section className="w-full">
-          <div className="w-full flex md:flex-row xs:flex-col justify-between items-center gap-2">
+        <section className="w-full xs:order-1 lg:order-2">
+          <div className="w-full flex xl:flex-row xs:flex-col justify-between items-center gap-2">
             <div className="w-full">
-              <h1 className="flex items-center font-semibold gap-2 xs:text-base md:text-xl mb-1">
+              <h1 className="flex items-center font-semibold gap-2 text-2xl mb-1">
                 {t("featured_products")}
               </h1>
               {/* <hr className="w-24 h-1 border-0 rounded-full bg-gradient-to-l from-red-200 via-red-400 to-red-200" /> */}
             </div>
-            <div className="flex items-center gap-5 justify-end w-full md:text-sm xs:text-[13px] font-semibold">
+            <div className="flex items-center gap-5 xl:justify-end xs:justify-start w-full md:text-sm xl:text-base  font-semibold">
               <button
                 className={` items-center justify-center rounded-full p-1  hover:text-red-600 hover:scale-105 ${productType === "popularProducts" ?"text-red-600" : "text-black"} duration-200`}
                 onClick={handleShowPopularProducts}
@@ -435,8 +435,8 @@ const [productType ,setProductType] = useState("featuredProducts")
 
             </div>
           )}
-          <div className="flex lg:flex-row xs:flex-col mt-10 gap-5 justify-between  items-start w-full">
-            <div className="md:w-[670px] xs:w-full h-[400px] bg-white rounded-3xl">
+          <div className="flex xl:flex-row xs:flex-col mt-10 gap-5 justify-between  items-start w-full">
+            <div className="md:w-[670px] xs:w-full h-[500px] bg-white rounded-3xl">
               <ProductAdsSlider />
             </div>
             {loading ? (

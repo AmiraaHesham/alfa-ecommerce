@@ -206,7 +206,7 @@ export default function ProductAdsSlider() {
                 key={slide.offerId || index}
                 className="h-full"
               >
-                <div className="w-full h-[400px]">
+                <div className="w-full h-[500px]">
                   <div className="relative w-full h-full rounded-[22px] overflow-hidden">
 
                     {largeSrc ? (

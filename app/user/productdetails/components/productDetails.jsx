@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState, useRef, useCallback } from "react";
 import { getProductDetails, getItemRatings } from "../../../../utils/functions";
+import { postRequest } from "../../../../utils/requestsUtils";
 import Image from "next/image";
 import "aos/dist/aos.css";
 import { useLanguage } from "../../../../context/LanguageContext";
@@ -103,6 +104,25 @@ export default function ProductDetails({ itemId }) {
       setReviewsLoading(false);
     }
   }, [itemId]);
+
+  // عند فتح صفحة المنتج نضيفه لـ recentWatched (للمستخدم المسجل فقط)
+  const recordRecentWatched = useCallback(async () => {
+    const userId =
+      typeof window !== "undefined" ? localStorage.getItem("id") : "";
+    if (!userId) return;
+    try {
+      await postRequest(`/api/users/recentWatchedItems/${itemId}`, "", "");
+    } catch (error) {
+      console.error("Failed to record recent watched item:", error);
+    }
+  }, [itemId]);
+
+  useEffect(() => {
+    const track = setTimeout(() => {
+      recordRecentWatched();
+    }, 800);
+    return () => clearTimeout(track);
+  }, [recordRecentWatched]);
 
   useEffect(() => {
     productDetails();

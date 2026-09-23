@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { FaHeart, FaUser } from "react-icons/fa";
 import { IoLocationSharp } from "react-icons/io5";
 import { MdEmail, MdLock, MdPhoneEnabled } from "react-icons/md";
-import {  PiSignOutBold } from "react-icons/pi";
+import { PiSignOutBold } from "react-icons/pi";
 import "aos/dist/aos.css";
 import { useLanguage } from "../../../../context/LanguageContext";
 import { RiShoppingBag4Fill } from "react-icons/ri";
@@ -23,32 +23,36 @@ export default function Profile() {
   const [governorateId, setGovernorateId] = useState("");
   const [governorate, setGovernorate] = useState("");
   const navigate = useRouter();
-  const { t , locale} = useLanguage();
+  const { t, locale } = useLanguage();
   const [governorates, setGovernorates] = useState([]);
   const [value, setValue] = useState();
   const [isFormOpen, setIsFormOpen] = useState(false);
 
- 
 
- const  getUserData =async()=>{
 
-  const responce = await getRequest("/api/users")
-  console.log(responce)
-const resData = responce.data
-  setFirstName(resData.firstName)
-  setLastName(resData.lastName)
-  setUsername(resData.username)
-  setPhone(resData.phone)
-  setAddress(resData.address)
-  setEmail(resData.email)
-  setGovernorateId(resData.governorate.governorateId)
-  setGovernorate(locale ==="ar"? resData.governorate.nameAr
- : resData.governorate.nameEn)
+  const getUserData = async () => {
+try{
+const responce = await getRequest("/api/users")
+    console.log(responce)
+    const resData = responce.data
+    setFirstName(resData.firstName)
+    setLastName(resData.lastName)
+    setUsername(resData.username)
+    setPhone(resData.phone)
+    setAddress(resData.address)
+    setEmail(resData.email)
+    setGovernorateId(resData.governorate.governorateId)
+    setGovernorate(locale === "ar" ? resData.governorate.nameAr
+      : resData.governorate.nameEn)
+} catch(error){
+  
 }
+    
+  }
   const updateProfile = async (e) => {
     e.preventDefault();
     try {
-     const res = await putRequest(`/api/users/${userId}`, {
+      const res = await putRequest(`/api/users`, {
         username: username,
         firstName: firstName,
         lastName: lastName,
@@ -56,8 +60,8 @@ const resData = responce.data
         address: address,
         governorateId: value ? value.value : null,
       }, t("message"));
-getUserData()
-    } catch (err) {}
+      getUserData()
+    } catch (err) { }
   };
   const getGovernorate = async () => {
     try {
@@ -84,17 +88,17 @@ getUserData()
     }
   };
 
-useEffect(() => {
-  if (governorateId) {
-    getGovernorate();
-  }
-}, [governorateId]);
- useEffect(() => {
-getUserData()
+  useEffect(() => {
+    if (governorateId) {
+      getGovernorate();
+    }
+  }, [governorateId]);
+  useEffect(() => {
+    getUserData()
   }, []);
   return (
     <div className="p-10">
-              <ResetPasswordForm isFormOpen={isFormOpen} setIsFormOpen={setIsFormOpen}/>
+      <ResetPasswordForm isFormOpen={isFormOpen} setIsFormOpen={setIsFormOpen} />
 
       <div className="flex xs:flex-col md:flex-row  h-full gap-10 justify-between">
         <div className="bg-white md:w-[50%] xl:w-[30%] h-[350px] flex   flex-col gap-3   p-7 rounded-3xl">
@@ -231,7 +235,7 @@ getUserData()
                     onChange={(e) => setPhone(e.target.value)}
                   />
                 </div>
-                 <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-3">
                   <label className="text-xs font-semibold text-gray-500">
                     {t("governorate")}
                   </label>
@@ -294,7 +298,7 @@ getUserData()
                     onChange={(e) => setAddress(e.target.value)}
                   />
                 </div>
-               
+
               </div>
 
               <div className="mt-10 flex items-center gap-5">
@@ -319,7 +323,7 @@ getUserData()
               <button
                 className="text-red-500 text-sm font-semibold"
                 onClick={() => {
-              setIsFormOpen(true)
+                  setIsFormOpen(true)
                 }}
               >
                 {t("updatePassword")}

@@ -1,6 +1,6 @@
 "use client";
 import { useSearshInputContext } from "../../../../../../context/searshInputContext";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import CategoriesSideManu from "../../../../components/CategoriseSideMenu";
 import { postRequest } from "../../../../../../utils/requestsUtils";
 import { useRouter } from "next/navigation";
@@ -9,7 +9,7 @@ import ProductCard from "../../../../components/ProductCard";
 import { useLanguage } from "../../../../../../context/LanguageContext";
 import { BsList } from "react-icons/bs";
 import Select from "react-select";
-import { MdOutlineDownloading } from "react-icons/md";
+import Pagination from "../../../../search/[searchInput]/components/Pagination";
 
 export default function ProductsByCategory({ params }) {
   const { category, id } = params;
@@ -19,8 +19,10 @@ export default function ProductsByCategory({ params }) {
   const [loading, setLoading] = useState(true);
   const [ascending, setAscending] = useState();
   const [sortBy, setSortBy] = useState();
-  const [hasMore, setHasMore] = useState(true);
-  const pageNum = useRef(0);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
+  const PAGE_SIZE = 12;
 
   const sortOptions = [
     { value: "true,price", label: t("priceLowToHigh") },
@@ -31,39 +33,74 @@ export default function ProductsByCategory({ params }) {
     ? sortOptions.find((option) => option.value === `${ascending},${sortBy}`)
     : null;
 
-  const getAllProducts = async (loading) => {
+  const normalizePage = (payload, fallbackSize) => {
+    const data = payload?.data ?? payload ?? {};
+    const content = Array.isArray(data)
+      ? data
+      : Array.isArray(data?.content)
+        ? data.content
+        : Array.isArray(data?.items)
+          ? data.items
+          : [];
+    const size = Number(data?.size ?? fallbackSize) || fallbackSize;
+    const totalElements =
+      Number(
+        data?.totalElements ??
+        data?.totalItems ??
+        data?.totalCount ??
+        data?.total ??
+        0,
+      ) || 0;
+    const totalPages =
+      Number(data?.totalPages ?? data?.totalPage ?? 0) ||
+      (content.length > 0 ? Math.max(1, Math.ceil(totalElements / size)) : 0);
+    const number =
+      Number(data?.number ?? data?.pageNumber ?? data?.currentPage ?? 0) || 0;
+    return { content, number, size, totalElements, totalPages };
+  };
+
+  const getAllProducts = async (loading, requestedPage) => {
     try {
       setLoading(loading);
 
+      const page = requestedPage ?? currentPage;
       const response = await postRequest(
         "/api/public/items/search",
         {
-          page: pageNum.current,
-          size: 10,
+          page,
+          size: PAGE_SIZE,
           categoryId: id,
           sortBy: sortBy || null,
           ascending: ascending || true,
         },
         "",
       );
-      if(response.data.length === 0){
-        setHasMore(false);
-      }
-      else{
-         const resProducts = response.data.content || [];
-      if (pageNum.current === 0) {
-        setProducts(resProducts);
-      } else setProducts((prev) => [...prev, ...resProducts]);
-      }
-     
+
+      const normalized = normalizePage(response, PAGE_SIZE);
+      setProducts(normalized.content);
+      setCurrentPage(normalized.number);
+      setTotalPages(normalized.totalPages);
+      setTotalElements(normalized.totalElements);
     } catch (error) {
     } finally {
       setLoading(false);
     }
   };
   useEffect(() => {
-    getAllProducts(true);
+    setCurrentPage(0);
+    getAllProducts(true, 0);
   }, [id, sortBy, ascending]);
+
+  useEffect(() => {
+    if (currentPage === 0) return;
+    getAllProducts(true, currentPage);
+  }, [currentPage]);
+
+  const handlePageChange = (page) => {
+    if (page === currentPage || page < 0 || page >= totalPages) return;
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   return (
     <div className=" w-full ">
@@ -72,8 +109,7 @@ export default function ProductsByCategory({ params }) {
 
         <div className="p-3 w-full ">
           <div className="flex gap-5 ">
-            <div className="bg-white flex  gap-4 items-center  border rounded-md  px-3 h-10  mb-5">
-              <span>{t("sortBy")}:</span>
+            <div className="bg-white flex  gap-4 items-center  border rounded-full  px-3 h-10  mb-5">
               <Select
                 isSearchable={false}
                 options={sortOptions}
@@ -87,7 +123,7 @@ export default function ProductsByCategory({ params }) {
                     setSortBy(undefined);
                   }
                 }}
-                className="h-full w-[200px] z-50"
+                className="h-full w-[200px] rounded-full z-50"
                 placeholder={t("select")}
                 styles={{
                   control: (provided) => ({
@@ -143,26 +179,13 @@ export default function ProductsByCategory({ params }) {
                   </div>
                 ))}
               </div>
-              <div
-                className={`w-full  justify-center items-center ${products.length < 10 ? "hidden" : "flex"}`}
-              >
-                {
-                  hasMore ? (
-                     <button
-                  className=" text-red-600 px-5 py-1 shadow-md  my-3 rounded-lg"
-                  onClick={() => {
-                    pageNum.current += 1;
-                    getAllProducts(false);
-                  }}
-                >
-                  <MdOutlineDownloading className="text-4xl" />
-                </button>
-                  ):(
-                    <span className="text-gray-500 my-3">{t("no_more_products")}</span>
-                  )
-                }
-               
-              </div>
+              {totalPages > 1 && (
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={handlePageChange}
+                />
+              )}
             </div>
           ) : (
             <div className="h-screen w-full">

@@ -16,8 +16,7 @@ export default function ProductsBySection({ params }) {
   const [loading, setLoading] = useState(true);
   const [ascending, setAscending] = useState();
   const [sortBy, setSortBy] = useState();
-  const [hasMore, setHasMore] = useState(true);
-  const pageNum = useRef(0);
+  const resultsRef = useRef(null);
 
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
@@ -35,8 +34,8 @@ export default function ProductsBySection({ params }) {
     : null;
 
   const sectionTitle =
-    section === "featured"
-      ? t("featured_products")
+    section === "topLast30Days"
+      ? t("Best_pick_of_the_week")
       : section === "recentWatched"
         ? t("recentWatched")
         : section === "all"
@@ -46,7 +45,7 @@ export default function ProductsBySection({ params }) {
             : t("morerecommendedproducts");
 
   const sectionIcon =
-    section === "featured"
+    section === "topLast30Days"
       ? <BsStarFill className="text-red-600" />
       : section === "recentWatched"
         ? <BsClockHistory className="text-red-600" />
@@ -88,13 +87,12 @@ export default function ProductsBySection({ params }) {
 
       const page = requestedPage ?? currentPage;
       const response =
-        section === "featured"
-          ? await postRequest(
-            "/api/public/items/search",
+        section === "topLast30Days"
+          ? await getRequest(
+            "/api/public/items/topRated/last30Days",
             {
               page,
               size: PAGE_SIZE,
-              isFavorite: true,
               sortBy: sortBy || null,
               ascending: ascending || true,
             },
@@ -144,7 +142,7 @@ export default function ProductsBySection({ params }) {
                   },
                   "",
                 );
-
+console.log(response) 
       const normalized = normalizePage(response, PAGE_SIZE);
       setProducts(normalized.content);
       setCurrentPage(normalized.number);
@@ -170,7 +168,7 @@ export default function ProductsBySection({ params }) {
   const handlePageChange = (page) => {
     if (page === currentPage || page < 0 || page >= totalPages) return;
     setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   const totalResultsText = () => {
@@ -185,7 +183,7 @@ export default function ProductsBySection({ params }) {
 
   return (
     <div className=" w-full">
-      <div className="flex flex-col items-start justify-start  ">
+      <div ref={resultsRef} className="flex flex-col items-start justify-start  ">
 
 
         <div className="p-3 w-full ">
@@ -265,24 +263,22 @@ export default function ProductsBySection({ params }) {
               <div
                 className="grid xl:grid-cols-6 lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 p-2 gap-5"
               >
-                {section === "featured" || section === "newProducts" || section === "all" || section=== "morerecommendedproducts" ? products.map((product, index) => (
+                {products.map((product, index) => (
                   <div key={index}>
                     <ProductCard productInfo={product} />
                   </div>
                 ))
-                  :
-                  products.map((product, index) => (
-                    <div key={index}>
-                      <ProductCard productInfo={product.item} />
-                    </div>
-                  ))}
+                 
+                  }
               </div>
 
-              <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={handlePageChange}
-              />
+              {totalPages > 1 && (
+                           <Pagination
+                             currentPage={currentPage}
+                             totalPages={totalPages}
+                             onPageChange={handlePageChange}
+                           />
+                         )}
               {/* )
               ) : (
               <div

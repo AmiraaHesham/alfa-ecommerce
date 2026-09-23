@@ -30,7 +30,7 @@ export default function SiteFeatures() {
                 className="w-full h-full">
 
 
-                <SwiperSlide className="!w-[280px]   text-center">
+                <SwiperSlide className="!w-[210px] md:!w-[280px]   text-center">
                     <div className="h-full w-full  flex   gap-1 items-center">
                         <span className="text-3xl p-1">
 
@@ -40,7 +40,7 @@ export default function SiteFeatures() {
                     </div>
                 </SwiperSlide>
 
-                <SwiperSlide className="!w-[280px]   text-center">
+                <SwiperSlide className="!w-[210px] md:!w-[280px]   text-center">
                     <div className="h-full w-full flex  gap-1 items-center">
                         <span className="text-3xl p-1">
                             <FaShippingFast className="w-full h-full  text-[#7354ef] " />
@@ -49,7 +49,7 @@ export default function SiteFeatures() {
                     </div>
                 </SwiperSlide>
 
-                <SwiperSlide className="!w-[280px]   text-center">
+                <SwiperSlide className="!w-[210px] md:!w-[280px]   text-center">
 
                     <div className="h-full  w-full flex   gap-1 items-center">
                         <span className="text-3xl p-1">
@@ -60,7 +60,7 @@ export default function SiteFeatures() {
                     </div>
                 </SwiperSlide>
                 
-                <SwiperSlide className="!w-[280px]   text-center">
+                <SwiperSlide className="!w-[210px] md:!w-[280px]   text-center">
                     <div className="h-full  flex  w-full gap-1 items-center">
                         <span className="text-3xl p-1">
 
@@ -69,7 +69,7 @@ export default function SiteFeatures() {
                         <h1 className=" text-sm ">{t("Original_Products")}</h1>
                     </div>
                 </SwiperSlide>
-<SwiperSlide className="!w-[280px]   text-center">
+<SwiperSlide className="!w-[210px] md:!w-[280px]   text-center">
 
                     <div className="h-full  flex w-full  gap-1 items-center">
                         <span className="text-3xl p-1 ">
