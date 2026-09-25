@@ -13,6 +13,8 @@ export default function YouMightLike({categoryId}) {
       const [products, setProducts] = useState([]);
      const getProductsByCategory = async () => {
         try {
+                    console.log(categoryId);
+
           const response = await postRequest(
             "/api/public/items/search",
             {
@@ -23,7 +25,6 @@ export default function YouMightLike({categoryId}) {
             "",
           );
           setProducts(response.data.content);
-          console.log(categoryId);
           setLoading(false);
         } catch (error) {
           console.log(error);
@@ -33,7 +34,7 @@ export default function YouMightLike({categoryId}) {
       };
       useEffect(()=>{
         getProductsByCategory()
-      },[])
+      },[categoryId])
 return(
       <div className=" bg-[#f6f5f8] p-5">
         <h1 className="md:text-2xl xs:text-lg flex items-center gap-3 font-bold">

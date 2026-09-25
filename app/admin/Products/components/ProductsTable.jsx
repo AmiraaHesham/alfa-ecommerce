@@ -337,7 +337,7 @@ export default function ProductsTable({ setIsFormOpen, category, setIsEditMode }
         </div>
       </div>
       <div className="hidden lg:block h-[520px] mt-3 w-full overflow-y-scroll">
-        <table className="w-full h-full border rounded-3xl">
+        <table className="w-full h-auto border rounded-3xl">
           <thead className=" bg-[#ececec] text-xs text-justify sticky top-0  z-10">
             <tr className="  h-12  ">
               <th className=""></th>

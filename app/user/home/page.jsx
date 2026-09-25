@@ -295,7 +295,7 @@ const [productType ,setProductType] = useState("popularProducts")
             </div>
           </div>
         ) : (
-          <div className="flex lg:flex-row xs:flex-col justify-around gap-5 items-center w-full">
+          <div className="flex lg:flex-row xs:flex-col justify-around gap-4 items-center w-full">
             {/* Slider */}
             <div className="lg:w-[40%] xs:w-full">
             <ImageSlider sliderImages={imagesSliders} />
@@ -305,7 +305,7 @@ const [productType ,setProductType] = useState("popularProducts")
               <div className="w-full h-full">
                 <div className="flex md:flex-row xs:flex-col gap-3 justify-center items-center h-full  w-full">
                   {/* Ads */}
-                  <div className="group xl:w-[600px] lg:w-[500px] xs:w-full h-[350px] rounded-2xl  cursor-pointer 
+                  <div className="group xl:w-[580px] lg:w-[500px] xs:w-full h-[350px] rounded-2xl  cursor-pointer 
                   text-[#EAEBB8] bg-gradient-to-b from-[#2F4D4C] via-[#263F40] to-[#0F1B1B] 
                   flex flex-col justify-between items-center relative overflow-hidden">
                     <div className="w-full text-center p-5">
@@ -459,88 +459,79 @@ const [productType ,setProductType] = useState("popularProducts")
 
       {/* ========================= Promo Banner ========================= */}
       <section className="my-10">
-        <Swiper
-          key={locale}
-          dir={locale === "ar" ? "rtl" : "ltr"}
-          slidesPerView={1}
-          spaceBetween={20}
-          breakpoints={{
-            768: { slidesPerView: 2 },
-            1024: { slidesPerView: 3 },
-          }}
-          navigation={true}
-          className="w-full"
-        >
-          <SwiperSlide>
-            <div className="group cursor-pointer w-full flex flex-col justify-center items-center h-[500px] bg-white rounded-3xl overflow-hidden p-5">
-              {ads.ad3.imageUrl ? (
-                <div className="w-full h-[300px] relative group-hover:scale-105 duration-500 transition-all">
-                  <Image
-                    src={IMAGE_BASE_URL + ads.ad3.imageUrl}
-                    alt="Advertisement"
-                    fill
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                    className="object-fill"
-                  />
-                </div>
-              ) : (
-                <div className="w-full h-full" />
-              )}
-              <div className="flex flex-col justify-around items-center w-full">
-                <h1 className="text-3xl font-bold">{ad3Product} </h1>
+        <div className="w-full flex flex-col md:flex-row lg:justify-between items-stretch gap-5">
+          <div className="group cursor-pointer w-full flex flex-col justify-center items-center h-[500px] bg-white rounded-3xl  overflow-hidden p-5">
+            {ads.ad3.imageUrl ? (
+              <div className="w-full h-[300px] relative group-hover:scale-105 duration-500 transition-all">
 
-                <h1 className=" text-center my-5">{ads.ad3.title} </h1>
-                <button className="text-white rounded-full bg-[#CD4354] hover:bg-[#c13b4a] w-[120px] py-3 px-5 mt-2 text-sm font-semibold ">{t("shopNow")} </button>
+                <Image
+                  src={IMAGE_BASE_URL + ads.ad3.imageUrl}
+                  alt="Advertisement"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  className="object-fill"
+                />
               </div>
-            </div>
-          </SwiperSlide>
-          <SwiperSlide>
-            <div className="group cursor-pointer text-white w-full flex flex-col justify-center items-center h-[500px] bg-black rounded-3xl overflow-hidden p-5">
-              {ads.ad4.imageUrl ? (
-                <div className="w-full h-[300px] relative group-hover:scale-105 duration-500 transition-all">
-                  <Image
-                    src={IMAGE_BASE_URL + ads.ad4.imageUrl}
-                    alt="Advertisement"
-                    fill
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                    className="object-fill"
-                  />
-                </div>
-              ) : (
-                <div className="w-full h-full" />
-              )}
-              <div className="flex flex-col justify-around items-center w-full">
-                <h1 className="text-3xl font-bold">{ad4Product} </h1>
+            ) : (
+              <div className="w-full h-full" />
+            )}
+            <div className="flex flex-col justify-around items-center w-full">
+              <h1 className="text-3xl font-bold">{ad3Product} </h1>
 
-                <h1 className=" text-center my-5">{ads.ad4.title} </h1>
-                <button className="text-white rounded-full bg-[#CD4354] hover:bg-[#c13b4a] w-[120px] py-3 px-5 mt-2 text-sm font-semibold ">{t("shopNow")} </button>
-              </div>
-            </div>
-          </SwiperSlide>
-          <SwiperSlide>
-            <div className="group cursor-pointer w-full flex flex-col justify-center items-center h-[500px] bg-white rounded-3xl overflow-hidden p-5">
-              {ads.ad5.imageUrl ? (
-                <div className="w-full h-[300px] relative group-hover:scale-105 duration-500 transition-all">
-                  <Image
-                    src={IMAGE_BASE_URL + ads.ad5.imageUrl}
-                    alt="Advertisement"
-                    fill
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                    className="object-fill"
-                  />
-                </div>
-              ) : (
-                <div className="w-full h-full" />
-              )}
-              <div className="flex flex-col justify-around items-center w-full">
-                <h1 className="text-3xl font-bold">{ad5Product} </h1>
+              <h1 className=" text-center my-5">{ads.ad3.title} </h1>
+              <button className="text-white rounded-full bg-[#CD4354] hover:bg-[#c13b4a] w-[120px] py-3 px-5 mt-2 text-sm font-semibold ">{t("shopNow")} </button>
 
-                <h1 className=" text-center my-5">{ads.ad5.title} </h1>
-                <button className="text-white rounded-full bg-[#CD4354] hover:bg-[#c13b4a] w-[120px] py-3 px-5 mt-2 text-sm font-semibold ">{t("shopNow")} </button>
-              </div>
             </div>
-          </SwiperSlide>
-        </Swiper>
+
+          </div>
+          <div className="group cursor-pointer text-white w-full flex flex-col justify-center items-center h-[500px] bg-black rounded-3xl  overflow-hidden p-5">
+            {ads.ad4.imageUrl ? (
+              <div className="w-full h-[300px] relative group-hover:scale-105 duration-500 transition-all">
+                <Image
+                  src={IMAGE_BASE_URL + ads.ad4.imageUrl}
+                  alt="Advertisement"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  className="object-fill"
+                />
+              </div>
+
+            ) : (
+              <div className="w-full h-full" />
+            )}
+            <div className="flex flex-col justify-around items-center w-full">
+              <h1 className="text-3xl font-bold">{ad4Product} </h1>
+
+              <h1 className=" text-center my-5">{ads.ad4.title} </h1>
+              <button className="text-white rounded-full bg-[#CD4354] hover:bg-[#c13b4a] w-[120px] py-3 px-5 mt-2 text-sm font-semibold ">{t("shopNow")} </button>
+
+            </div>
+          </div>
+          <div className="group cursor-pointer w-full flex flex-col justify-center items-center h-[500px] bg-white rounded-3xl  overflow-hidden p-5">
+            {ads.ad5.imageUrl ? (
+              <div className="w-full h-[300px] relative group-hover:scale-105 duration-500 transition-all">
+
+                <Image
+                  src={IMAGE_BASE_URL + ads.ad5.imageUrl}
+                  alt="Advertisement"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  className="object-fill"
+                />
+              </div>
+            ) : (
+              <div className="w-full h-full" />
+            )}
+            <div className="flex flex-col justify-around items-center w-full">
+              <h1 className="text-3xl font-bold">{ad5Product} </h1>
+
+              <h1 className=" text-center my-5">{ads.ad5.title} </h1>
+              <button className="text-white rounded-full bg-[#CD4354] hover:bg-[#c13b4a] w-[120px] py-3 px-5 mt-2 text-sm font-semibold ">{t("shopNow")} </button>
+
+            </div>
+
+          </div>
+        </div>
       </section>
 
       {/* ========================= More Recommended Products ========================= */}

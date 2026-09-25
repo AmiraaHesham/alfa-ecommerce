@@ -64,10 +64,19 @@ export default function RecentlyViewed({ Products, title }) {
                   }
 
                   <div className="flex  justify-start gap-2 items-center ">
-                    {product.item ? product.item.oldPrice : product.oldPrice ? (
+                    {product.item?.oldPrice  ? (
                       <div className="flex gap-2">
                         <span className=" line-through text-xs  flex text-gray-400">
-                          {product.item ? product.item.oldPrice?.toLocaleString("en-US") : product.oldPrice?.toLocaleString("en-US")}{" "}{t("currency")}
+                          {product.item.oldPrice?.toLocaleString("en-US") }
+                        </span>
+                      </div>
+                    ) : (
+                      ""
+                    )}
+                     {product.oldPrice  ? (
+                      <div className="flex gap-2">
+                        <span className=" line-through text-xs  flex text-gray-400">
+                          {product.oldPrice?.toLocaleString("en-US")}{" "}{t("currency")}
                         </span>
                       </div>
                     ) : (

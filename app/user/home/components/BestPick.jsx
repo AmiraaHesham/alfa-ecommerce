@@ -10,10 +10,14 @@ import StarRating from "../../components/StarRating";
 import { useIdContext } from "../../../../context/idContext";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useRef } from "react";
+import { MdOutlineArrowBackIosNew, MdOutlineArrowForwardIos } from "react-icons/md";
 
 export default function BestPick({ Products }) {
   const { locale } = useLanguage()
   const { t } = useLanguage()
+  const swiperRef = useRef()
+
   const { setSelectedProductId } = useIdContext()
   const navigate = useRouter()
   const truncateText = (text) => {
@@ -24,7 +28,7 @@ export default function BestPick({ Products }) {
     return text;
   };
   return (
-    <div className="w-full  bg-white rounded-2xl p-4">
+    <div className="w-full  bg-white rounded-2xl p-4 relative group/BestPick">
       <div className="w-full flex justify-between items-center">
         <h1 className="font-semibold text-base  sticky z-10 ">{t("Best_pick_of_the_week")}</h1>
         <div className="text-xs font-semibold">
@@ -32,32 +36,37 @@ export default function BestPick({ Products }) {
           <hr className="bg-red-500 h-[2px] border-none w-auto " />
         </div>
       </div>
-      <div className="w-full mt-5">
+      <div className="w-full mt-5 ">
         <Swiper
           key={locale}
           dir={locale === "ar" ? "rtl" : "ltr"}
           slidesPerView={1}
-          spaceBetween={10}
+          spaceBetween={5}
           modules={[Navigation]}
-          navigation={true}
-          breakpoints={{
-            512: { slidesPerView: 2 },
-            1024: { slidesPerView: 4 },
+          navigation={{
+            prevEl: ".custom-prev-BestPick",
+            nextEl: ".custom-next-BestPick",
           }}
-          className="w-full px-8 sm:px-12"
+          breakpoints={{
+            720: { slidesPerView: 4 },
+          }}
+          className="w-full "
+          onSwiper={(swiper) => {
+            swiperRef.current = swiper;
+          }}
         >
           {Products?.slice(0, 4).map((product, index) => {
             const nameProduct = locale === "ar" ? product.nameAr : product.nameEn
             return (
-              <SwiperSlide key={index} className="">
+              <SwiperSlide key={index} className=" px-5">
                 <div
-                  className="flex gap-2 items-center cursor-pointer select-none"
+                  className="flex items-center cursor-pointer gap-1 select-none w-full"
                   onClick={() => {
                     setSelectedProductId(product.itemId);
                     navigate.push(`/user/productdetails/${product.nameEn}/${product.itemId}`);
                   }}
                 >
-                  <div className="relative w-[60px] h-[60px] rounded-full hover:scale-105 duration-200 shrink-0">
+                  <div className="relative w-[50px] h-[50px] rounded-full hover:scale-105 duration-200 shrink-0">
                     <Image
                       src={
                         process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +
@@ -71,23 +80,23 @@ export default function BestPick({ Products }) {
                       className="object-fill rounded-full"
                     />
                   </div>
-                  <div className="flex flex-col gap-2 min-w-0">
-                    <span className="text-sm font-semibold cursor-pointer truncate" title={nameProduct}
+                  <div className="flex flex-col gap-2 w-full">
+                    <span className="text-[13px] font-medium cursor-pointer truncate" title={nameProduct}
                     >{truncateText(nameProduct)}</span>
                     {product.averageRating === 0 ? "" : <StarRating rating={product.averageRating || 0} />}
 
-                    <div className="flex flex-col  justify-start  items-start">
+                    <div className="flex w-full  justify-start gap-2 items-center ">
                       {product.oldPrice ? (
-                        <div className="flex gap-2">
-                          <span className=" line-through text-xs  flex text-gray-400">
-                            {product.oldPrice?.toLocaleString("en-US")}{" "}{t("currency")}
+                        <div className="w-auto">
+                          <span className=" line-through text-xs  w-auto text-gray-400">
+                            {product.oldPrice?.toLocaleString("en-US")}
                           </span>
                         </div>
                       ) : (
                         <span className=""></span>
                       )}
 
-                      <span className="text-sm font-bold text-red-600 ">
+                      <span className="text-sm font-bold w-full text-red-600 ">
                         {product.price.toLocaleString("en-US")}.00 {t("currency")}
                       </span>
 
@@ -99,6 +108,30 @@ export default function BestPick({ Products }) {
           })
           }
         </Swiper>
+        <div className=" opacity-0 invisible
+           group-hover/BestPick:opacity-100 group-hover/BestPick:visible
+           
+            transition-all duration-300 ">
+          <button
+            type="button"
+            onClick={() => swiperRef.current?.slidePrev()}
+            className="custom-prev-BestPick absolute left-2 top-1/2  z-50
+                        
+                        flex items-center justify-center 
+                        text-gray-700 hover:text-black"
+          >
+            < MdOutlineArrowBackIosNew />
+          </button>
+          <button
+            type="button"
+            onClick={() => swiperRef.current?.slideNext()}
+            className="custom-next-BestPick absolute right-2 top-1/2  z-50
+                      
+                                                flex items-center justify-center  text-gray-700 hover:text-black"
+          >
+            < MdOutlineArrowForwardIos />
+          </button>
+        </div>
       </div>
     </div>
   )

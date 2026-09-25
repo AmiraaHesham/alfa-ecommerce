@@ -48,7 +48,12 @@ export default function ProductDetails({ itemId }) {
     available: null,
     images: [],
     averageRating: 0,
-    ratingCount: 0
+    ratingCount: 0,
+    ram:"",
+    flash:"",
+    brand:"",
+    releaseYear:""
+
 
   });
 
@@ -58,7 +63,7 @@ export default function ProductDetails({ itemId }) {
     try {
       const res = await getProductDetails(itemId);
       const resData = res.data;
-      console.log(resData);
+      // console.log(resData.itemCategory.itemCategoryId);
       setProduct((prev) => ({
         ...prev,
         nameEn: resData.nameEn,
@@ -69,6 +74,10 @@ export default function ProductDetails({ itemId }) {
         descriptionAr: resData.descriptionAr,
         descriptionEn: resData.descriptionEn,
         images: resData.images,
+          ram:resData.ram,
+          flash:resData.flash,
+          brand:resData.brand,
+          releaseYear:resData.releaseYear,
         available: resData.available,
           ratingCount: resData.ratingCount,
           averageRating: resData.averageRating,
@@ -77,7 +86,7 @@ export default function ProductDetails({ itemId }) {
           id: resData.itemCategory.itemCategoryId,
           nameAr: resData.itemCategory.nameAr,
           nameEn: resData.itemCategory.nameEn,
-        
+               
         },
       }));
       setLoading(false);
@@ -226,7 +235,7 @@ export default function ProductDetails({ itemId }) {
       <hr></hr>
       <div className="flex md:flex-row xs:flex-col w-full justify-between p-10">
         <div className="w-full flex flex-col">
-           <Specification />
+           <Specification product={product}/>
          <div className="w-full  pb-5 mt-10">
             <div className="flex w-full items-center justify-between gap-2">
               <span className="w-full">
