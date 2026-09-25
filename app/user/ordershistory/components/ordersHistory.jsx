@@ -50,7 +50,9 @@ export default function OrdersHistory() {
   };
 
   const handlePageChange = (page) => {
+    if (page === currentPage || page < 0 || page >= totalPages) return;
     setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   useEffect(() => {

@@ -14,7 +14,7 @@ export default function ImageSlider({ sliderImages }) {
   const navigate = useRouter();
 
   return (
-    <div className="lg:w-2/3 xs:w-full lg:h-[530px] xs:h-[470px] rounded-3xl">
+    <div className="w-full lg:h-[530px] xs:h-[470px] rounded-3xl">
       <Swiper
         key={locale}
         dir={locale === "ar" ? "rtl" : "ltr"}
@@ -23,12 +23,12 @@ export default function ImageSlider({ sliderImages }) {
         slidesPerView={"auto"}
         loop={true}
         speed={1000}
-        freeMode={{
-          enabled: true,
-          momentum: true,
-          momentumRatio: 0.6,
-          momentumVelocityRatio: 0.5,
-        }}
+        // freeMode={{
+        //   enabled: true,
+        //   momentum: true,
+        //   momentumRatio: 0.6,
+        //   momentumVelocityRatio: 0.5,
+        // }}
         autoplay={true}
         modules={[Pagination, Navigation, Autoplay]}
         className="w-full h-full rounded-3xl"

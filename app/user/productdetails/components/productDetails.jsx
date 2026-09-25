@@ -224,7 +224,7 @@ export default function ProductDetails({ itemId }) {
       </div>
       {/* // )} */}
       <hr></hr>
-      <div className="flex w-full justify-between p-10">
+      <div className="flex md:flex-row xs:flex-col w-full justify-between p-10">
         <div className="w-full flex flex-col">
            <Specification />
          <div className="w-full  pb-5 mt-10">

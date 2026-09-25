@@ -306,18 +306,18 @@ export default function OrderDetails({ orderId }) {
         {/* ── Desktop / Tablet table layout ───────────────────────── */}
         <div className="xs:hidden md:flex w-full overflow-x-auto overflow-hidden rounded-3xl bg-white">
           <table className="w-full ">
-            <thead className="text-center uppercase tracking-wide">
+            <thead className="text-justify uppercase tracking-wide">
               <tr className="h-20 border-b border-b-gray-200 border-gray-100">
-                <th className=" ">{t("product")}</th>
-                <th className=" ">{t("price")}</th>
+                <th className=" px-10">{t("product")}</th>
+                <th className="px-5 ">{t("price")}</th>
                 {/* <th className="px-5 text-start">{t("discount")}</th> */}
-                <th className=" ">{t("quantity")}</th>
+                <th className="px-5 ">{t("quantity")}</th>
                 {orderSummary.state === "DELIVERED" ? (
                   <th className="">{t("Returned_quantity")} </th>
                 ) : (
                   ""
                 )}
-                <th className=" ">{t("total")}</th>
+                <th className="text-end px-5 ">{t("total")}</th>
                 {orderSummary.state === "DELIVERED" ? (
                   <th className=" "> </th>
                 ) : (
@@ -494,7 +494,7 @@ export default function OrderDetails({ orderId }) {
 
             <hr className="my-6" />
             <div className="flex justify-between orderss-center text-2xl font-semibold">
-              <span>{t("total")} </span>
+              <span>{t("Total")} </span>
               <span className="">
                 {orderSummary.totalOrder.toLocaleString("en-US") +
                   " " +

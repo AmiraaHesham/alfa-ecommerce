@@ -164,7 +164,7 @@ export default function BottomNav() {
           <div
             className={`absolute top-0 bottom-0 ${
               locale === "ar" ? "right-0" : "left-0"
-            } w-80 max-w-[90%] bg-white flex flex-col`}
+            } w-80 max-w-[50%] pt-5 bg-white flex flex-col`}
           >
             <div className="flex w-full border-b border-gray-300 shrink-0">
               <button

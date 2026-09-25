@@ -92,7 +92,7 @@ const swiperRef = useRef()
     transition-all duration-300 ">
           <button
       type="button"
-      onClick={() => swiperRef.current?.slideNext()}
+      onClick={() => swiperRef.current?.slidePrev()}
       className="absolute left-0 top-1/2 -translate-y-1/2 z-50
                   text-2xl
                 flex items-center justify-center 
@@ -102,7 +102,7 @@ const swiperRef = useRef()
     </button>
         <button
       type="button"
-      onClick={() => swiperRef.current?.slidePrev()}
+      onClick={() => swiperRef.current?.slideNext()}
       className="absolute right-0 top-1/2 -translate-y-1/2 z-50
               
                 text-2xl

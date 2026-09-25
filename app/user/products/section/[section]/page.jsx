@@ -160,14 +160,10 @@ console.log(response)
     getAllProducts(true, 0);
   }, [section, sortBy, ascending]);
 
-  useEffect(() => {
-    if (currentPage === 0) return;
-    getAllProducts(true, currentPage);
-  }, [currentPage]);
-
   const handlePageChange = (page) => {
     if (page === currentPage || page < 0 || page >= totalPages) return;
     setCurrentPage(page);
+    getAllProducts(true, page);
     resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
