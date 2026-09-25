@@ -369,7 +369,11 @@
   "returnSummary":"ملخص المرتجع",
   "totalProducts":"جميع المنتجات",
   "return_cancel":"إلغاء المرتجع",
-  "images_saved_successfully":"تم حفظ الصور بنجاح"
+  "images_saved_successfully":"تم حفظ الصور بنجاح",
+    "flash":"Flash",
+  "ram":"Ram",
+  "contents":"محتوايات العلبة",
+  "releaseYear":"سنة الإصدار"
 
   
 

@@ -59,7 +59,7 @@ export default function FormProduct({ isFormOpen, setIsFormOpen, isEditMode ,set
     flash: "",
     brand: "",
     contents: "",
-    // mainImage: "",
+    releaseYear: "",
     // mainImagefile: "",
     // img2: "",
     // img2file: "",
@@ -155,6 +155,7 @@ export default function FormProduct({ isFormOpen, setIsFormOpen, isEditMode ,set
       flash: "",
       brand: "",
       contents: "",
+      releaseYear:""
     });
     revokeImageUrls();
     setItemImages([]);
@@ -182,6 +183,7 @@ export default function FormProduct({ isFormOpen, setIsFormOpen, isEditMode ,set
     active: enabledActive,
     available: enabledAvailable,
     itemCategoryId: product.category.id,
+    releaseYear:product.releaseYear
   };
 
 
@@ -265,6 +267,7 @@ productData()
           brand: resData.brand,
           contents: resData.contents,
           descriptionEn: resData.descriptionEn,
+          releaseYear:resData.releaseYear,
           category: {
             ...prev.category,
             id: resData.itemCategory.itemCategoryId,
@@ -612,6 +615,21 @@ productData()
                 }));
               }}
               id="seoCode"
+              className="  w-full outline-none  text-base  my-1  p-2 border rounded-md"
+            />
+          </div>
+           <div className="w-full">
+            <label className="text-xs text-gray-600 font-semibold block mb-1">
+               {t("releaseYear")}</label>
+            <input
+              value={product.releaseYear || ""}
+              onChange={(e) => {
+                setProduct((prev) => ({
+                  ...prev,
+                  releaseYear: e.target.value,
+                }));
+              }}
+              id="releaseYear"
               className="  w-full outline-none  text-base  my-1  p-2 border rounded-md"
             />
           </div>

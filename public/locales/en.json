@@ -368,7 +368,11 @@
   "returnSummary":"Return summary",
   "totalProducts":"Total products",
   "return_cancel":"Return cancel",
-  "images_saved_successfully":"Images saved successfully"
+  "images_saved_successfully":"Images saved successfully",
+  "flash":"Flash",
+  "ram":"Ram",
+  "contents":"Contents",
+  "releaseYear":"Release Year"
 
 
 
