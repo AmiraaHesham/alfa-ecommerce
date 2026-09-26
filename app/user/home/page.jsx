@@ -52,26 +52,35 @@ const EMPTY_ADS = {
     itemId: "",
     imageUrl: "",
     title: "",
+    titleAr: "",
   },
   ad2: {
     itemId: "",
     imageUrl: "",
     title: "",
+    titleAr: "",
+
   },
   ad3: {
     itemId: "",
     imageUrl: "",
     title: "",
+    titleAr: "",
+
   },
   ad4: {
     itemId: "",
     imageUrl: "",
     title: "",
+    titleAr: "",
+
   },
   ad5: {
     itemId: "",
     imageUrl: "",
     title: "",
+    titleAr: "",
+
   },
 };
 
@@ -140,6 +149,7 @@ const [productType ,setProductType] = useState("popularProducts")
           imageUrl: ad.imageUrl,
           itemId: ad.itemId,
           title: ad.title,
+          titleAr: ad.titleAr,
         };
       }
     });
@@ -166,7 +176,7 @@ const [productType ,setProductType] = useState("popularProducts")
       setImagesSliders(imagesRes);
       setFeaturedProducts(productsRes.data.content || []);
       setAds((prev) => ({ ...prev, ...buildAdsMap(adsRes.data) }));
-     
+     console.log(adsRes.data)
 
       const ad1ItemId = (adsRes.data || []).find(
         (ad) => ad.number === 1,
@@ -185,7 +195,7 @@ const [productType ,setProductType] = useState("popularProducts")
       if (ad3ItemId) {
         try {
           const ad3ProductRes = await getProductDetails(ad3ItemId);
-          console.log(ad3ProductRes)
+          console.log("ad3ProductRes",ad3ProductRes)
           setAd3Product(ad3ProductRes.data.brand || null);
         } catch (error) {
           console.error("Failed to fetch first ad product:", error);
@@ -458,11 +468,11 @@ const [productType ,setProductType] = useState("popularProducts")
       </div>
 
       {/* ========================= Promo Banner ========================= */}
-      <section className="my-10">
+      <section className="my-32">
         <div className="w-full flex flex-col md:flex-row lg:justify-between items-stretch gap-5">
-          <div className="group cursor-pointer w-full flex flex-col justify-center items-center h-[500px] bg-white rounded-3xl  overflow-hidden p-5">
+          <div className="group cursor-pointer w-full flex flex-col justify-center items-center h-[550px] bg-white rounded-3xl  overflow-hidden p-5">
             {ads.ad3.imageUrl ? (
-              <div className="w-full h-[300px] relative group-hover:scale-105 duration-500 transition-all">
+              <div className="w-full h-2/3 relative group-hover:scale-105 duration-500 transition-all">
 
                 <Image
                   src={IMAGE_BASE_URL + ads.ad3.imageUrl}
@@ -478,15 +488,15 @@ const [productType ,setProductType] = useState("popularProducts")
             <div className="flex flex-col justify-around items-center w-full">
               <h1 className="text-3xl font-bold">{ad3Product} </h1>
 
-              <h1 className=" text-center my-5">{ads.ad3.title} </h1>
+              <h1 className=" text-center my-3">{locale === "ar" ? ads.ad3.titleAr : ads.ad3.title} </h1>
               <button className="text-white rounded-full bg-[#CD4354] hover:bg-[#c13b4a] w-[120px] py-3 px-5 mt-2 text-sm font-semibold ">{t("shopNow")} </button>
 
             </div>
 
           </div>
-          <div className="group cursor-pointer text-white w-full flex flex-col justify-center items-center h-[500px] bg-black rounded-3xl  overflow-hidden p-5">
+          <div className="group cursor-pointer text-white w-full flex flex-col justify-center items-center h-[550px] bg-black rounded-3xl  overflow-hidden p-5">
             {ads.ad4.imageUrl ? (
-              <div className="w-full h-[300px] relative group-hover:scale-105 duration-500 transition-all">
+              <div className="w-full h-2/3 relative group-hover:scale-105 duration-500 transition-all">
                 <Image
                   src={IMAGE_BASE_URL + ads.ad4.imageUrl}
                   alt="Advertisement"
@@ -502,14 +512,14 @@ const [productType ,setProductType] = useState("popularProducts")
             <div className="flex flex-col justify-around items-center w-full">
               <h1 className="text-3xl font-bold">{ad4Product} </h1>
 
-              <h1 className=" text-center my-5">{ads.ad4.title} </h1>
+              <h1 className=" text-center my-3">{locale === "ar" ? ads.ad4.titleAr : ads.ad4.title} </h1>
               <button className="text-white rounded-full bg-[#CD4354] hover:bg-[#c13b4a] w-[120px] py-3 px-5 mt-2 text-sm font-semibold ">{t("shopNow")} </button>
 
             </div>
           </div>
-          <div className="group cursor-pointer w-full flex flex-col justify-center items-center h-[500px] bg-white rounded-3xl  overflow-hidden p-5">
+          <div className="group cursor-pointer w-full flex flex-col justify-center items-center h-[550px] bg-white rounded-3xl  overflow-hidden p-5">
             {ads.ad5.imageUrl ? (
-              <div className="w-full h-[300px] relative group-hover:scale-105 duration-500 transition-all">
+              <div className="w-full h-2/3 relative group-hover:scale-105 duration-500 transition-all">
 
                 <Image
                   src={IMAGE_BASE_URL + ads.ad5.imageUrl}
@@ -525,7 +535,7 @@ const [productType ,setProductType] = useState("popularProducts")
             <div className="flex flex-col justify-around items-center w-full">
               <h1 className="text-3xl font-bold">{ad5Product} </h1>
 
-              <h1 className=" text-center my-5">{ads.ad5.title} </h1>
+              <h1 className=" text-center my-3">{locale === "ar" ? ads.ad5.titleAr : ads.ad5.title} </h1>
               <button className="text-white rounded-full bg-[#CD4354] hover:bg-[#c13b4a] w-[120px] py-3 px-5 mt-2 text-sm font-semibold ">{t("shopNow")} </button>
 
             </div>

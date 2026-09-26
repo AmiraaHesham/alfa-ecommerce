@@ -141,13 +141,10 @@ const responce = await getRequest("/api/users")
               onClick={() => {
                 localStorage.setItem("id", "");
                 localStorage.setItem("accessToken", "");
-                localStorage.setItem("address", "");
-                localStorage.setItem("email", "");
+                localStorage.setItem("refreshToken", "");
                 localStorage.setItem("firstName", "");
-                localStorage.setItem("lastName", "");
-                localStorage.setItem("phone", "");
                 localStorage.setItem("role", "");
-                localStorage.setItem("username", "");
+       
                 navigate.push("/signin");
               }}
             >

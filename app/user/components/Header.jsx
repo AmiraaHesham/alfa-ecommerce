@@ -108,10 +108,9 @@ export default function Header() {
   useEffect(() => {
   
     const firstName =
-      typeof window !== "undefined" ? localStorage.getItem("firstName") : "";
-    const lastName =
-      typeof window !== "undefined" ? localStorage.getItem("lastName") : "";
-    setUsername(firstName + " " + lastName);
+       localStorage.getItem("firstName") 
+
+    setUsername(firstName);
     if(window.location.pathname.includes("search")){
 const lastPort = window.location.pathname.split("/").filter(Boolean).pop();
 setSearchInput(lastPort)
@@ -121,7 +120,7 @@ setSearchInput(lastPort)
     //  console.lo(res)
     // } 
     // userInfo()
-  }, []);
+  }, [username]);
 
   return (
     <header className="bg-[#0d0625] ">
@@ -273,7 +272,7 @@ setSearchInput(lastPort)
             />
             <div className="flex flex-col text-sm justify-start items-start">
               <span className="text-[#E76E7D]">
-                { netTotal.toLocaleString("en-US") + " " + t("currency")}
+                {itemNum === 0 ? 0 : netTotal.toLocaleString("en-US") + " " + t("currency")}
               </span>
                <span className=" text-xs">
                 {itemNum }{" "}{t("Items")}
@@ -286,9 +285,9 @@ setSearchInput(lastPort)
               <span className="w-8 h-8">
                 <PiUser className="w-full h-full " />
               </span>
-              <span className=" font-semibold text-center xs:hidden lg:block">
-                {username ? username : (t("login") + " / " + t("register"))}
-              </span>
+              {/* <span className=" font-semibold text-center xs:hidden lg:flex">
+                login
+              </span> */}
             </div>
 
           </div>
@@ -318,11 +317,11 @@ setSearchInput(lastPort)
                   }
                 }}
               >
-                <span className="w-6 h-6 font-bold">
+                <span className="w-6 h-6 font-bold xs:hidden lg:block">
                   <PiUser className="w-full h-full " />
                 </span>
-                <span className=" font-semibold  text-center xs:hidden lg:block">
-                  {username ? username : (t("login") + " / " + t("register"))}
+                <span className=" font-semibold  text-center ">
+                  {username ? username : t("login") + " / " +t("register")}
                 </span>
               </div>
             </div>

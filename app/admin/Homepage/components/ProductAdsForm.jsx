@@ -12,7 +12,7 @@ import Select from "react-select";
 const IMAGE_BASE_URL = process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL;
 
 const resolveProductImage = (product) =>
-  product?.mainImageURL || product?.images?.[0]?.imageUrl || "";
+  product?.images?.[0]?.imageUrl || "";
 
 export default function ProductAdsForm({ isFormOpen, setIsFormOpen, editOffer, nextNumber }) {
   const { t, locale } = useLanguage();
@@ -148,8 +148,6 @@ export default function ProductAdsForm({ isFormOpen, setIsFormOpen, editOffer, n
       formData.append("imageFile", photo.imageFile);
     }
     formData.append("itemId", itemId);
-    formData.append("title", title);
-    formData.append("titleAr", title);
     formData.append("number", isEditMode ? editOffer.number : nextNumber);
 
     try {
@@ -265,14 +263,14 @@ export default function ProductAdsForm({ isFormOpen, setIsFormOpen, editOffer, n
             ) : null}
 
             <div className="mt-4 flex flex-col gap-2">
-              <label className="text-md text-gray-500">{t("title")}</label>
+              {/* <label className="text-md text-gray-500">{t("title")}</label>
               <input
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder={t("title_placeholder")}
                 className="w-full outline-none text-gray-900 text-lg p-1 border rounded-md placeholder:text-sm"
-              />
+              /> */}
               <label className="text-md">{t("choose_product")}</label>
               <div className="border rounded-lg border-red-300 px-1">
                 <Select

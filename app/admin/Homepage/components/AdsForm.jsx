@@ -7,7 +7,17 @@ import { useLanguage } from "../../../../context/LanguageContext.js";
 import { getRequest, postRequest, putRequest } from "../../../../utils/requestsUtils.js";
 import { useRefresh } from "../../../../context/refreshContext.jsx";
 import Select from "react-select";
+import { getProductDetails, getThumbnailUrl } from "../../../../utils/functions.jsx";
+const IMAGE_BASE_URL = process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL;
 
+const resolveProductImage = (product) =>
+    product?.images?.[0]?.imageUrl || "";
+
+const mapProductToOption = (product, locale) => ({
+    value: product.itemId,
+    label: locale === "ar" ? product.nameAr : product.nameEn,
+    product,
+});
 export default function AdsForm({ isFormOpen, setIsFormOpen, productsOptions, adNumber, offerId, mode = "create", adData: adDataProp = null }) {
     const [photo, setPhoto] = useState({
         AdImageFile: "",
@@ -18,17 +28,31 @@ export default function AdsForm({ isFormOpen, setIsFormOpen, productsOptions, ad
     const { locale } = useLanguage()
     const { triggerRefresh } = useRefresh();
     const [loading, setLoading] = useState();
-    const [search, setSearch] = useState("");
+    const [searchText, setSearchText] = useState("");
     const [adData, setAdData] = useState({
         id: "",
         imageUrl: "",
         titleAr: "",
-        titleEn: "",
+        title: "",
         itemId: ""
     });
     const [selectedProduct, setSelectedProduct] = useState(null);
-    const [options, setOptions] = useState(productsOptions);
+    const [focusedOption, setFocusedOption] = useState(null);
+    const [searchLoading, setSearchLoading] = useState(false);
+    const [options, setOptions] = useState(productsOptions ?? []);
     const objectUrlRef = useRef(null);
+    const searchTimerRef = useRef(null);
+    const searchRequestIdRef = useRef(0);
+    const localeRef = useRef(locale);
+    const productsOptionsRef = useRef(productsOptions);
+
+    useEffect(() => {
+        localeRef.current = locale;
+    }, [locale]);
+
+    useEffect(() => {
+        productsOptionsRef.current = productsOptions;
+    }, [productsOptions]);
 
     const isUpdateMode = mode === "update";
     const adDataKey = useMemo(() => JSON.stringify(adDataProp ?? null), [adDataProp]);
@@ -40,7 +64,25 @@ export default function AdsForm({ isFormOpen, setIsFormOpen, productsOptions, ad
         }
         setPhoto({ AdImageFile: "", AdImage: "" });
     }, []);
-
+    const formatOptionLabel = ({ label, product }) => {
+        const url = resolveProductImage(product);
+        return (
+            <div className="flex items-center gap-3">
+                {url ? (
+                    <Image
+                        src={IMAGE_BASE_URL + getThumbnailUrl(url)}
+                        alt=""
+                        width={30}
+                        height={30}
+                        className="rounded-md object-cover w-[30px] h-[30px]"
+                    />
+                ) : (
+                    <div className="w-[30px] h-[30px] bg-gray-100 rounded-md" />
+                )}
+                <span>{label}</span>
+            </div>
+        );
+    };
     const deleteImage = useCallback(() => {
         setAdData((prev) => ({
             ...prev,
@@ -49,30 +91,58 @@ export default function AdsForm({ isFormOpen, setIsFormOpen, productsOptions, ad
     }, []);
 
     useEffect(() => {
-        setOptions(productsOptions);
-    }, [productsOptions]);
+        if (!isFormOpen) return;
+        setOptions(productsOptions ?? []);
+    }, [productsOptions, isFormOpen]);
 
-    const handleSearch = useCallback(async () => {
-        if (!search.trim()) return;
+    const searchProducts = useCallback(async (text) => {
+        const query = text.trim();
+        const requestId = ++searchRequestIdRef.current;
 
-        const res = await postRequest(
-            "/api/public/items/search",
-            {
-                searchText: search,
-            }, ""
-        );
+        if (!query) {
+            setOptions(productsOptionsRef.current ?? []);
+            return;
+        }
 
-        const products = res?.data || [];
+        setSearchLoading(true);
+        try {
+            const res = await postRequest(
+                "/api/public/items/search",
+                { searchText: query },
+                ""
+            );
 
-        setOptions(
-            products.map((product) => ({
-                value: product.itemId,
-                label: locale === "ar" ? product.nameAr : product.nameEn,
+            const data = res?.data;
+            const products = Array.isArray(data) ? data : data?.content || [];
 
-                product,
-            }))
-        );
-    }, [search, locale]);
+            if (requestId !== searchRequestIdRef.current) return;
+
+            setOptions(products.map((product) => mapProductToOption(product, localeRef.current)));
+        } catch (error) {
+            if (requestId !== searchRequestIdRef.current) return;
+            setOptions([]);
+        } finally {
+            if (requestId === searchRequestIdRef.current) {
+                setSearchLoading(false);
+            }
+        }
+    }, []);
+
+    useEffect(() => {
+        if (!isFormOpen) return;
+
+        clearTimeout(searchTimerRef.current);
+
+        if (!searchText.trim()) {
+            searchRequestIdRef.current++;
+            setSearchLoading(false);
+            setOptions(productsOptionsRef.current ?? []);
+            return;
+        }
+
+        searchTimerRef.current = setTimeout(() => searchProducts(searchText), 300);
+        return () => clearTimeout(searchTimerRef.current);
+    }, [searchText, isFormOpen, searchProducts]);
 
     const handeluploadAdImage = (e) => {
         const file = e.target.files?.[0];
@@ -91,27 +161,59 @@ export default function AdsForm({ isFormOpen, setIsFormOpen, productsOptions, ad
         objectUrlRef.current = objectUrl;
     };
 
-    const selectProductOption = useCallback((itemIdNum, fallbackLabel) => {
+    const selectProductOption = useCallback(async (itemIdNum, fallbackLabel) => {
+        if (itemIdNum === "" || itemIdNum === null || itemIdNum === undefined) {
+            setItemId("");
+            setSelectedProduct(null);
+            return;
+        }
+
         setItemId(itemIdNum);
-        const match = productsOptions.find(
+
+        const match = (productsOptionsRef.current ?? []).find(
             (option) => String(option.value) === String(itemIdNum)
         );
-        setSelectedProduct(
-            match
-                ? match
-                : { value: itemIdNum, label: fallbackLabel || `#${itemIdNum}` }
-        );
-    }, [productsOptions]);
+
+        if (match) {
+            setSelectedProduct(match);
+            return;
+        }
+
+        setSelectedProduct({
+            value: itemIdNum,
+            label: fallbackLabel || `#${itemIdNum}`,
+            product: null,
+        });
+
+        try {
+            const res = await getProductDetails(itemIdNum);
+            const product = res?.data;
+            if (!product) return;
+
+            const option = mapProductToOption(product, localeRef.current);
+            setOptions((prev) =>
+                prev.some((o) => String(o.value) === String(option.value))
+                    ? prev
+                    : [option, ...prev]
+            );
+            setSelectedProduct(option);
+        } catch (error) {
+        }
+    }, []);
 
     const loadFromProps = useCallback((data) => {
-        const id = data?.offerId ?? data?.id ?? "";
-        const imageUrl = data?.imageUrl ?? data?.img ?? "";
-        const titleAr = data?.titleAr ?? data?.title ?? "";
-        const titleEn = data?.titleEn ?? "";
+        const id = data?.offerId;
+        const imageUrl = data?.imageUrl;
+        const titleAr = data?.titleAr;
+        const title = data?.title ?? "";
         const itemIdNum = data?.itemId ?? "";
 
-        setAdData({ id, imageUrl, titleAr, titleEn, itemId: itemIdNum });
-        if (itemIdNum) selectProductOption(itemIdNum, titleAr);
+        setAdData({ id, imageUrl, titleAr, title, itemId: itemIdNum });
+        if (itemIdNum) {
+            selectProductOption(itemIdNum);
+        } else {
+            setSelectedProduct(null);
+        }
     }, [selectProductOption]);
 
     const getAdData = useCallback(async () => {
@@ -131,7 +233,7 @@ export default function AdsForm({ isFormOpen, setIsFormOpen, productsOptions, ad
         clearNewImage();
         setItemId("");
         setSelectedProduct(null);
-        setSearch("");
+        setSearchText("");
 
         if (isUpdateMode) {
             if (adDataProp) {
@@ -139,30 +241,19 @@ export default function AdsForm({ isFormOpen, setIsFormOpen, productsOptions, ad
             } else if (offerId) {
                 getAdData();
             } else {
-                setAdData({ id: "", imageUrl: "", titleAr: "", titleEn: "", itemId: "" });
+                setAdData({ id: "", imageUrl: "", titleAr: "", title: "", itemId: "" });
             }
         } else {
-            setAdData({ id: "", imageUrl: "", titleAr: "", titleEn: "", itemId: "" });
+            setAdData({ id: "", imageUrl: "", titleAr: "", title: "", itemId: "" });
         }
     }, [isFormOpen, isUpdateMode, offerId, adDataKey, adDataProp, clearNewImage, loadFromProps, getAdData]);
-
-    useEffect(() => {
-        if (isUpdateMode && adData.itemId) {
-            const match = productsOptions.find(
-                (option) => String(option.value) === String(adData.itemId)
-            );
-            if (match) {
-                setItemId(match.value);
-                setSelectedProduct(match);
-            }
-        }
-    }, [productsOptions, adData.itemId, isUpdateMode]);
 
     useEffect(() => {
         return () => {
             if (objectUrlRef.current) {
                 URL.revokeObjectURL(objectUrlRef.current);
             }
+            clearTimeout(searchTimerRef.current);
         };
     }, []);
 
@@ -172,9 +263,8 @@ export default function AdsForm({ isFormOpen, setIsFormOpen, productsOptions, ad
             formData.append("imageFile", photo.AdImageFile);
         }
         formData.append("itemId", itemId);
-        formData.append("title", adData.titleAr);
         formData.append("titleAr", adData.titleAr);
-        formData.append("titleEn", adData.titleEn);
+        formData.append("title", adData.title);
         formData.append("number", adNumber)
 
         try {
@@ -195,7 +285,7 @@ export default function AdsForm({ isFormOpen, setIsFormOpen, productsOptions, ad
             clearNewImage();
             setItemId("");
             setSelectedProduct(null)
-            setSearch("")
+            setSearchText("")
             setIsFormOpen(false);
         }
     }
@@ -217,7 +307,7 @@ export default function AdsForm({ isFormOpen, setIsFormOpen, productsOptions, ad
                     />
                 </div>
             )}
-            <div className="bg-white w-[95%] xs:w-full lg:w-[550px] max-h-[95vh] overflow-y-auto flex flex-col rounded-3xl shadow-2xl">
+            <div className="bg-white w-[95%] xs:w-full lg:w-[550px]   flex flex-col rounded-3xl shadow-2xl">
                 <div className="m-4 flex justify-between items-center">
                     <h1 id="nameFormCategory" className="text-xl font-bold text-gray-800">
                         {isUpdateMode ? t("edit_advert") : t("add_advert") + " " + "[" + adNumber + "]"}
@@ -228,7 +318,7 @@ export default function AdsForm({ isFormOpen, setIsFormOpen, productsOptions, ad
                             setIsFormOpen(false);
                             clearNewImage();
                             setSelectedProduct(null)
-                            setSearch("")
+                            setSearchText("")
                         }}
                     >
                         <MdCancel />
@@ -310,7 +400,7 @@ export default function AdsForm({ isFormOpen, setIsFormOpen, productsOptions, ad
                         }
                         <input
                             type="file"
-                            accept="AdImage/*"
+                            accept="image/*"
                             onChange={handeluploadAdImage}
                             className="hidden"
                             id="AdFileInput"
@@ -328,7 +418,7 @@ export default function AdsForm({ isFormOpen, setIsFormOpen, productsOptions, ad
                                             ...prev,
                                             titleAr: e.target.value
                                         }))}
-                                        placeholder={t("title_placeholder")}
+
                                         className="w-full outline-none text-gray-900 text-sm p-2.5 border border-gray-300 rounded-lg focus:border-red-500 focus:ring-2 focus:ring-red-100 transition-all"
                                     />
                                 </div>
@@ -338,88 +428,81 @@ export default function AdsForm({ isFormOpen, setIsFormOpen, productsOptions, ad
                                     </label>
                                     <input
                                         type="text"
-                                        value={adData.titleEn}
+                                        value={adData.title}
                                         onChange={(e) => setAdData((prev) => ({
                                             ...prev,
-                                            titleEn: e.target.value
+                                            title: e.target.value
                                         }))}
-                                        placeholder={t("title_en_placeholder")}
+
                                         dir="ltr"
                                         className="w-full outline-none text-gray-900 text-sm p-2.5 border border-gray-300 rounded-lg focus:border-red-500 focus:ring-2 focus:ring-red-100 transition-all"
                                     />
                                 </div>
-                                <div className="flex flex-col gap-1.5">
+                                <div className="flex flex-col gap-1.5 rounded-xl">
                                     <label className="text-md font-semibold text-gray-600">
                                         {t("choose_product")}
                                     </label>
                                     <div className="border rounded-xl border-red-300 px-1 focus-within:border-red-500">
 
                                         <Select
-                                            options={options}
-                                            value={selectedProduct}
-                                            inputValue={search}
-                                            isSearchable
-                                            placeholder={t("search")}
-                                            onInputChange={(value, actionMeta) => {
-                                                if (actionMeta.action === "input-change") {
-                                                    setSearch(value);
-                                                }
-                                                return value;
-                                            }}
-
-                                            onKeyDown={(e) => {
-                                                if (e.key === "Enter") {
-                                                    e.preventDefault();
-                                                    handleSearch();
-                                                }
-                                            }}
-
-                                            onChange={(selected) => {
-                                                setItemId(selected.value)
-                                                setSelectedProduct(selected);
-                                                setSearch("");
-                                            }}
-
-                                            noOptionsMessage={() => t("no_products") || "لا توجد منتجات"}
-                                            styles={{
-                                                control: (provided) => ({
-                                                    ...provided,
-                                                    border: "none",
-                                                    boxShadow: "none",
-                                                    fontWeight: "600",
-                                                    height: "100%",
-                                                    width: "100%",
-                                                    padding: "4px",
-                                                }),
-                                                option: (base) => ({
-                                                    ...base,
-                                                    // backgroundColor: '#b91c1c',
-                                                    color: "white",
-                                                    fontSize: "15px",
-                                                    fontWeight: "600",
-                                                }),
-                                                input: (base) => ({
-                                                    ...base,
-                                                    color: "#374151",
-                                                }),
-                                                option: (base, state) => ({
-                                                    ...base,
-                                                    backgroundColor: state.isSelected
-                                                        ? "#dc2626"
-                                                        : state.isFocused
-                                                            ? "#fee2e2"
-                                                            : "#ffffff",
-                                                    color: state.isSelected ? "#ffffff" : "#374151",
-                                                    cursor: "pointer",
-                                                    padding: "10px",
-                                                    "&:hover": {
-                                                        backgroundColor: state.isSelected
-                                                            ? "#dc2626"
-                                                            : "#fee2e2",
-                                                    },
-                                                }),
-                                            }}
-                                        />
+                  options={options}
+                  value={selectedProduct}
+                  inputValue={searchText}
+                  isSearchable
+                  isLoading={searchLoading}
+                  filterOption={() => true}
+                  formatOptionLabel={formatOptionLabel}
+                  placeholder={t("search")}
+                  onInputChange={(value, actionMeta) => {
+                    if (actionMeta.action === "input-change") {
+                      setSearchText(value);
+                    }
+                    return value;
+                  }}
+                  onFocusedOptionChange={({ focusedOption: option }) => setFocusedOption(option)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !focusedOption) {
+                      e.preventDefault();
+                      clearTimeout(searchTimerRef.current);
+                      searchProducts(searchText);
+                    }
+                  }}
+                  onChange={(selected) => {
+                    if (!selected) return;
+                    setItemId(selected.value);
+                    setSelectedProduct(selected);
+                    setSearchText("");
+                  }}
+                  noOptionsMessage={() => t("no_products") || "لا توجد منتجات"}
+                  styles={{
+                    control: (provided) => ({
+                      ...provided,
+                      border: "none",
+                      boxShadow: "none",
+                      fontWeight: "600",
+                      height: "100%",
+                      width: "100%",
+                    }),
+                    input: (base) => ({
+                      ...base,
+                      color: "#374151",
+                    }),
+                    option: (base, state) => ({
+                      ...base,
+                      backgroundColor: state.isSelected
+                        ? "#dc2626"
+                        : state.isFocused
+                          ? "#fee2e2"
+                          : "#ffffff",
+                      color: state.isSelected ? "#ffffff" : "#374151",
+                      cursor: "pointer",
+                      padding: "10px",
+                      "&:hover": {
+                        backgroundColor: state.isSelected ? "#dc2626" : "#fee2e2",
+                      },
+                    }),
+                  }}
+                />
                                     </div>
                                 </div>
 
