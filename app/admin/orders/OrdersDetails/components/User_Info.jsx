@@ -14,6 +14,7 @@ export default function Orders_Details({ orderId , orderType }) {
   const orderItem = useCallback(async () => {
    const res= await getRequest(`/api/${orderType}/${orderId}`)
     const resData = res.data
+    console.log(resData)
     setOrderUser(resData.user);
     setPaymentMethod(resData.paymentMethod)
     setOrderAddress(resData.address)

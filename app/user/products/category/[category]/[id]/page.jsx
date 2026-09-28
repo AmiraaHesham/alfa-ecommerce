@@ -22,7 +22,7 @@ export default function ProductsByCategory({ params }) {
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [totalElements, setTotalElements] = useState(0);
-  const PAGE_SIZE = 12;
+  const PAGE_SIZE = 40;
 
   const sortOptions = [
     { value: "true,price", label: t("priceLowToHigh") },
@@ -105,6 +105,16 @@ export default function ProductsByCategory({ params }) {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  const totalResultsText = () => {
+    if (!totalElements) return `0 ${t("results")}`;
+    const start = currentPage * PAGE_SIZE + 1;
+    const end = Math.min((currentPage + 1) * PAGE_SIZE, totalElements);
+    return t("showing_results")
+      .replace("{start}", start)
+      .replace("{end}", end)
+      .replace("{total}", totalElements);
+  };
+
   return (
     <div className=" w-full ">
       <div className="flex flex-col items-start justify-start  ">
@@ -173,6 +183,9 @@ export default function ProductsByCategory({ params }) {
             </div>
           ) : products.length != 0 ? (
             <div>
+              <p className="text-sm text-gray-600 mb-4">
+                {totalResultsText()}
+              </p>
               <div
                 className={`grid xl:grid-cols-6 lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 p-2 gap-5`}
               >

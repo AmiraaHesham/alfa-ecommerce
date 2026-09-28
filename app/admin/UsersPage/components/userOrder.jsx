@@ -35,8 +35,8 @@ export default function UserOrders({ userId }) {
         },
         ""
       );
-      const resOrders = response.data || [];
-
+      const resOrders = response.data.content || [];
+console.log(resOrders)
       if (pageNum.current === 0) {
         setOrders(resOrders);
       } else setOrders((prev) => [...prev, ...resOrders]);
