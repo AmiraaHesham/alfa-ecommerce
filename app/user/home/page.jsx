@@ -3,7 +3,7 @@
 // ==============================
 // Imports - React / Next.js
 // ==============================
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 
 // ==============================
@@ -18,6 +18,7 @@ import ImageSlider from "./components/ImageSlider";
 import CategoriesSection from "./components/CategoriesSection";
 import ProductAdsSlider from "./components/ProductAdsSlider";
 import FeaturedProducts from "./components/FeatuerProducts";
+import HomeSkeleton from "./components/skeletons/HomeSkeleton";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import Link from "next/link";
@@ -93,24 +94,6 @@ const EMPTY_ADS = {
 // ==============================
 // Reusable components
 // ==============================
-function ListSkeleton({
-  className = "w-full h-full bg-white rounded-3xl p-5 space-y-5",
-}) {
-  return (
-    <div className={className}>
-      {Array.from({ length: 4 }).map((_, i) => (
-        <div key={i} className="flex items-center gap-2">
-          <div className="w-[70px] h-[70px] bg-gray-200 rounded-full animate-pulse" />
-          <div className="flex-1 space-y-2">
-            <div className="w-2/3 h-3 bg-gray-200 rounded animate-pulse" />
-            <div className="w-1/3 h-3 bg-gray-200 rounded animate-pulse" />
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
-
 export default function Homepage() {
   // ==============================
   // Contexts and hooks
@@ -150,7 +133,9 @@ export default function Homepage() {
     brand:""
   });
   const [loading, setLoading] = useState(true);
-const [productType ,setProductType] = useState("popularProducts")
+  const [error, setError] = useState(false);
+  const requestIdRef = useRef(0);
+  const [productType, setProductType] = useState("popularProducts");
   // ==============================
   // Derived values
   // ==============================
@@ -182,117 +167,144 @@ const [productType ,setProductType] = useState("popularProducts")
   // API / data fetching logic
   // ==============================
   const fetchHomepageData = useCallback(async () => {
+    // كل تشغيل جديد للصفحة يلغي النتيجة القديمة حتى لا تتغير البيانات بعد الانتقال
+    const requestId = ++requestIdRef.current;
+    const isStale = () => requestId !== requestIdRef.current;
+
+    // فشل طلب واحد مايلغيش الصفحة كلها، وبيرجع قيمة بديلة فاضية
+    const safeRequest = async (label, request, fallback) => {
+      try {
+        return await request();
+      } catch (err) {
+        console.error(`Failed to fetch ${label}:`, err);
+        return fallback;
+      }
+    };
+
+    const EMPTY_CONTENT = { data: { content: [] } };
+    const EMPTY_LIST = { data: [] };
+
     try {
       setLoading(true);
+      setError(false);
 
-      const [imagesRes, productsRes, adsRes] =
-        await Promise.all([
-          getSliderImage(),
-          // getCategories(),
-          getFeatuerProducts(12),
-          getRequest("/api/public/offers"),
-        ]);
-      setImagesSliders(imagesRes);
-      setFeaturedProducts(productsRes.data.content || []);
-      setAds((prev) => ({ ...prev, ...buildAdsMap(adsRes.data) }));
-     console.log(adsRes.data)
+      // ==============================
+      // 1) البيانات الأساسية
+      // ==============================
+      const [imagesRes, productsRes, adsRes] = await Promise.all([
+        safeRequest("sliderImages", () => getSliderImage(), []),
+        safeRequest("featuredProducts", () => getFeatuerProducts(12), EMPTY_CONTENT),
+        safeRequest("offers", () => getRequest("/api/public/offers"), EMPTY_LIST),
+      ]);
 
-      const ad1ItemId = (adsRes.data || []).find(
-        (ad) => ad.number === 1,
-      )?.itemId;
-      if (ad1ItemId) {
-        try {
-          const ad1ProductRes = await getProductDetails(ad1ItemId);
-          setAd1Product(ad1ProductRes.data || null);
-          console.log(ad1ProductRes)
-        } catch (error) {
-          console.error("Failed to fetch first ad product:", error);
-        }
-      } const ad3ItemId = (adsRes.data || []).find(
-        (ad) => ad.number === 3,
-      )?.itemId;
-      if (ad3ItemId) {
-        try {
-          const ad3ProductRes = await getProductDetails(ad3ItemId);
-          console.log("ad3ProductRes",ad3ProductRes)
-          setAd3Product((prev)=>({
-            ...prev,
-            brand:ad3ProductRes.data.brand || null,
-            name:ad3ProductRes.data.nameEn || null
-          }));
-        } catch (error) {
-          console.error("Failed to fetch first ad product:", error);
-        }
-      }
-      const ad4ItemId = (adsRes.data || []).find(
-        (ad) => ad.number === 4,
-      )?.itemId;
-      if (ad4ItemId) {
-        try {
-          const ad4ProductRes = await getProductDetails(ad4ItemId);
-          setAd4Product((prev)=>({
-            ...prev,
-            brand:ad4ProductRes.data.brand || null,
-            name:ad4ProductRes.data.nameEn || null
-          }));
-        } catch (error) {
-          console.error("Failed to fetch first ad product:", error);
-        }
-      }
-      const ad5ItemId = (adsRes.data || []).find(
-        (ad) => ad.number === 5,
-      )?.itemId;
-      if (ad5ItemId) {
-        try {
-          const ad5ProductRes = await getProductDetails(ad5ItemId);
-          setAd5Product((prev)=>({
-            ...prev,
-            brand:ad5ProductRes.data.brand || null,
-            name:ad5ProductRes.data.nameEn || null
-          }));
-        } catch (error) {
-          console.error("Failed to fetch first ad product:", error);
-        }
-      }
-      const categoryRes = await getRequest("/api/public/itemCategory/latest")
-      setCategories(categoryRes.data || []);
+      if (isStale()) return;
 
-      const newProductsRes = await getRequest("/api/public/items/recent");
-      setNewProducts(newProductsRes.data || []);
-      // console.log(newProductsRes)
+      const offersList = adsRes?.data || [];
 
-      const topHomeApplianceRes = await getTopRatedByCategory(
-        HOME_APPLIANCES_CATEGORY_ID,
-        TOP_PRODUCTS_COUNT,
-      );
-      setTopHomeApplianceItems(topHomeApplianceRes);
+      setImagesSliders(imagesRes || []);
+      setFeaturedProducts(productsRes?.data?.content || []);
+      setAds((prev) => ({ ...prev, ...buildAdsMap(offersList) }));
 
-      const topRatingProductsRes = await getRequest("/api/public/items/topRated");
-      setItems(topRatingProductsRes.data.content || []); 
-      setTopRatingItems(topRatingProductsRes.data.content || []);
+      // ==============================
+      // 2) منتجات الإعلانات
+      // ==============================
+      const fetchAdProduct = async (number) => {
+        const itemId = offersList.find((ad) => ad.number === number)?.itemId;
 
-      const mustWatchedRes = await getRequest("/api/public/items/topWatched");
-      setMustWatchedItems(mustWatchedRes.data.content || []);
+        if (!itemId) return null;
 
-      const topDiscountedRes = await getRequest("/api/public/items/topDiscounted");
-      setTopDiscountedItems(topDiscountedRes.data.content || []);
+        const res = await safeRequest(
+          `ad${number} product`,
+          () => getProductDetails(itemId),
+          null,
+        );
 
-      const soldItemRes = await getRequest("/api/public/items/topSold")
-      setTopSoldItems(soldItemRes.data.content)
+        return res?.data || null;
+      };
 
-    const topLast30DaysRes = await getRequest("/api/public/items/topRated/last30Days")
-    console.log("topLast30DaysRes" ,topLast30DaysRes.data)
-      setTopLast30DayItems(topLast30DaysRes.data.content)
-      if (isLoggedIn) {
-        const recentWatchedProductsRes = await getRequest("/api/users/recentWatchedItems");
-        setRecentWatchedProducts(recentWatchedProductsRes.data || []);
-        console.log(recentWatchedProductsRes)
-      }
+      const [ad1, ad3, ad4, ad5] = await Promise.all([
+        fetchAdProduct(1),
+        fetchAdProduct(3),
+        fetchAdProduct(4),
+        fetchAdProduct(5),
+      ]);
 
-    } catch (error) {
-      console.error("Failed to fetch homepage data:", error);
+      if (isStale()) return;
+
+      if (ad1) setAd1Product(ad1);
+
+      [ad3, ad4, ad5].forEach((adProduct, index) => {
+        if (!adProduct) return;
+
+        const setter = [setAd3Product, setAd4Product, setAd5Product][index];
+
+        setter((prev) => ({
+          ...prev,
+          brand: adProduct.brand || null,
+          name: adProduct.nameEn || null,
+        }));
+      });
+
+      // ==============================
+      // 3) باقي الأقسام (كلها مستقلة وبتتحمل مع بعض)
+      // ==============================
+      const [
+        categoryRes,
+        newProductsRes,
+        topHomeApplianceItemsRes,
+        topRatingProductsRes,
+        mustWatchedRes,
+        topDiscountedRes,
+        soldItemRes,
+        topLast30DaysRes,
+        recentWatchedProductsRes,
+      ] = await Promise.all([
+        safeRequest(
+          "itemCategory",
+          () => getRequest("/api/public/itemCategory/latest"),
+          EMPTY_LIST,
+        ),
+        safeRequest("recentItems", () => getRequest("/api/public/items/recent"), EMPTY_LIST),
+        safeRequest(
+          "topRatedByCategory",
+          () => getTopRatedByCategory(HOME_APPLIANCES_CATEGORY_ID, TOP_PRODUCTS_COUNT),
+          [],
+        ),
+        safeRequest("topRated", () => getRequest("/api/public/items/topRated"), EMPTY_CONTENT),
+        safeRequest("topWatched", () => getRequest("/api/public/items/topWatched"), EMPTY_CONTENT),
+        safeRequest("topDiscounted", () => getRequest("/api/public/items/topDiscounted"), EMPTY_CONTENT),
+        safeRequest("topSold", () => getRequest("/api/public/items/topSold"), EMPTY_CONTENT),
+        safeRequest("topRatedLast30Days", () => getRequest("/api/public/items/topRated/last30Days"), EMPTY_CONTENT),
+        isLoggedIn
+          ? safeRequest(
+              "recentWatchedItems",
+              () => getRequest("/api/users/recentWatchedItems"),
+              EMPTY_LIST,
+            )
+          : Promise.resolve(EMPTY_LIST),
+      ]);
+
+      if (isStale()) return;
+
+      setCategories(categoryRes?.data || []);
+      setNewProducts(newProductsRes?.data || []);
+      setTopHomeApplianceItems(topHomeApplianceItemsRes || []);
+
+      const topRatedContent = topRatingProductsRes?.data?.content || [];
+      setItems(topRatedContent);
+      setTopRatingItems(topRatedContent);
+
+      setMustWatchedItems(mustWatchedRes?.data?.content || []);
+      setTopDiscountedItems(topDiscountedRes?.data?.content || []);
+      setTopSoldItems(soldItemRes?.data?.content || []);
+      setTopLast30DayItems(topLast30DaysRes?.data?.content || []);
+      setRecentWatchedProducts(recentWatchedProductsRes?.data || []);
+    } catch (err) {
+      console.error("Failed to fetch homepage data:", err);
+      setError(true);
     } finally {
-      setLoading(false);
+      // الـ skeleton يفضل ظاهر لحد ما كل الطلبات تخلص (أو تفشل)
+      if (!isStale()) setLoading(false);
     }
   }, [isLoggedIn]);
 
@@ -308,41 +320,41 @@ const [productType ,setProductType] = useState("popularProducts")
   // ==============================
   useEffect(() => {
     fetchHomepageData();
+
+    // منع تحديث الحالة بعد مغادرة الصفحة
+    return () => {
+      requestIdRef.current += 1;
+    };
   }, [fetchHomepageData]);
+
+  // ==============================
+  // Loading state
+  // ==============================
+  // الـ skeleton بيغطي الصفحة كلها بنفس مقاسات المحتوى الحقيقي
+  // ويفضل ظاهر لحد ما كل طلبات الصفحة تخلص
+  if (loading) return <HomeSkeleton />;
 
   // ==============================
   // Return / JSX
   // ==============================
   return (
     <div className="w-full lg:px-3 xs:px-0">
+      {error && (
+        <div className="w-full flex justify-center items-center gap-3 py-5 text-sm text-red-600">
+          <span>{t("home_load_error")}</span>
+          <button
+            type="button"
+            onClick={fetchHomepageData}
+            className="rounded-full bg-[#CD4354] hover:bg-[#c13b4a] text-white px-4 py-1.5 font-semibold"
+          >
+            {t("try_again")}
+          </button>
+        </div>
+      )}
+
       {/* ========================= Hero Section (Slider + Ads + Categories + Best Pick) ========================= */}
       <div className="py-7">
-        {loading ? (
-          <div className="w-full md:h-[500px] md:px-10 xs:px-3 xs:h-[300px] flex justify-between items-center gap-5">
-            <div className="w-full h-full bg-gray-200 rounded-2xl animate-pulse"></div>
-            <div className="w-full h-full flex flex-col">
-              <div className="flex w-full h-full justify-center items-center gap-5">
-                <div className="w-[120px] h-[120px] bg-gray-200 rounded-full animate-pulse"></div>
-                <div className="w-[120px] h-[120px] bg-gray-200 rounded-full animate-pulse"></div>
-                <div className="w-[120px] h-[120px] bg-gray-200 rounded-full animate-pulse"></div>
-                <div className="w-[120px] h-[120px] bg-gray-200 rounded-full animate-pulse"></div>
-                <div className="w-[120px] h-[120px] bg-gray-200 rounded-full animate-pulse"></div>
-              </div>
-              <div className="w-full h-[400px] grid grid-cols-2 animate-pulse bg-white p-5 gap-5 rounded-xl">
-                {Array.from({ length: 4 }).map((_, i) => (
-                  <div key={i} className="flex items-center gap-2">
-                    <div className="w-[70px] h-[70px] bg-gray-200 rounded-full animate-pulse" />
-                    <div className="flex-1 space-y-2">
-                      <div className="w-2/3 h-3 bg-gray-200 rounded animate-pulse" />
-                      <div className="w-1/3 h-3 bg-gray-200 rounded animate-pulse" />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div className="flex lg:flex-row xs:flex-col justify-around gap-4 items-center w-full">
+        <div className="flex lg:flex-row xs:flex-col justify-around gap-4 items-center w-full">
             {/* Slider */}
             <div className="lg:w-[40%] xs:w-full">
             <ImageSlider sliderImages={imagesSliders} />
@@ -398,7 +410,6 @@ const [productType ,setProductType] = useState("popularProducts")
               </div>
             </div>
           </div>
-        )}
       </div>
 
       {/* ========================= Site Features ========================= */}
@@ -406,39 +417,27 @@ const [productType ,setProductType] = useState("popularProducts")
 
       {/* ========================= Featured Products ========================= */}
       <div className=" flex lg:flex-row xs:flex-col my-10 gap-5 items-start w-full mt-20">
-        {loading ? (
-          <div className="w-[400px] h-[440px]">
-            <ListSkeleton />
-          </div>
-        ) : (
-          <div className="xs:order-2 lg:order-1 flex flex-col xs:w-full lg:w-auto items-center gap-5">
-            <ProductShowcase Products={recentWatchedProducts} title={"recentViewed"} />
-            <div className="w-full lg:flex-col sm:flex-row xs:flex-col flex gap-5">
-              <div className="bg-white mt-2 lg:w-[280px] xs:w-full h-[660px] rounded-3xl relative overflow-hidden">
-                {ads.ad2.imageUrl && (
-                  <Image
-                    src={IMAGE_BASE_URL + ads.ad2.imageUrl}
-                    alt="Advertisement"
-                    fill
-                    sizes="300px"
-                    className="object-cover"
-                  />
-                )}
-              </div>
-              <section id="newProducts" className="w-full">
-                {loading ? (
-                  <div className="w-full h-full">
-                    <ListSkeleton className="w-full h-[440px] bg-white rounded-3xl p-5 space-y-5" />
-                  </div>
-                ) : (
-                  <div className="w-full h-[660px] ">
-                    <ProductShowcase Products={newProducts} title={"latest_products"} />
-                  </div>
-                )}
-              </section>
+        <div className="xs:order-2 lg:order-1 flex flex-col xs:w-full lg:w-auto items-center gap-5">
+          <ProductShowcase Products={recentWatchedProducts} title={"recentViewed"} />
+          <div className="w-full lg:flex-col sm:flex-row xs:flex-col flex gap-5">
+            <div className="bg-white mt-2 lg:w-[280px] xs:w-full h-[660px] rounded-3xl relative overflow-hidden">
+              {ads.ad2.imageUrl && (
+                <Image
+                  src={IMAGE_BASE_URL + ads.ad2.imageUrl}
+                  alt="Advertisement"
+                  fill
+                  sizes="300px"
+                  className="object-cover"
+                />
+              )}
             </div>
+            <section id="newProducts" className="w-full">
+              <div className="w-full h-[660px] ">
+                <ProductShowcase Products={newProducts} title={"latest_products"} />
+              </div>
+            </section>
           </div>
-        )}
+        </div>
         <section className="w-full xs:order-1 lg:order-2">
           <div className="w-full flex xl:flex-row xs:flex-col justify-between items-center gap-2">
             <div className="w-full">
@@ -470,39 +469,22 @@ const [productType ,setProductType] = useState("popularProducts")
             </div>
           </div>
 
-          {loading ? (
-            <div className="w-full h-full">
-              <div className="w-full h-[370px] grid xl:grid-cols-4 md:grid-cols-3 xs:grid-cols-2 gap-5 mt-10">
-                <div className="bg-gray-200 rounded-3xl animate-pulse w-full" />
-                <div className="bg-gray-200 rounded-3xl animate-pulse w-full" />
-                <div className="bg-gray-200 xs:hidden md:block rounded-3xl animate-pulse w-full" />
-                <div className="bg-gray-200 xs:hidden xl:block rounded-3xl animate-pulse w-full" />
-              </div>
-            </div>
-          ) : (
-            <div className="xs:mt-6 md:mt-5">
-              <FeaturedProducts Products={items} type={"FeaturedProducts"} />
-              <TopDiscounted Products={topDiscountedItems} />
+          <div className="xs:mt-6 md:mt-5">
+            <FeaturedProducts Products={items || []} type={"FeaturedProducts"} />
+            <TopDiscounted Products={topDiscountedItems || []} />
 
-            </div>
-          )}
+          </div>
           <div className="flex xl:flex-row xs:flex-col mt-10 gap-5 justify-between  items-start w-full">
             <div className="md:w-[670px] xs:w-full h-[500px] bg-white rounded-3xl">
               <ProductAdsSlider />
             </div>
-            {loading ? (
-              <div className="w-full h-full">
-                <ListSkeleton className="w-full h-[440px] bg-white rounded-3xl p-5 space-y-5" />
-              </div>
-            ) : (
-              <div className="flex flex-col items-center gap-5 w-full">
-                <Top10Products
-                  Products={topHomeApplianceItems}
-                  section={"top_products"}
-                  href={TOP_PRODUCTS_HREF}
-                />
-              </div>
-            )}
+            <div className="flex flex-col items-center gap-5 w-full">
+              <Top10Products
+                Products={topHomeApplianceItems}
+                section={"top_products"}
+                href={TOP_PRODUCTS_HREF}
+              />
+            </div>
 
           </div>
         </section>
@@ -602,19 +584,9 @@ const [productType ,setProductType] = useState("popularProducts")
 
         </div>
 
-        {loading ? (
-          <div className="w-full h-full">
-            <div className="w-full h-[300px] grid xl:grid-cols-6 md:grid-cols-3 xs:grid-cols-2 gap-5 mt-10">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="bg-gray-200 rounded-3xl animate-pulse w-full" />
-              ))}
-            </div>
-          </div>
-        ) : (
-          <div className="mt-5">
-            <FeaturedProducts Products={featuredProducts} type={"MoreRecommended"} />
-          </div>
-        )}
+        <div className="mt-5">
+          <FeaturedProducts Products={featuredProducts || []} type={"MoreRecommended"} />
+        </div>
       </section>
     </div>
   );

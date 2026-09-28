@@ -70,7 +70,7 @@ export default function BestPick({ Products }) {
                     <Image
                       src={
                         process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +
-                        getThumbnailUrl(product.images[0]?.imageUrl)
+                            getThumbnailUrl(product.images?.[0]?.imageUrl)
                       }
                       alt=""
                       fill
@@ -97,7 +97,7 @@ export default function BestPick({ Products }) {
                       )}
 
                       <span className="text-sm font-bold w-full text-red-600 ">
-                        {product.price.toLocaleString("en-US")}.00 {t("currency")}
+                        {product.price?.toLocaleString("en-US")}.00 {t("currency")}
                       </span>
 
                     </div>

@@ -8,7 +8,7 @@ import Swal from "sweetalert2";
 //   }
 // };
 
-export const postRequest = async (endpoint, dataBody, message) => {
+export const postRequest = async (endpoint, dataBody, message ,toster) => {
   const getToken = () =>
     typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
   const lang =
@@ -35,6 +35,8 @@ export const postRequest = async (endpoint, dataBody, message) => {
       const token = getToken();
 
       const response = await request(token)
+      if(toster) toast.success(response.data.message);
+
       return response.data;
 
 

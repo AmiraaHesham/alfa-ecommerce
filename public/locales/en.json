@@ -363,6 +363,8 @@
   "view_all_reviews": "View all reviews",
   "top_products":"Top products",
   "Special_Offer" :"Special Offer",
+  "home_load_error" :"Something went wrong, please try again",
+  "try_again":"Try again",
   "orderSummary":"Order summary",
   "Select_quantity" :"Select quantity",
   "returnSummary":"Return summary",

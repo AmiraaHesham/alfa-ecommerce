@@ -25,7 +25,7 @@ export default function Top10Products({ Products, section, href }) {
                             <div className="relative w-[60px] h-[60px] ">
                                 <Image src={
                                     process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +
-                                    getThumbnailUrl(product.images[0]?.imageUrl)
+                                    getThumbnailUrl(product.images?.[0]?.imageUrl)
                                 } alt=""
                                     fill
                                     priority
@@ -49,9 +49,9 @@ export default function Top10Products({ Products, section, href }) {
                                     ) : (
                                         ""
                                     )}
-                                    <span className="text-sm font-semibold text-red-600 ">
-                                        {product.price.toLocaleString("en-US")}.00 {t("currency")}
-                                    </span>
+                                <span className="text-sm font-semibold text-red-600 ">
+                                    {product.price?.toLocaleString("en-US")}.00 {t("currency")}
+                                </span>
 
                                 </div>
                             </div>

@@ -364,6 +364,8 @@
   "view_all_reviews": "عرض جميع التقييمات",
   "top_products":"افضل المنتجات",
   "Special_Offer" :"عرض خاص",
+  "home_load_error" :"حصل خطأ، حاول مرة تانية",
+  "try_again":"حاول مرة تانية",
   "orderSummary":"ملخص الطلب",
   "Select_quantity":"حدد الكمية",
   "returnSummary":"ملخص المرتجع",

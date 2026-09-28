@@ -6,6 +6,30 @@ import { useCallback, useEffect, useState } from "react";
 import { useOrderDetailsContext } from "../../../../../context/orderDetailsContext.jsx";
 import { getThumbnailUrl } from "../../../../../utils/functions.jsx";
 
+const ProductImage = ({ item, size = 70, className = "" }) => {
+  const imageUrl = item?.images?.[0]?.imageUrl;
+  const src = imageUrl
+    ? process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL + getThumbnailUrl(imageUrl)
+    : null;
+  return (
+    <div className={`relative shrink-0 ${className}`} style={{ width: size, height: size }}>
+      {src ? (
+        <Image
+          alt=""
+          src={src}
+          fill
+          sizes={`${size}px`}
+          className="object-cover rounded-xl"
+        />
+      ) : (
+        <div className="w-full h-full rounded-xl bg-gray-100 flex items-center justify-center">
+          <span className="text-[10px] text-gray-400">no image</span>
+        </div>
+      )}
+    </div>
+  );
+};
+
 export default function OrdersItems({ orderId, orderType }) {
   const { t } = useLanguage();
   const [orderItems, setOrderItems] = useState([]);
@@ -79,17 +103,8 @@ export default function OrdersItems({ orderId, orderType }) {
                 key={`mobile-${index}`}
                 className="bg-white border rounded-xl p-3 my-3 mx-2 lg:hidden max-h-[435px] overflow-y-scroll"
               >
-                <div className=" relative w-[100px] h-[100px] flex items-start gap-3">
-                  <Image
-                    alt=""
-                    src={
-                      process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +
-                      getThumbnailUrl(item.item.images[0]?.imageUrl)
-                    }
-                    fill
-                    sizes="100px"
-                    className="object-cover rounded-xl  p-1 shrink-0"
-                  />
+                <div className="flex items-start gap-3">
+                  <ProductImage item={item.item} />
                   <div className="min-w-0">
                     <h1 className="font-semibold text-sm truncate">
                       {localStorage.lang === "ar"
@@ -126,16 +141,7 @@ export default function OrdersItems({ orderId, orderType }) {
         ) : (
           <div className="bg-white border rounded-xl p-3 my-3 mx-2 lg:hidden max-h-[435px] overflow-y-scroll">
             <div className="flex items-start gap-3">
-              <Image
-                alt=""
-                src={
-                  process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +
-                  getThumbnailUrl(orderItems.mainImageURL)
-                }
-                width={48}
-                height={48}
-                className="rounded-xl w-12 h-12 p-1 shrink-0"
-              />
+              <ProductImage item={orderItems} />
               <div className="min-w-0">
                 <h1 className="font-semibold text-sm truncate">
                   {localStorage.lang === "ar"
@@ -179,18 +185,7 @@ export default function OrdersItems({ orderId, orderType }) {
                     <td></td>
                     <td>
                       <div className="flex items-center gap-3">
-                        <div>
-                          <Image
-                            alt=""
-                            src={
-                              process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +
-                              getThumbnailUrl(item.item.mainImageURL)
-                            }
-                            width={80}
-                            height={80}
-                            className="rounded-xl  my-1 p-1"
-                          />
-                        </div>
+                        <ProductImage item={item.item} />
                         <div>
                           <h1 className="font-semibold mx-2">
                             {localStorage.lang === "ar"
@@ -229,18 +224,7 @@ export default function OrdersItems({ orderId, orderType }) {
                 <td></td>
                 <td>
                   <div className="flex items-center gap-3">
-                    <div>
-                      <Image
-                        alt=""
-                        src={
-                          process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +
-                          getThumbnailUrl(orderItems.mainImageURL)
-                        }
-                        width={55}
-                        height={55}
-                        className="rounded-xl  my-1 p-1"
-                      />
-                    </div>
+                    <ProductImage item={orderItems} />
                     <div>
                       <h1 className="font-semibold text-sm">
                         {localStorage.lang === "ar"

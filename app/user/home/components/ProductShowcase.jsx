@@ -27,18 +27,20 @@ export default function RecentlyViewed({ Products, title }) {
         </div>
         <div className="w-full h-full flex flex-col gap-5 ">
           {Products?.map((product, index) => {
+            const item = product.item || product;
+
             return (
 
               <div key={index} className={` ${title === "recentViewed" ? index < 5 ? "flex" : "hidden" : index < 7 ? "flex" : "hidden"} gap-2 items-center `}
                 onClick={() => {
-                  setSelectedProductId(product.item ? product.item.itemId : product.itemId);
-                  navigate.push(`/user/productdetails/${product.item ? product.item.nameEn : product.nameEn}/${product.item ? product.item.itemId : product.itemId}`);
+                  setSelectedProductId(item.itemId);
+                  navigate.push(`/user/productdetails/${item.nameEn}/${item.itemId}`);
                 }}
               >
                 <div className="relative w-[60px] h-[60px] hover:scale-105 duration-200 cursor-pointer select-none rounded-full ">
                   <Image src={
                     process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +
-                    getThumbnailUrl(product.item ? product.item.images[0]?.imageUrl : product.images[0]?.imageUrl)
+                    getThumbnailUrl(item.images?.[0]?.imageUrl)
                   } alt=""
                     fill
                     priority
@@ -47,43 +49,28 @@ export default function RecentlyViewed({ Products, title }) {
                     className="object-fill rounded-full" />
                 </div>
                 <div>
-                  <span className="text-sm font-semibold cursor-pointer">{locale === "ar" ? product.item ? product.item.nameAr : product.nameEn : product.item ? product.item.nameEn : product.nameEn}</span>
+                  <span className="text-sm font-semibold cursor-pointer">{locale === "ar" ? item.nameAr : item.nameEn}</span>
                   {/* <div>{
                     productInfo?.averageRating === 0 ? "" : <StarRating rating={productInfo?.averageRating} />
                   }
 
                   </div> */}
-                  {title === "recentViewed" ?
-                    <div className={product.item.averageRating ? "block" : "hidden"}>
-                      <StarRating rating={product.item.averageRating} />
-                    </div>
-                    :
-                    <div className={product.averageRating ? "block" : "hidden"}>
-                      <StarRating rating={product.averageRating} />
-                    </div>
-                  }
+                  <div className={item.averageRating ? "block" : "hidden"}>
+                    <StarRating rating={item.averageRating} />
+                  </div>
 
                   <div className="flex  justify-start gap-2 items-center ">
-                    {product.item?.oldPrice  ? (
+                    {item.oldPrice ? (
                       <div className="flex gap-2">
                         <span className=" line-through text-xs  flex text-gray-400">
-                          {product.item.oldPrice?.toLocaleString("en-US") }
-                        </span>
-                      </div>
-                    ) : (
-                      ""
-                    )}
-                     {product.oldPrice  ? (
-                      <div className="flex gap-2">
-                        <span className=" line-through text-xs  flex text-gray-400">
-                          {product.oldPrice?.toLocaleString("en-US")}{" "}{t("currency")}
+                          {item.oldPrice?.toLocaleString("en-US")}{" "}{t("currency")}
                         </span>
                       </div>
                     ) : (
                       ""
                     )}
                     <span className="text-sm font-semibold text-red-600 ">
-                      {product.item ? product.item.price.toLocaleString("en-US") : product.price.toLocaleString("en-US")}.00 {t("currency")}
+                      {item.price?.toLocaleString("en-US")}.00 {t("currency")}
                     </span>
 
                   </div>
