@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { FaRegCalendar } from "react-icons/fa";
 import { IoMdSearch } from "react-icons/io";
 import { VscCircleFilled } from "react-icons/vsc";
@@ -23,7 +23,7 @@ export default function ReturnOrders() {
   const { setSelectedProductId } = useIdContext();
   const PAGE_SIZE = 5;
 
-  const getReturnOrders = async () => {
+  const getReturnOrders = useCallback(async () => {
     try {
       setLoading(true)
       const res = await postRequest(
@@ -44,7 +44,7 @@ export default function ReturnOrders() {
     finally{
       setLoading(false)
     }
-  };
+  }, [currentPage, inputSearch, state]);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -53,7 +53,7 @@ export default function ReturnOrders() {
   useEffect(() => {
   
     getReturnOrders();
-  }, [state, inputSearch, currentPage]);
+  }, [getReturnOrders]);
   return (
     <div >
       <div className="md:flex xs:block justify-between  items-center  mb-10">

@@ -32,7 +32,7 @@ export default function UpdateStatus({ orderId , orderType  }) {
       setActiveStep(0);
       setOrderStepPath(1);
     }
-  }, [selectedOrderState]);
+  }, [selectedOrderState, orderType]);
 
   const lang =
     typeof window !== "undefined" ? localStorage.getItem("lang") : null;

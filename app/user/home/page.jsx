@@ -36,6 +36,7 @@ import {
   getProductDetails,
   getSliderImage,
   getThumbnailUrl,
+  getTopRatedByCategory,
 } from "../../../utils/functions";
 import { getRequest } from "../../../utils/requestsUtils";
 import "aos/dist/aos.css";
@@ -46,6 +47,11 @@ import "aos/dist/aos.css";
 const IMAGE_BASE_URL = process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL;
 
 const AD_RANGE = { min: 1, max: 5 };
+
+// id of the "Home Appliances" category used by the top products section
+const HOME_APPLIANCES_CATEGORY_ID = 9;
+const TOP_PRODUCTS_COUNT = 10;
+const TOP_PRODUCTS_HREF = `/user/products/category/Home%20Appliances/${HOME_APPLIANCES_CATEGORY_ID}`;
 
 const EMPTY_ADS = {
   ad1: {
@@ -118,6 +124,7 @@ export default function Homepage() {
   const [categories, setCategories] = useState([]);
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [newProducts, setNewProducts] = useState([]);
+  const [topHomeApplianceItems, setTopHomeApplianceItems] = useState([]);
   const [mustWatchedItems, setMustWatchedItems] = useState([]);
   const [topSoldItems, setTopSoldItems] = useState([]);
   const [topDiscountedItems, setTopDiscountedItems] = useState([]);
@@ -126,10 +133,22 @@ export default function Homepage() {
   const [topRatingItems, setTopRatingItems] = useState();
   const [recentWatchedProducts, setRecentWatchedProducts] = useState([]);
   const [ads, setAds] = useState(EMPTY_ADS);
-  const [ad1Product, setAd1Product] = useState(null);
-  const [ad3Product, setAd3Product] = useState(null);
-  const [ad4Product, setAd4Product] = useState(null);
-  const [ad5Product, setAd5Product] = useState(null);
+  const [ad1Product, setAd1Product] = useState({
+    name:"",
+    brand:""
+  });
+  const [ad3Product, setAd3Product] = useState({
+    name:"",
+    brand:""
+  });
+  const [ad4Product, setAd4Product] = useState({
+    name:"",
+    brand:""
+  });
+  const [ad5Product, setAd5Product] = useState({
+    name:"",
+    brand:""
+  });
   const [loading, setLoading] = useState(true);
 const [productType ,setProductType] = useState("popularProducts")
   // ==============================
@@ -196,7 +215,11 @@ const [productType ,setProductType] = useState("popularProducts")
         try {
           const ad3ProductRes = await getProductDetails(ad3ItemId);
           console.log("ad3ProductRes",ad3ProductRes)
-          setAd3Product(ad3ProductRes.data.brand || null);
+          setAd3Product((prev)=>({
+            ...prev,
+            brand:ad3ProductRes.data.brand || null,
+            name:ad3ProductRes.data.nameEn || null
+          }));
         } catch (error) {
           console.error("Failed to fetch first ad product:", error);
         }
@@ -207,7 +230,11 @@ const [productType ,setProductType] = useState("popularProducts")
       if (ad4ItemId) {
         try {
           const ad4ProductRes = await getProductDetails(ad4ItemId);
-          setAd4Product(ad4ProductRes.data.brand || null);
+          setAd4Product((prev)=>({
+            ...prev,
+            brand:ad4ProductRes.data.brand || null,
+            name:ad4ProductRes.data.nameEn || null
+          }));
         } catch (error) {
           console.error("Failed to fetch first ad product:", error);
         }
@@ -218,7 +245,11 @@ const [productType ,setProductType] = useState("popularProducts")
       if (ad5ItemId) {
         try {
           const ad5ProductRes = await getProductDetails(ad5ItemId);
-          setAd5Product(ad5ProductRes.data.brand || null);
+          setAd5Product((prev)=>({
+            ...prev,
+            brand:ad5ProductRes.data.brand || null,
+            name:ad5ProductRes.data.nameEn || null
+          }));
         } catch (error) {
           console.error("Failed to fetch first ad product:", error);
         }
@@ -229,7 +260,13 @@ const [productType ,setProductType] = useState("popularProducts")
       const newProductsRes = await getRequest("/api/public/items/recent");
       setNewProducts(newProductsRes.data || []);
       // console.log(newProductsRes)
-      
+
+      const topHomeApplianceRes = await getTopRatedByCategory(
+        HOME_APPLIANCES_CATEGORY_ID,
+        TOP_PRODUCTS_COUNT,
+      );
+      setTopHomeApplianceItems(topHomeApplianceRes);
+
       const topRatingProductsRes = await getRequest("/api/public/items/topRated");
       setItems(topRatingProductsRes.data.content || []); 
       setTopRatingItems(topRatingProductsRes.data.content || []);
@@ -257,7 +294,7 @@ const [productType ,setProductType] = useState("popularProducts")
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [isLoggedIn]);
 
   // ==============================
   // Event handlers
@@ -459,7 +496,11 @@ const [productType ,setProductType] = useState("popularProducts")
               </div>
             ) : (
               <div className="flex flex-col items-center gap-5 w-full">
-                <Top10Products Products={newProducts} section={"top_products"} />
+                <Top10Products
+                  Products={topHomeApplianceItems}
+                  section={"top_products"}
+                  href={TOP_PRODUCTS_HREF}
+                />
               </div>
             )}
 
@@ -486,10 +527,10 @@ const [productType ,setProductType] = useState("popularProducts")
               <div className="w-full h-full" />
             )}
             <div className="flex flex-col justify-around items-center w-full">
-              <h1 className="text-3xl font-bold">{ad3Product} </h1>
+              <h1 className="text-3xl font-bold">{ad3Product.brand} </h1>
 
               <h1 className=" text-center my-3">{locale === "ar" ? ads.ad3.titleAr : ads.ad3.title} </h1>
-              <button className="text-white rounded-full bg-[#CD4354] hover:bg-[#c13b4a] w-[120px] py-3 px-5 mt-2 text-sm font-semibold ">{t("shopNow")} </button>
+             <Link href={`/user/productdetails/${ad3Product.name}/${ads.ad3.itemId}`}><button  className="text-white rounded-full bg-[#CD4354] hover:bg-[#c13b4a] w-[120px] py-3 px-5 mt-2 text-sm font-semibold ">{t("buyNow")} </button></Link> 
 
             </div>
 
@@ -510,10 +551,10 @@ const [productType ,setProductType] = useState("popularProducts")
               <div className="w-full h-full" />
             )}
             <div className="flex flex-col justify-around items-center w-full">
-              <h1 className="text-3xl font-bold">{ad4Product} </h1>
+              <h1 className="text-3xl font-bold">{ad4Product.brand} </h1>
 
               <h1 className=" text-center my-3">{locale === "ar" ? ads.ad4.titleAr : ads.ad4.title} </h1>
-              <button className="text-white rounded-full bg-[#CD4354] hover:bg-[#c13b4a] w-[120px] py-3 px-5 mt-2 text-sm font-semibold ">{t("shopNow")} </button>
+             <Link href={`/user/productdetails/${ad4Product.name}/${ads.ad4.itemId}`}><button  className="text-white rounded-full bg-[#CD4354] hover:bg-[#c13b4a] w-[120px] py-3 px-5 mt-2 text-sm font-semibold ">{t("buyNow")} </button></Link> 
 
             </div>
           </div>
@@ -533,10 +574,10 @@ const [productType ,setProductType] = useState("popularProducts")
               <div className="w-full h-full" />
             )}
             <div className="flex flex-col justify-around items-center w-full">
-              <h1 className="text-3xl font-bold">{ad5Product} </h1>
+              <h1 className="text-3xl font-bold">{ad5Product.brand} </h1>
 
               <h1 className=" text-center my-3">{locale === "ar" ? ads.ad5.titleAr : ads.ad5.title} </h1>
-              <button className="text-white rounded-full bg-[#CD4354] hover:bg-[#c13b4a] w-[120px] py-3 px-5 mt-2 text-sm font-semibold ">{t("shopNow")} </button>
+             <Link href={`/user/productdetails/${ad5Product.name}/${ads.ad5.itemId}`}><button  className="text-white rounded-full bg-[#CD4354] hover:bg-[#c13b4a] w-[120px] py-3 px-5 mt-2 text-sm font-semibold ">{t("buyNow")} </button></Link> 
 
             </div>
 

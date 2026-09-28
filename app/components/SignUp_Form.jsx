@@ -1,7 +1,7 @@
 "use client";
 import { MdEmail, MdLanguage } from "react-icons/md";
 import { FaEyeSlash, FaLocationDot, FaUserLarge } from "react-icons/fa6";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import axios from "axios";
 import Image from "next/image";
 import { useLanguage } from "../../context/LanguageContext";
@@ -30,7 +30,7 @@ export default function SignUp({ popUp, setShowSignIn ,setOpenForm}) {
   const [value, setValue] = useState(null);
 const router = useRouter();
 
-  const getGovernorate = async () => {
+  const getGovernorate = useCallback(async () => {
     const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/public/governorates`);
     const formatted = res.data.data.map((item) => ({
       value: item.governorateId,
@@ -38,10 +38,10 @@ const router = useRouter();
     }));
 
     setGovernorates(formatted);
-  };
+  }, [locale]);
   useEffect(() => {
     getGovernorate();
-  }, []);
+  }, [getGovernorate]);
   const handleSignUp = async (e) => {
     e.preventDefault();
 

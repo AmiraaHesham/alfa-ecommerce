@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { MdCancel } from "react-icons/md";
 import { getRequest, postRequest } from "../../../../utils/requestsUtils";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useIdContext } from "../../../../context/idContext";
 import { useRouter } from "next/navigation";
 import { FaBox, FaCheck, FaTruck } from "react-icons/fa";
@@ -44,7 +44,7 @@ export default function OrderDetails({ orderId }) {
     name: "",
     quantity: "",
   });
-  const getOrder = async () => {
+  const getOrder = useCallback(async () => {
     const res = await getRequest(`/api/orders/${orderId}`);
     const resData = res.data;
     setOrder(resData.orderItemLines);
@@ -59,7 +59,7 @@ export default function OrderDetails({ orderId }) {
       paymentMethod: resData.paymentMethod,
       shippingCost: resData.shippingCost,
     }));
-  };
+  }, [orderId]);
   const orderCancel = async () => {
     try {
       if (orderSummary.state === "PENDING")
@@ -77,7 +77,7 @@ export default function OrderDetails({ orderId }) {
 
   useEffect(() => {
     getOrder();
-  }, []);
+  }, [getOrder]);
   useEffect(() => {
     if (orderSummary.state === "PENDING") {
       setActiveStep(1);

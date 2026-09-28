@@ -6,7 +6,7 @@ import {
   MdLanguage,
   MdOutlineShoppingCart,
 } from "react-icons/md";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -52,7 +52,7 @@ export default function Header() {
       console.error("Failed to update language", err);
     }
   };
-  const getProductInCart = async () => {
+  const getProductInCart = useCallback(async () => {
     try {
       if (userId) {
         const res = await getRequest(`/api/shopCarts`);
@@ -88,7 +88,7 @@ export default function Header() {
     } catch (err) {
       console.error("Failed to get product in cart", err);
     }
-  };
+  }, [userId]);
   const deleteItemFormCart = async (itemLineId, productID) => {
     if (userId) {
       await deleteRequest(
@@ -104,7 +104,7 @@ export default function Header() {
   };
   useEffect(() => {
     getProductInCart();
-  }, [refreshKey]);
+  }, [getProductInCart, refreshKey]);
   useEffect(() => {
   
     const firstName =

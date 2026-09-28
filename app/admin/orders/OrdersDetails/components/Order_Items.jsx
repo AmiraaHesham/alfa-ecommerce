@@ -2,7 +2,7 @@
 import { useLanguage } from "../../../../../context/LanguageContext.js";
 import Image from "next/image";
 import { getRequest } from "../../../../../utils/requestsUtils.js";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useOrderDetailsContext } from "../../../../../context/orderDetailsContext.jsx";
 import { getThumbnailUrl } from "../../../../../utils/functions.jsx";
 
@@ -18,7 +18,7 @@ export default function OrdersItems({ orderId, orderType }) {
   const { setSelectedOrderDate } = useOrderDetailsContext();
 
   const [orderTotalPrice, setOrderTotalPrice] = useState("");
-  const orderItem = async () => {
+  const orderItem = useCallback(async () => {
     const res = await getRequest(`/api/${orderType}/${orderId}`);
     const resData = res.data;
     setOrderItems(
@@ -35,10 +35,16 @@ export default function OrdersItems({ orderId, orderType }) {
 
     setSelectedOrderDate(resData.createdDate);
     setSelectedOrderCode(resData.code);
-  };
+  }, [
+    orderType,
+    orderId,
+    setSelectedOrderState,
+    setSelectedOrderDate,
+    setSelectedOrderCode,
+  ]);
   useEffect(() => {
     orderItem();
-  }, []);
+  }, [orderItem]);
   return (
     <div className="w-full ">
       <div className="h-16 flex md:text-base xs:text-sm border-t  border-l border-r rounded-t-lg items-center justify-between  px-6 bg-white">

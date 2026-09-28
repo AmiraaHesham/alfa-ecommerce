@@ -2,7 +2,7 @@
 import { MdFilterList, MdOutlineDownloading } from "react-icons/md";
 import { useLanguage } from "../../../../context/LanguageContext.js";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { postRequest } from "../../../../utils/requestsUtils.js";
 import { FaUserLarge } from "react-icons/fa6";
 import { IoMdSearch } from "react-icons/io";
@@ -19,7 +19,7 @@ export default function Orders_Table() {
   const pageNum = useRef(0);
   const searchInputRef = useRef(null);
 
-  const getAllOrders = async () => {
+  const getAllOrders = useCallback(async () => {
     try {
       const response = await postRequest(
         "/api/orders/search",
@@ -40,7 +40,7 @@ export default function Orders_Table() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedState]);
   const nextStatus = {
     PENDING: [{ value: "PROCESSING", label: t("PROCESSING") }],
     PROCESSING: [{ value: "SHIPPED", label: t("SHIPPED") }],
@@ -72,7 +72,7 @@ export default function Orders_Table() {
   };
   useEffect(() => {
     getAllOrders();
-  }, [selectedState]);
+  }, [getAllOrders]);
   const statusSelect = (order, selectClass) => (
     <Select
       value={{

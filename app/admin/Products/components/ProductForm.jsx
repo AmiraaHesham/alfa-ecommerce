@@ -5,7 +5,7 @@ import {
   IoCheckmarkCircleOutline,
   IoCloudUploadSharp,
 } from "react-icons/io5";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useLanguage } from "../../../../context/LanguageContext.js";
 import { FaCircle } from "react-icons/fa";
 import {
@@ -83,10 +83,10 @@ export default function FormProduct({ isFormOpen, setIsFormOpen, isEditMode ,set
     objectUrlsRef.current = objectUrlsRef.current.filter((u) => u !== url);
   };
 
-  const revokeImageUrls = () => {
+  const revokeImageUrls = useCallback(() => {
     objectUrlsRef.current.forEach((url) => URL.revokeObjectURL(url));
     objectUrlsRef.current = [];
-  };
+  }, []);
 
 
   const handleItemImagesUpload = (e) => {
@@ -111,12 +111,12 @@ export default function FormProduct({ isFormOpen, setIsFormOpen, isEditMode ,set
   };
 
   // جلب الأقسام
-  const showCategories = async () => {
+  const showCategories = useCallback(async () => {
     try {
       const resData = await getCategories();
       setItemCategory(resData.data.content || []);
     } catch (error) { }
-  };
+  }, []);
 
   // التحقق من صحة البيانات
   // const validateForm = () => {
@@ -140,7 +140,7 @@ export default function FormProduct({ isFormOpen, setIsFormOpen, isEditMode ,set
   // };
 
   // إعادة تعيين حالة النموذج فقط
-  const resetFormState = () => {
+  const resetFormState = useCallback(() => {
     setProduct({
       nameEn: "",
       nameAr: "",
@@ -164,7 +164,7 @@ export default function FormProduct({ isFormOpen, setIsFormOpen, isEditMode ,set
     setEnabledFavorite(false);
     setEnabledActive(true);
     setEnabledAvailable(true);
-  };
+  }, [revokeImageUrls]);
 
   const fields = {
     nameEn: product.nameEn,
@@ -244,7 +244,7 @@ productData()
   }
 
   // جلب بيانات المنتج للتعديل
-  const productData = async () => {
+  const productData = useCallback(async () => {
     try {
       setLoading(true);
 
@@ -298,7 +298,7 @@ productData()
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedProductId, resetFormState]);
 
   // تحديث المنتج
   const updateProduct = async () => {
@@ -326,14 +326,17 @@ productData()
   };
   useEffect(() => {
     showCategories();
+  }, [showCategories]);
+
+  useEffect(() => {
     productData();
-  }, [selectedProductId]);
+  }, [productData]);
 
   useEffect(() => {
     return () => {
       revokeImageUrls();
     };
-  }, []);
+  }, [revokeImageUrls]);
 
   return (
     <div

@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLanguage } from "../../../../../context/LanguageContext";
 import { MdFilterAlt } from "react-icons/md";
 import { FiSearch } from "react-icons/fi";
@@ -117,15 +117,15 @@ export default function Filter({
     return matches.slice(0, 8);
   }, [allBrands, brandQuery]);
 
-  const getValueFromClientX = (clientX) => {
+  const getValueFromClientX = useCallback((clientX) => {
     const rect = trackRef.current.getBoundingClientRect();
     let ratio = (clientX - rect.left) / rect.width;
     if (isRTL) ratio = 1 - ratio;
     ratio = Math.max(0, Math.min(1, ratio));
     return Math.round(boundMin + ratio * (safeMax - boundMin));
-  };
+  }, [isRTL, boundMin, safeMax]);
 
-  const updateValue = (which, value) => {
+  const updateValue = useCallback((which, value) => {
     const clamped = Math.max(boundMin, Math.min(safeMax, value));
     setValues((prev) => {
       if (which === "min") {
@@ -133,7 +133,7 @@ export default function Filter({
       }
       return { ...prev, max: Math.max(clamped, prev.min + 1) };
     });
-  };
+  }, [boundMin, safeMax]);
 
   useEffect(() => {
     if (!drag) return;
@@ -148,7 +148,7 @@ export default function Filter({
       window.removeEventListener("pointermove", handleMove);
       window.removeEventListener("pointerup", handleUp);
     };
-  }, [drag, isRTL, boundMin, safeMax]);
+  }, [drag, updateValue, getValueFromClientX]);
 
   const handleTrackPointerDown = (event) => {
     const value = getValueFromClientX(event.clientX);

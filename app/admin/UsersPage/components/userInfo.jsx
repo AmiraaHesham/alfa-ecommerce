@@ -2,7 +2,7 @@
 import { IoLocationSharp } from "react-icons/io5";
 import { TbPointFilled } from "react-icons/tb";
 import { useLanguage } from "../../../../context/LanguageContext.js";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { getRequest, postRequest } from "../../../../utils/requestsUtils";
 import { useIdContext } from "../../../../context/idContext";
 import { FaUserLarge } from "react-icons/fa6";
@@ -35,7 +35,7 @@ export default function UserInfo({ userId }) {
 
   });
 const [totalOrders, setTotalOrders] = useState(0);
-  const getUserInfo = async () => {
+  const getUserInfo = useCallback(async () => {
     const res = await getRequest(`/api/users/${userId}`);
     const resData = res.data
     setUserInfo((prev) => ({
@@ -56,9 +56,9 @@ const [totalOrders, setTotalOrders] = useState(0);
         [state.state]: state.count,
       }));
 
-    });
-   
-  };
+     });
+    
+   }, [userId]);
 
   const addBlock = async () => {
     await postRequest(`/api/admin/users/${userId}/block`);
@@ -70,7 +70,7 @@ const [totalOrders, setTotalOrders] = useState(0);
   };
   useEffect(() => {
     getUserInfo();
-  }, []);
+  }, [getUserInfo]);
   return (
     <div className="w-full h-full">
       <div className="flex items-center gap-4 bg-white rounded-lg border p-5">

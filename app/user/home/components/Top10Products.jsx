@@ -4,7 +4,7 @@ import { getThumbnailUrl } from "../../../../utils/functions";
 import StarRating from "../../components/StarRating";
 import Link from "next/link";
 
-export default function Top10Products({ Products, section }) {
+export default function Top10Products({ Products, section, href }) {
     const { locale } = useLanguage()
     const { t } = useLanguage()
     return (
@@ -12,7 +12,7 @@ export default function Top10Products({ Products, section }) {
             <div className="w-full h-full flex justify-between items-center">
                 <h1 className="font-semibold text-lg sticky z-10 ">{t(section)}</h1>
                 <div className="text-xs font-semibold">
-                    <Link href="/user/products/section/newProducts">{t("shopMore")} </Link>
+                    <Link href={href || "/user/products/section/newProducts"}>{t("shopMore")} </Link>
                     <hr className="bg-red-500 h-[2px] border-none w-auto " />
                 </div>
             </div>

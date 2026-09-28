@@ -2,7 +2,7 @@
 // import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { useLanguage } from "../../../../context/LanguageContext";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { AiFillSafetyCertificate } from "react-icons/ai";
 import {
   getRequest,
@@ -43,39 +43,7 @@ export default function Cart({ setShowSignUp }) {
   ];
   const synced = useRef(false);
 
-  useEffect(() => {
-    const syncCart = async () => {
-      try {
-        if (!userId) return;
-        if (synced.current) return;
-
-        const cart = JSON.parse(localStorage.getItem("cart") || "[]");
-
-        if (!cart.length) return;
-
-        await Promise.all(
-          cart.map((item) =>
-            postRequest(
-              `/api/shopCarts/addLine`,
-              {
-                itemId: item.id,
-                quantity: item.quantity,
-              },
-              "",
-            ),
-          ),
-        );
-        getProductInCart();
-        localStorage.removeItem("cart");
-
-        synced.current = true; // 👈 بعد النجاح
-      } catch (error) {
-      }
-    };
-
-    syncCart();
-  }, [userId]);
-  const getProductInCart = async () => {
+  const getProductInCart = useCallback(async () => {
     try {
       if (userId) {
         setLoading(true);
@@ -127,7 +95,40 @@ export default function Cart({ setShowSignUp }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [userId]);
+
+  useEffect(() => {
+    const syncCart = async () => {
+      try {
+        if (!userId) return;
+        if (synced.current) return;
+
+        const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+
+        if (!cart.length) return;
+
+        await Promise.all(
+          cart.map((item) =>
+            postRequest(
+              `/api/shopCarts/addLine`,
+              {
+                itemId: item.id,
+                quantity: item.quantity,
+              },
+              "",
+            ),
+          ),
+        );
+        getProductInCart();
+        localStorage.removeItem("cart");
+
+        synced.current = true; // 👈 بعد النجاح
+      } catch (error) {
+      }
+    };
+
+    syncCart();
+  }, [userId, getProductInCart]);
 
   const deleteItemFormCart = async (itemLineId, productID) => {
     if (userId) {
@@ -201,7 +202,7 @@ export default function Cart({ setShowSignUp }) {
 
   useEffect(() => {
     getProductInCart();
-  }, []);
+  }, [getProductInCart]);
   return (
     <div className="xl:p-10 xs:p-7  ">
       {loading && (

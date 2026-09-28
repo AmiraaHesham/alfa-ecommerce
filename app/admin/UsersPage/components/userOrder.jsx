@@ -22,7 +22,7 @@ export default function UserOrders({ userId }) {
   const pageNum = useRef(0);
   const { setSelectedNamePage } = useNamePageInAdminContext();
   const searchInputRef = useRef(null);
-  const getAllOrders = async () => {
+  const getAllOrders = useCallback(async () => {
     try {
       const response = await postRequest(
         "/api/orders/search",
@@ -44,11 +44,11 @@ export default function UserOrders({ userId }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [state, userId]);
 
   useEffect(() => {
     getAllOrders();
-  }, [state]);
+  }, [getAllOrders]);
   return (
     <div>
       <div className="w-full  bg-white  rounded-lg border flex md:flex-row xs:flex-col gap-5  items-start  p-4 ">

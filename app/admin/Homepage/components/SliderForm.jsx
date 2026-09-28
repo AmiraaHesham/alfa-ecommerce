@@ -35,7 +35,7 @@ export default function SliderForm({ isFormOpen, setIsFormOpen }) {
             );
         };
         fetchRecentItems();
-    }, []);
+    }, [locale]);
 
     const handleSearch = async () => {
         if (!search.trim()) {

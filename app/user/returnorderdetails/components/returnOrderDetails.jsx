@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { MdCancel, MdDelete } from "react-icons/md";
 import { getRequest, postRequest } from "../../../../utils/requestsUtils";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useLanguage } from "../../../../context/LanguageContext";
 import { useRouter } from "next/navigation";
 import {  FaCheck } from "react-icons/fa";
@@ -45,7 +45,7 @@ const navigate = useRouter();
   const [activeStep, setActiveStep] = useState();
 
 
-  const getOrder = async () => {
+  const getOrder = useCallback(async () => {
     const res = await getRequest(`/api/return-orders/${returnOrderId}`);
     const resData = res.data;
     setOrder(resData.item);
@@ -61,7 +61,7 @@ const navigate = useRouter();
       reasonMessage: resData.reasonMessage,
       reason: resData.reason,
     }));
-  };
+  }, [returnOrderId]);
   const orderCancel = async () => {
     try {
       if (state === "PENDING")
@@ -76,7 +76,7 @@ const navigate = useRouter();
 
   useEffect(() => {
     getOrder();
-  }, []);
+  }, [getOrder]);
   useEffect(() => {
     if (orderSummary.state === "PENDING") {
       setActiveStep(1);

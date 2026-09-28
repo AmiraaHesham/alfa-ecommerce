@@ -43,7 +43,7 @@ export default function SideMenu() {
         ? "Returns Management"
         : lastPort + " " + "Management"
     );
-  }, []);
+  }, [setSelectedNamePage]);
 
   // const username =
   //  typeof window !== 'undefined'? localStorage.getItem("firstName") + " " + localStorage.getItem("lastName"):null;

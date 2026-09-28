@@ -33,6 +33,13 @@ export const getProductDetails = async (productId) => {
   return await response;
 };
 
+export const getTopRatedByCategory = async (categoryId, size) => {
+  const response = await getRequest(
+    `/api/public/items/topRated/category/${categoryId}?page=0&size=${size}`
+  );
+  return response.data?.content || [];
+};
+
 export const submitItemRating = async (itemId, rating, comment = "") => {
   const response = await postRequest(
     `/api/itemRatings/item/${itemId}`,

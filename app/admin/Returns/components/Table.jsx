@@ -1,7 +1,7 @@
 "use client"
 import { useLanguage } from "../../../../context/LanguageContext";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { FaUserLarge } from "react-icons/fa6";
 import { IoMdSearch } from "react-icons/io";
 import { MdFilterList, MdOutlineDownloading } from "react-icons/md";
@@ -16,7 +16,7 @@ export default function ReturnTable() {
       const [loading, setLoading] = useState(true);
       const pageNum = useRef(0);
       const searchInputRef = useRef(null);
-      const getAllOrders = async () => {
+      const getAllOrders = useCallback(async () => {
         try {
           const response = await postRequest(
             "/api/return-orders/search",
@@ -36,11 +36,11 @@ export default function ReturnTable() {
         } finally {
           setLoading(false);
         }  
-        }  
+        }, [state]);  
     
       useEffect(() => {
         getAllOrders();
-      }, [state]);
+      }, [getAllOrders]);
 return(
     <div>
          <div className="w-full  bg-white  rounded-lg border flex md:flex-row xs:flex-col gap-5  items-start  p-4 ">

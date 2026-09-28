@@ -113,6 +113,7 @@ export default function ProductCard({ productInfo, favorite }) {
         `/api/users/favoriteItems/${productId}`,
         "",
         "",
+        true
       );
     } else {
       const product = {

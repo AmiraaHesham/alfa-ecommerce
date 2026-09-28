@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { FaRegCalendar } from "react-icons/fa";
 import { IoMdSearch } from "react-icons/io";
 import { VscCircleFilled } from "react-icons/vsc";
@@ -24,7 +24,7 @@ export default function OrdersHistory() {
   const navigate = useRouter();
   const { setSelectedProductId } = useIdContext();
   const PAGE_SIZE = 5;
-  const getOrders = async () => {
+  const getOrders = useCallback(async () => {
     try {
       setLoading(true)
       const res = await postRequest(
@@ -47,7 +47,7 @@ export default function OrdersHistory() {
     finally{
       setLoading(false)
     }
-  };
+  }, [currentPage, inputSearch, state]);
 
   const handlePageChange = (page) => {
     if (page === currentPage || page < 0 || page >= totalPages) return;
@@ -57,7 +57,7 @@ export default function OrdersHistory() {
 
   useEffect(() => {
     getOrders();
-  }, [state, inputSearch, currentPage]);
+  }, [getOrders]);
   return (
     <div >
       <div className="md:flex xs:block justify-between  items-center  mb-10">

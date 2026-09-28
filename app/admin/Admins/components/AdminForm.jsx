@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import { MdCancel } from "react-icons/md";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useLanguage } from "../../../../context/LanguageContext.js";
 import { postRequest, putRequest } from "../../../../utils/requestsUtils.js";
 import { getRequest } from "../../../../utils/requestsUtils.js";
@@ -46,7 +46,7 @@ export default function AdminForm({ isFormOpen, setIsFormOpen }) {
     }
   };
 
-  const AdminData = async () => {
+  const AdminData = useCallback(async () => {
     try {
       if (selectedAdminId !== null) {
         setLoading(true);
@@ -72,7 +72,7 @@ export default function AdminForm({ isFormOpen, setIsFormOpen }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedAdminId]);
 
   const updateAdmin = async () => {
     try {
@@ -99,7 +99,7 @@ export default function AdminForm({ isFormOpen, setIsFormOpen }) {
 
   useEffect(() => {
     AdminData();
-  }, [selectedAdminId]);
+  }, [AdminData]);
   return (
     <div
       id="add-admin-form"

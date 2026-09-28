@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useLanguage } from "../../../context/LanguageContext";
 import { useRefresh } from "../../../context/refreshContext";
 import { getRequest } from "../../../utils/requestsUtils";
@@ -50,7 +50,7 @@ export default function BottomNav() {
   const userId =
     typeof window !== "undefined" ? localStorage.getItem("id") : "";
 
-  const getProductInCart = async () => {
+  const getProductInCart = useCallback(async () => {
     try {
       if (userId) {
         const res = await getRequest(`/api/shopCarts`);
@@ -63,11 +63,11 @@ export default function BottomNav() {
     } catch (err) {
       console.error("Failed to get product in cart", err);
     }
-  };
+  }, [userId]);
 
   useEffect(() => {
     getProductInCart();
-  }, [refreshKey]);
+  }, [getProductInCart, refreshKey]);
 
   const goToAccount = () => {
     if (userId) {

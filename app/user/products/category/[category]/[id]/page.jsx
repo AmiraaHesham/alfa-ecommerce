@@ -1,6 +1,6 @@
 "use client";
 import { useSearshInputContext } from "../../../../../../context/searshInputContext";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import CategoriesSideManu from "../../../../components/CategoriseSideMenu";
 import { postRequest } from "../../../../../../utils/requestsUtils";
 import { useRouter } from "next/navigation";
@@ -33,7 +33,7 @@ export default function ProductsByCategory({ params }) {
     ? sortOptions.find((option) => option.value === `${ascending},${sortBy}`)
     : null;
 
-  const normalizePage = (payload, fallbackSize) => {
+  const normalizePage = useCallback((payload, fallbackSize) => {
     const data = payload?.data ?? payload ?? {};
     const content = Array.isArray(data)
       ? data
@@ -46,10 +46,10 @@ export default function ProductsByCategory({ params }) {
     const totalElements =
       Number(
         data?.totalElements ??
-        data?.totalItems ??
-        data?.totalCount ??
-        data?.total ??
-        0,
+          data?.totalItems ??
+          data?.totalCount ??
+          data?.total ??
+          0,
       ) || 0;
     const totalPages =
       Number(data?.totalPages ?? data?.totalPage ?? 0) ||
@@ -57,13 +57,16 @@ export default function ProductsByCategory({ params }) {
     const number =
       Number(data?.number ?? data?.pageNumber ?? data?.currentPage ?? 0) || 0;
     return { content, number, size, totalElements, totalPages };
-  };
+  }, []);
 
-  const getAllProducts = async (loading, requestedPage) => {
+  const currentPageRef = useRef(currentPage);
+  currentPageRef.current = currentPage;
+
+  const getAllProducts = useCallback(async (loading, requestedPage) => {
     try {
       setLoading(loading);
 
-      const page = requestedPage ?? currentPage;
+      const page = requestedPage ?? currentPageRef.current;
       const response = await postRequest(
         "/api/public/items/search",
         {
@@ -85,17 +88,17 @@ export default function ProductsByCategory({ params }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id, sortBy, ascending, normalizePage]);
+
   useEffect(() => {
     setCurrentPage(0);
     getAllProducts(true, 0);
-  }, [id, sortBy, ascending]);
+  }, [getAllProducts]);
 
   useEffect(() => {
     if (currentPage === 0) return;
     getAllProducts(true, currentPage);
-  }, [currentPage]);
-
+  }, [currentPage, getAllProducts]);
   const handlePageChange = (page) => {
     if (page === currentPage || page < 0 || page >= totalPages) return;
     setCurrentPage(page);

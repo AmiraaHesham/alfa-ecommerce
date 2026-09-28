@@ -58,7 +58,7 @@ export default function ProductDetails({ itemId }) {
   });
 
 
-  const productDetails = async () => {
+  const productDetails = useCallback(async () => {
     setLoading(true);
     try {
       const res = await getProductDetails(itemId);
@@ -98,7 +98,7 @@ export default function ProductDetails({ itemId }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [itemId]);
 
   const fetchReviews = useCallback(async () => {
     setReviewsLoading(true);
@@ -135,7 +135,7 @@ export default function ProductDetails({ itemId }) {
 
   useEffect(() => {
     productDetails();
-  }, []);
+  }, [productDetails]);
 
   useEffect(() => {
     fetchReviews();

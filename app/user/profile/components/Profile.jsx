@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { FaHeart, FaUser } from "react-icons/fa";
 import { IoLocationSharp } from "react-icons/io5";
 import { MdEmail, MdLock, MdPhoneEnabled } from "react-icons/md";
@@ -30,7 +30,7 @@ export default function Profile() {
 
 
 
-  const getUserData = async () => {
+  const getUserData = useCallback(async () => {
 try{
 const responce = await getRequest("/api/users")
     console.log(responce)
@@ -48,7 +48,7 @@ const responce = await getRequest("/api/users")
   
 }
     
-  }
+  }, [locale])
   const updateProfile = async (e) => {
     e.preventDefault();
     try {
@@ -63,7 +63,7 @@ const responce = await getRequest("/api/users")
       getUserData()
     } catch (err) { }
   };
-  const getGovernorate = async () => {
+  const getGovernorate = useCallback(async () => {
     try {
       const res = await getRequest("/api/public/governorates");
 
@@ -86,16 +86,16 @@ const responce = await getRequest("/api/users")
     } catch (error) {
       console.error("Error loading governorates:", error);
     }
-  };
+  }, [governorateId]);
 
   useEffect(() => {
     if (governorateId) {
       getGovernorate();
     }
-  }, [governorateId]);
+  }, [governorateId, getGovernorate]);
   useEffect(() => {
     getUserData()
-  }, []);
+  }, [getUserData]);
   return (
     <div className="p-10">
       <ResetPasswordForm isFormOpen={isFormOpen} setIsFormOpen={setIsFormOpen} />

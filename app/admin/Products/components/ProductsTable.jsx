@@ -5,7 +5,7 @@ import {
   MdOutlineDownloading,
 } from "react-icons/md";
 import { FaCircle } from "react-icons/fa";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useLanguage } from "../../../../context/LanguageContext.js";
 import { FaPlus } from "react-icons/fa";
 import Image from "next/image";
@@ -29,7 +29,7 @@ export default function ProductsTable({ setIsFormOpen, category, setIsEditMode }
   const searchInputRef = useRef();
   const [loading, setLoading] = useState(true);
   
-  const getAllProducts = async () => {
+  const getAllProducts = useCallback(async () => {
     try {
       const response = await postRequest(
         "/api/public/items/search",
@@ -51,11 +51,11 @@ export default function ProductsTable({ setIsFormOpen, category, setIsEditMode }
     } finally {
       setLoading(false);
     }
-  };
+  }, [category]);
   useEffect(() => {
     setLoading(true);
     getAllProducts();
-  }, [refreshKey, category]);
+  }, [getAllProducts, refreshKey]);
 
   const productFavorite = async (productId, favorite) => {
     await postRequest(

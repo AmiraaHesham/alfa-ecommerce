@@ -3,7 +3,7 @@ import ProductCard from "../../components/ProductCard";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation } from "swiper/modules";
 import { postRequest } from "../../../../utils/requestsUtils";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useLanguage } from "../../../../context/LanguageContext";
 export default function YouMightLike({categoryId}) {
       const { t } = useLanguage();
@@ -11,7 +11,7 @@ export default function YouMightLike({categoryId}) {
   const [loading, setLoading] = useState(true);
 
       const [products, setProducts] = useState([]);
-     const getProductsByCategory = async () => {
+     const getProductsByCategory = useCallback(async () => {
         try {
                     console.log(categoryId);
 
@@ -31,10 +31,10 @@ export default function YouMightLike({categoryId}) {
         } finally {
           setLoading(false);
         }
-      };
+      }, [categoryId]);
       useEffect(()=>{
         getProductsByCategory()
-      },[categoryId])
+      },[getProductsByCategory])
 return(
       <div className=" bg-[#f6f5f8] p-5">
         <h1 className="md:text-2xl xs:text-lg flex items-center gap-3 font-bold">

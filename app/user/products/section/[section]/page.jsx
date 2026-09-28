@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { getRequest, postRequest } from "../../../../../utils/requestsUtils";
 import ProductCard from "../../../components/ProductCard";
 import { useLanguage } from "../../../../../context/LanguageContext";
@@ -55,7 +55,7 @@ export default function ProductsBySection({ params }) {
             ? <BsFire className="text-red-600" />
             : <BsFire className="text-red-600" />;
 
-  const normalizePage = (payload, fallbackSize) => {
+  const normalizePage = useCallback((payload, fallbackSize) => {
     const data = payload?.data ?? payload ?? {};
     const content = Array.isArray(data)
       ? data
@@ -68,10 +68,10 @@ export default function ProductsBySection({ params }) {
     const totalElements =
       Number(
         data?.totalElements ??
-        data?.totalItems ??
-        data?.totalCount ??
-        data?.total ??
-        0,
+          data?.totalItems ??
+          data?.totalCount ??
+          data?.total ??
+          0,
       ) || 0;
     const totalPages =
       Number(data?.totalPages ?? data?.totalPage ?? 0) ||
@@ -79,13 +79,16 @@ export default function ProductsBySection({ params }) {
     const number =
       Number(data?.number ?? data?.pageNumber ?? data?.currentPage ?? 0) || 0;
     return { content, number, size, totalElements, totalPages };
-  };
+  }, []);
 
-  const getAllProducts = async (loading, requestedPage) => {
+  const currentPageRef = useRef(currentPage);
+  currentPageRef.current = currentPage;
+
+  const getAllProducts = useCallback(async (loading, requestedPage) => {
     try {
       setLoading(loading);
 
-      const page = requestedPage ?? currentPage;
+      const page = requestedPage ?? currentPageRef.current;
       const response =
         section === "topLast30Days"
           ? await getRequest(
@@ -153,12 +156,12 @@ console.log(response)
     } finally {
       setLoading(false);
     }
-  };
+  }, [section, sortBy, ascending, normalizePage]);
 
   useEffect(() => {
     setCurrentPage(0);
     getAllProducts(true, 0);
-  }, [section, sortBy, ascending]);
+  }, [getAllProducts]);
 
   const handlePageChange = (page) => {
     if (page === currentPage || page < 0 || page >= totalPages) return;

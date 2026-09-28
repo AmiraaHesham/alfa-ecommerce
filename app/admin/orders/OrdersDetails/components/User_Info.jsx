@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useLanguage } from "../../../../../context/LanguageContext.js";
 import { MdEmail, MdLocationCity, MdLocationPin, MdMyLocation } from "react-icons/md";
 import { MdLocalPhone } from "react-icons/md";
@@ -11,16 +11,16 @@ export default function Orders_Details({ orderId , orderType }) {
   const [orderUser, setOrderUser] = useState([]);
   const [paymentMethod , setPaymentMethod] = useState()
   const [orderAddress, setOrderAddress] = useState()
-  const orderItem = async () => {
+  const orderItem = useCallback(async () => {
    const res= await getRequest(`/api/${orderType}/${orderId}`)
     const resData = res.data
     setOrderUser(resData.user);
     setPaymentMethod(resData.paymentMethod)
     setOrderAddress(resData.address)
-  };
+  }, [orderType, orderId]);
   useEffect(() => {
     orderItem();
-  }, []);
+  }, [orderItem]);
   return (
     <div className="md:order-2 xs:order-1 xs:w-full md:w-[50%] bg-white">
       <div className="  bg-white p-7  border rounded-lg">

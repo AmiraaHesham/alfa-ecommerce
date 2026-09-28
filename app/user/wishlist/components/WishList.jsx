@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { getRequest, postRequest } from "../../../../utils/requestsUtils";
 import ProductCard from "../../components/ProductCard";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
@@ -15,6 +15,34 @@ export default function WishList() {
     typeof window !== "undefined" ? localStorage.getItem("id") : null;
   const { locale } = useLanguage();
   const synced = useRef(false);
+
+  const getWishList = useCallback(async () => {
+    try {
+      if (userId) {
+        setLoading(true);
+        const response = await getRequest(`/api/users/favoriteItems`);
+        setProducts(response.data.content);
+      } else {
+        const favoriteItems = JSON.parse(
+          localStorage.getItem("favoriteItems") || "[]",
+        );
+
+        const items = await Promise.all(
+          favoriteItems.map(async (item) => {
+            const res = await getRequest(`/api/public/items/${item.id}`);
+
+            return {
+              ...res.data, // 👈 مهم جدًا
+            };
+          }),
+        );
+        setProducts(items);
+      }
+    } catch (error) {
+    } finally {
+      setLoading(false);
+    }
+  }, [userId]);
 
   useEffect(() => {
     const syncFavorite = async () => {
@@ -46,39 +74,11 @@ export default function WishList() {
     };
 
     syncFavorite();
-  }, []);
-
-  const getWishList = async () => {
-    try {
-      if (userId) {
-        setLoading(true);
-        const response = await getRequest(`/api/users/favoriteItems`);
-        setProducts(response.data.content);
-      } else {
-        const favoriteItems = JSON.parse(
-          localStorage.getItem("favoriteItems") || "[]",
-        );
-
-        const items = await Promise.all(
-          favoriteItems.map(async (item) => {
-            const res = await getRequest(`/api/public/items/${item.id}`);
-
-            return {
-              ...res.data, // 👈 مهم جدًا
-            };
-          }),
-        );
-        setProducts(items);
-      }
-    } catch (error) {
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [userId, getWishList]);
 
   useEffect(() => {
     getWishList();
-  }, []);
+  }, [getWishList]);
   return (
     <div className="p-5  ">
       <div className="flex justify-between py-5">
