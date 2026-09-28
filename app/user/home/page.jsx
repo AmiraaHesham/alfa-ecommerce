@@ -139,8 +139,9 @@ export default function Homepage() {
   // ==============================
   // Derived values
   // ==============================
-  const isLoggedIn =
-    typeof window !== "undefined" ? localStorage.getItem("id") : null;
+  // بيتقرأ بعد الـ mount بس عشان مفيش اختلاف بين السيرفر والمتصفح
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const isLoggedInRef = useRef(false);
 
   // ==============================
   // Helper functions
@@ -275,7 +276,7 @@ export default function Homepage() {
         safeRequest("topDiscounted", () => getRequest("/api/public/items/topDiscounted"), EMPTY_CONTENT),
         safeRequest("topSold", () => getRequest("/api/public/items/topSold"), EMPTY_CONTENT),
         safeRequest("topRatedLast30Days", () => getRequest("/api/public/items/topRated/last30Days"), EMPTY_CONTENT),
-        isLoggedIn
+        isLoggedInRef.current
           ? safeRequest(
               "recentWatchedItems",
               () => getRequest("/api/users/recentWatchedItems"),
@@ -306,7 +307,7 @@ export default function Homepage() {
       // الـ skeleton يفضل ظاهر لحد ما كل الطلبات تخلص (أو تفشل)
       if (!isStale()) setLoading(false);
     }
-  }, [isLoggedIn]);
+  }, []);
 
   // ==============================
   // Event handlers
@@ -318,6 +319,13 @@ export default function Homepage() {
   // ==============================
   // useEffect
   // ==============================
+  useEffect(() => {
+    const loggedIn = Boolean(localStorage.getItem("id"));
+
+    isLoggedInRef.current = loggedIn;
+    setIsLoggedIn(loggedIn);
+  }, []);
+
   useEffect(() => {
     fetchHomepageData();
 
@@ -332,7 +340,7 @@ export default function Homepage() {
   // ==============================
   // الـ skeleton بيغطي الصفحة كلها بنفس مقاسات المحتوى الحقيقي
   // ويفضل ظاهر لحد ما كل طلبات الصفحة تخلص
-  if (loading) return <HomeSkeleton />;
+  if (loading) return <HomeSkeleton showRecentViewed={isLoggedIn} />;
 
   // ==============================
   // Return / JSX
@@ -418,7 +426,10 @@ export default function Homepage() {
       {/* ========================= Featured Products ========================= */}
       <div className=" flex lg:flex-row xs:flex-col my-10 gap-5 items-start w-full mt-20">
         <div className="xs:order-2 lg:order-1 flex flex-col xs:w-full lg:w-auto items-center gap-5">
-          <ProductShowcase Products={recentWatchedProducts} title={"recentViewed"} />
+          {/* بتظهر للمتسجلين دخول بس */}
+          {isLoggedIn && (
+            <ProductShowcase Products={recentWatchedProducts} title={"recentViewed"} />
+          )}
           <div className="w-full lg:flex-col sm:flex-row xs:flex-col flex gap-5">
             <div className="bg-white mt-2 lg:w-[280px] xs:w-full h-[660px] rounded-3xl relative overflow-hidden">
               {ads.ad2.imageUrl && (

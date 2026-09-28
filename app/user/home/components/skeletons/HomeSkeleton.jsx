@@ -13,7 +13,7 @@ import SiteFeaturesSkeleton from "./SiteFeaturesSkeleton";
 import AdHeroSkeleton from "./AdHeroSkeleton";
 import PromoBannerSkeleton from "./PromoBannerSkeleton";
 
-export default function HomeSkeleton() {
+export default function HomeSkeleton({ showRecentViewed = false }) {
   return (
     <div className="w-full lg:px-3 xs:px-0" aria-busy="true" aria-live="polite">
       {/* ========================= Hero (Slider + Ad + Categories + Best Pick) ========================= */}
@@ -45,7 +45,7 @@ export default function HomeSkeleton() {
       <div className="flex lg:flex-row xs:flex-col my-10 gap-5 items-start w-full mt-20">
         {/* Recently viewed + ad2 + latest products */}
         <div className="xs:order-2 lg:order-1 flex flex-col xs:w-full lg:w-auto items-center gap-5">
-          <ProductShowcaseSkeleton rows={5} />
+          {showRecentViewed && <ProductShowcaseSkeleton rows={5} />}
 
           <div className="w-full lg:flex-col sm:flex-row xs:flex-col flex gap-5">
             <div className="bg-white mt-2 lg:w-[280px] xs:w-full h-[660px] rounded-3xl relative overflow-hidden">
