@@ -51,6 +51,7 @@ export default function ProductDetails({ itemId }) {
     ratingCount: 0,
     ram:"",
     flash:"",
+    content:"",
     brand:"",
     releaseYear:""
 
@@ -76,6 +77,7 @@ export default function ProductDetails({ itemId }) {
         images: resData.images,
           ram:resData.ram,
           flash:resData.flash,
+          content:resData.content,
           brand:resData.brand,
           releaseYear:resData.releaseYear,
         available: resData.available,
@@ -165,7 +167,7 @@ export default function ProductDetails({ itemId }) {
       ) : ( */}
       <div className="p-5">
         <span className="text-gray-500">
-          <Link href={"user/home"}>Home </Link> /<Link href={"/user/products/category/" +
+          <Link href={"/user/home"}>Home </Link> /<Link href={"/user/products/category/" +
             product.category.nameEn +
             "/" +
             product.category.id}> {locale == "ar" ? product.category.nameAr : product.category.nameEn} </Link> / <span className="font-semibold text-black">  {locale == "ar" ? product.nameAr : product.nameEn}</span>

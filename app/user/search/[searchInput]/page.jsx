@@ -1,19 +1,18 @@
 "use client";
 
-import { useSearshInputContext } from "../../../../context/searshInputContext";
-import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import CategoriesSideManu from "../../components/CategoriseSideMenu";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { postRequest } from "../../../../utils/requestsUtils";
-import { useRouter } from "next/navigation";
-import { useIdContext } from "../../../../context/idContext";
 import ProductCard from "../../components/ProductCard";
 import { useLanguage } from "../../../../context/LanguageContext";
-import { BsList } from "react-icons/bs";
 import Select from "react-select";
 import { MdFilterAlt } from "react-icons/md";
 import { LuColumns2, LuColumns3, LuColumns4 } from "react-icons/lu";
 import Filter from "./components/filter"
 import Pagination from "./components/Pagination"
+
+const DEFAULT_PRICE_BOUNDS = { min: 0, max: 1 };
+const FILTER_OPTIONS_LOOKUP_SIZE = 100;
+
 export default function Searchpage({params}) {
     const { searchInput } = params;
 
@@ -24,6 +23,9 @@ export default function Searchpage({params}) {
   const [totalPages, setTotalPages] = useState(0);
   const [totalElements, setTotalElements] = useState(0);
   const [appliedFilters, setAppliedFilters] = useState(null);
+  const [priceBounds, setPriceBounds] = useState(DEFAULT_PRICE_BOUNDS);
+  const [brands, setBrands] = useState([]);
+  const [years, setYears] = useState([]);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [ascending, setAscending] = useState();
   const [sortBy, setSortBy] = useState();
@@ -31,6 +33,23 @@ export default function Searchpage({params}) {
   const lastQueryKey = useRef(null);
   const lastFetchedKey = useRef("");
   const resultsRef = useRef(null);
+
+  const filtersKey = appliedFilters
+    ? [
+        appliedFilters.brand ?? "",
+        appliedFilters.minPrice ?? "",
+        appliedFilters.maxPrice ?? "",
+        appliedFilters.rating ?? "",
+        appliedFilters.year ?? "",
+      ].join("|")
+    : "";
+
+  const [prevSearchInput, setPrevSearchInput] = useState(searchInput);
+  if (prevSearchInput !== searchInput) {
+    setPrevSearchInput(searchInput);
+    setAppliedFilters(null);
+    setFiltersOpen(false);
+  }
 
   const showOptions = [9, 12, 18, 24];
   const [showCount, setShowCount] = useState(12);
@@ -58,8 +77,9 @@ export default function Searchpage({params}) {
     ? sortOptions.find((option) => option.value === `${ascending},${sortBy}`)
     : null;
 
-  const normalizePage = (payload, fallbackSize) => {
+const normalizePage = (payload, fallbackSize) => {
     const data = payload?.data ?? payload ?? {};
+    const page = data?.page ?? data ?? {};
     const content = Array.isArray(data)
       ? data
       : Array.isArray(data?.content)
@@ -67,20 +87,27 @@ export default function Searchpage({params}) {
         : Array.isArray(data?.items)
           ? data.items
           : [];
-    const size = Number(data?.size ?? fallbackSize) || fallbackSize;
+    const size = Number(page?.size ?? data?.size ?? fallbackSize) || fallbackSize;
     const totalElements =
       Number(
-        data?.totalElements ??
+        page?.totalElements ??
+          page?.totalItems ??
+          page?.totalCount ??
+          page?.total ??
+          data?.totalElements ??
           data?.totalItems ??
           data?.totalCount ??
           data?.total ??
           0,
       ) || 0;
     const totalPages =
-      Number(data?.totalPages ?? data?.totalPage ?? 0) ||
+      Number(page?.totalPages ?? page?.totalPage ?? data?.totalPages ?? data?.totalPage ?? 0) ||
       (content.length > 0 ? Math.max(1, Math.ceil(totalElements / size)) : 0);
     const number =
-      Number(data?.number ?? data?.pageNumber ?? data?.currentPage ?? 0) || 0;
+      Number(
+        page?.number ?? page?.pageNumber ?? page?.currentPage ??
+          data?.number ?? data?.pageNumber ?? data?.currentPage ?? 0,
+      ) || 0;
     return { content, number, size, totalElements, totalPages };
   };
 
@@ -95,9 +122,14 @@ export default function Searchpage({params}) {
           size: showCount,
           searchText: searchInput,
           sortBy: sortBy || null,
-          ascending: ascending || true,
+          ascending: ascending === "false" ? false : true,
+          brand: appliedFilters?.brand || null,
+          minPrice: appliedFilters?.minPrice ?? null,
+          maxPrice: appliedFilters?.maxPrice ?? null,
+          rating: appliedFilters?.rating ?? null,
+          releaseYear: appliedFilters?.year ?? null,
         },
-        "",
+        '',
       );
       if (seq !== requestSeq.current) return; // ignore stale responses
       const normalized = normalizePage(response, showCount);
@@ -113,7 +145,7 @@ export default function Searchpage({params}) {
   };
 
   useEffect(() => {
-    const queryKey = `${searchInput}|${sortBy}|${ascending}|${showCount}`;
+    const queryKey = `${searchInput}|${sortBy}|${ascending}|${showCount}|${filtersKey}`;
     const page = lastQueryKey.current !== queryKey ? 0 : currentPage;
     if (lastQueryKey.current !== queryKey) {
       lastQueryKey.current = queryKey;
@@ -124,50 +156,79 @@ export default function Searchpage({params}) {
     lastFetchedKey.current = fetchKey;
     fetchPage(page);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentPage, searchInput, sortBy, ascending, showCount]);
+  }, [currentPage, searchInput, sortBy, ascending, showCount, filtersKey]);
 
   useEffect(() => {
-    setAppliedFilters(null);
-  }, [searchInput]);
+    let active = true;
+    setPriceBounds(DEFAULT_PRICE_BOUNDS);
+    setBrands([]);
+    setYears([]);
 
-  const getProductBrand = (product) => {
-    const brand =
-      product?.brand ||
-      product?.brandName ||
-      product?.itemBrand ||
-      product?.manufacturer ||
-      null;
-    if (!brand) return null;
-    if (typeof brand === "string") return brand;
-    return (
-      brand?.nameEn ||
-      brand?.nameAr ||
-      null
+    const probe = (ascendingOrder) =>
+      postRequest(
+        "/api/public/items/search",
+        {
+          page: 0,
+          size: 1,
+          searchText: searchInput,
+          sortBy: "price",
+          ascending: ascendingOrder,
+        },
+        '',
+      );
+
+    const loadOptions = postRequest(
+      "/api/public/items/search",
+      {
+        page: 0,
+        size: FILTER_OPTIONS_LOOKUP_SIZE,
+        searchText: searchInput,
+        sortBy: "releaseYear",
+        ascending: false,
+      },
+      '',
     );
-  };
 
-  const filteredProducts = useMemo(() => {
-    if (!appliedFilters) return products;
-    return products.filter((product) => {
-      const withinPrice =
-        product?.price >= appliedFilters.min &&
-        product?.price <= appliedFilters.max;
-      const brand = getProductBrand(product);
-      const withinBrand = appliedFilters.brand
-        ? brand &&
-          brand.toLowerCase().includes(appliedFilters.brand.toLowerCase())
-        : true;
-      const withinRating = appliedFilters.rating
-        ? Number(product?.averageRating) >= appliedFilters.rating
-        : true;
-      return withinPrice && withinBrand && withinRating;
-    });
-  }, [products, appliedFilters]);
+    Promise.allSettled([probe(true), probe(false), loadOptions]).then(
+      ([cheapest, priciest, optionsRes]) => {
+        if (!active) return;
+        const cheapestPrice = Number(normalizePage(cheapest.value, 1).content[0]?.price);
+        const priciestPrice = Number(normalizePage(priciest.value, 1).content[0]?.price);
+        const min = Number.isFinite(cheapestPrice) ? cheapestPrice : 0;
+        const max = Number.isFinite(priciestPrice) ? priciestPrice : min + 1;
+        setPriceBounds({ min, max: max > min ? max : min + 1 });
+
+        const seenBrands = new Set();
+        const brandList = [];
+        const seenYears = new Set();
+        const yearList = [];
+        normalizePage(optionsRes.value, FILTER_OPTIONS_LOOKUP_SIZE).content.forEach((product) => {
+          const name = typeof product?.brand === "string" ? product.brand.trim() : "";
+          if (name && !seenBrands.has(name.toLowerCase())) {
+            seenBrands.add(name.toLowerCase());
+            brandList.push(name);
+          }
+          const year = Number(product?.releaseYear);
+          if (Number.isInteger(year) && year > 1900 && !seenYears.has(year)) {
+            seenYears.add(year);
+            yearList.push(year);
+          }
+        });
+        setBrands(brandList);
+        setYears(yearList.sort((a, b) => b - a));
+      },
+    );
+
+    return () => {
+      active = false;
+    };
+  }, [searchInput]);
 
   const handlePageChange = (page) => {
     if (page === currentPage || page < 0 || page >= totalPages) return;
     setCurrentPage(page);
     resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const totalResultsText = () => {
@@ -180,17 +241,26 @@ export default function Searchpage({params}) {
       .replace("{total}", totalElements);
   };
 
+  // one state, one request: apply every filter at once and go back to the first page
   const handleApplyFilters = (filters) => {
     setAppliedFilters(filters);
+    if (currentPage !== 0) setCurrentPage(0);
+  };
+
+  const handleClearFilters = () => {
+    setAppliedFilters(null);
     if (currentPage !== 0) setCurrentPage(0);
   };
 
   return (
     <div className="mb-20 flex flex-col md:flex-row w-full min-h-screen gap-5 p-5 md:p-0">
       <Filter
-        products={products}
+        priceBounds={priceBounds}
+        brands={brands}
+        years={years}
         appliedFilters={appliedFilters}
         onFilter={handleApplyFilters}
+        onClear={handleClearFilters}
         drawerOpen={filtersOpen}
         onDrawerClose={() => setFiltersOpen(false)}
       />
@@ -238,13 +308,6 @@ export default function Searchpage({params}) {
                     fontWeight: "600",
                     height: "100%",
                     width: "100%",
-                  }),
-                  option: (provided) => ({
-                    ...provided,
-                    // backgroundColor: '#b91c1c',
-                    color: "white",
-                    fontSize: "5px",
-                    fontWeight: "500",
                   }),
                   input: (base) => ({
                     ...base,
@@ -320,12 +383,12 @@ export default function Searchpage({params}) {
                 ></div>
               ))}
             </div>
-          ) : filteredProducts.length != 0 ? (
+          ) : products.length != 0 ? (
             <div>
                 <div
               className={`${gridLayoutClasses[gridColumns]} p-2 gap-4`}
             >
-              {filteredProducts.map((product, index) => (
+              {products.map((product, index) => (
                 <div key={index} className="">
                   <ProductCard productInfo={product} />
                 </div>

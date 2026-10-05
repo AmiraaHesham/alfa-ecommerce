@@ -29,22 +29,27 @@ export default function Specification({ product }) {
                     <h1 className="text-xl font-semibold flex items-center justify-start gap-3"><RiRuler2Line className="text-2xl text-[#E14A5C]" />
                         {t("General")}</h1>
                     <div className="w-full flex flex-col gap-5 text-lg items-start">
-                        <div className="w-full flex justify-normal items-baseline">
+                          {product.content ? <div className="w-full flex justify-normal items-baseline">
+                            <span className="w-full text-sm text-gray-600">content</span>
+                            <span className="w-full text-sm font-medium">{product.content}
+                            </span>
+                        </div>:""}
+                         {product.flash ? <div className="w-full flex justify-normal items-baseline">
                             <span className="w-full text-sm text-gray-600">flash</span>
                             <span className="w-full text-sm font-medium">{product.flash}
                             </span>
-                        </div>
-                         <div className="w-full flex justify-normal items-baseline">
+                        </div> :""}
+                           {product.ram ?<div className="w-full flex justify-normal items-baseline">
                             <span className="w-full text-sm text-gray-600">ram</span>
                             <span className="w-full text-sm font-medium">{product.ram}
                             </span>
-                        </div>
-                        <div className="w-full flex justify-normal items-baseline">
+                        </div> :""}
+                         {product.releaseYear ? <div className="w-full flex justify-normal items-baseline">
                             <span className="w-full text-sm text-gray-600">Release years
                             </span>
                             <span className="w-full text-sm font-medium">{product.releaseYear}
                             </span>
-                        </div>
+                        </div> :""}
                     </div>
                 </div>
             </div>

@@ -408,10 +408,10 @@ export default function AdsForm({ isFormOpen, setIsFormOpen, productsOptions, ad
                         <div className="mt-5">
                             <div className="flex flex-col gap-4 ">
                                 <div className="flex flex-col gap-1.5">
-                                    <label className="text-md font-semibold text-gray-600">
-                                        {t("title_ar")}
-                                    </label>
-                                    <input
+                                    {adNumber === 3 || adNumber === 4  || adNumber === 5 ? (
+                                      <> <label className="text-md font-semibold text-gray-600">
+                                            {t("title_ar")}
+                                        </label>  <input
                                         type="text"
                                         value={adData.titleAr}
                                         onChange={(e) => setAdData((prev) => ({
@@ -420,13 +420,17 @@ export default function AdsForm({ isFormOpen, setIsFormOpen, productsOptions, ad
                                         }))}
 
                                         className="w-full outline-none text-gray-900 text-sm p-2.5 border border-gray-300 rounded-lg focus:border-red-500 focus:ring-2 focus:ring-red-100 transition-all"
-                                    />
+                                    /></> 
+                                    ) : null}
+                                  
                                 </div>
                                 <div className="flex flex-col gap-1.5">
-                                    <label className="text-md font-semibold text-gray-600">
-                                        {t("title_en")}
-                                    </label>
-                                    <input
+                                    {adNumber === 3 || adNumber === 4  || adNumber === 5 ? (
+                                        <>
+                                        <label className="text-md font-semibold text-gray-600">
+                                            {t("title_en")}
+                                        </label> 
+                                        <input
                                         type="text"
                                         value={adData.title}
                                         onChange={(e) => setAdData((prev) => ({
@@ -436,7 +440,9 @@ export default function AdsForm({ isFormOpen, setIsFormOpen, productsOptions, ad
 
                                         dir="ltr"
                                         className="w-full outline-none text-gray-900 text-sm p-2.5 border border-gray-300 rounded-lg focus:border-red-500 focus:ring-2 focus:ring-red-100 transition-all"
-                                    />
+                                    /></>
+                                    ) : null}
+                                   
                                 </div>
                                 <div className="flex flex-col gap-1.5 rounded-xl">
                                     <label className="text-md font-semibold text-gray-600">

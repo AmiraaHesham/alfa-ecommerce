@@ -337,7 +337,7 @@ export default function OrderDetails({ orderId }) {
                       onClick={() => {
                         setSelectedProductId(product.item.itemId);
                         navigate.push(
-                          `/user/productdetails/${product.item.itemId}`,
+                          `/user/productdetails/${product.item.nameEn}/${product.item.itemId}`,
                         );
                       }}
                     >

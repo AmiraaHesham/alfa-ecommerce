@@ -72,11 +72,12 @@ export default function ProductInfo({ product, itemId }) {
                     );
                 }
                 triggerRefresh();
-                if (!buyNow) {
-                    setIsCartOpen(true);
-                }
+
                 if (buyNow) {
                     navigate.push("/user/cart")
+                } else {
+                    setIsCartOpen(true);
+
                 }
 
 
@@ -168,16 +169,16 @@ export default function ProductInfo({ product, itemId }) {
                     ""
                 )}
                 {product.averageRating === 0 ? "" : <div className="flex gap-2">
-                    <StarRating rating={product.averageRating} /> 
-                    <span className="text-sm text-gray-500">({product.ratingCount})</span> 
-                    </div>} 
-                
-{product.descriptionEn === "" ? <span className="text-gray-500 text-sm">
-                    {locale === "ar" ? product.descriptionAr : product.descriptionEn}
-                </span> :<span className="text-gray-500 text-sm">
-                   
-                </span> }
-               
+                    <StarRating rating={product.averageRating} />
+                    <span className="text-sm text-gray-500">({product.ratingCount})</span>
+                </div>}
+
+                <span className="text-gray-500 text-sm">
+                    {locale === "ar" ? product.descriptionAr : product.descriptionEn ? product.descriptionEn : ""}
+                </span>  <span className="text-gray-500 text-sm">
+
+                </span>
+
 
                 <span className="text-red-600">
                     {product.available ? "" : t("Currently_unavailable")}

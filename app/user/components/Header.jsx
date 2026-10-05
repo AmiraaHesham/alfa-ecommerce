@@ -102,6 +102,27 @@ export default function Header() {
     }
     getProductInCart();
   };
+  const changeQuantity = async (itemLineId, itemId, newQuantity) => {
+    if (userId) {
+      await postRequest(
+        `/api/shopCarts/changeQuantity`,
+        {
+          itemLineId: itemLineId,
+          quantity: newQuantity,
+        },
+        "",
+      );
+    } else {
+      let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+      cart = cart.map((item) =>
+        Number(item.id) === Number(itemId)
+          ? { ...item, quantity: newQuantity }
+          : item,
+      );
+      localStorage.setItem("cart", JSON.stringify(cart));
+    }
+    getProductInCart();
+  };
   useEffect(() => {
     getProductInCart();
   }, [getProductInCart, refreshKey]);
@@ -388,6 +409,7 @@ setSearchInput(lastPort)
         netTotal={netTotal}
         itemNum={itemNum}
         onRemove={deleteItemFormCart}
+        onQuantityChange={changeQuantity}
         freeShippingThreshold={null}
         shippingCost={shippingCost}
       />

@@ -1,83 +1,90 @@
 "use client";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLanguage } from "../../../../../context/LanguageContext";
 import { MdFilterAlt } from "react-icons/md";
 import { FiSearch } from "react-icons/fi";
 import { IoClose } from "react-icons/io5";
-import { FaArrowRightLong, FaArrowLeftLong, FaRegStar } from "react-icons/fa6";
+import { FaArrowRightLong, FaArrowLeftLong } from "react-icons/fa6";
 import { FaStar } from "react-icons/fa";
+
+export const EMPTY_FILTERS = {
+  brand: "",
+  minPrice: "",
+  maxPrice: "",
+  rating: "",
+  year: "",
+};
 
 const RATING_OPTIONS = [5, 4, 3, 2, 1];
 
-const getProductBrand = (product, locale) => {
-  const brand =
-    product?.brand ||
-    product?.brandName ||
-    product?.itemBrand ||
-    product?.manufacturer ||
-    null;
-  if (!brand) return null;
-  if (typeof brand === "string") return brand;
-  return (
-    brand?.[locale === "ar" ? "nameAr" : "nameEn"] ||
-    brand?.nameAr ||
-    brand?.nameEn ||
-    null
-  );
+const toNumber = (value) => {
+  if (value === "" || value === null || value === undefined) return null;
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : null;
+};
+
+const sanitizeNumber = (value) => {
+  if (value === "" || value === null || value === undefined) return "";
+  const cleaned = String(value).replace(/[^\d.]/g, "");
+  const parsed = Number(cleaned);
+  if (!Number.isFinite(parsed) || parsed < 0) return "";
+  return String(parsed);
+};
+
+const sanitizeYear = (value) => {
+  if (value === "" || value === null || value === undefined) return "";
+  const cleaned = String(value).replace(/[^\d]/g, "").slice(0, 4);
+  const parsed = Number(cleaned);
+  if (!Number.isFinite(parsed) || parsed < 0) return "";
+  return String(parsed);
 };
 
 export default function Filter({
-  products,
+  priceBounds,
+  brands = [],
+  years = [],
   appliedFilters,
   onFilter,
+  onClear,
   drawerOpen,
   onDrawerClose,
 }) {
   const { t, locale } = useLanguage();
   const isRTL = locale === "ar";
 
-  const prices = useMemo(
-    () =>
-      (products || [])
-        .map((product) => Number(product?.price))
-        .filter((price) => !Number.isNaN(price)),
-    [products],
-  );
-
-  const boundMin = prices.length ? Math.min(...prices) : 0;
-  const boundMax = prices.length ? Math.max(...prices) : 1;
-  const safeMax = boundMax > boundMin ? boundMax : boundMin + 1;
-
-  const [values, setValues] = useState({
-    min: boundMin,
-    max: safeMax,
-  });
-  const [drag, setDrag] = useState(null);
-  const [selectedBrand, setSelectedBrand] = useState("");
+  const [filters, setFilters] = useState(EMPTY_FILTERS);
   const [brandQuery, setBrandQuery] = useState("");
   const [showBrandDropdown, setShowBrandDropdown] = useState(false);
-  const [selectedRating, setSelectedRating] = useState(null);
-  const trackRef = useRef(null);
-  const brandInputRef = useRef(null);
-  const [hoverRating, setHoverRating] = useState(0);
 
+  // sync the draft inputs whenever the applied filters change (apply / clear / new search)
   useEffect(() => {
-    if (appliedFilters) {
-      setValues({
-        min: Math.max(boundMin, Math.min(appliedFilters.min, safeMax)),
-        max: Math.min(safeMax, Math.max(appliedFilters.max, boundMin)),
-      });
-      setSelectedBrand(appliedFilters.brand || "");
-      setBrandQuery(appliedFilters.brand || "");
-      setSelectedRating(appliedFilters.rating || null);
-    } else {
-      setValues({ min: boundMin, max: safeMax });
-      setSelectedBrand("");
-      setBrandQuery("");
-      setSelectedRating(null);
-    }
-  }, [boundMin, safeMax, appliedFilters]);
+    const next = appliedFilters
+      ? {
+          brand: appliedFilters.brand ?? "",
+          minPrice:
+            appliedFilters.minPrice === null || appliedFilters.minPrice === undefined
+              ? ""
+              : String(appliedFilters.minPrice),
+          maxPrice:
+            appliedFilters.maxPrice === null || appliedFilters.maxPrice === undefined
+              ? ""
+              : String(appliedFilters.maxPrice),
+          rating:
+            appliedFilters.rating === null || appliedFilters.rating === undefined
+              ? ""
+              : String(appliedFilters.rating),
+          year:
+            appliedFilters.year === null || appliedFilters.year === undefined
+              ? ""
+              : String(appliedFilters.year),
+        }
+      : EMPTY_FILTERS;
+    setFilters(next);
+    setBrandQuery(next.brand);
+    setShowBrandDropdown(false);
+  }, [appliedFilters]);
 
+  // close the drawer on Escape + lock body scroll while it is open
   useEffect(() => {
     if (typeof document === "undefined") return;
 
@@ -96,112 +103,57 @@ export default function Filter({
     }
   }, [drawerOpen, onDrawerClose]);
 
-  const allBrands = useMemo(() => {
-    const seen = new Set();
-    const list = [];
-    (products || []).forEach((product) => {
-      const name = getProductBrand(product, locale);
-      if (name && !seen.has(name.toLowerCase())) {
-        seen.add(name.toLowerCase());
-        list.push(name);
-      }
-    });
-    return list;
-  }, [products, locale]);
-
   const suggestions = useMemo(() => {
     const query = brandQuery.trim().toLowerCase();
     const matches = query
-      ? allBrands.filter((brand) => brand.toLowerCase().includes(query))
-      : allBrands;
+      ? brands.filter((brand) => brand.toLowerCase().includes(query))
+      : brands;
     return matches.slice(0, 8);
-  }, [allBrands, brandQuery]);
+  }, [brands, brandQuery]);
 
-  const getValueFromClientX = useCallback((clientX) => {
-    const rect = trackRef.current.getBoundingClientRect();
-    let ratio = (clientX - rect.left) / rect.width;
-    if (isRTL) ratio = 1 - ratio;
-    ratio = Math.max(0, Math.min(1, ratio));
-    return Math.round(boundMin + ratio * (safeMax - boundMin));
-  }, [isRTL, boundMin, safeMax]);
-
-  const updateValue = useCallback((which, value) => {
-    const clamped = Math.max(boundMin, Math.min(safeMax, value));
-    setValues((prev) => {
-      if (which === "min") {
-        return { ...prev, min: Math.min(clamped, prev.max - 1) };
-      }
-      return { ...prev, max: Math.max(clamped, prev.min + 1) };
-    });
-  }, [boundMin, safeMax]);
-
-  useEffect(() => {
-    if (!drag) return;
-
-    const handleMove = (event) =>
-      updateValue(drag, getValueFromClientX(event.clientX));
-    const handleUp = () => setDrag(null);
-
-    window.addEventListener("pointermove", handleMove);
-    window.addEventListener("pointerup", handleUp);
-    return () => {
-      window.removeEventListener("pointermove", handleMove);
-      window.removeEventListener("pointerup", handleUp);
-    };
-  }, [drag, updateValue, getValueFromClientX]);
-
-  const handleTrackPointerDown = (event) => {
-    const value = getValueFromClientX(event.clientX);
-    const which =
-      Math.abs(value - values.min) <= Math.abs(value - values.max)
-        ? "min"
-        : "max";
-    setDrag(which);
-    updateValue(which, value);
-  };
-
-  const handleThumbKeyDown = (which, event) => {
-    const range = safeMax - boundMin;
-    const step = Math.max(1, Math.round(range / 50));
-    const multiplier = event.shiftKey ? 10 : 1;
-    // ArrowRight / ArrowUp increase, ArrowLeft / ArrowDown decrease.
-    // In RTL the slider is mirrored, so the arrows are reversed.
-    let dir = 0;
-    if (event.key === "ArrowRight" || event.key === "ArrowUp") dir = 1;
-    if (event.key === "ArrowLeft" || event.key === "ArrowDown") dir = -1;
-    if (dir === 0) return;
-    event.preventDefault();
-    const factor = isRTL ? -1 : 1;
-    const current = which === "min" ? values.min : values.max;
-    updateValue(which, current + dir * factor * step * multiplier);
-  };
-
-  const handleSelectBrand = (brand) => {
-    setSelectedBrand(brand);
+  const handleSelectBrand = useCallback((brand) => {
+    setFilters((prev) => ({ ...prev, brand }));
     setBrandQuery(brand);
     setShowBrandDropdown(false);
-    brandInputRef.current?.blur();
-  };
+  }, []);
 
-  const handleClearBrand = () => {
-    setSelectedBrand("");
+  const handleClearBrand = useCallback(() => {
+    setFilters((prev) => ({ ...prev, brand: "" }));
     setBrandQuery("");
     setShowBrandDropdown(false);
-    brandInputRef.current?.focus();
-  };
+  }, []);
 
-  const minPercent = ((values.min - boundMin) / (safeMax - boundMin)) * 100;
-  const maxPercent = ((values.max - boundMin) / (safeMax - boundMin)) * 100;
+  const minPrice = toNumber(filters.minPrice);
+  const maxPrice = toNumber(filters.maxPrice);
+  const priceRangeInvalid = minPrice !== null && maxPrice !== null && minPrice > maxPrice;
 
-  const thumbStyle = (percent) =>
-    isRTL ? { right: `${percent}%` } : { left: `${percent}%` };
+  const handleApply = useCallback(() => {
+    if (priceRangeInvalid) return;
+    const year = toNumber(filters.year);
+    onFilter?.({
+      brand: filters.brand.trim() || null,
+      minPrice,
+      maxPrice,
+      rating: toNumber(filters.rating),
+      year,
+    });
+    onDrawerClose?.();
+  }, [priceRangeInvalid, filters, minPrice, maxPrice, onFilter, onDrawerClose]);
 
-  const formatPrice = (value) =>
-    `${Math.round(value).toLocaleString("en-US")} ${t("currency")}`;
+  const handleReset = useCallback(() => {
+    setFilters(EMPTY_FILTERS);
+    setBrandQuery("");
+    setShowBrandDropdown(false);
+    onClear?.();
+    onDrawerClose?.();
+  }, [onClear, onDrawerClose]);
+
+  const boundMin = priceBounds?.min ?? 0;
+  const boundMax = priceBounds?.max ?? 0;
 
   const desktopHeader = (
     <div className="flex items-center gap-2">
-      <span className="flex items-center justify-center w-9 h-9 rounded-xl bg-red-50 text-red-600">
+      <span className="flex items-center justify-center w-9 h-9 rounded-xl bg-red-50 text-red-600 shrink-0">
         <MdFilterAlt className="w-5 h-5" />
       </span>
       <h2 className="text-lg font-bold text-gray-800">{t("filters")}</h2>
@@ -209,224 +161,239 @@ export default function Filter({
   );
 
   const filterSections = (
-    <>
-        {/* separator */}
-        <div className="h-px w-full bg-gray-100 my-5" />
+    <div className="min-w-0">
+      {/* Price filter section */}
+      <div className="text-start">
+        <h3 className="text-sm font-semibold text-gray-700 mb-3">
+          {t("Price")}
+        </h3>
 
-        {/* Price filter section */}
-        <div className="text-start p-2">
-          <h3 className="text-sm font-semibold text-gray-700 mb-4">
-            {t("Price")}
-          </h3>
-
-          <div dir="ltr" className="relative">
-            <div
-              ref={trackRef}
-              onPointerDown={handleTrackPointerDown}
-              className="relative h-1.5 w-full rounded-full bg-gray-200 cursor-pointer"
+        <div className="flex items-center gap-2 w-full min-w-0">
+          <div className="flex-1 min-w-0">
+            <label
+              htmlFor="filter-min-price"
+              className="block text-xs text-gray-500 mb-1"
             >
-              <div
-                className="absolute h-full rounded-full bg-gradient-to-r from-red-400 to-red-600"
-                style={{
-                  left: isRTL ? `${100 - maxPercent}%` : `${minPercent}%`,
-                  right: isRTL ? `${minPercent}%` : `${100 - maxPercent}%`,
-                }}
-              />
-            </div>
-
-            <div
-              role="slider"
-              aria-label={t("Price")}
-              aria-valuemin={Math.round(boundMin)}
-              aria-valuemax={Math.round(safeMax)}
-              aria-valuenow={Math.round(values.min)}
-              tabIndex={0}
-              onPointerDown={(event) => {
-                event.stopPropagation();
-                setDrag("min");
-              }}
-              onKeyDown={(event) => handleThumbKeyDown("min", event)}
-              className="absolute top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-white border-2 border-red-500 shadow cursor-grab active:cursor-grabbing focus:outline-none focus:ring-2 focus:ring-red-300"
-              style={thumbStyle(minPercent)}
-            />
-            <div
-              role="slider"
-              aria-label={t("Price")}
-              aria-valuemin={Math.round(boundMin)}
-              aria-valuemax={Math.round(safeMax)}
-              aria-valuenow={Math.round(values.max)}
-              tabIndex={0}
-              onPointerDown={(event) => {
-                event.stopPropagation();
-                setDrag("max");
-              }}
-              onKeyDown={(event) => handleThumbKeyDown("max", event)}
-              className="absolute top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-white border-2 border-red-500 shadow cursor-grab active:cursor-grabbing focus:outline-none focus:ring-2 focus:ring-red-300"
-              style={thumbStyle(maxPercent)}
-            />
-          </div>
-
-          {/* Selected range display */}
-          <p className="mt-4 text-sm text-gray-600">
-            <span className="font-semibold text-gray-800">{t("Price")}:</span>{" "}
-            {formatPrice(values.min)} <span className="text-gray-400">—</span>{" "}
-            {formatPrice(values.max)}
-          </p>
-        </div>
-        {/* separator */}
-        <div className="h-px w-full bg-gray-100 my-5" />
-
-        {/* Brand filter section */}
-        <div className="relative text-start">
-          <h3 className="text-sm font-semibold text-gray-700 mb-3">
-            {t("brand")}
-          </h3>
-          <div className="relative">
-            <FiSearch className="absolute top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 start-3" />
+              {t("from")}
+            </label>
             <input
-              ref={brandInputRef}
-              type="text"
-              value={brandQuery}
-              placeholder={t("search_brand")}
-              onChange={(event) => {
-                setBrandQuery(event.target.value);
-                if (selectedBrand) setSelectedBrand("");
-                setShowBrandDropdown(true);
-              }}
-              onFocus={() => setShowBrandDropdown(true)}
-              onBlur={() => setTimeout(() => setShowBrandDropdown(false), 150)}
-              onKeyDown={(event) => {
-                if (event.key === "Enter" && suggestions.length > 0) {
-                  handleSelectBrand(suggestions[0]);
-                }
-                if (event.key === "Escape") {
-                  setShowBrandDropdown(false);
-                  event.currentTarget.blur();
-                }
-              }}
-              className="w-full h-10 pe-9 ps-9 rounded-xl border border-gray-200 focus:border-red-400 focus:outline-none focus:ring-2 focus:ring-red-100 text-sm text-gray-800 placeholder:text-gray-400"
+              id="filter-min-price"
+              type="number"
+              inputMode="numeric"
+              min={boundMin >= 0 ? Math.floor(boundMin) : 0}
+              step="any"
+              value={filters.minPrice}
+              onChange={(event) =>
+                setFilters((prev) => ({
+                  ...prev,
+                  minPrice: sanitizeNumber(event.target.value),
+                }))
+              }
+              placeholder={String(Math.floor(boundMin) || 0)}
+              className="w-full h-10 px-3 rounded-xl border border-gray-200 bg-white text-sm text-gray-800 focus:border-red-400 focus:outline-none focus:ring-2 focus:ring-red-100 [appearance:textfield]"
             />
-            {(brandQuery || selectedBrand) && (
-              <button
-                type="button"
-                onClick={handleClearBrand}
-                className="absolute top-1/2 -translate-y-1/2 end-3 text-gray-400 hover:text-gray-600"
-                aria-label={t("clear")}
-              >
-                <IoClose className="w-4 h-4" />
-              </button>
-            )}
           </div>
 
-          {/* Brand suggestions */}
-          {showBrandDropdown && suggestions.length > 0 && (
-            <div className="absolute z-30 mt-2 w-full bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-              {suggestions.map((brand) => (
-                <button
-                  key={brand}
-                  type="button"
-                  onMouseDown={(event) => event.preventDefault()}
-                  onClick={() => handleSelectBrand(brand)}
-                  className={`w-full text-start px-4 py-2.5 text-sm transition-colors ${
-                    selectedBrand === brand
-                      ? "bg-red-50 text-red-600 font-semibold"
-                      : "text-gray-700 hover:bg-gray-50"
-                  }`}
-                >
-                  {brand}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-        {/* separator */}
-        <div className="h-px w-full bg-gray-100 mt-5" />
+          <span className="text-gray-400 text-xs shrink-0 mt-5">—</span>
 
-        {/* Rating filter section */}
-        <div className="mt-5 text-start">
-          <h3 className="text-sm font-semibold text-gray-700 mb-3">
-            {t("rating")}
-          </h3>
-          <div className="flex flex-col gap-1">
+          <div className="flex-1 min-w-0">
+            <label
+              htmlFor="filter-max-price"
+              className="block text-xs text-gray-500 mb-1"
+            >
+              {t("to")}
+            </label>
+            <input
+              id="filter-max-price"
+              type="number"
+              inputMode="numeric"
+              min={0}
+              step="any"
+              value={filters.maxPrice}
+              onChange={(event) =>
+                setFilters((prev) => ({
+                  ...prev,
+                  maxPrice: sanitizeNumber(event.target.value),
+                }))
+              }
+              placeholder={String(Math.ceil(boundMax) || 0)}
+              className="w-full h-10 px-3 rounded-xl border border-gray-200 bg-white text-sm text-gray-800 focus:border-red-400 focus:outline-none focus:ring-2 focus:ring-red-100 [appearance:textfield]"
+            />
+          </div>
+        </div>
+
+        {priceRangeInvalid && (
+          <p role="alert" className="mt-2 text-xs font-medium text-red-600">
+            {t("price_range_error")}
+          </p>
+        )}
+      </div>
+
+      <div className="h-px w-full bg-gray-100 my-5" />
+
+      {/* Brand filter section */}
+      <div className="relative text-start">
+        <h3 className="text-sm font-semibold text-gray-700 mb-3">
+          {t("brand")}
+        </h3>
+        <div className="relative min-w-0">
+          <FiSearch className="absolute top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 start-3" />
+          <input
+            id="filter-brand"
+            type="text"
+            value={brandQuery}
+            placeholder={t("search_brand")}
+            autoComplete="off"
+            onChange={(event) => {
+              setBrandQuery(event.target.value);
+              setFilters((prev) => ({ ...prev, brand: event.target.value }));
+              setShowBrandDropdown(true);
+            }}
+            onFocus={() => setShowBrandDropdown(true)}
+            onBlur={() => setTimeout(() => setShowBrandDropdown(false), 150)}
+            onKeyDown={(event) => {
+              if (event.key === "Enter" && suggestions.length > 0) {
+                event.preventDefault();
+                handleSelectBrand(suggestions[0]);
+              }
+              if (event.key === "Escape") {
+                setShowBrandDropdown(false);
+                event.currentTarget.blur();
+              }
+            }}
+            className="w-full h-10 pe-9 ps-9 rounded-xl border border-gray-200 bg-white focus:border-red-400 focus:outline-none focus:ring-2 focus:ring-red-100 text-sm text-gray-800 placeholder:text-gray-400"
+          />
+          {brandQuery && (
             <button
               type="button"
-              onClick={() => setSelectedRating(null)}
-              className={`w-full text-start px-3 py-2 rounded-lg text-sm transition-colors ${
-                selectedRating === null
+              onClick={handleClearBrand}
+              className="absolute top-1/2 -translate-y-1/2 end-3 text-gray-400 hover:text-gray-600"
+              aria-label={t("clear")}
+            >
+              <IoClose className="w-4 h-4" />
+            </button>
+          )}
+        </div>
+
+        {showBrandDropdown && suggestions.length > 0 && (
+          <div className="absolute z-30 mt-2 w-full min-w-0 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+            {suggestions.map((brand) => (
+              <button
+                key={brand}
+                type="button"
+                onMouseDown={(event) => event.preventDefault()}
+                onClick={() => handleSelectBrand(brand)}
+                className={`w-full text-start px-4 py-2.5 text-sm transition-colors ${
+                  filters.brand === brand
+                    ? "bg-red-50 text-red-600 font-semibold"
+                    : "text-gray-700 hover:bg-gray-50"
+                }`}
+              >
+                {brand}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className="h-px w-full bg-gray-100 my-5" />
+
+      {/* Rating filter section */}
+      <div className="text-start">
+        <h3 className="text-sm font-semibold text-gray-700 mb-3">
+          {t("rating")}
+        </h3>
+
+        <button
+          type="button"
+          onClick={() => setFilters((prev) => ({ ...prev, rating: "" }))}
+          className={`w-full text-start px-3 py-2 rounded-lg text-sm transition-colors ${
+            filters.rating === ""
+              ? "bg-red-50 text-red-600 font-semibold"
+              : "text-gray-600 hover:bg-gray-50"
+          }`}
+        >
+          {t("all_ratings")}
+        </button>
+
+        <div className="mt-2 flex flex-col gap-1">
+          {RATING_OPTIONS.map((value) => (
+            <button
+              key={value}
+              type="button"
+              onClick={() =>
+                setFilters((prev) => ({
+                  ...prev,
+                  rating: String(prev.rating) === String(value) ? "" : String(value),
+                }))
+              }
+              className={`w-full text-start px-3 py-2 rounded-lg flex items-center gap-2 text-sm transition-colors ${
+                String(filters.rating) === String(value)
                   ? "bg-red-50 text-red-600 font-semibold"
                   : "text-gray-600 hover:bg-gray-50"
               }`}
             >
-              x
-            </button>
-            {/* {RATING_OPTIONS.map((value) => (
-              <button
-                key={value}
-                type="button"
-                onClick={() =>
-                  setSelectedRating((prev) => (prev === value ? null : value))
-                }
-                className={`w-full text-start px-3 py-2 rounded-lg flex items-center gap-2 text-sm transition-colors ${
-                  selectedRating === value
-                    ? "bg-red-50 text-red-600 font-semibold"
-                    : "text-gray-600 hover:bg-gray-50"
-                }`}
+              <span
+                className="flex items-center gap-0.5 shrink-0"
+                dir={isRTL ? "rtl" : "ltr"}
               >
-                <span className="flex items-center gap-0.5" dir={isRTL ? "rtl" : "ltr"}>
-                  {Array.from({ length: value }).map((_, index) => (
-                    <FaStar
-                      key={index}
-                      className={`w-4 h-4 ${
-                        selectedRating === value
-                          ? "text-red-500"
-                          : "text-amber-400"
-                      }`}
-                    />
-                  ))}
-                </span>
+                {Array.from({ length: value }).map((_, index) => (
+                  <FaStar
+                    key={index}
+                    className={`w-4 h-4 ${
+                      String(filters.rating) === String(value)
+                        ? "text-red-500"
+                        : "text-amber-400"
+                    }`}
+                  />
+                ))}
+              </span>
+              {value < 5 && (
                 <span className="text-xs text-gray-400">{t("and_up")}</span>
-              </button>
-            ))} */}
-               <div className="flex items-center gap-1" role="radiogroup" aria-label="Rating">
-          {[1, 2, 3, 4, 5].map((value) => (
-            <button
-              key={value}
-              type="button"
-              aria-label={`${value} star${value > 1 ? "s" : ""}`}
-              onClick={() => setSelectedRating(value)}
-              onMouseEnter={() => setHoverRating(value)}
-              onMouseLeave={() => setHoverRating(0)}
-              className="outline-none focus:outline-none"
-            >
-              {value <= hoverRating || value <= selectedRating ? (
-                <FaStar
-                  className="w-5  h-5 transition-colors duration-200 ease-in-out text-[#f5b800]" />
-              ) :
-                (<FaRegStar
-                  key={value}
-                  className="text-gray-300 w-5 h-5 transition-colors duration-200 ease-in-out"
-                />)
-              }
+              )}
             </button>
           ))}
         </div>
-          </div>
-        </div>
-        {/* separator */}
-        <div className="h-px w-full bg-gray-100 mt-5" />
+      </div>
 
-        {/* Apply button */}
+      <div className="h-px w-full bg-gray-100 my-5" />
+
+      {/* Manufacturing year filter section */}
+      <div className="text-start">
+        <h3 className="text-sm font-semibold text-gray-700 mb-3">
+          {t("releaseYear")}
+        </h3>
+        <input
+          id="filter-year"
+          type="number"
+          inputMode="numeric"
+          min={1900}
+          step="1"
+          list="filter-year-options"
+          value={filters.year}
+          onChange={(event) =>
+            setFilters((prev) => ({
+              ...prev,
+              year: sanitizeYear(event.target.value),
+            }))
+          }
+          placeholder={t("select_year")}
+          className="w-full h-10 px-3 rounded-xl border border-gray-200 bg-white text-sm text-gray-800 focus:border-red-400 focus:outline-none focus:ring-2 focus:ring-red-100 [appearance:textfield]"
+        />
+        <datalist id="filter-year-options">
+          {years.map((year) => (
+            <option key={year} value={year} />
+          ))}
+        </datalist>
+      </div>
+
+      {/* Action buttons */}
+      <div className="mt-5 flex flex-col gap-2 min-w-0">
         <button
           type="button"
-          onClick={() =>
-            onFilter({
-              min: Math.round(values.min),
-              max: Math.round(values.max),
-              brand: selectedBrand || null,
-              rating: selectedRating,
-            })
-          }
-          className="mt-5 w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-red-500 hover:bg-red-600 active:bg-red-700 text-white text-sm font-semibold transition-colors shadow-sm"
+          onClick={handleApply}
+          disabled={priceRangeInvalid}
+          className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-red-500 hover:bg-red-600 active:bg-red-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white text-sm font-semibold transition-colors shadow-sm"
         >
           {t("apply_filter")}
           {isRTL ? (
@@ -435,20 +402,30 @@ export default function Filter({
             <FaArrowRightLong className="w-4 h-4" />
           )}
         </button>
-    </>
+
+        <button
+          type="button"
+          onClick={handleReset}
+          className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white border border-gray-200 hover:border-red-400 hover:text-red-600 text-gray-700 text-sm font-semibold transition-colors"
+        >
+          <IoClose className="w-4 h-4" />
+          {t("clear_filters")}
+        </button>
+      </div>
+    </div>
   );
 
   return (
     <>
       {/* Desktop / tablet: existing sidebar */}
-      <aside className="hidden md:block w-full md:w-[400px] min-h-screen shrink-0">
-        <div className="bg-white h-full rounded-3xl shadow-md border border-gray-100 p-5">
+      <aside className="hidden md:block w-full md:w-[400px] shrink-0">
+        <div className="bg-white rounded-3xl shadow-md border border-gray-100 p-5 min-w-0">
           {desktopHeader}
           {filterSections}
         </div>
       </aside>
 
-      {/* XS / Mobile: filters as a left side drawer */}
+      {/* XS / Mobile: filters as a side drawer */}
       <div
         className={`fixed inset-0 z-[60] md:hidden ${
           drawerOpen ? "" : "pointer-events-none"
@@ -466,29 +443,28 @@ export default function Filter({
         <aside
           role="dialog"
           aria-modal="true"
-          className={`absolute left-0 top-0 h-full w-[60%] max-w-[380px] bg-white shadow-2xl flex flex-col transform transition-transform duration-300 ease-in-out will-change-transform ${
-            drawerOpen ? "translate-x-0" : "-translate-x-full"
+          className={`absolute start-0 top-0 h-full w-[85%] max-w-[360px] bg-white shadow-2xl flex flex-col overflow-hidden transform transition-transform duration-300 ease-in-out will-change-transform ${
+            drawerOpen ? "translate-x-0" : isRTL ? "translate-x-full" : "-translate-x-full"
           }`}
         >
           {/* Header */}
-          <div className="flex items-center justify-between h-14 shrink-0 px-4 border-b border-gray-100">
-            <span className="flex items-center gap-2 text-base font-bold text-gray-800">
-              <MdFilterAlt className="w-5 h-5 text-red-600" />
-              {t("filters")}
+          <div className="flex items-center justify-between gap-2 h-14 shrink-0 px-4 border-b border-gray-100">
+            <span className="flex items-center gap-2 text-base font-bold text-gray-800 min-w-0">
+              <MdFilterAlt className="w-5 h-5 text-red-600 shrink-0" />
+              <span className="truncate">{t("filters")}</span>
             </span>
             <button
               type="button"
               onClick={onDrawerClose}
-              className="flex items-center gap-1 px-2 py-1 rounded-lg text-sm text-gray-500 hover:bg-gray-50 hover:text-red-600 transition-colors"
+              className="flex items-center gap-1 px-2 py-1 rounded-lg text-sm text-gray-500 hover:bg-gray-50 hover:text-red-600 transition-colors shrink-0"
             >
               <IoClose className="w-5 h-5" />
               {t("close")}
             </button>
           </div>
-          {/* Horizontal separator under the header */}
           <div className="h-px w-full bg-gray-100 shrink-0" />
           {/* Scrollable filter content */}
-          <div className="flex-1 overflow-y-auto p-4">
+          <div className="flex-1 overflow-y-auto overflow-x-hidden p-4">
             {filterSections}
           </div>
         </aside>

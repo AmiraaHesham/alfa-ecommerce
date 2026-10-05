@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useLanguage } from "../../../context/LanguageContext";
 import { getThumbnailUrl } from "../../../utils/functions";
 import { MdClose } from "react-icons/md";
+import { useState } from "react";
 
 export default function CartDrawer({
   isOpen = false,
@@ -11,14 +12,16 @@ export default function CartDrawer({
   items = [],
   netTotal = 0,
   itemNum = 0,
-  shippingCost=0,
+  shippingCost = 0,
   onRemove,
+  onQuantityChange,
   freeShippingThreshold = null,
   viewCartHref = "/user/cart",
   checkoutHref = "/user/cart",
 }) {
   const { t, locale } = useLanguage();
   const navigate = useRouter();
+  const [pendingLineId, setPendingLineId] = useState(null);
 
   const userId =
     typeof window !== "undefined" ? localStorage.getItem("id") : null;
@@ -54,6 +57,18 @@ export default function CartDrawer({
       Math.round((netTotal / freeShippingThresholdNum) * 100),
     )
     : 0;
+
+  const handleQuantityChange = async (item, product, newQuantity) => {
+    if (!onQuantityChange) return;
+    if (newQuantity < 1 || newQuantity === item.quantity) return;
+    const lineId = item.itemLineId ?? null;
+    setPendingLineId(lineId);
+    try {
+      await onQuantityChange(item.itemLineId, product?.itemId, newQuantity);
+    } finally {
+      setPendingLineId(null);
+    }
+  };
 
   return (
     <div className={` ${isOpen ? "fixed inset-0 z-[70]" : "hidden pointer-events-none"
@@ -106,6 +121,9 @@ export default function CartDrawer({
                   ? product.unitPrice
                   : product?.price;
                 const thumb = getThumb(product);
+                const lineId = item.itemLineId ?? null;
+                const isPending = pendingLineId !== null && pendingLineId === lineId;
+                const canDecrease = Number(item.quantity) > 1;
 
                 return (
                   <li key={index} className="flex gap-3 p-4">
@@ -142,10 +160,39 @@ export default function CartDrawer({
                         </button>
                       </div>
 
-                      <div className="mt-auto flex items-center justify-between pt-2">
-                        <span className="text-xs text-gray-500">
-                          {t("quantity")}: {item.quantity}
-                        </span>
+                      <div className="mt-auto flex items-center justify-between gap-2 pt-2">
+                        <div className="inline-flex items-center gap-1 rounded-full border border-gray-200 bg-white px-1.5 py-1 text-gray-700">
+                          <button
+                            type="button"
+                            disabled={!canDecrease || isPending}
+                            aria-label={`${t("quantity")} −`}
+                            onClick={() =>
+                              handleQuantityChange(item, product, Number(item.quantity) - 1)
+                            }
+                            className="flex h-6 w-6 items-center justify-center rounded-full text-base leading-none font-bold text-gray-500 transition-colors hover:bg-gray-100 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-gray-500"
+                          >
+                            −
+                          </button>
+
+                          <span
+                            className={`min-w-6 text-center text-sm font-medium ${isPending ? "text-gray-400" : "text-gray-900"
+                              }`}
+                          >
+                            {item.quantity}
+                          </span>
+
+                          <button
+                            type="button"
+                            disabled={isPending}
+                            aria-label={`${t("quantity")} +`}
+                            onClick={() =>
+                              handleQuantityChange(item, product, Number(item.quantity) + 1)
+                            }
+                            className="flex h-6 w-6 items-center justify-center rounded-full text-base leading-none font-bold text-gray-500 transition-colors hover:bg-gray-100 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-gray-500"
+                          >
+                            +
+                          </button>
+                        </div>
                         <span className="text-sm font-semibold text-[#CD4354]">
                           {formatPrice(price)} {t("currency")}
                         </span>

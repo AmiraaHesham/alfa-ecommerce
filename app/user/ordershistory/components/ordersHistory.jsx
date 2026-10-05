@@ -258,7 +258,7 @@ export default function OrdersHistory() {
                           onClick={() => {
                             setSelectedProductId(itemLine.item.itemId);
                             navigate.push(
-                              `/user/productdetails/${itemLine.item.itemId}`
+                              `/user/productdetails/${itemLine.item.nameEn}/${itemLine.item.itemId}`
                             );
                           }}
                         >
