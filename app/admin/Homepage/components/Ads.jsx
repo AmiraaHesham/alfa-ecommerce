@@ -110,7 +110,7 @@ export default function Ads() {
               setOfferId(ads.ad1.id)
             }}
           >
-            {ads.ad1 ? <div className="w-full h-full relative">
+            {ads.ad1.img ? <div className="w-full h-full relative">
               <Image
                 src={process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL + ads.ad1.img}
                 alt=""
@@ -158,7 +158,7 @@ export default function Ads() {
               setOfferId(ads.ad2.id)
             }}
           >
-            {ads.ad2 ? <div className="w-full h-full relative">
+            {ads.ad2.img ? <div className="w-full h-full relative">
               <Image
                 src={process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL + ads.ad2.img}
                 alt=""
@@ -206,7 +206,7 @@ export default function Ads() {
 
             }}>
             {
-              ads.ad3 ? <div className="w-full h-full relative">
+              ads.ad3.img ? <div className="w-full h-full relative">
                 <Image
                   src={process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL + ads.ad3.img}
                   alt=""
@@ -255,7 +255,7 @@ export default function Ads() {
 
             }}>
             {
-              ads.ad4 ? <div className="w-full h-full relative">
+              ads.ad4.img? <div className="w-full h-full relative">
                 <Image
                   src={process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL + ads.ad4.img}
                   alt=""
@@ -305,7 +305,7 @@ export default function Ads() {
 
             }}>
             {
-              ads.ad5 ? <div className="w-full h-full relative">
+              ads.ad5.img ? <div className="w-full h-full relative">
                 <Image
                   src={process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL + ads.ad5.img}
                   alt=""

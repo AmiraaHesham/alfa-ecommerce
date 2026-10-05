@@ -177,7 +177,7 @@ export default function ProductAds() {
                     </button>
                   </div>
                 </div>
-                <div className="p-3">
+                <div className="p-3 mt-2">
                   <h1 className="text-sm font-semibold line-clamp-1">
                     {ad.product
                       ? locale === "ar"
@@ -186,12 +186,7 @@ export default function ProductAds() {
                       : ad.title || `#${ad.itemId}`}
                   </h1>
                   <div className="flex items-center justify-between mt-1">
-                    <span className="font-bold text-sm text-red-600">
-                      {ad.product?.price
-                        ? `${ad.product.price.toLocaleString("en-US")} ${t("currency")}`
-                        : ""}
-                    </span>
-                    <span className="text-xs text-gray-400">{ad.number}</span>
+                   
                   </div>
                 </div>
               </div>

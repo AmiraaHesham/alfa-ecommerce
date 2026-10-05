@@ -253,7 +253,7 @@ const normalizePage = (payload, fallbackSize) => {
   };
 
   return (
-    <div className="mb-20 flex flex-col md:flex-row w-full min-h-screen gap-5 p-5 md:p-0">
+    <div className="mb-20 flex flex-col md:flex-row w-full min-h-screen gap-5 p-0">
       <Filter
         priceBounds={priceBounds}
         brands={brands}
@@ -268,7 +268,7 @@ const normalizePage = (payload, fallbackSize) => {
 
         <div
           ref={resultsRef}
-          className={`p-5 w-full scroll-mt-4`}
+          className={`p-2 w-full scroll-mt-4`}
         >
           <span className="text-xl font-bold ">{t("Search_results")}: "{searchInput}" </span>
           <div className="w-full flex justify-between items-center">
