@@ -9,6 +9,7 @@ import { useLanguage } from "../../context/LanguageContext";
 import Link from "next/link";
 import { FaEye } from "react-icons/fa";
 import { toast } from "react-toastify";
+import { reportApiFailure } from "../../utils/connectivityStore";
 
 export default function SignIn({ popUp, setShowSignUp, setShowSignIn,setOpenForm }) {
   const navigate = useRouter();
@@ -63,7 +64,9 @@ export default function SignIn({ popUp, setShowSignUp, setShowSignIn,setOpenForm
       }
       setLocale(response.data.userDetails.language);
     } catch (error) {
-      toast.error(error.response.data.error.message);
+      reportApiFailure(error);
+      const message = error?.response?.data?.error?.message;
+      if (message) toast.error(message);
     } finally {
       setLoading(false);
     }

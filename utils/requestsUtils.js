@@ -1,6 +1,12 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
+import { reportApiFailure } from "./connectivityStore";
+
+const showRequestError = (error) => {
+  const message = error?.response?.data?.error?.message;
+  if (message) toast.error(message);
+};
 
 // const redirectToLogin = () => {
 //   if (typeof window !== "undefined") {
@@ -72,7 +78,7 @@ export const postRequest = async (endpoint, dataBody, message ,toster) => {
 
     }
   } catch (error) {
-
+    reportApiFailure(error);
 
     // 🔥 refresh token handling
     if (error.response?.status === 403) {
@@ -101,7 +107,7 @@ export const postRequest = async (endpoint, dataBody, message ,toster) => {
 
           return retryResponse.data;
         } catch (error) {
-          toast.error(error.response.data.error.message)
+          showRequestError(error)
 
         }
       } catch (refreshError) {
@@ -113,7 +119,7 @@ export const postRequest = async (endpoint, dataBody, message ,toster) => {
     }
     else {
       // toast.error(error.data.message);
-      toast.error(error.response.data.error.message)
+      showRequestError(error)
     }
 
     throw error;
@@ -142,6 +148,7 @@ export const getRequest = async (endpoint) => {
     const response = await request(token);
     return response.data;
   } catch (error) {
+    reportApiFailure(error);
     // 🔥 refresh token handling
     if (error.response?.status === 403) {
       const refreshToken = localStorage.getItem('refreshToken')
@@ -169,7 +176,7 @@ export const getRequest = async (endpoint) => {
 
           return retryResponse.data;
         } catch (error) {
-          toast.error(error.response.data.error.message)
+          showRequestError(error)
 
 
 
@@ -229,9 +236,10 @@ export const putRequest = async (endpoint, dataBody, message) => {
       return response.data;
     }
   } catch (error) {
-    // 🔥 refresh token handling
+    reportApiFailure(error);
 
-    if (error.response.status === 403) {
+    // 🔥 refresh token handling
+    if (error.response?.status === 403) {
       const refreshToken = localStorage.getItem('refreshToken')
 
       try {
@@ -257,7 +265,7 @@ export const putRequest = async (endpoint, dataBody, message) => {
 
           return retryResponse.data;
         } catch (error) {
-          toast.error(error.response.data.error.message)
+          showRequestError(error)
 
         }
 
@@ -269,7 +277,7 @@ if (refreshError.response?.status === 500) {
           }      }
 
     } else {
-      toast.error(error.response.data.error.message)
+      showRequestError(error)
     }
 
     throw error;
@@ -319,9 +327,10 @@ export const deleteRequest = async (endpoint, message) => {
       return response.data;
     }
   } catch (error) {
+    reportApiFailure(error);
     const refreshToken = localStorage.getItem('refreshToken')
     // 🔥 refresh token handling
-    if (error.response.status === 403) {
+    if (error.response?.status === 403) {
 
 
       try {
@@ -347,7 +356,7 @@ export const deleteRequest = async (endpoint, message) => {
 
           return retryResponse.data;
         } catch (error) {
-          toast.error(error.response.data.error.message)
+          showRequestError(error)
 
         }
 
@@ -359,7 +368,7 @@ if (refreshError.response?.status === 500) {
     }
     else {
       // toast.error(error.data.message);
-      toast.error(error.response.data.error.message)
+      showRequestError(error)
     }
     throw error;
   }

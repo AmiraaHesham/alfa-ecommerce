@@ -36,7 +36,7 @@ export default function YouMightLike({categoryId}) {
         getProductsByCategory()
       },[getProductsByCategory])
 return(
-      <div className=" bg-[#f6f5f8] p-5">
+      <div className=" bg-[#f6f5f8] py-10">
         <h1 className="md:text-2xl xs:text-lg flex items-center gap-3 font-bold">
           {t("You_might_like")}
         </h1>
@@ -45,8 +45,7 @@ return(
           <Swiper
             key={locale}
             slidesPerView={"auto"}
-            slidesOffsetBefore={16}
-            slidesOffsetAfter={16}
+           
             modules={[Navigation, Autoplay]}
             navigation={{
               nextEl: ".next-btn1",
@@ -60,7 +59,7 @@ return(
               return (
                 <SwiperSlide
                   key={product.itemId}
-                  className=" my-10 !w-[220px] rounded-lg select-none"
+                  className=" my-5 !w-[220px] rounded-lg select-none"
                 >
                   <div className="rounded-lg  flex justify-center  cursor-pointer">
                     <ProductCard productInfo={product} favorite={false} />

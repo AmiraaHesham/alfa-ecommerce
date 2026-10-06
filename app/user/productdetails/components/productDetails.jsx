@@ -193,7 +193,7 @@ export default function ProductDetails({ itemId }) {
 
         </div>
 
-        <div className=" h-[350px] xs:col-span-4 xl:col-span-1 border w-full rounded-3xl px-3 py-8" >
+        <div className="xs:mt-10 md:mt-0 h-[350px] xs:col-span-4 xl:col-span-1 border w-full rounded-3xl px-3 py-8" >
           <h1 className="text-xl mb-5 px-3 font-semibold">{t("shipping") + " & " + t("delivery")}</h1>
           <div className="flex justify-between items-center w-full">
             <div className="w-full">

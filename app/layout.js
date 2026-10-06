@@ -9,6 +9,7 @@ import { NamePageInAdminProvider } from "../context/namePageInAdmin";
 import { CartDrawerOpenProvider } from "../context/CartDrawerOpenContext";
 import { ToastContainer } from "react-toastify";
 import RTLController from './components/RTLController.jsx'
+import GlobalErrorOverlay from './components/GlobalErrorOverlay.jsx'
 
 export const metadata = {
   title: "alfagrouptech.com",
@@ -72,6 +73,7 @@ export default function RootLayout({ children }) {
           position={"bottom-center"} />
 
         <LanguageProvider>
+          <GlobalErrorOverlay />
           <RTLController>
             <IdProvider>
 

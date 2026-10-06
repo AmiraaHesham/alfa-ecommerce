@@ -380,7 +380,12 @@
     "flash":"Flash",
   "ram":"Ram",
   "contents":"محتوايات العلبة",
-  "releaseYear":"سنة الإصدار"
+  "releaseYear":"سنة الإصدار",
+  "no_internet_title": "لا يوجد اتصال بالإنترنت",
+  "no_internet_desc": "تحقق من اتصالك بالإنترنت ثم حاول مرة أخرى",
+  "server_unavailable_title": "الخادم غير متاح حاليًا",
+  "server_unavailable_desc": "نواجه مشكلة مؤقتة في الاتصال بالخادم، يرجى المحاولة مرة أخرى",
+  "retry": "إعادة المحاولة"
 
   
 

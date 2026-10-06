@@ -8,7 +8,7 @@ export default function Specification({ product }) {
     return (
         <div className="w-full ">
             <h1 className="text-2xl font-semibold mb-3">{t("specification")} </h1>
-            <div className="bg-[#f6f5f8] w-full h-[350px] rounded-3xl p-7">
+            <div className="bg-[#f6f5f8] w-full h-auto rounded-3xl p-7">
                 <div className="flex flex-col gap-5">
                     <h1 className="text-xl font-semibold flex items-center justify-start gap-3"><IoMdInformationCircleOutline className="text-2xl text-[#E14A5C]" />
                         {t("Overview")}</h1>
@@ -26,8 +26,8 @@ export default function Specification({ product }) {
                         </div>
                     </div>
                     <hr className="w-full h-[2px]  bg-gray-400 opacity-60"></hr>
-                    <h1 className="text-xl font-semibold flex items-center justify-start gap-3"><RiRuler2Line className="text-2xl text-[#E14A5C]" />
-                        {t("General")}</h1>
+                  {product.content || product.flash || product.ram || product.releaseYear ? <h1 className="text-xl font-semibold flex items-center justify-start gap-3"><RiRuler2Line className="text-2xl text-[#E14A5C]" />
+                        {t("General")}</h1> :""} 
                     <div className="w-full flex flex-col gap-5 text-lg items-start">
                           {product.content ? <div className="w-full flex justify-normal items-baseline">
                             <span className="w-full text-sm text-gray-600">content</span>

@@ -112,7 +112,7 @@ export default function ProductInfo({ product, itemId }) {
     return (
         <div className="w-full h-full flex-col justify-center items-center">
             <div className="flex  flex-col w-full h-auto  justify-between gap-5 bg-white  px-5  rounded-3xl">
-                <div className={`w-full flex items-center justify-between  py-2 px-5 rounded-full text-white ${locale === "ar" ? "bg-gradient-to-l" : "bg-gradient-to-r"}  from-[#da643b] via-orange-400 to-[#f6b30f]`}>
+                <div className={`w-full flex items-center justify-between xs:mt-10 md:mt-0  py-2 px-5 rounded-full text-white ${locale === "ar" ? "bg-gradient-to-l" : "bg-gradient-to-r"}  from-[#da643b] via-orange-400 to-[#f6b30f]`}>
                     <span >{t("Fast_delivery")} </span>
                     <FaShippingFast className="w-8 h-8 text-[#d91c10]" />
 
