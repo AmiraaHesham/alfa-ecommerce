@@ -50,7 +50,6 @@ export default function Cart({ setShowSignUp }) {
 
         const res = await getRequest("/api/shopCarts");
         const rseData = res.data;
-        console.log(rseData)
         setItems(rseData.itemLines);
         setItemNum(rseData.itemLines.length);
         setSummery((prev) => ({

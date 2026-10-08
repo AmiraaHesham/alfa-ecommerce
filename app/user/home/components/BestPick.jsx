@@ -58,7 +58,7 @@ export default function BestPick({ Products }) {
           {Products?.slice(0, 4).map((product, index) => {
             const nameProduct = locale === "ar" ? product.nameAr : product.nameEn
             return (
-              <SwiperSlide key={index} className=" px-5">
+              <SwiperSlide key={index} className="">
                 <div
                   className="flex items-center cursor-pointer gap-1 select-none w-full"
                   onClick={() => {

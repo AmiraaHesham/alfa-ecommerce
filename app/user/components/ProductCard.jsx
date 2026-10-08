@@ -7,14 +7,12 @@ import { useLanguage } from "../../../context/LanguageContext";
 import { useRouter } from "next/navigation";
 import { useRefresh } from "../../../context/refreshContext";
 import { toast } from "react-toastify";
-import Swal from "sweetalert2";
 import { useState } from "react";
 import { getThumbnailUrl } from "../../../utils/functions";
-import { IoMdCart, IoMdHeart, IoMdHeartEmpty } from "react-icons/io";
+import {  IoMdHeart } from "react-icons/io";
 import StarRating from "./StarRating"
 import { useCartDrawerOpen } from "../../../context/CartDrawerOpenContext";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";

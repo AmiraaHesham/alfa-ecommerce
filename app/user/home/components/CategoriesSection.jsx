@@ -39,7 +39,7 @@ export default function CategorySection({ categories }) {
           </div>
         
         </div>
-      <div className="w-full grid grid-cols-4 xl:grid-cols-4 gap-2">
+      <div className="w-full grid grid-cols-3 xl:grid-cols-3 gap-2">
 
           {categories.map((category ,index) => (
           

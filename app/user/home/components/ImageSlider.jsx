@@ -40,13 +40,13 @@ export default function ImageSlider({ sliderImages }) {
               className="relative w-full h-full block cursor-pointer"
             >
               <Image
-                src={process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL + getThumbnailUrl(img.imageUrl) }
+                src={process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL + img.imageUrl} 
                 alt={`Slide ${index + 1}`}
                 fill
                 priority
-                quality={100}
+                
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                className="object-fill rounded-3xl"
+                className="object-cover rounded-3xl"
               />
             </button>
           </SwiperSlide>
