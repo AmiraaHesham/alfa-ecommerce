@@ -66,7 +66,7 @@ export default function UsersPage() {
   return (
     <div>
       <div className="w-full h-full bg-white mt-3 rounded-lg border flex md:flex-row xs:flex-col gap-5  items-start  p-3 ">
-        <div className="flex items-center justify-between border px-1 rounded-md w-[300px] bg-gray-100">
+        <div className="flex items-center justify-between border px-1 rounded-md  bg-gray-100">
           <input
             ref={searchInput}
             onKeyDown={(e) => {
@@ -180,7 +180,7 @@ export default function UsersPage() {
         </div>
       <div className="hidden lg:block h-[520px]  mt-3 w-full  overflow-y-scroll">
 
-        <table className="h-full w-full border  ">
+        <table className="h-auto w-full border  ">
           <thead className="bg-[#f0eff0] text-xs   text-justify sticky top-0  z-10">
             <tr className="  h-12  ">
               {/* <th className="w-[5%]"></th> */}
