@@ -61,7 +61,7 @@ export default function AdminsTable({ setIsFormOpen }) {
     <div className="w-full h-full ">
      
       <div className="w-full  bg-white mt-3 rounded-lg border flex flex-row  gap-5 justify-between  items-start  p-4 ">
-        <div className="flex items-center justify-between border px-1 rounded-md w-[300px] bg-gray-100">
+        <div className="flex items-center justify-between border px-1 rounded-md  bg-gray-100">
           <input
             ref={searchInput}
             onKeyDown={(e) => {

@@ -35,12 +35,14 @@ export default function AdminForm({ isFormOpen, setIsFormOpen }) {
           username: adminUser.username,
           password: adminUser.password,
           repeatPassword: adminUser.confirmPassword,
+           role: "ADMIN",
         },
         t("message"),
       );
       triggerRefresh();
       setSelectedAdminId(null);
     } catch (error) {
+      console.error("Error adding admin user:", error);
     } finally {
       setLoading(false);
     }
@@ -51,7 +53,7 @@ export default function AdminForm({ isFormOpen, setIsFormOpen }) {
       if (selectedAdminId !== null) {
         setLoading(true);
 
-        const res = await getRequest(`/api/users/${selectedAdminId}`);
+        const res = await getRequest(`/api/admin/users/${selectedAdminId}`);
         const resData = res.data;
         setAdminUser((prev) => ({
           ...prev,
@@ -69,6 +71,7 @@ export default function AdminForm({ isFormOpen, setIsFormOpen }) {
         });
       }
     } catch (error) {
+      console.error("Error fetching admin data:", error);
     } finally {
       setLoading(false);
     }
