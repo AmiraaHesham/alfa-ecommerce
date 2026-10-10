@@ -60,7 +60,7 @@ export default function AdminsTable({ setIsFormOpen }) {
   return (
     <div className="w-full h-full ">
      
-      <div className="w-full  bg-white mt-3 rounded-lg border flex flex-row  gap-5 justify-between  items-start  p-4 ">
+      <div className="w-full  bg-white mt-3 rounded-lg border flex lg:flex-row  xs:flex-col gap-5 justify-between  items-start  p-4 ">
         <div className="flex items-center justify-between border px-1 rounded-md  bg-gray-100">
           <input
             ref={searchInput}
@@ -98,7 +98,7 @@ export default function AdminsTable({ setIsFormOpen }) {
       </div>
     
         {/* XS mobile card layout */}
-        <div className="lg:hidden rounded-xl w-full h-auto max-h-[520px]  border  mt-3 overflow-y-auto">
+        <div className="lg:hidden rounded-xl w-full h-[600px]   border  mt-3 overflow-y-auto">
           {loading
             ? // Skeleton cards
             [...Array(6)].map((_, index) => (

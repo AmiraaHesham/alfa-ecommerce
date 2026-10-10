@@ -101,7 +101,7 @@ export default function UsersPage() {
         </div> */}
       </div>
         {/* XS mobile card layout */}
-        <div className="lg:hidden rounded-xl w-full h-[520px]   border  mt-3 overflow-hidden overflow-x-scroll overflow-y-scroll ">
+        <div className="lg:hidden rounded-xl w-full h-[600px]    border  mt-3 overflow-hidden overflow-x-scroll overflow-y-scroll ">
           {users.map((user, index) => {
             const date = new Date(user.registrationDate);
             const dateOnly = date.toLocaleDateString("en-GB");

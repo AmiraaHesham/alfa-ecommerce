@@ -155,7 +155,7 @@ return(
          </div>
 {/* <div className="  "> */}
            {/* XS mobile card layout */}
-           <div className="lg:hidden mt-5">
+           <div className="lg:hidden h-[600px]  mt-5">
              {loading
                ? // Skeleton cards
                  [...Array(6)].map((_, index) => (
