@@ -10,6 +10,7 @@ export default function ProductsByCategoryPopup({
   setPopupShow,
 }) {
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
 
   return (
     <div
@@ -30,10 +31,12 @@ export default function ProductsByCategoryPopup({
           <div className=" bg-white rounded-md ">
             <FormProduct
               isFormOpen={isFormOpen}
+              isEditMode={isEditMode}
               setIsFormOpen={setIsFormOpen}
             />
             <ProductsByCategory
               category={categoryId}
+              setIsEditMode={setIsEditMode}
               setIsFormOpen={setIsFormOpen}
             />
           </div>

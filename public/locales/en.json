@@ -384,7 +384,8 @@
   "no_internet_desc": "Check your internet connection and try again.",
   "server_unavailable_title": "Server is temporarily unavailable",
   "server_unavailable_desc": "We are facing a temporary issue. Please try again.",
-  "retry": "Try Again"
+  "retry": "Try Again",
+  "changeShippingCost":"Change Shipping Cost"
 
 
 

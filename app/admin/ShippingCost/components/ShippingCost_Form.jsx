@@ -5,7 +5,7 @@ import { putRequest } from "../../../../utils/requestsUtils";
 import { useState } from "react";
 import { useRefresh } from "../../../../context/refreshContext";
 
-export default function ShippingCostForm({ govName, govId, setShowForm }) {
+export default function ShippingCostForm({ govName, govId, govPrice, setShowForm }) {
   const [shippingCost, setShippingCost] = useState(0);
   const { triggerRefresh } = useRefresh();
 
@@ -38,11 +38,11 @@ export default function ShippingCostForm({ govName, govId, setShowForm }) {
         <div className="w-full flex flex-col h-full justify-center gap-10 p-10 items-center ">
           <div className="w-full flex justify-center items-baseline">
             {/* <label htmlFor="governorate" className="text-sm font-semibold ">{t("governorate")}</label> */}
-            <h1 className="text-3xl font-bold"> {govName}</h1>
+            <h1 className="text-3xl font-bold"> {govName} - {govPrice} {t("currency")}</h1>
           </div>
           <div className="w-full flex justify-between items-center">
             <label htmlFor="shippingCost" className="font-semibold mr-2 text-">
-              {t("shippingcost")}:
+              {t("changeShippingCost")}:
             </label>
             <input
               id="shippingCost"

@@ -162,7 +162,7 @@ export default function Homepage() {
   };
 
   const formatAdImageUrl = (imageUrl) =>
-    IMAGE_BASE_URL + getThumbnailUrl(imageUrl);
+    IMAGE_BASE_URL + imageUrl;
 
   // ==============================
   // API / data fetching logic

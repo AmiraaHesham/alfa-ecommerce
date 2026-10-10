@@ -34,7 +34,7 @@ export default function SiteFeatures() {
                     <div className="h-full sm:w-full xs:w-5/6 flex   gap-1 justify-center items-center">
                         <span className="text-3xl p-1">
 
-                            <LiaCertificateSolid className="w-full h-full text-[#7354ef] " />
+                            <LiaCertificateSolid className="w-full h-full text-[#e14a5c] " />
                         </span>
                         <h1 className=" w-3/4 text-sm ">{t("High_Quality")}</h1>
                     </div>
@@ -43,7 +43,7 @@ export default function SiteFeatures() {
                 <SwiperSlide className="!w-full md:!w-[280px]   text-center">
                     <div className="h-full sm:w-full xs:w-5/6 flex  gap-1 justify-center items-center">
                         <span className="text-3xl p-1">
-                            <FaShippingFast className="w-full h-full  text-[#7354ef] " />
+                            <FaShippingFast className="w-full h-full  text-[#e14a5c] " />
                         </span>
                         <h1 className="sm:w-full xs:w-1/2 text-sm">{t("Fast_Delivery")}</h1>
                     </div>
@@ -54,7 +54,7 @@ export default function SiteFeatures() {
                     <div className="h-full  sm:w-full xs:w-5/6 flex   gap-1 justify-center items-center">
                         <span className="text-3xl p-1">
 
-                            <RiLoopRightFill className="w-full h-full  text-[#7354ef] " />
+                            <RiLoopRightFill className="w-full h-full  text-[#e14a5c] " />
                         </span>
                         <h1 className="sm:w-full xs:w-1/2 text-sm ">{t("Easy_Returns")}</h1>
                     </div>
@@ -64,7 +64,7 @@ export default function SiteFeatures() {
                     <div className="h-full  flex  sm:w-full xs:w-5/6 gap-1 justify-center items-center">
                         <span className="text-3xl p-1">
 
-                            <LuShieldCheck className="w-full h-full  text-[#7354ef]  " />
+                            <LuShieldCheck className="w-full h-full  text-[#e14a5c]  " />
                         </span>
                         <h1 className="sm:w-full xs:w-1/2 text-sm ">{t("Original_Products")}</h1>
                     </div>
@@ -74,7 +74,7 @@ export default function SiteFeatures() {
                     <div className="h-full  flex sm:w-full xs:w-5/6 justify-center gap-1 items-center">
                         <span className="text-3xl p-1 ">
 
-                            <IoMdPricetags className="w-full h-full text-[#7354ef] " />
+                            <IoMdPricetags className="w-full h-full text-[#e14a5c] " />
                         </span>
                         <h1 className="sm:w-full xs:w-1/2 text-sm">{t("Best_Prices")}</h1>
 

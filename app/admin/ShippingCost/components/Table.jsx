@@ -8,6 +8,7 @@ import { useRefresh } from "../../../../context/refreshContext";
 export default function Table({
   setGovernorate,
   setGovernorateId,
+  setGovernoratePrice,
   setShowForm,
 }) {
   const { t } = useLanguage();
@@ -62,6 +63,7 @@ export default function Table({
                     onClick={() => {
                       setGovernorate(locale === "ar" ? gov.governorate.nameAr : gov.governorate.nameEn);
                       setGovernorateId(gov.shippingRateId);
+                      setGovernoratePrice(gov.shippingCost);
                       setShowForm(true);
                     }}
                   >
@@ -118,6 +120,7 @@ export default function Table({
                           onClick={() => {
                             setGovernorate(locale === "ar"? gov.governorate.nameAr : gov.governorate.nameEn);
                             setGovernorateId(gov.shippingRateId);
+                            setGovernoratePrice(gov.shippingCost);
                             setShowForm(true);
                           }}
                         >
