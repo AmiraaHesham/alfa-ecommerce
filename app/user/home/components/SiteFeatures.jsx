@@ -30,7 +30,7 @@ export default function SiteFeatures() {
                 className="w-full h-full">
 
 
-                <SwiperSlide className="!w-full md:!w-[280px]   text-center">
+                <SwiperSlide className="!w-full md:!w-[270px]   text-center">
                     <div className="h-full sm:w-full xs:w-5/6 flex   gap-1 justify-center items-center">
                         <span className="text-3xl p-1">
 
@@ -40,7 +40,7 @@ export default function SiteFeatures() {
                     </div>
                 </SwiperSlide>
 
-                <SwiperSlide className="!w-full md:!w-[280px]   text-center">
+                <SwiperSlide className="!w-full md:!w-[270px]   text-center">
                     <div className="h-full sm:w-full xs:w-5/6 flex  gap-1 justify-center items-center">
                         <span className="text-3xl p-1">
                             <FaShippingFast className="w-full h-full  text-[#e14a5c] " />
@@ -49,7 +49,7 @@ export default function SiteFeatures() {
                     </div>
                 </SwiperSlide>
 
-                <SwiperSlide className="!w-full md:!w-[280px]   text-center">
+                <SwiperSlide className="!w-full md:!w-[270px]   text-center">
 
                     <div className="h-full  sm:w-full xs:w-5/6 flex   gap-1 justify-center items-center">
                         <span className="text-3xl p-1">
@@ -60,7 +60,7 @@ export default function SiteFeatures() {
                     </div>
                 </SwiperSlide>
                 
-                <SwiperSlide className="!w-full md:!w-[280px]   text-center">
+                <SwiperSlide className="!w-full md:!w-[270px]   text-center">
                     <div className="h-full  flex  sm:w-full xs:w-5/6 gap-1 justify-center items-center">
                         <span className="text-3xl p-1">
 
@@ -69,7 +69,7 @@ export default function SiteFeatures() {
                         <h1 className="sm:w-full xs:w-1/2 text-sm ">{t("Original_Products")}</h1>
                     </div>
                 </SwiperSlide>
-<SwiperSlide className="!w-full md:!w-[280px]   text-center">
+<SwiperSlide className="!w-full md:!w-[270px]   text-center">
 
                     <div className="h-full  flex sm:w-full xs:w-5/6 justify-center gap-1 items-center">
                         <span className="text-3xl p-1 ">

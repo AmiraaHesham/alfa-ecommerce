@@ -11,15 +11,46 @@ import { ToastContainer } from "react-toastify";
 import RTLController from './components/RTLController.jsx'
 import GlobalErrorOverlay from './components/GlobalErrorOverlay.jsx'
 
-export const metadata = {
-  title: "alfagrouptech.com",
-  description: "Alfa Group - Shop the latest products and best deals.",
-  keywords: ["Alfa Group", "e-commerce", "online shopping", "products"],
-  icons: {
-    icon: "/favicon.ico",
-  },
-};
+import { cookies } from "next/headers";
 
+export async function generateMetadata  () {
+  const cookieStore =  cookies();
+  const lang = cookieStore.get("lang")?.value || "ar";
+
+  const isArabic = lang === "ar";
+
+  return {
+    title: isArabic
+      ? "ألفا جروب للتقنية"
+      : "Alfa Group Tech",
+
+    description: isArabic
+      ? "ألفا جروب للتقنية هو متجرك الإلكتروني لشراء أحدث الأجهزة والإلكترونيات. اكتشف تشكيلة متنوعة من المنتجات التقنية بأسعار مميزة وعروض تناسب احتياجاتك."
+      : "Alfa Group Tech is your online destination for the latest electronics and technology products. Discover a wide range of products at great prices and find the best deals in one place.",
+
+    keywords: isArabic
+      ? [
+          "ألفا جروب",
+          "ألفا جروب للتقنية",
+          "إلكترونيات",
+          "أجهزة",
+          "تسوق إلكتروني",
+          "منتجات تقنية",
+        ]
+      : [
+          "Alfa Group",
+          "Alfa Group Tech",
+          "electronics",
+          "technology",
+          "online shopping",
+          "electronic products",
+        ],
+
+    icons: {
+      icon: "/favicon.ico",
+    },
+  };
+}
 
 // import { Tajawal } from "next/font/google";
 

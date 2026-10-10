@@ -39,36 +39,26 @@ export async function generateMetadata({ params }) {
       : `${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL}${imageUrl}`
     : null;
 
-  return {
+ return {
+  title: product.nameEn,
+  description: product.descriptionEn,
+
+  openGraph: {
     title: product.nameEn,
     description: product.descriptionEn,
+    url: `https://alfagrouptech.com/user/home/user/productdetails/${product.nameEn}/${id}`,
+    type: "website",
+    images: image ? [{ url: image }] : [],
+  },
 
-    openGraph: {
-      title: product.nameEn,
-      description: product.descriptionEn,
-      type: "website",
-
-      images: image
-        ? [
-            {
-              url: image,
-              width: 1200,
-              height: 630,
-              alt: product.nameEn,
-            },
-          ]
-        : [],
-    },
-
-    twitter: {
-      card: "summary_large_image",
-      title: product.nameEn,
-      description: product.descriptionEn,
-      images: image ? [image] : [],
-    },
-  };
+  twitter: {
+    card: "summary_large_image",
+    title: product.nameEn,
+    description: product.descriptionEn,
+    images: image ? [image] : [],
+  },
+};
 }
-
 export default function ProductDetailsPage({ params }) {
   const { id } = params;
 

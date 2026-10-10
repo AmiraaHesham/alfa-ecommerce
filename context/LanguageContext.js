@@ -1,6 +1,11 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect } from 'react';
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+} from 'react';
 
 const LanguageContext = createContext({
   locale: 'ar',
@@ -11,47 +16,82 @@ const LanguageContext = createContext({
 export const LanguageProvider = ({ children }) => {
   const [locale, setLocale] = useState(null);
   const [messages, setMessages] = useState({});
+  const [isLanguageReady, setIsLanguageReady] = useState(false);
 
-  // قراءة اللغة الأساسية من localStorage
+  // تحديد اللغة من localStorage أو لغة المتصفح
   useEffect(() => {
-    const savedLang = localStorage.getItem('lang');
+    let savedLang = null;
 
-    if (savedLang) {
-      setLocale(savedLang);
-    } else {
-      localStorage.setItem('lang', 'ar');
-      setLocale('ar');
+    try {
+      savedLang = localStorage.getItem('lang');
+    } catch (error) {
+      console.error('Unable to read saved language:', error);
     }
+
+    const browserLang =
+      typeof navigator !== 'undefined'
+        ? navigator.language?.toLowerCase().split('-')[0]
+        : 'ar';
+
+    // اللغات المدعومة فقط
+    const supportedLanguages = ['ar', 'en'];
+
+    const initialLang = supportedLanguages.includes(savedLang)
+      ? savedLang
+      : supportedLanguages.includes(browserLang)
+        ? browserLang
+        : 'ar';
+
+    setLocale(initialLang);
+    setIsLanguageReady(true);
   }, []);
 
   // حفظ اللغة عند تغييرها
   useEffect(() => {
-    if (!locale) return;
+    if (!locale || !isLanguageReady) return;
 
-    localStorage.setItem('lang', locale);
-  }, [locale]);
+    try {
+      localStorage.setItem('lang', locale);
+    } catch (error) {
+      console.error('Unable to save language:', error);
+    }
+  }, [locale, isLanguageReady]);
 
-  // تحميل الترجمة
+  // تحميل ملف الترجمة
   useEffect(() => {
     if (!locale) return;
 
-    fetch(`/locales/${locale}.json`)
-      .then((res) => {
-        if (!res.ok) {
+    let cancelled = false;
+
+    const loadMessages = async () => {
+      try {
+        const response = await fetch(`/locales/${locale}.json`);
+
+        if (!response.ok) {
           throw new Error(`Failed to load locale: ${locale}`);
         }
 
-        return res.json();
-      })
-      .then((data) => {
-        setMessages(data);
-      })
-      .catch((error) => {
-        console.error(error);
-        setMessages({});
-      });
+        const data = await response.json();
+
+        if (!cancelled) {
+          setMessages(data);
+        }
+      } catch (error) {
+        if (!cancelled) {
+          console.error('Translation loading error:', error);
+          setMessages({});
+        }
+      }
+    };
+
+    loadMessages();
+
+    return () => {
+      cancelled = true;
+    };
   }, [locale]);
 
+  // دالة الترجمة
   const t = (key) => {
     if (!key) return '';
 
@@ -64,6 +104,7 @@ export const LanguageProvider = ({ children }) => {
         locale,
         setLocale,
         t,
+        isLanguageReady,
       }}
     >
       {children}
@@ -72,11 +113,5 @@ export const LanguageProvider = ({ children }) => {
 };
 
 export const useLanguage = () => {
-  const context = useContext(LanguageContext);
-
-  if (!context) {
-    throw new Error('useLanguage must be used within LanguageProvider');
-  }
-
-  return context;
+  return useContext(LanguageContext);
 };
