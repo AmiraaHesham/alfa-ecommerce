@@ -14,8 +14,8 @@ export default function ProductPreview({ sliderImages }) {
     ? localStorage.getItem('lang') || 'ar' 
     : 'ar';
   return (
-    <div className="border lg:w-[800px] md:w-[550px]  xs:w-[370px] flex justify-center items-center rounded-xl ">
-      <div className="bg-white h-[350px] rounded-xl  w-full p-3">
+    <div className="border w-full max-w-[800px] flex justify-center items-center rounded-xl ">
+      <div className="bg-white min-h-[350px] h-auto rounded-xl  w-full p-3">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-3">
             <span className="text-red-600">

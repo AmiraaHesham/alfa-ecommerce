@@ -113,7 +113,7 @@ export default function ProductAds() {
         <div className="w-full grid lg:grid-cols-5 md:grid-cols-3 xs:grid-cols-2 gap-4">
           {/* add tile */}
           <div
-            className="bg-white rounded-xl h-[220px] w-full flex flex-col gap-3 p-4 cursor-pointer"
+            className="bg-white rounded-xl min-h-[220px] h-auto w-full flex flex-col gap-3 p-4 cursor-pointer"
             onClick={() => {
               setEditOffer(null);
               setIsFormOpen(true);

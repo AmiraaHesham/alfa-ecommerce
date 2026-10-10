@@ -102,7 +102,7 @@ export default function Ads() {
       <div className="w-full h-full grid md:grid-cols-5 xs:grid-cols-1 gap-5">
         <div className="w-full h-full">
           <h1 className="mb-4 text-xl font-semibold">{t("Advert1")} </h1>
-          <div className="w-[200px] h-[200px] rounded-3xl bg-white p-5 cursor-pointer"
+          <div className="w-full max-w-[200px] h-[200px] rounded-3xl bg-white p-5 cursor-pointer"
             onClick={() => {
               setIsFormOpen(true)
               setAdNumber(1)
@@ -150,7 +150,7 @@ export default function Ads() {
         </div>
         <div className="w-full h-full">
           <h1 className="mb-4 text-xl font-semibold ">{t("Advert2")} </h1>
-          <div className="w-[200px] h-[300px] rounded-3xl bg-white p-5   cursor-pointer"
+          <div className="w-full max-w-[200px] h-[300px] rounded-3xl bg-white p-5   cursor-pointer"
             onClick={() => {
               setIsFormOpen(true)
               setAdNumber(2)
@@ -197,7 +197,7 @@ export default function Ads() {
         
         <div className="w-full h-full">
           <h1 className="mb-4 text-xl font-semibold">{t("Advert3")} </h1>
-          <div className="w-[200px] h-[200px] rounded-3xl bg-white p-5 cursor-pointer"
+          <div className="w-full max-w-[200px] h-[200px] rounded-3xl bg-white p-5 cursor-pointer"
             onClick={() => {
               setIsFormOpen(true)
               setAdNumber(3)
@@ -246,7 +246,7 @@ export default function Ads() {
         </div>
         <div className="w-full h-full">
           <h1 className="mb-4 text-xl font-semibold">{t("Advert4")} </h1>
-          <div className="w-[200px] h-[200px] rounded-3xl bg-white p-5 cursor-pointer"
+          <div className="w-full max-w-[200px] h-[200px] rounded-3xl bg-white p-5 cursor-pointer"
             onClick={() => {
               setIsFormOpen(true)
               setAdNumber(4)
@@ -296,7 +296,7 @@ export default function Ads() {
         </div>
         <div className="w-full h-full">
           <h1 className="mb-4 text-xl font-semibold">{t("Advert5")} </h1>
-          <div className="w-[200px] h-[200px] rounded-3xl bg-white p-5 cursor-pointer"
+          <div className="w-full max-w-[200px] h-[200px] rounded-3xl bg-white p-5 cursor-pointer"
             onClick={() => {
               setIsFormOpen(true)
               setAdNumber(5)

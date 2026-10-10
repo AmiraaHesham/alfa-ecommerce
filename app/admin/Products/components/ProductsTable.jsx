@@ -182,7 +182,7 @@ export default function ProductsTable({ setIsFormOpen, category, setIsEditMode }
         className=" rounded-xl border  "
       > */}
       {/* XS mobile card layout */}
-      <div className="lg:hidden h-[500px]  mt-3 border p-3 rounded-3xl overflow-y-scroll">
+      <div className="lg:hidden h-auto max-h-[500px]  mt-3 border p-3 rounded-3xl overflow-y-auto min-w-0">
         {loading
           ? // Skeleton cards
           [...Array(6)].map((_, index) => (
@@ -336,7 +336,7 @@ export default function ProductsTable({ setIsFormOpen, category, setIsEditMode }
           </button>
         </div>
       </div>
-      <div className="hidden lg:block h-[520px] mt-3 w-full overflow-y-scroll">
+      <div className="hidden lg:block max-h-[520px] min-w-0 mt-3 w-full overflow-x-auto overflow-y-auto">
         <table className="w-full h-auto border rounded-3xl">
           <thead className=" bg-[#ececec] text-xs text-justify sticky top-0  z-10">
             <tr className="  h-12  ">

@@ -12,6 +12,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { getRequest, postRequest, deleteRequest } from "../../../utils/requestsUtils";
 import { useRefresh } from "../../../context/refreshContext";
+import { useMenuOpen } from "../../../context/MenuOpenContext";
 import { FiHeart } from "react-icons/fi";
 import { PiListBold, PiUser } from "react-icons/pi";
 import SignIn_Form from "../../components/SignIn_Form";
@@ -31,6 +32,7 @@ export default function Header() {
   const [itemNum, setItemNum] = useState(0);
   const [cartItems, setCartItems] = useState([]);
   const { isCartOpen, setIsCartOpen } = useCartDrawerOpen();
+  const { toggleMenu } = useMenuOpen();
   const { refreshKey } = useRefresh();
   const [showSignUp, setShowSignUp] = useState(false);
   const [showSignin, setShowSignIn] = useState(false);
@@ -145,8 +147,8 @@ setSearchInput(lastPort)
 
   return (
     <header className="bg-[#0d0625] ">
-      <div className="flex gap-2 items-center text-white p-2 text-xs w-full justify-between">
-        <div className="flex justify-start items-center gap-2">
+      <div className="flex gap-2 flex-wrap gap-y-1 items-center text-white p-2 text-xs w-full justify-between">
+        <div className="flex flex-wrap justify-start items-center gap-2">
           <Link
             href={"/user/about"}
             className="hover:text-gray-100"
@@ -172,7 +174,7 @@ setSearchInput(lastPort)
             {t("orders")}{" "}
           </Link>
         </div>
-        <div className="flex justify-start items-center gap-2">
+        <div className="flex flex-wrap justify-start items-center gap-2">
           <Link
             href={"/user/returnorders"}
             className="hover:text-gray-1000"
@@ -201,12 +203,12 @@ setSearchInput(lastPort)
       <hr
         className="h-px border-0 bg-gray-600"
       />
-      <div className="w-full  flex items-center  p-5  justify-between ">
-        <button className="text-white text-3xl xs:block lg:hidden">
+      <div className="w-full  flex items-center  p-5  justify-between flex-wrap gap-y-3 min-w-0 ">
+        <button onClick={toggleMenu} className="text-white text-3xl xs:block lg:hidden">
           <PiListBold />
 
         </button>
-        <div className="flex justify-center items-center">
+        <div className="flex justify-center items-center min-w-0">
           <Link href="/user/home" className="flex justify-center items-center ">
 
             <span className="relative w-12 h-12 ">
@@ -219,7 +221,7 @@ setSearchInput(lastPort)
                 className="object-fill"
               />
             </span>
-            <div className="cursor-pointer">
+            <div className="cursor-pointer min-w-0">
               <h1 className="text-3xl  text-white font-bold ">
                 {t("alfa_group")}<span className="text-red-600">.</span>
               </h1>
@@ -229,7 +231,7 @@ setSearchInput(lastPort)
         </div>
 
         <div
-          className="lg:flex xs:hidden items-center bg-white justify-start border-2 w-[50%] bg-none h-10  rounded-full"
+          className="lg:flex xs:hidden items-center bg-white justify-start border-2 w-[50%] max-w-[560px] min-w-0 bg-none h-10  rounded-full"
 
         >
           <button
@@ -275,13 +277,13 @@ setSearchInput(lastPort)
             >
               <MdLanguage className="w-7 h-7 text-white" />
             </button>
-            <button
-              
-              className=" items-center justify-center gap-2 xs:hidden lg:flex"
+            <div
+               onClick={() => setIsCartOpen(true)}
+              className=" items-center justify-center gap-2 xs:hidden lg:flex cursor-pointer"
             >
                <span className="relative">
                <MdOutlineShoppingCart className="w-9 h-9"
-                  onClick={() => setIsCartOpen(true)} />
+                  />
                {/* {itemNum > 0 && (
                  <span className="absolute -top-1 -right-2 min-w-[16px] h-4 px-1 rounded-full bg-red-600 text-white text-[10px] font-semibold flex items-center justify-center leading-none">
                    {itemNum > 99 ? "99+" : itemNum}
@@ -299,10 +301,20 @@ setSearchInput(lastPort)
                 {itemNum }{" "}{t("Items")}
               </span>
             </div>
-            </button>
+            </div>
            
 
-            <div className="xs:flex lg:hidden items-center gap-1 cursor-pointer ">
+            <div className="xs:flex lg:hidden items-center gap-1 cursor-pointer "
+             onClick={() => {
+                  if (userId) {
+                    navigate.push("/user/profile");
+                  } else {
+                    setShowSignIn(true);
+                    setOpenForm(true);
+
+                  }
+                }}
+            >
               <span className="w-8 h-8">
                 <PiUser className="w-full h-full " />
               </span>
@@ -385,9 +397,9 @@ setSearchInput(lastPort)
       </div>
 
       <div
-        className={`fixed inset-0 bg-black/40 flex items-center justify-center z-50 ${openForm ? "block" : "hidden"}`}
+        className={`fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4 overflow-y-auto ${openForm ? "block" : "hidden"}`}
       >
-        <div className=" bg-white rounded-md relative">
+        <div className=" bg-white rounded-md relative w-full max-w-[480px] my-auto max-h-[90vh] overflow-y-auto">
           <MdCancel
             className="w-6 h-6 cursor-pointer hover:text-red-600 absolute top-2 right-2 "
             onClick={() => {

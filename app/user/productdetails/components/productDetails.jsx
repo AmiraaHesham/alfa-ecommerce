@@ -165,7 +165,7 @@ export default function ProductDetails({ itemId }) {
           </div>
         ))
       ) : ( */}
-      <div className="p-5">
+      <div className="p-5 max-w-[1500px] mx-auto">
         <span className="text-gray-500">
           <Link href={"/user/home"}>Home </Link> /<Link href={"/user/products/category/" +
             product.category.nameEn +
@@ -173,7 +173,7 @@ export default function ProductDetails({ itemId }) {
             product.category.id}> {locale == "ar" ? product.category.nameAr : product.category.nameEn} </Link> / <span className="font-semibold text-black">  {locale == "ar" ? product.nameAr : product.nameEn}</span>
         </span>
       </div>
-      <div className="grid xl:grid-cols-5 md:grid-cols-4 xs:grid-cols-1 w-full gap-1  h-full bg-white py-5 px-3 ">
+      <div className="grid grid-cols-1 xs:grid-cols-1 md:grid-cols-4 xl:grid-cols-5 w-full max-w-[1500px] mx-auto gap-4 h-auto bg-white py-5 px-3 lg:px-4">
         {loading && (
           <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
             <Image
@@ -188,12 +188,12 @@ export default function ProductDetails({ itemId }) {
         )}
 
         <ProductImages product={product} />
-        <div className="col-span-2">
+        <div className="col-span-1 xs:col-span-1 md:col-span-2 xl:col-span-2 min-w-0">
           <ProductInfo product={product} itemId={itemId} />
 
         </div>
 
-        <div className="xs:mt-10 md:mt-0 h-[350px] xs:col-span-4 xl:col-span-1 border w-full rounded-3xl px-3 py-8" >
+        <div className="xs:mt-10 md:mt-0 col-span-1 xs:col-span-1 md:col-span-4 xl:col-span-1 border w-full min-w-0 rounded-3xl px-3 py-8" >
           <h1 className="text-xl mb-5 px-3 font-semibold">{t("shipping") + " & " + t("delivery")}</h1>
           <div className="flex justify-between items-center w-full">
             <div className="w-full">
@@ -235,7 +235,7 @@ export default function ProductDetails({ itemId }) {
       </div>
       {/* // )} */}
       <hr></hr>
-      <div className="flex md:flex-row xs:flex-col w-full justify-between p-10">
+      <div className="flex md:flex-row xs:flex-col w-full justify-between max-w-[1500px] mx-auto p-5 md:p-10">
         <div className="w-full flex flex-col">
            <Specification product={product}/>
          <div className="w-full  pb-5 mt-10">

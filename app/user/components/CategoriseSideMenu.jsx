@@ -118,7 +118,7 @@ export default function CategoriesSideMenu({ category }) {
                       }}
                     >
                       <span
-                        className={` rounded-full p-3 transition-all duration-300 group-hover:scale-105 group-hover:shadow-md lg:h-[100px] lg:w-[100px] lg:p-4 ${
+                        className={` relative rounded-full p-3 transition-all duration-300 group-hover:scale-105  group-hover:shadow-md lg:h-[100px] lg:w-[100px] lg:p-4 ${
                           isActive
                             ? "bg-white ring-2 ring-red-500"
                             : "bg-white"
@@ -129,11 +129,11 @@ export default function CategoriesSideMenu({ category }) {
                             getThumbnailUrl(item.imageURL) || ""
                           }`}
                           alt={locale === "ar" ? item.nameAr : item.nameEn}
-                          width={100}
-                          height={100}
+                        
                           quality={100}
-                          
-                          className=" rounded-full"
+                          fill
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                          className=" rounded-full object-fill"
                         />
                       </span>
                       <h1

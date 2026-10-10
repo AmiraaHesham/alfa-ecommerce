@@ -23,7 +23,7 @@ export default function ShippingCostForm({ govName, govId, govPrice, setShowForm
   const { t } = useLanguage();
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-      <div className="w-[400px] h-[350px] bg-white rounded-md flex flex-col justify-start items-start p-5 gap-5 ">
+      <div className="w-[90%] max-w-[400px] min-h-[350px] h-auto bg-white rounded-md flex flex-col justify-start items-start p-5 gap-5 max-h-[90vh] overflow-y-auto ">
         <div className="w-full flex justify-between items-center">
           <h1 className="text-xl font-semibold">{t("EditShippingCost")} </h1>
           <button

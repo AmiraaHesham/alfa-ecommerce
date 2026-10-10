@@ -161,10 +161,10 @@ export default function ProductCard({ productInfo, favorite }) {
   return (
     <div
       id={`div_${productInfo?.itemId}`}
-      className="h-[360px] group relative  bg-white  py-2 w-full rounded-3xl cursor-pointer  "
+      className="min-h-[360px] h-auto group relative bg-white py-2 w-full min-w-0 rounded-3xl cursor-pointer "
     >
-      <div className="flex flex-col justify-around  gap-3  items-center h-full">
-        <div className=" relative h-2/3 w-full p-1  ">
+      <div className="flex flex-col justify-around gap-3 items-center h-full min-w-0">
+        <div className="relative h-[240px] w-full p-1 shrink-0 ">
           <div className="relative w-full h-full">
 
             <div className="absolute text-sm  flex justify-center items-center gap-2 z-20 px-3 "
@@ -392,17 +392,17 @@ export default function ProductCard({ productInfo, favorite }) {
             </div>
           </div>
         </div>
-        <div className="flex flex-col gap-2 items-center justify-center"
+<div className="flex flex-col gap-2 items-center justify-center min-w-0 w-full"
          onClick={() => {
               setSelectedProductId(productInfo?.itemId);
               navigate.push(`/user/productdetails/${productName}/${productInfo?.itemId}`);
 
             }}
         >
-        <div className="w-full flex flex-col justify-center items-center">
+        <div className="w-full flex flex-col justify-center items-center min-w-0">
           <h1
-            className="text-sm font-bold"
-           
+            className="text-sm font-bold break-words text-center w-full"
+
           >
             {productName?.length <= 29
               ? productName
@@ -429,7 +429,7 @@ export default function ProductCard({ productInfo, favorite }) {
 
               >
 
-                <div className="flex  justify-center gap-2 items-center ">
+                <div className="flex  justify-center gap-2 items-center flex-wrap ">
                   {productInfo?.oldPrice ? (
                     <div className="flex gap-2">
                       <span className=" line-through text-sm  flex text-gray-400">
@@ -439,7 +439,7 @@ export default function ProductCard({ productInfo, favorite }) {
                   ) : (
                     ""
                   )}
-                  <span className=" font-semibold text-red-600 ">
+                  <span className=" font-semibold text-red-600 break-words text-center ">
                     {productInfo?.price.toLocaleString("en-US")}.00 {t("currency")}
                   </span>
 

@@ -304,7 +304,7 @@ export default function OrderDetails({ orderId }) {
         </div>
 
         {/* ── Desktop / Tablet table layout ───────────────────────── */}
-        <div className="xs:hidden md:flex w-full overflow-x-auto overflow-hidden rounded-3xl bg-white">
+        <div className="xs:hidden md:flex w-full min-w-0 overflow-x-auto rounded-3xl bg-white">
           <table className="w-full ">
             <thead className="text-justify uppercase tracking-wide">
               <tr className="h-20 border-b border-b-gray-200 border-gray-100">

@@ -54,9 +54,9 @@ export default function ProductReturnForm({ productdata, isOpenPopup , setOpenPo
     
     return (
         <div
-            className={`fixed  inset-0 bg-black/40 ${isOpenPopup ? "flex" : "hidden"} items-center justify-center z-50`}
+            className={`fixed  inset-0 bg-black/40 ${isOpenPopup ? "flex" : "hidden"} items-center justify-center z-50 p-4 overflow-y-auto`}
         >
-            <div className=" w-[450px] p-5 rounded-lg bg-white">
+            <div className=" w-full max-w-[450px] my-auto max-h-[90vh] overflow-y-auto p-5 rounded-lg bg-white">
                 <div className="flex justify-between items-center mb-3">
                     <span className="font-semibold text-gray-600">
                         {t("return_order")}

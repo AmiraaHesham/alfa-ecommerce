@@ -101,7 +101,7 @@ const responce = await getRequest("/api/users")
       <ResetPasswordForm isFormOpen={isFormOpen} setIsFormOpen={setIsFormOpen} />
 
       <div className="flex xs:flex-col md:flex-row  h-full gap-10 justify-between">
-        <div className="bg-white md:w-[50%] xl:w-[30%] h-[350px] flex   flex-col gap-3   p-7 rounded-3xl">
+        <div className="bg-white md:w-[50%] xl:w-[30%] min-w-0 min-h-[350px] h-auto flex   flex-col gap-3   p-7 rounded-3xl">
           <div className="flex items-center bg-red-600 p-2 rounded-md text-white gap-3 cursor-pointer">
             <span className="text-xl">
               <FaUser />
@@ -152,7 +152,7 @@ const responce = await getRequest("/api/users")
             </span>
           </div>
         </div>
-        <div className="w-full flex flex-col gap-5">
+        <div className="w-full flex flex-col gap-5 min-w-0">
           <div className="w-full  bg-white rounded-3xl p-5">
             <div className="flex w-full flex-col gap-7">
               <div className="flex justify-between w-full">
@@ -187,7 +187,7 @@ const responce = await getRequest("/api/users")
             </div>
             <hr></hr>
             <form className="p-7" onSubmit={updateProfile}>
-              <div className="grid grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div className="flex flex-col gap-3">
                   <label className="text-xs font-semibold text-gray-500">
                     {t("firstName")}
@@ -309,7 +309,7 @@ const responce = await getRequest("/api/users")
               </div>
             </form>
           </div>
-          <div className="w-full h-[100px] bg-white rounded-3xl mb-10">
+          <div className="w-full min-h-[100px] h-auto bg-white rounded-3xl mb-10">
             <div className="p-5 flex justify-between items-center">
               <div className="flex items-center gap-3">
                 <span className="p-3 text-xl rounded-full text-gray-600 bg-gray-100">

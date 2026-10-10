@@ -120,7 +120,7 @@ export default function AdminForm({ isFormOpen, setIsFormOpen }) {
           />
         </div>
       )}
-      <div className="bg-white shadow-md shadow-slate-400  xs:w-full lg:w-[500px] flex flex-col border rounded-md">
+      <div className="bg-white shadow-md shadow-slate-400 w-full max-w-[500px] flex flex-col border rounded-md">
         <div className="m-4 flex justify-between items-center">
           <h1 id="nameForm" className="text-lg font-semibold">
             {isEditMode ? t("edit_admin") : t("add_admin")}

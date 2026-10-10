@@ -15,6 +15,7 @@
 } */
 body {
   font-family: var(--font-urbanist-sans), sans-serif;
+  min-width: 0;
 }
 
 html[dir="rtl"] body {
@@ -39,6 +40,7 @@ html[dir="ltr"] .font-black {
 html {
   scrollbar-width: thin;
   scrollbar-color: var(--primary) transparent;
+  overflow-x: clip;
 }
 
 /* Chrome / Edge / Safari */

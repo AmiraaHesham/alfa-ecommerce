@@ -98,7 +98,7 @@ export default function AdminsTable({ setIsFormOpen }) {
       </div>
     
         {/* XS mobile card layout */}
-        <div className="lg:hidden rounded-xl w-full h-[520px]  border  mt-3 overflow-hidden overflow-y-scroll">
+        <div className="lg:hidden rounded-xl w-full h-auto max-h-[520px]  border  mt-3 overflow-y-auto">
           {loading
             ? // Skeleton cards
             [...Array(6)].map((_, index) => (
@@ -187,7 +187,7 @@ export default function AdminsTable({ setIsFormOpen }) {
             </button>
           </div>
         </div>
-      <div className="hidden lg:block h-[570px] mt-3 w-full  overflow-y-scroll">
+      <div className="hidden lg:block max-h-[570px] min-w-0 mt-3 w-full overflow-x-auto overflow-y-auto">
 
         <table className="h-auto w-full">
           <thead className="bg-[#f0eff0] text-xs   text-justify sticky top-0  z-10">

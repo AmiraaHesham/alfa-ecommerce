@@ -104,7 +104,7 @@ export default function SignIn({ popUp, setShowSignUp, setShowSignIn,setOpenForm
       )}
       <div className="flex justify-between">
         <div id="welcome_section" className="">
-          <h3 className="text-4xl my-3 font-bold">{t("welcomeBack")}</h3>
+          <h3 className="text-4xl my-3 ">{t("welcomeBack")}</h3>
           <h4 className="text-sm text-gray-500">{t("welcomeMessage")}</h4>
         </div>
         <div id="forgot_password_section" className="hidden">

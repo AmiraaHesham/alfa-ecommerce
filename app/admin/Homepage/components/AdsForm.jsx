@@ -307,7 +307,7 @@ export default function AdsForm({ isFormOpen, setIsFormOpen, productsOptions, ad
                     />
                 </div>
             )}
-            <div className="bg-white w-[95%] xs:w-full lg:w-[550px]   flex flex-col rounded-3xl shadow-2xl">
+            <div className="bg-white w-[95%] max-w-[550px] flex flex-col rounded-3xl shadow-2xl">
                 <div className="m-4 flex justify-between items-center">
                     <h1 id="nameFormCategory" className="text-xl font-bold text-gray-800">
                         {isUpdateMode ? t("edit_advert") : t("add_advert") + " " + "[" + adNumber + "]"}

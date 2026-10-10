@@ -35,6 +35,7 @@ export default function ProductsByCategory({ params }) {
 
   const normalizePage = useCallback((payload, fallbackSize) => {
     const data = payload?.data ?? payload ?? {};
+    const page = data?.page ?? data ?? {};
     const content = Array.isArray(data)
       ? data
       : Array.isArray(data?.content)
@@ -42,20 +43,38 @@ export default function ProductsByCategory({ params }) {
         : Array.isArray(data?.items)
           ? data.items
           : [];
-    const size = Number(data?.size ?? fallbackSize) || fallbackSize;
+    const size = Number(page?.size ?? data?.size ?? fallbackSize) || fallbackSize;
     const totalElements =
       Number(
-        data?.totalElements ??
+        page?.totalElements ??
+          page?.totalItems ??
+          page?.totalCount ??
+          page?.total ??
+          data?.totalElements ??
           data?.totalItems ??
           data?.totalCount ??
           data?.total ??
           0,
       ) || 0;
     const totalPages =
-      Number(data?.totalPages ?? data?.totalPage ?? 0) ||
+      Number(
+        page?.totalPages ??
+          page?.totalPage ??
+          data?.totalPages ??
+          data?.totalPage ??
+          0,
+      ) ||
       (content.length > 0 ? Math.max(1, Math.ceil(totalElements / size)) : 0);
     const number =
-      Number(data?.number ?? data?.pageNumber ?? data?.currentPage ?? 0) || 0;
+      Number(
+        page?.number ??
+          page?.pageNumber ??
+          page?.currentPage ??
+          data?.number ??
+          data?.pageNumber ??
+          data?.currentPage ??
+          0,
+      ) || 0;
     return { content, number, size, totalElements, totalPages };
   }, []);
 

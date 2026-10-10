@@ -184,9 +184,9 @@ export default function ProductInfo({ product, itemId }) {
                     {product.available ? "" : t("Currently_unavailable")}
                 </span>
 
-                <div className="flex w-full  items-center gap-4 h-9 text-sm">
+                <div className="flex flex-wrap w-full items-center gap-3 h-9 text-sm">
                     <button
-                        className={`w-[70%] h-full rounded-full text-white  flex  justify-center items-center gap-3  ${product.available
+                        className={`flex-1 min-w-[130px] h-full rounded-full text-white  flex  justify-center items-center gap-3  ${product.available
                             ? "bg-[#E14A5C] hover:bg-[#CD4354] hover:scale-105 duration-200"
                             : "cursor-not-allowed bg-gray-400 hover:bg-gray-400 hover:scale-100"
                             }`}
@@ -196,7 +196,7 @@ export default function ProductInfo({ product, itemId }) {
                         {t("addToCart")}
                     </button>
                     <button
-                        className={`w-[70%] h-full rounded-full text-[#E14A5C]  flex  justify-center items-center gap-3  ${product.available
+                        className={`flex-1 min-w-[130px] h-full rounded-full text-[#E14A5C]  flex  justify-center items-center gap-3  ${product.available
                             ? "bg-[#F9DBDF] hover:bg-[#EDD0D3]  hover:scale-105 duration-200"
                             : "cursor-not-allowed bg-gray-400 hover:bg-gray-400 hover:scale-100"
                             }`}
@@ -205,19 +205,19 @@ export default function ProductInfo({ product, itemId }) {
                     >
                         {t("buyNow")}
                     </button>
-                    <div className="flex items-center text-center justify-center gap-3 w-[150px] rounded-full h-full border text-gray-600 bg-white">
+                    <div className="flex  items-center text-center justify-center gap-3 px-2 rounded-full h-full border text-gray-600 bg-white">
                         {/* زر النقصان */}
                         <button
                             onClick={() => {
                                 setCount(count + 1);
                             }}
-                            className="text-sm font-bold text-gray-600  hover:text-red-600"
+                            className="text-xs font-bold text-gray-600  hover:text-red-600"
                         >
                             +
                         </button>
                         <hr className="h-full w-px border-0 bg-gray-100" />
                         {/* الرقم */}
-                        <span className="font-medium  text-center">
+                        <span className="font-medium text-xs  text-center">
                             {count}
                         </span>
                         <hr className="h-full w-px border-0 bg-gray-100" />
@@ -227,7 +227,7 @@ export default function ProductInfo({ product, itemId }) {
                             onClick={() => {
                                 setCount(count - 1);
                             }}
-                            className="text-sm font-bold text-gray-600 hover:text-red-600"
+                            className="text-xs font-bold text-gray-600 hover:text-red-600"
                         >
                             −
                         </button>

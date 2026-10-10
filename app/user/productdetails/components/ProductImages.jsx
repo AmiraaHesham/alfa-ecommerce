@@ -15,7 +15,7 @@ export default function ProductImages({ product }) {
   const { locale } = useLanguage();
 
   return (
-    <div className="w-full h-[450px] md:col-span-2 col-span-3 relative flex xs:flex-col md:flex-row gap-2">
+    <div className="w-full min-h-[320px] col-span-1 xs:col-span-1 md:col-span-2 xl:col-span-2 relative flex xs:flex-col md:flex-row gap-2">
       <div className="flex md:flex-col xs:flex-row  items-center gap-4 mt-5 xs:order-2 md:order-1 ">
         {/* <div className={`relative   w-[80px] h-[80px] rounded-xl hover:opacity-50  cursor-pointer select-none `}>
           <Image
@@ -41,7 +41,7 @@ export default function ProductImages({ product }) {
                 fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 priority
-                className="object-fill  rounded-xl"
+                className="object-cover  rounded-xl"
                 onClick={() => {
                   swiperRef.current?.slideTo(index);
                 }}
@@ -97,7 +97,7 @@ export default function ProductImages({ product }) {
                 alt="mainImage"
                 fill
                 priority
-                sizes="100vw"
+                sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 44vw"
                 className=" rounded-3xl"
               />
             </SwiperSlide>

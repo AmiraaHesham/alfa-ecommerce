@@ -141,7 +141,7 @@ setOpenForm(false)
       )}
       <div className="flex justify-between">
         <div className="">
-          <h3 className="text-4xl my-3 font-bold">{t("create_account")} </h3>
+          <h3 className="text-4xl my-3 ">{t("create_account")} </h3>
           <h4 className="text-sm  text-gray-500">
             {t("signupWelcomeMessage")}
           </h4>
@@ -162,8 +162,8 @@ setOpenForm(false)
             className="flex flex-col  gap-2 w-[90%]"
             onSubmit={handleSignUp}
           >
-            <div className=" flex items-center  gap-5">
-              <div className="flex flex-col gap-2  w-full">
+            <div className=" flex items-center  gap-5 flex-wrap">
+              <div className="flex flex-col gap-2  w-full min-w-0">
                 <label className="text-gray-500 text-sm ">
                   {t("firstName")}
                 </label>
@@ -209,7 +209,7 @@ setOpenForm(false)
                 </span>
               </div>
             </div>
-            <div className="flex gap-5">
+            <div className="flex gap-5 flex-wrap">
               <div className="flex flex-col gap-2 w-full">
                 <label className="text-gray-500 text-sm">{t("username")}</label>
                 <div className=" flex w-full px-2 rounded-md  border h-10 items-center gap-3 shadow-md">
@@ -249,7 +249,7 @@ setOpenForm(false)
                 </div>
               </div>
             </div>
-            <div className="flex gap-5">
+            <div className="flex gap-5 flex-wrap">
               <div className="flex flex-col gap-3 w-full">
                 <label className="text-xs font-semibold text-gray-500">
                   {t("governorate")}
@@ -333,7 +333,7 @@ setOpenForm(false)
                 </span>
               </div>
             </div> */}
-            <div className=" flex items-center gap-5">
+            <div className=" flex items-center gap-5 flex-wrap">
               <div className="flex flex-col gap-2 w-full">
                 <label className="text-gray-500 text-sm">{t("password")}</label>
                 <div className=" flex w-full px-2 rounded-md  border h-10 items-center gap-3 shadow-md">

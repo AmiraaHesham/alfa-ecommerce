@@ -117,7 +117,7 @@ export default function Sliders({setIsFormOpen}) {
         {/* </div> */}
       </div>
       <div className="w-full grid lg:grid-cols-5 md:grid-cols-3  xs:grid-cols-2 gap-3  ">
-        <div className="bg-white  rounded-3xl h-[170px] w-full flex flex-col gap-3 p-4 cursor-pointer">
+        <div className="bg-white  rounded-3xl min-h-[170px] h-auto w-full flex flex-col gap-3 p-4 cursor-pointer">
           <div className=" border-dashed flex justify-center p-5 items-center border-2 rounded-3xl border-red-400 bg-gray-50  hover:bg-gray-100 w-full h-full "
           onClick={()=>{
             setIsFormOpen(true)

@@ -33,9 +33,9 @@ export default function AdminLayout({ children }) {
       {
         role === 'ADMIN' ?
           (
-            <main className=" flex   ">
+            <main className=" flex min-w-0  ">
               <SideMenu homepage={"bg-red-100 text-red-500"} />
-              <div className="w-full h-full ">
+              <div className="w-full h-full min-w-0 ">
                 <Header page_title={"Homepage Management"} />
                 <div className="  ">{children}</div>
               </div>

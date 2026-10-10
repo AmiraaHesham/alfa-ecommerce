@@ -253,9 +253,9 @@ return(
                </button>
              </div>
            </div>
-                 <div className="hidden lg:block h-[520px] border-t mt-3 w-full  overflow-y-scroll">
+                 <div className="hidden lg:block max-h-[520px] border-t mt-3 w-full min-w-0 overflow-x-auto overflow-y-auto">
 
-           <table className="w-full h-auto">
+           <table className="w-full h-auto min-w-[800px]">
              <thead className="bg-[#f0eff0] text-xs   text-justify sticky top-0  z-10">
                <tr className="  h-12">
                  {/* <th className="w-[2%] "></th> */}
@@ -296,9 +296,9 @@ return(
                      const date = new Date(order.createdDate);
                      const dateOnly = date.toLocaleDateString("en-GB");
                      return (
-                       <tr
-                         key={index}
-                         className="  w-full h-5 transition-colors hover:bg-gray-50 cursor-pointer"
+<tr
+                          key={index}
+                          className="  w-full transition-colors hover:bg-gray-50 cursor-pointer"
                          onClick={() =>
                            navigate.push(
                              `/admin/returnorderdetails/${order.returnOrderId}`
@@ -359,8 +359,8 @@ return(
                {/* {orders.length <= 5 ? (
                  " "
                ) : ( */}
-               <tr className="h-5 text-center">
-                 <td colSpan="6">
+<tr className="h-auto text-center">
+                  <td colSpan="6">
                    <button
                      className=" text-red-600 w-[100px] py-1 text-center  my-3 rounded-lg"
                      onClick={() => {

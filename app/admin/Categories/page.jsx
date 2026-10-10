@@ -13,7 +13,7 @@ export default function Categorys() {
          
 <div className=" w-full ">
  <div className=" pt-5 mx-5 relative h-full  ">
-          <div className="flex justify-center md:w-[80%] xs:w-full absolute items-center ">
+          <div className="flex justify-center md:w-[80%] xs:w-full items-center min-w-0 ">
             <FormCategory isFormOpen={isFormOpen} setIsFormOpen={setIsFormOpen}/>
           </div>
            <Table_Category setIsFormOpen={setIsFormOpen} />

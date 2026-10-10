@@ -228,7 +228,7 @@ export default function CategoryForm({ isFormOpen, setIsFormOpen }) {
           />
         </div>
       )}
-      <div className="bg-white shadow-md shadow-slate-400   xs:w-full lg:w-[600px] flex flex-col border rounded-md">
+      <div className="bg-white shadow-md shadow-slate-400 w-full max-w-[600px] flex flex-col border rounded-md">
         <div className="m-4 flex justify-between items-center">
           <h1 id="nameFormCategory" className="text-lg font-semibold">
             {" "}

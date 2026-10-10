@@ -55,7 +55,7 @@ export default function Footer() {
   return (
     <div  className="bg-white text-black px-3 py-5 flex flex-col  w-full">
       <div className="flex  md:flex-row xs:flex-col  justify-between md:items-center xs:items-start xs:gap-5">
-        <div className="flex items-center justify-start w-full">
+        <div className="flex items-center justify-start w-full flex-wrap min-w-0">
           <Link href="/user/home">
             <div className="flex  items-start justify-start w-full ">
 

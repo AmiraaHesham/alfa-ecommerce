@@ -106,7 +106,7 @@ export default function SliderForm({ isFormOpen, setIsFormOpen }) {
                     />
                 </div>
             )}
-            <div className="bg-white shadow-md shadow-slate-400 h-[450px] xs:w-full lg:w-[500px] flex flex-col border rounded-md">
+            <div className="bg-white shadow-md shadow-slate-400 min-h-[450px] h-auto w-[95%] max-w-[500px] flex flex-col border rounded-md max-h-[90vh] overflow-y-auto">
                 <div className="m-4 flex justify-between items-center">
                     <h1 id="nameFormCategory" className="text-lg font-semibold">
                         {t("add_slider")}

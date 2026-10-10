@@ -79,9 +79,9 @@ export default function Table({
             );
           })}
         </div>
-      <div className="hidden lg:block h-[570px] mt-3 w-full  overflow-y-scroll">
+      <div className="hidden lg:block max-h-[570px] min-w-0 mt-3 w-full overflow-x-auto overflow-y-auto">
 
-        <table className="hidden lg:table w-full  border ">
+        <table className="hidden lg:table w-full min-w-[560px] border ">
           <thead className="bg-[#f0eff0] text-xs   text-justify sticky top-0  z-10">
             <tr className="  h-12 ">
               <th className="p-5 ">{t("governorate")}</th>

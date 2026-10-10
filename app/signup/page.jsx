@@ -3,8 +3,8 @@ import SignUpForm from "../components/SignUp_Form";
 
 export default function SignUp() {
   return (
-    <div className="h-screen">
-      <div className="h-full w-full flex md:flex-row xs:flex-col ">
+    <div className="min-h-screen h-auto">
+      <div className="min-h-screen w-full flex md:flex-row xs:flex-col ">
           <SignUpForm popUp={false} />
           <div className="h-full w-full md:order-2 xs:order-1">
             <Image

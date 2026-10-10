@@ -187,7 +187,7 @@ export default function ProductAdsForm({ isFormOpen, setIsFormOpen, editOffer, n
           />
         </div>
       )}
-      <div className="bg-white p-5 xs:w-full lg:w-[500px] flex flex-col rounded-3xl">
+      <div className="bg-white p-5 w-full max-w-[500px] flex flex-col rounded-3xl">
         <div className="m-4 flex justify-between items-center">
           <h1 id="nameFormProductAd" className="text-lg font-semibold">
             {isEditMode ? t("edit_product_ad") : t("add_product_ad")}

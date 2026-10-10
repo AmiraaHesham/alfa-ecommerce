@@ -26,14 +26,14 @@ export default function RecentOrders_table() {
   };
   return (
     <div className="mt-5 w-full ">
-      <div className="flex justify-between items-center px-5 h-16 border-s border-t rounded-t-md bg-white">
+      <div className="flex justify-between items-center px-5 min-h-16 h-auto border-s border-t rounded-t-md bg-white">
         <h1 className="lg:text-lg xs:text-sm  font-semibold ">
           {t("recent_orders")}
         </h1>
       </div>
       <div className=" ">
         {/* XS mobile card layout */}
-        <div className="sm:hidden bg-white rounded-b-xl border p-3 h-[370px] overflow-y-scroll">
+        <div className="sm:hidden bg-white rounded-b-xl border p-3 h-auto max-h-[370px] overflow-y-auto">
           {pendingOrders.map((order, index) => {
             const date = new Date(order.createdDate);
             const dateOnly = date.toLocaleDateString("en-GB");
@@ -78,7 +78,9 @@ export default function RecentOrders_table() {
         </div>
 
         {/* SM and larger: existing table */}
-        <table className="hidden sm:table bg-white rounded-b-xl w-full h-[370px] border overflow-y-scroll">
+        <div className="hidden sm:block min-w-0 overflow-x-auto">
+          <div className="max-h-[540px] overflow-y-auto">
+        <table className="table-auto bg-white rounded-b-xl w-full min-w-[640px] border">
           <thead className="bg-[#f0eff0] text-xs  w-full  text-justify sticky top-0  z-10">
             <tr className="h-12">
               <th className=" px-5">{t("order_id")}</th>
@@ -130,7 +132,9 @@ export default function RecentOrders_table() {
               );
             })}
           </tbody>
-        </table>
+          </table>
+          </div>
+          </div>
       </div>
     </div>
   );

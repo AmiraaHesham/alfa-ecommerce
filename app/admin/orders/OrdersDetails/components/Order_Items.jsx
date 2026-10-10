@@ -6,13 +6,13 @@ import { useCallback, useEffect, useState } from "react";
 import { useOrderDetailsContext } from "../../../../../context/orderDetailsContext.jsx";
 import { getThumbnailUrl } from "../../../../../utils/functions.jsx";
 
-const ProductImage = ({ item, size = 70, className = "" }) => {
+const ProductImage = ({ item, size = 60, className = "" }) => {
   const imageUrl = item?.images?.[0]?.imageUrl;
   const src = imageUrl
     ? process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL + getThumbnailUrl(imageUrl)
     : null;
   return (
-    <div className={`relative shrink-0 ${className}`} style={{ width: size, height: size }}>
+    <div className={`relative  shrink-0 ${className}`} style={{ width: size, height: size }}>
       {src ? (
         <Image
           alt=""
@@ -184,7 +184,7 @@ export default function OrdersItems({ orderId, orderType }) {
                   <tr key={index} className="  border-b w-full">
                     <td></td>
                     <td>
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center p-2 gap-3">
                         <ProductImage item={item.item} />
                         <div>
                           <h1 className="font-semibold mx-2">
@@ -203,11 +203,11 @@ export default function OrdersItems({ orderId, orderType }) {
                         {item.unitPrice.toLocaleString("en-US")}{" "}
                         {t("currency")}
                       </span>
-                      {/* <span className="text-sm line-through ">
+                      <span className="text-sm line-through ">
                         {" "}
                         {item.oldUnitPrice.toLocaleString("en-US")}{" "}
                         {t("currency")}
-                      </span>{" "} */}
+                      </span>{" "}
                     </td>
                     <td className="">
                       {item.quantity}

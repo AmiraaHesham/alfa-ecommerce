@@ -56,9 +56,9 @@ export default function ResetPasswordForm({ isFormOpen, setIsFormOpen }) {
       )}
       <div className="w-full flex justify-center items-center " >
 
-        <form autoComplete="off" className=" w-[500px] py-10 flex flex-col justify-center items-center
+        <form autoComplete="off" className=" w-full max-w-[500px] py-10 flex flex-col justify-center items-center
          gap-3 my-5 bg-white shadow-md shadow-slate-400 rounded-lg 
-           px-7 pb-10 border overflow-hidden xs:overflow-y-scroll h-full">
+           px-7 pb-10 border max-h-[90vh] overflow-y-auto h-auto">
 
           <div className="w-full  flex justify-between items-center ">
             <h1 className="text-lg w-full font-semibold ">
