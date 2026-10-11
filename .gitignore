@@ -62,3 +62,4 @@ next.config.js
 # Misc
 .DS_Store
 Thumbs.db
+run.bat

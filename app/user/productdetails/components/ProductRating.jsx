@@ -6,9 +6,9 @@ import { useLanguage } from "../../../../context/LanguageContext";
 import { getItemRatingStarDistribution } from "../../../../utils/functions";
 
 function MainStarIcon({ filled, half }) {
-  if (half) return <FaStarHalfAlt className="text-[#f5b800] text-2xl" />;
-  if (filled) return <FaStar className="text-[#f5b800] text-2xl" />;
-  return <FaRegStar className="text-gray-400 text-2xl" />;
+  if (half) return <FaStarHalfAlt className="text-[#f5b800] text-3xl" />;
+  if (filled) return <FaStar className="text-[#f5b800] text-3xl" />;
+  return <FaRegStar className="text-gray-300 text-3xl" />;
 }
 
 function renderStars(rating, IconComponent) {
@@ -69,25 +69,16 @@ export default function ProductRating({ itemId, refreshKey }) {
       : "0.0";
 
   return (
-    <div className="w-full bg-white rounded-lg px-4 py-6 md:px-8">
-      {/* Header */}
-      <h2 className="text-xl md:text-2xl font-bold text-center mb-2">
-        {t("CustomerReviews")}
-      </h2>
-
+    <div className="w-full">
       {/* Average Rating */}
-      <div className="flex flex-col items-center mb-6">
-        <span className="text-4xl md:text-5xl font-bold text-gray-900">
-          {avgRating}
-        </span>
-
+      <div className="flex flex-col items-center mb-8">
         {/* Stars */}
-        <div className="flex items-center gap-1 mt-2">
+        <div className="flex items-center gap-1">
           {renderStars(parseFloat(avgRating), MainStarIcon)}
         </div>
 
         {/* Review Count */}
-        <span className="text-gray-500 mt-2 text-sm md:text-base">
+        <span className="text-gray-500 mt-2 text-sm sm:text-base">
           {totalReviews} {t("reviews")}
         </span>
       </div>
