@@ -9,6 +9,7 @@ import "swiper/css/pagination";
 import { useRef, useState } from "react";
 import { useLanguage } from "../../../../context/LanguageContext";
 import { IoImageOutline } from "react-icons/io5";
+import { MdOutlineArrowBackIosNew, MdOutlineArrowForwardIos } from "react-icons/md";
 
 export default function ProductImages({ product }) {
   const urlImage = process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL;
@@ -20,11 +21,11 @@ export default function ProductImages({ product }) {
   const productName = locale === "ar" ? product.nameAr : product.nameEn;
 
   return (
-    <div className="flex w-full min-w-0 flex-col-reverse gap-3 sm:gap-4 sm:mx-auto sm:max-w-[520px] md:sticky md:top-6 lg:mx-0 lg:max-w-none md:flex-row">
+    <div className="flex w-full min-w-0 flex-col-reverse gap-3  sm:gap-4 sm:mx-auto sm:max-w-[620px] md:sticky md:top-6 lg:mx-0 lg:max-w-none md:flex-row">
       {images.length > 1 && (
         <div
           role="group"
-          className="flex w-full shrink-0 snap-x gap-2 overflow-x-auto pb-1 md:max-h-[560px] md:w-auto md:flex-col md:overflow-x-visible md:overflow-y-auto md:pb-0 lg:max-h-[620px]"
+          className="flex w-full shrink-0 snap-x gap-2 overflow-x-scroll pb-1 md:max-h-[360px] md:w-auto md:flex-col md:overflow-x-visible md:overflow-y-auto md:pb-0 lg:max-h-[440px]"
           aria-label={`${productName || "Product"} images`}
         >
           {images.map((img, index) => (
@@ -60,20 +61,24 @@ export default function ProductImages({ product }) {
         </div>
       )}
 
-      <div className="relative min-w-0 flex-1 overflow-hidden rounded-2xl border border-gray-100 bg-white sm:rounded-3xl">
+      <div className="relative min-w-0 flex-1 overflow-hidden rounded-2xl  bg-white sm:rounded-3xl">
         {images.length > 0 ? (
+          <div className="group/swiperImage ">
           <Swiper
             key={locale}
             slidesPerView={1}
-            navigation={true}
-            modules={[Navigation, Autoplay]}
+                modules={[Navigation, Autoplay]}
+    navigation={{
+      prevEl: ".custom-prev",
+      nextEl: ".custom-next",
+    }}     
             onSwiper={(swiper) => {
               swiperRef.current = swiper;
             }}
             onSlideChange={(swiper) => setActiveIndex(swiper.activeIndex)}
             dir={locale === "ar" ? "rtl" : "ltr"}
             spaceBetween={10}
-            className="aspect-square w-full max-h-[560px] select-none lg:max-h-[620px]"
+            className="aspect-square w-full max-h-[360px] select-none lg:max-h-[520px]"
           >
             {images.map((img, index) => (
               <SwiperSlide
@@ -95,6 +100,32 @@ export default function ProductImages({ product }) {
               </SwiperSlide>
             ))}
           </Swiper>
+           <div className=" lg:opacity-0 lg:invisible
+              lg:group-hover/swiperImage:opacity-100 lg:group-hover/swiperImage:visible
+              xs:opacity-100 xs:visible
+              transition-all duration-300 ">
+                    <button
+                type="button"
+                onClick={() => swiperRef.current?.slidePrev()}
+                className="absolute left-0 top-1/3 -translate-y-1/2 z-50
+                            text-2xl
+                          flex items-center justify-center 
+                          text-gray-700 hover:text-black"
+              >
+                < MdOutlineArrowBackIosNew />
+              </button>
+                  <button
+                type="button"
+                onClick={() => swiperRef.current?.slideNext()}
+                className="absolute right-0 top-1/3 -translate-y-1/2 z-50
+                        
+                          text-2xl
+                          flex items-center justify-center  text-gray-700 hover:text-black"
+              >
+                < MdOutlineArrowForwardIos />
+              </button>
+                </div>
+                </div>
         ) : (
           <div className="flex aspect-square w-full items-center justify-center text-gray-300">
             <IoImageOutline className="h-20 w-20" aria-hidden />

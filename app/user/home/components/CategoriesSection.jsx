@@ -53,14 +53,14 @@ export default function CategorySection({ categories }) {
               );
             }}
           >
-            <div className="relative shrink-0 rounded-full h-[64px] w-[64px] hover:scale-105 duration-200">
+            <div className="relative shrink-0 rounded-full h-[80px] w-[80px] hover:scale-105 duration-200">
               <Image
                 src={`${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL}${getThumbnailUrl(category.imageURL) || ""
                   }`}
                 alt={locale === "ar" ? category.nameAr : category.nameEn}
                 fill
                 quality={100}
-                sizes="80px"
+                sizes="100px"
                 className="object-fill rounded-full"
               />
             </div>
