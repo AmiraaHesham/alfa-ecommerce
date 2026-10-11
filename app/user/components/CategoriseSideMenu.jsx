@@ -56,7 +56,7 @@ export default function CategoriesSideMenu({ category }) {
                 key={`skeleton-${index}`}
                 className="flex  shrink-0 flex-col items-center gap-3 "
               >
-                <div className="h-[100px] w-[100px] animate-pulse rounded-full bg-gray-200/70 "></div>
+                <div className="lg:h-[100px] lg:w-[100px] xs:h-[80px] xs:w-[80px] animate-pulse rounded-full bg-gray-200/70 "></div>
                 <div className="h-4 w-20 animate-pulse rounded-full bg-gray-200/70"></div>
               </div>
             ))}
@@ -81,7 +81,7 @@ export default function CategoriesSideMenu({ category }) {
                   }}
                 >
                   <span
-                    className={`flex h-[100px] w-[100px] items-center justify-center rounded-full transition-all duration-300 group-hover:scale-105 group-hover:shadow-md lg:h-[100px] lg:w-[100px] ${
+                    className={`flex h-[100px] w-[100px] items-center justify-center rounded-full transition-all duration-300 group-hover:scale-105 group-hover:shadow-md lg:h-[100px] lg:w-[100px] xs:h-[80px] xs:w-[80px] ${
                       category === "all"
                         ? "bg-white ring-2 ring-red-500"
                         : "bg-gray-100/80"
@@ -106,7 +106,7 @@ export default function CategoriesSideMenu({ category }) {
                   <SwiperSlide key={index} className="!h-auto !w-auto my-3">
                     <div
                       key={item.itemCategoryId}
-                      className="group flex w-[124px] cursor-pointer flex-col items-center gap-3 text-center sm:w-[152px]"
+                      className="group flex w-[124px]  cursor-pointer flex-col items-center gap-3 text-center sm:w-[152px]"
                       onClick={() => {
                         // setSelectedCategoryId(item.itemCategoryId);
                         navigate.push(
@@ -118,7 +118,7 @@ export default function CategoriesSideMenu({ category }) {
                       }}
                     >
                       <span
-                        className={` relative rounded-full p-3 transition-all duration-300 group-hover:scale-105  group-hover:shadow-md lg:h-[100px] lg:w-[100px] lg:p-4 ${
+                        className={` relative rounded-full p-3 transition-all duration-300 group-hover:scale-105  group-hover:shadow-md lg:h-[100px] lg:w-[100px] xs:h-[80px] xs:w-[80px] lg:p-4 ${
                           isActive
                             ? "bg-white ring-2 ring-red-500"
                             : "bg-white"

@@ -60,13 +60,13 @@ export default function BestPick({ Products }) {
             return (
               <SwiperSlide key={index} className="">
                 <div
-                  className="flex items-center cursor-pointer gap-1 select-none w-full"
+                  className="flex items-center w-[100px] h-[100px] cursor-pointer gap-1 select-none w-full"
                   onClick={() => {
                     setSelectedProductId(product.itemId);
                     navigate.push(`/user/productdetails/${product.nameEn}/${product.itemId}`);
                   }}
                 >
-                  <div className="relative w-[60px] h-[60px] rounded-full hover:scale-105 duration-200 shrink-0">
+                  <div className="relative w-[60px] h-[60px] border rounded-full hover:scale-105 duration-200 shrink-0">
                     <Image
                       src={
                         process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +

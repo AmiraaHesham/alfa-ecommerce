@@ -144,8 +144,8 @@ export default function ProductDetails({ itemId }) {
   const productName = locale === "ar" ? product.nameAr : product.nameEn;
 
   return (
-    <div className="min-w-0">
-      <nav aria-label="Breadcrumb" className="border-b border-gray-100 py-3 sm:py-4">
+    <div className="min-w-0  ">
+      <nav aria-label="Breadcrumb" className="border-b border-gray-100 py-3 sm:py-4 p-5">
         <ol className="flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-1 text-xs text-gray-500 sm:text-sm">
           <li className="shrink-0">
             <Link
@@ -175,7 +175,7 @@ export default function ProductDetails({ itemId }) {
         </ol>
       </nav>
 
-      <div className="grid w-full grid-cols-1 items-start gap-6 py-5 sm:gap-8 lg:grid-cols-2 lg:gap-10 lg:py-8 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)_minmax(0,1fr)]">
+      <div className="grid w-full grid-cols-1 items-start gap-6 py-5 p-5 sm:gap-8 lg:grid-cols-2 lg:gap-10 lg:py-8 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)_minmax(0,1fr)]">
         {loading && (
           <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
             <Image
@@ -245,7 +245,7 @@ export default function ProductDetails({ itemId }) {
       </div>
 
       <div className="border-t border-gray-100">
-        <div className="grid w-full grid-cols-1 items-start gap-8 py-6 sm:py-8 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] lg:gap-12 lg:py-10">
+        <div className="grid w-full grid-cols-1 items-start p-5 gap-8 py-6 sm:py-8 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] lg:gap-12 lg:py-10">
           <div className="flex min-w-0 flex-col">
             <Specification product={product} />
           </div>

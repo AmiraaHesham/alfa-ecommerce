@@ -147,7 +147,7 @@ setSearchInput(lastPort)
 
   return (
     <header className="bg-[#0d0625] ">
-      <div className="flex gap-2 flex-wrap gap-y-1 items-center text-white p-2 text-xs w-full justify-between">
+      <div className="md:flex xs:hidden gap-2 flex-wrap gap-y-1 items-center text-white p-2 text-xs w-full justify-between">
         <div className="flex flex-wrap justify-start items-center gap-2">
           <Link
             href={"/user/about"}
