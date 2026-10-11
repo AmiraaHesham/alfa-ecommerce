@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { getProductDetails, getItemRatings } from "../../../../utils/functions";
 import { postRequest } from "../../../../utils/requestsUtils";
 import Image from "next/image";
@@ -64,7 +64,6 @@ export default function ProductDetails({ itemId }) {
     try {
       const res = await getProductDetails(itemId);
       const resData = res.data;
-      // console.log(resData.itemCategory.itemCategoryId);
       setProduct((prev) => ({
         ...prev,
         nameEn: resData.nameEn,
@@ -92,8 +91,6 @@ export default function ProductDetails({ itemId }) {
         },
       }));
       setLoading(false);
-      // setImageShow(urlImage + resData.mainImageURL);
-      // getProductsByCategory(resData.itemCategory.itemCategoryId);
     } catch (error) {
       console.log(error);
       setLoading(true);
@@ -142,38 +139,43 @@ export default function ProductDetails({ itemId }) {
   useEffect(() => {
     fetchReviews();
   }, [fetchReviews]);
+
+  const categoryName = locale === "ar" ? product.category.nameAr : product.category.nameEn;
+  const productName = locale === "ar" ? product.nameAr : product.nameEn;
+
   return (
-    <div className="">
-      {/* {loading ? (
-        // Skeleton rows
-        [...Array(1)].map((_, index) => (
-          <div
-            key={`skeleton-${index}`}
-            className="flex md:flex-row xs:flex-col gap-10 py-10 mx-10 "
-          >
-            <div className="w-full h-[600px]">
-              <div className="w-full h-[500px] flex justify-center items-center  bg-gray-200 rounded animate-pulse"></div>
-              <div className="flex justify-stretch items-center gap-4 mt-5 ">
-                <div className="h-[100px] w-[100px] bg-gray-200 rounded animate-pulse "></div>
-                <div className="h-[100px] w-[100px] bg-gray-200 rounded animate-pulse "></div>
+    <div className="min-w-0">
+      <nav aria-label="Breadcrumb" className="border-b border-gray-100 py-3 sm:py-4">
+        <ol className="flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-1 text-xs text-gray-500 sm:text-sm">
+          <li className="shrink-0">
+            <Link
+              href={"/user/home"}
+              className="transition-colors hover:text-[#E14A5C] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E14A5C]"
+            >
+              Home
+            </Link>
+          </li>
+          {product.category.id ? (
+            <li className="flex min-w-0 items-center gap-x-1.5">
+              <span aria-hidden className="text-gray-300">/</span>
+              <Link
+                href={"/user/products/category/" + product.category.nameEn + "/" + product.category.id}
+                className="max-w-[45vw] truncate transition-colors hover:text-[#E14A5C] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E14A5C] sm:max-w-none"
+              >
+                {categoryName}
+              </Link>
+            </li>
+          ) : null}
+          <li className="flex min-w-0 items-center gap-x-1.5">
+            <span aria-hidden className="text-gray-300">/</span>
+            <span aria-current="page" className="max-w-[65vw] truncate font-semibold text-gray-900 sm:max-w-none">
+              {productName}
+            </span>
+          </li>
+        </ol>
+      </nav>
 
-                <div className="h-[100px] w-[100px] bg-gray-200 rounded animate-pulse "></div>
-              </div>
-            </div>
-
-            <div className="flex py-5 flex-col w-full justify-between   h-[500px] items-center  bg-gray-200 rounded animate-pulse"></div>
-          </div>
-        ))
-      ) : ( */}
-      <div className="p-5 max-w-[1500px] mx-auto">
-        <span className="text-gray-500">
-          <Link href={"/user/home"}>Home </Link> /<Link href={"/user/products/category/" +
-            product.category.nameEn +
-            "/" +
-            product.category.id}> {locale == "ar" ? product.category.nameAr : product.category.nameEn} </Link> / <span className="font-semibold text-black">  {locale == "ar" ? product.nameAr : product.nameEn}</span>
-        </span>
-      </div>
-      <div className="grid grid-cols-1 xs:grid-cols-1 md:grid-cols-4 xl:grid-cols-5 w-full max-w-[1500px] mx-auto gap-4 h-auto bg-white py-5 px-3 lg:px-4">
+      <div className="grid w-full grid-cols-1 items-start gap-6 py-5 sm:gap-8 lg:grid-cols-2 lg:gap-10 lg:py-8 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)_minmax(0,1fr)]">
         {loading && (
           <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
             <Image
@@ -188,95 +190,103 @@ export default function ProductDetails({ itemId }) {
         )}
 
         <ProductImages product={product} />
-        <div className="col-span-1 xs:col-span-1 md:col-span-2 xl:col-span-2 min-w-0">
-          <ProductInfo product={product} itemId={itemId} />
 
-        </div>
+        <ProductInfo product={product} itemId={itemId} />
 
-        <div className="xs:mt-10 md:mt-0 col-span-1 xs:col-span-1 md:col-span-4 xl:col-span-1 border w-full min-w-0 rounded-3xl px-3 py-8" >
-          <h1 className="text-xl mb-5 px-3 font-semibold">{t("shipping") + " & " + t("delivery")}</h1>
-          <div className="flex justify-between items-center w-full">
-            <div className="w-full">
-              <span className="flex items-center gap-5 mb-2">
-                <MdOutlineLocalShipping className="text-[#E14A5C] w-7 h-7" />
-                <h1>{t("courier_delivery")}</h1>
-
-              </span>
-
-              <span className="text-sm text-gray-500">
+        <div className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm sm:p-6 lg:col-start-2 xl:col-start-3 xl:sticky xl:top-6">
+          <h2 className="text-lg font-semibold text-gray-900 sm:text-xl">
+            {t("shipping") + " & " + t("delivery")}
+          </h2>
+          <div className="mt-4 flex items-start justify-between gap-4">
+            <div className="min-w-0">
+              <p className="flex items-center gap-3 font-medium text-gray-800">
+                <MdOutlineLocalShipping className="h-6 w-6 shrink-0 text-[#E14A5C]" aria-hidden />
+                <span>{t("courier_delivery")}</span>
+              </p>
+              <p className="mt-1 text-xs leading-relaxed text-gray-500 sm:text-sm">
                 {t("delivery_text")}
-              </span>
+              </p>
             </div>
-            <div className="w-[80px] flex flex-col items-center text-center text-sm text-gray-500">
-              <h1>2-3</h1>
-              <h1>Days</h1>
+            <div className="shrink-0 text-center text-xs text-gray-500">
+              <div className="text-sm font-semibold text-gray-800">2-3</div>
+              <div>Days</div>
             </div>
-
           </div>
-          <hr className="my-10" />
-          <div>
-            <div className="flex items-center justify-between w-full mb-5">
-              <div className="flex items-center gap-1">
-                <LuShieldCheck className="w-5 h-5 text-[#E14A5C]" />
-                <span className="text-sm ">{t("warranty_text")} </span>
-              </div>
-              <Link href={"/user/about#Guarantee_Policy"} target="_blank" className="text-xs text-blue-500 font-medium"> {t("details")}</Link>
+          <hr className="my-4 border-gray-200 sm:my-5" />
+          <div className="flex flex-col gap-3 text-sm">
+            <div className="flex items-center justify-between gap-3">
+              <span className="flex min-w-0 items-center gap-2 text-gray-700">
+                <LuShieldCheck className="h-5 w-5 shrink-0 text-[#E14A5C]" aria-hidden />
+                <span className="truncate">{t("warranty_text")}</span>
+              </span>
+              <Link
+                href={"/user/about#Guarantee_Policy"}
+                target="_blank"
+                className="shrink-0 text-xs font-medium text-blue-500 transition-colors hover:text-blue-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
+              >
+                {t("more_details")}
+              </Link>
             </div>
-            <div className="flex items-center justify-between w-full">
-              <div className="flex items-center gap-1">
-                <IoIosCalendar className="w-5 h-5 text-[#E14A5C]" />
-                <span className="text-sm  ">{t("return_text")} </span>
-              </div>
-              <Link href={"/user/about#Return_Policy"} target="_blank" className="text-xs text-blue-500 font-medium ">{t("details")}</Link>
+            <div className="flex items-center justify-between gap-3">
+              <span className="flex min-w-0 items-center gap-2 text-gray-700">
+                <IoIosCalendar className="h-5 w-5 shrink-0 text-[#E14A5C]" aria-hidden />
+                <span className="truncate">{t("return_text")}</span>
+              </span>
+              <Link
+                href={"/user/about#Return_Policy"}
+                target="_blank"
+                className="shrink-0 text-xs font-medium text-blue-500 transition-colors hover:text-blue-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
+              >
+                {t("more_details")}
+              </Link>
             </div>
           </div>
         </div>
-
       </div>
-      {/* // )} */}
-      <hr></hr>
-      <div className="flex md:flex-row xs:flex-col w-full justify-between max-w-[1500px] mx-auto p-5 md:p-10">
-        <div className="w-full flex flex-col">
-           <Specification product={product}/>
-         <div className="w-full  pb-5 mt-10">
-            <div className="flex w-full items-center justify-between gap-2">
-              <span className="w-full">
-                <h1 className="flex items-center font-semibold gap-2 xs:text-base md:text-lg mb-1">
-                  {t("reviews_list")}
-                </h1>
-                <hr className="w-24 h-1 border-0 rounded-full bg-gradient-to-l from-red-200 via-red-400 to-red-200" />
-              </span>
+
+      <div className="border-t border-gray-100">
+        <div className="grid w-full grid-cols-1 items-start gap-8 py-6 sm:py-8 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] lg:gap-12 lg:py-10">
+          <div className="flex min-w-0 flex-col">
+            <Specification product={product} />
+          </div>
+
+          <div id="reviews" className="flex w-full min-w-0 scroll-mt-24 flex-col">
+            <h2 className="text-center text-xl font-bold text-gray-900 sm:text-2xl lg:text-3xl">
+              {t("CustomerReviews")}
+            </h2>
+
+            <div className="mt-6">
+              <ProductRating product={product} itemId={itemId} refreshKey={ratingRefreshKey} />
             </div>
 
-            {reviewsLoading ? (
-              <div className="mt-6 flex flex-col gap-4">
-                {[1, 2, 3].map((i) => (
-                  <div key={i} className="bg-[#f6f5f8] rounded-3xl h-32 animate-pulse" />
-                ))}
-              </div>
-            ) : reviewsError ? (
-              <p className="mt-6 text-sm text-gray-500">{t("reviews_error")}</p>
-            ) : reviews.length === 0 ? (
-              <p className="mt-6 text-sm text-gray-500">{t("no_reviews")}</p>
-            ) : (
-              <ReviewsList reviews={reviews} />
-            )}
+            <div className="mt-8">
+              {reviewsLoading ? (
+                <div className="flex flex-col gap-4">
+                  {[1, 2, 3].map((i) => (
+                    <div key={i} className="bg-[#f6f5f8] rounded-3xl h-32 animate-pulse" />
+                  ))}
+                </div>
+              ) : reviewsError ? (
+                <p className="text-sm text-gray-500">{t("reviews_error")}</p>
+              ) : reviews.length === 0 ? (
+                <p className="text-sm text-gray-500">{t("no_reviews")}</p>
+              ) : (
+                <ReviewsList reviews={reviews} />
+              )}
+            </div>
+
+            <div className="mt-8">
+              <ReviewForm
+                product={product}
+                itemId={itemId}
+                onRatingSubmitted={() => {
+                  setRatingRefreshKey((key) => key + 1);
+                  fetchReviews();
+                }}
+              />
+            </div>
           </div>
         </div>
-       
-        <div className="w-full h-full">
-          <ProductRating product={product} itemId={itemId} refreshKey={ratingRefreshKey} />
-          <ReviewForm
-            product={product}
-            itemId={itemId}
-            onRatingSubmitted={() => {
-              setRatingRefreshKey((key) => key + 1);
-              fetchReviews();
-            }}
-          />
-         
-        </div>
-
       </div>
 
       <YouMightLike categoryId={product.category.id} />

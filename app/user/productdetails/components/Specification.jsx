@@ -2,57 +2,54 @@ import { IoMdInformationCircleOutline } from "react-icons/io";
 import { useLanguage } from "../../../../context/LanguageContext";
 import { RiRuler2Line } from "react-icons/ri";
 
-export default function Specification({ product }) {
-    const { t } = useLanguage();
+function SpecRow({ label, value }) {
+    if (!value) return null;
 
     return (
-        <div className="w-full ">
-            <h1 className="text-2xl font-semibold mb-3">{t("specification")} </h1>
-            <div className="bg-[#f6f5f8] w-full h-auto rounded-3xl p-7">
-                <div className="flex flex-col gap-5">
-                    <h1 className="text-xl font-semibold flex items-center justify-start gap-3"><IoMdInformationCircleOutline className="text-2xl text-[#E14A5C]" />
-                        {t("Overview")}</h1>
-                    <div className="w-full text-lg flex flex-col gap-5 items-start">
-                        {product.brand ?<div className="w-full flex justify-normal items-baseline">
-                            <span className="w-full text-sm text-gray-600">Brand</span>
-                            <span className="w-full text-sm font-medium">{product.brand }</span>
-                        </div> 
-                    :""    
-                    }
-                        
-                        <div className="w-full flex justify-normal items-baseline">
-                            <span className="w-full text-sm text-gray-600">model</span>
-                            <span className="w-full text-sm font-medium">{product.code}</span>
-                        </div>
+        <div className="flex items-baseline gap-3">
+            <span className="w-24 shrink-0 text-sm text-gray-600 sm:w-1/2 sm:text-base">{label}</span>
+            <span className="min-w-0 flex-1 break-words text-sm font-medium text-gray-900 sm:text-base">
+                {value}
+            </span>
+        </div>
+    );
+}
+
+export default function Specification({ product }) {
+    const { t } = useLanguage();
+    const hasGeneral =
+        product.content || product.flash || product.ram || product.releaseYear;
+
+    return (
+        <div className="w-full min-w-0">
+            <h2 className="mb-4 text-xl font-bold text-gray-900 sm:text-2xl lg:text-3xl">
+                {t("specification")}
+            </h2>
+            <div className="w-full rounded-3xl bg-[#f6f5f8] p-5 sm:p-8">
+                <div className="flex flex-col gap-5 sm:gap-6">
+                    <h3 className="flex items-center gap-3 text-lg font-semibold text-gray-900 sm:text-xl">
+                        <IoMdInformationCircleOutline className="h-6 w-6 shrink-0 text-[#E14A5C]" aria-hidden />
+                        {t("Overview")}
+                    </h3>
+                    <div className="flex w-full flex-col gap-4">
+                        <SpecRow label="Brand" value={product.brand} />
+                        <SpecRow label="model" value={product.code} />
                     </div>
-                    <hr className="w-full h-[2px]  bg-gray-400 opacity-60"></hr>
-                  {product.content || product.flash || product.ram || product.releaseYear ? <h1 className="text-xl font-semibold flex items-center justify-start gap-3"><RiRuler2Line className="text-2xl text-[#E14A5C]" />
-                        {t("General")}</h1> :""} 
-                    <div className="w-full flex flex-col gap-5 text-lg items-start">
-                          {product.content ? <div className="w-full flex justify-normal items-baseline">
-                            <span className="w-full text-sm text-gray-600">content</span>
-                            <span className="w-full text-sm font-medium">{product.content}
-                            </span>
-                        </div>:""}
-                         {product.flash ? <div className="w-full flex justify-normal items-baseline">
-                            <span className="w-full text-sm text-gray-600">flash</span>
-                            <span className="w-full text-sm font-medium">{product.flash}
-                            </span>
-                        </div> :""}
-                           {product.ram ?<div className="w-full flex justify-normal items-baseline">
-                            <span className="w-full text-sm text-gray-600">ram</span>
-                            <span className="w-full text-sm font-medium">{product.ram}
-                            </span>
-                        </div> :""}
-                         {product.releaseYear ? <div className="w-full flex justify-normal items-baseline">
-                            <span className="w-full text-sm text-gray-600">Release years
-                            </span>
-                            <span className="w-full text-sm font-medium">{product.releaseYear}
-                            </span>
-                        </div> :""}
+                    <hr className="h-px w-full border-0 bg-gray-200" />
+                    {hasGeneral ? (
+                        <h3 className="flex items-center gap-3 text-lg font-semibold text-gray-900 sm:text-xl">
+                            <RiRuler2Line className="h-6 w-6 shrink-0 text-[#E14A5C]" aria-hidden />
+                            {t("General")}
+                        </h3>
+                    ) : null}
+                    <div className="flex w-full flex-col gap-4">
+                        <SpecRow label="content" value={product.content} />
+                        <SpecRow label="flash" value={product.flash} />
+                        <SpecRow label="ram" value={product.ram} />
+                        <SpecRow label="Release years" value={product.releaseYear} />
                     </div>
                 </div>
             </div>
         </div>
-    )
+    );
 }

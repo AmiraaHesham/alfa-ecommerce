@@ -39,43 +39,38 @@ export default function CategorySection({ categories }) {
           </div>
         
         </div>
-      <div className="w-full grid grid-cols-3 xl:grid-cols-3 gap-2">
-
-          {categories.map((category ,index) => (
-          
-              <div
-              key={index}
-                className="mt-4 flex justify-center items-center text-center cursor-pointer rounded-md  min-w-0 px-1"
-                onClick={() => {
-                  navigate.push(
-                    "/user/products/category/" +
-                    category.nameEn +
-                    "/" +
-                    category.itemCategoryId,
-                  );
-                }}
-              >
-                <div className=" w-full flex flex-col justify-center items-center   ">
-                  <div className="relative rounded-full  xl:h-[100px] xl:w-[100px] xs:h-[80px] xs:w-[80px] hover:scale-105 duration-200 ">
-                    <Image
-                      src={`${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL}${getThumbnailUrl(category.imageURL) || ""
-                        }`}
-                      alt=""
-                      fill
-                      quality={100}
-                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                      className="object-fill rounded-full"
-                    />
-                  </div>
-                  <h1 className="font-semibold text-sm  mt-2 break-words w-full line-clamp-2">
-                    {locale === "ar" ? category.nameAr : category.nameEn}
-                  </h1>
-                </div>
-              </div>
-      
-          ))}
-     
-
+      <div className="w-full grid grid-cols-3 gap-x-2 gap-y-1 mt-2">
+        {categories.map((category, index) => (
+          <div
+            key={index}
+            className="mt-4 flex min-w-0 cursor-pointer items-center gap-2 rounded-md px-1 text-start"
+            onClick={() => {
+              navigate.push(
+                "/user/products/category/" +
+                  category.nameEn +
+                  "/" +
+                  category.itemCategoryId,
+              );
+            }}
+          >
+            <div className="relative shrink-0 rounded-full h-[64px] w-[64px] hover:scale-105 duration-200">
+              <Image
+                src={`${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL}${getThumbnailUrl(category.imageURL) || ""
+                  }`}
+                alt={locale === "ar" ? category.nameAr : category.nameEn}
+                fill
+                quality={100}
+                sizes="80px"
+                className="object-fill rounded-full"
+              />
+            </div>
+            <h1 className="min-w-0 flex-1 font-semibold text-sm break-words line-clamp-2">
+              {locale === "ar"
+                ? category.nameAr || category.nameEn
+                : category.nameEn || category.nameAr}
+            </h1>
+          </div>
+        ))}
       </div>
     </div>
   );

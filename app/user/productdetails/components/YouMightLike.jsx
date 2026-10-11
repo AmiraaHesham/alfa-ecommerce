@@ -36,10 +36,10 @@ export default function YouMightLike({categoryId}) {
         getProductsByCategory()
       },[getProductsByCategory])
 return(
-      <div className=" bg-[#f6f5f8] py-10">
-        <h1 className="md:text-2xl xs:text-lg flex items-center gap-3 font-bold">
+      <div className=" bg-[#f6f5f8] py-8 sm:py-10">
+        <h2 className="mb-4 flex items-center gap-3 text-lg font-bold text-gray-900 sm:text-xl md:text-2xl">
           {t("You_might_like")}
-        </h1>
+        </h2>
 
         <div className="">
           <Swiper

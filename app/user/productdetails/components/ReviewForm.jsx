@@ -43,9 +43,9 @@ const {t}= useLanguage()
   return (
     <form
       onSubmit={handleSubmit}
-      className="w-full bg-white rounded-lg p-6 md:p-8"
+      className="w-full"
     >
-      <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-2">
+      <h2 className="mb-2 text-lg font-bold text-gray-900 sm:text-xl">
         {t("Add_review")}
       </h2>
 
@@ -72,11 +72,11 @@ const {t}= useLanguage()
             >
               {value <= hoverRating || value <= rating ? (
                 <FaStar
-                  className="w-4 h-4 transition-colors duration-200 ease-in-out text-[#f5b800]" />
+                  className="h-5 w-5 sm:h-6 sm:w-6 transition-colors duration-200 ease-in-out text-[#f5b800]" />
               ) :
                 (<FaRegStar
                   key={value}
-                  className="text-gray-300 w-4 h-4 transition-colors duration-200 ease-in-out"
+                  className="text-gray-300 h-5 w-5 sm:h-6 sm:w-6 transition-colors duration-200 ease-in-out"
                 />)
               }
             </button>
@@ -94,7 +94,7 @@ const {t}= useLanguage()
           onChange={(e) => setReview(e.target.value)}
           rows={8}
           placeholder={t("Your_review_placeholder")}
-          className="w-full h-[190px] resize-y rounded-3xl border border-gray-300 bg-white p-4 text-sm text-gray-800 outline-none transition-colors focus:border-[#e5485d]/60"
+          className="w-full h-[190px] resize-y rounded-2xl border border-gray-300 bg-white p-4 text-sm text-gray-800 outline-none transition-colors focus:border-[#e5485d]/60"
         />
       </div>
 
