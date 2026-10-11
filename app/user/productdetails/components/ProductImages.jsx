@@ -57,7 +57,7 @@ export default function ProductImages({ product }) {
             thumbsSwiperRef.current = swiper;
           }}
           aria-label={`${productName || "Product"} images`}
-          className="min-h-0 w-full shrink-0 overflow-hidden md:h-[360px] md:w-[110px] lg:h-[520px]"
+          className="lg:order-1 xs:order-2 min-h-0 w-full shrink-0 overflow-hidden md:h-[360px] md:w-[110px] lg:h-[520px]"
         >
           {images.map((img, index) => (
             <SwiperSlide
@@ -95,7 +95,7 @@ export default function ProductImages({ product }) {
           ))}
         </Swiper>
       )}
-      <div className="relative min-w-0 flex-1 overflow-hidden rounded-2xl  bg-white sm:rounded-3xl">
+      <div className="lg:order-2 xs:order-1 relative min-w-0 flex-1 overflow-hidden rounded-2xl  bg-white sm:rounded-3xl">
         {images.length > 0 ? (
           <div className="group/swiperImage ">
           <Swiper
