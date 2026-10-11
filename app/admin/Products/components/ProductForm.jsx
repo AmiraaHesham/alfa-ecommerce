@@ -464,7 +464,7 @@ productData()
               onChange={(e) =>
                 setProduct((prev) => ({ ...prev, ram: e.target.value }))
               }
-              required
+              
               className="w-full  outline-none  text-base  my-1  p-2 border rounded-md focus:border-red-600 transition-colors"
             />
           </div>
@@ -478,7 +478,7 @@ productData()
               onChange={(e) =>
                 setProduct((prev) => ({ ...prev, flash: e.target.value }))
               }
-              required
+              
               className="w-full  outline-none  text-base  my-1  p-2 border rounded-md focus:border-red-600 transition-colors"
             />
           </div>
@@ -492,7 +492,7 @@ productData()
               onChange={(e) =>
                 setProduct((prev) => ({ ...prev, contents: e.target.value }))
               }
-              required
+              
               className="w-full  outline-none  text-base  my-1  p-2 border rounded-md focus:border-red-600 transition-colors"
             />
           </div>
@@ -506,7 +506,7 @@ productData()
               onChange={(e) =>
                 setProduct((prev) => ({ ...prev, brand: e.target.value }))
               }
-              required
+              
               className="w-full  outline-none  text-base  my-1  p-2 border rounded-md focus:border-red-600 transition-colors"
             />
           </div>

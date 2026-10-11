@@ -2,65 +2,99 @@
 import { getThumbnailUrl } from "../../../../utils/functions";
 import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Navigation } from "swiper/modules";
+import { Autoplay, Mousewheel, Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLanguage } from "../../../../context/LanguageContext";
 import { IoImageOutline } from "react-icons/io5";
 import { MdOutlineArrowBackIosNew, MdOutlineArrowForwardIos } from "react-icons/md";
 
+function useIsDesktop() {
+  const [isDesktop, setIsDesktop] = useState(() =>
+    typeof window !== "undefined"
+      ? window.matchMedia("(min-width: 768px)").matches
+      : true
+  );
+
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 768px)");
+    const onChange = (event) => setIsDesktop(event.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+
+  return isDesktop;
+}
+
 export default function ProductImages({ product }) {
   const urlImage = process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL;
   const swiperRef = useRef(null);
+  const thumbsSwiperRef = useRef(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [failedThumbs, setFailedThumbs] = useState({});
   const { locale } = useLanguage();
+  const isDesktop = useIsDesktop();
+  const thumbDirection = isDesktop ? "vertical" : "horizontal";
   const images = Array.isArray(product.images) ? product.images : [];
   const productName = locale === "ar" ? product.nameAr : product.nameEn;
 
   return (
-    <div className="flex w-full min-w-0 flex-col-reverse gap-3  sm:gap-4 sm:mx-auto sm:max-w-[620px] md:sticky md:top-6 lg:mx-0 lg:max-w-none md:flex-row">
+    <div className="flex w-full min-w-0 flex-col gap-3 sm:gap-4 sm:mx-auto sm:max-w-[620px] lg:sticky md:top-6 lg:mx-0 lg:max-w-none md:flex-row">
       {images.length > 1 && (
-        <div
-          role="group"
-          className="flex w-full shrink-0 snap-x gap-2 overflow-x-scroll pb-1 md:max-h-[360px] md:w-auto md:flex-col md:overflow-x-visible md:overflow-y-auto md:pb-0 lg:max-h-[440px]"
+<Swiper
+          key={`${locale}-${thumbDirection}`}
+          dir={locale === "ar" ? "rtl" : "ltr"}
+          direction={thumbDirection}
+          slidesPerView="auto"
+          slidesPerGroup={1}
+          spaceBetween={8}
+          modules={[Mousewheel]}
+          mousewheel={{ forceToAxis: true, threshold: 40 }}
+          initialSlide={activeIndex}
+          onSwiper={(swiper) => {
+            thumbsSwiperRef.current = swiper;
+          }}
           aria-label={`${productName || "Product"} images`}
+          className="min-h-0 w-full shrink-0 overflow-hidden md:h-[360px] md:w-[110px] lg:h-[520px]"
         >
           {images.map((img, index) => (
-            <button
+            <SwiperSlide
               key={img?.itemImageId ?? img?.imageUrl ?? index}
-              type="button"
-              onClick={() => swiperRef.current?.slideTo(index)}
-              aria-label={`Show image ${index + 1} of ${images.length}`}
-              aria-current={index === activeIndex}
-              className={`relative h-16 w-16 shrink-0 snap-start overflow-hidden rounded-xl border-2 bg-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E14A5C] focus-visible:ring-offset-1 sm:h-20 sm:w-20 ${
-                index === activeIndex
-                  ? "border-[#E14A5C]"
-                  : "border-gray-200 hover:border-gray-400"
-              }`}
+              className="!h-14 !w-14 sm:!h-20 sm:!w-20"
             >
-              <Image
-                src={
-                  urlImage +
-                  (failedThumbs[index]
-                    ? img.imageUrl
-                    : getThumbnailUrl(img.imageUrl))
-                }
-                alt=""
-                fill
-                sizes="80px"
-                className="object-contain p-1"
-                onError={() =>
-                  setFailedThumbs((prev) => ({ ...prev, [index]: true }))
-                }
-              />
-            </button>
+              <button
+                type="button"
+                onClick={() => swiperRef.current?.slideTo(index)}
+                aria-label={`Show image ${index + 1} of ${images.length}`}
+                aria-current={index === activeIndex}
+                className={`relative h-full w-full overflow-hidden rounded-xl border-2 bg-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E14A5C] focus-visible:ring-offset-1 ${
+                  index === activeIndex
+                    ? "border-[#E14A5C]"
+                    : "border-gray-200 hover:border-gray-400"
+                }`}
+              >
+                <Image
+                  src={
+                    urlImage +
+                    (failedThumbs[index]
+                      ? img.imageUrl
+                      : getThumbnailUrl(img.imageUrl))
+                  }
+                  alt=""
+                  fill
+                  sizes="80px"
+                  className="object-contain p-1"
+                  onError={() =>
+                    setFailedThumbs((prev) => ({ ...prev, [index]: true }))
+                  }
+                />
+              </button>
+            </SwiperSlide>
           ))}
-        </div>
+        </Swiper>
       )}
-
       <div className="relative min-w-0 flex-1 overflow-hidden rounded-2xl  bg-white sm:rounded-3xl">
         {images.length > 0 ? (
           <div className="group/swiperImage ">
@@ -75,7 +109,10 @@ export default function ProductImages({ product }) {
             onSwiper={(swiper) => {
               swiperRef.current = swiper;
             }}
-            onSlideChange={(swiper) => setActiveIndex(swiper.activeIndex)}
+            onSlideChange={(swiper) => {
+              setActiveIndex(swiper.activeIndex);
+              thumbsSwiperRef.current?.slideTo(swiper.activeIndex);
+            }}
             dir={locale === "ar" ? "rtl" : "ltr"}
             spaceBetween={10}
             className="aspect-square w-full max-h-[360px] select-none lg:max-h-[520px]"
@@ -132,6 +169,8 @@ export default function ProductImages({ product }) {
           </div>
         )}
       </div>
+
+      
     </div>
   );
 }

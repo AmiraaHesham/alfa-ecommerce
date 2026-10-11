@@ -1,12 +1,12 @@
 "use client";
 import { IoShareSocial } from "react-icons/io5";
-import { FaRegHeart } from "react-icons/fa6";
+import { FaChevronDown, FaRegHeart } from "react-icons/fa6";
 import { FaShippingFast } from "react-icons/fa";
 import { postRequest } from "../../../../utils/requestsUtils";
 import { useRouter } from "next/navigation";
 import { useRefresh } from "../../../../context/refreshContext";
 import { useCartDrawerOpen } from "../../../../context/CartDrawerOpenContext";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLanguage } from "../../../../context/LanguageContext";
 import { toast } from "react-toastify";
 import Link from "next/link";
@@ -28,6 +28,25 @@ export default function ProductInfo({ product, itemId }) {
 
     const description =
         locale === "ar" ? product.descriptionAr : product.descriptionEn;
+
+    const [descriptionExpanded, setDescriptionExpanded] = useState(false);
+    const descriptionRef = useRef(null);
+    const [descriptionHeights, setDescriptionHeights] = useState({
+        collapsed: 0,
+        full: 0,
+    });
+
+    useEffect(() => {
+        const el = descriptionRef.current;
+        if (!el) return;
+        setDescriptionHeights({
+            collapsed: el.clientHeight,
+            full: el.scrollHeight,
+        });
+    }, [description, locale]);
+
+    const canExpandDescription =
+        descriptionHeights.full > descriptionHeights.collapsed + 1;
 
     const addFavoriteItems = async () => {
         if (userId) {
@@ -195,9 +214,48 @@ export default function ProductInfo({ product, itemId }) {
             </div>
 
             {description ? (
-                <p className="break-words text-sm leading-relaxed text-gray-500 sm:text-base">
-                    {description}
-                </p>
+                <div className="min-w-0">
+                    <div
+                        className="overflow-hidden transition-[max-height] duration-500 ease-in-out"
+                        style={{
+                            maxHeight: descriptionExpanded
+                                ? `${descriptionHeights.full + 4}px`
+                                : `${descriptionHeights.collapsed}px`,
+                        }}
+                    >
+                        <p
+                            ref={descriptionRef}
+                            className={`break-words text-xs leading-relaxed text-gray-500 sm:text-sm ${
+                                descriptionExpanded ? "" : "line-clamp-3"
+                            }`}
+                        >
+                            {description}
+                        </p>
+                    </div>
+
+                    {descriptionExpanded || canExpandDescription ? (
+                        <button
+                            type="button"
+                            onClick={() => setDescriptionExpanded((value) => !value)}
+                            aria-expanded={descriptionExpanded}
+                            className="mt-1.5 inline-flex items-center gap-1 text-xs font-semibold text-[#E14A5C] transition-colors hover:text-[#CD4354] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E14A5C] sm:text-sm"
+                        >
+                            {descriptionExpanded
+                                ? locale === "ar"
+                                    ? "إظهار أقل"
+                                    : "Show less"
+                                : locale === "ar"
+                                  ? "إظهار المزيد"
+                                  : "Show more"}
+                            <FaChevronDown
+                                aria-hidden
+                                className={`h-3 w-3 transition-transform duration-300 ${
+                                    descriptionExpanded ? "rotate-180" : ""
+                                }`}
+                            />
+                        </button>
+                    ) : null}
+                </div>
             ) : null}
 
             <div className="flex flex-wrap gap-3">
