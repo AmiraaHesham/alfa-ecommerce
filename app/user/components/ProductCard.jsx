@@ -158,20 +158,24 @@ export default function ProductCard({ productInfo, favorite }) {
   // productInfo?.[locale === "ar" ? "descriptionAr" : "descriptionEn"] || "";
   const productName = locale === "ar" ? productInfo?.nameAr : productInfo?.nameEn;
 
+  // Single handler for the whole card: clicking any part of the card opens the
+  // product details (image, name, category, prices, badges).
+  const openProductDetails = () => {
+    setSelectedProductId(productInfo?.itemId);
+    navigate.push(`/user/productdetails/${productName}/${productInfo?.itemId}`);
+  };
+
   return (
     <div
       id={`div_${productInfo?.itemId}`}
       className="min-h-[360px] h-auto group relative bg-white py-2 w-full min-w-0 rounded-3xl cursor-pointer "
+      onClick={openProductDetails}
     >
       <div className="flex flex-col justify-around gap-3 items-center h-full min-w-0">
         <div className="relative w-full aspect-square max-h-[380px] p-1 shrink-0 ">
           <div className="relative w-full h-full">
 
             <div className="absolute top-3 start-3 text-sm flex flex-col items-start gap-1 z-30 max-w-full "
-              onClick={() => {
-                setSelectedProductId(productInfo?.itemId);
-                navigate.push(`/user/productdetails/${productName}/${productInfo?.itemId}`);
-              }}
             >
               {productInfo?.available ?
                 <div className=" flex flex-col gap-1">
@@ -215,11 +219,6 @@ export default function ProductCard({ productInfo, favorite }) {
                 >
                   {productInfo?.images?.map((img, index) => (
                     <SwiperSlide className="rounded-3xl z-50" key={img?.imageUrl || index}
-                     onClick={() => {
-              setSelectedProductId(productInfo?.itemId);
-              navigate.push(`/user/productdetails/${productName}/${productInfo?.itemId}`);
-
-            }}
                     >
                       <Image
                         src={
@@ -233,12 +232,6 @@ export default function ProductCard({ productInfo, favorite }) {
                         quality={100}
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                         className="object-contain rounded-3xl"
-                        onClick={() => {
-                          setSelectedProductId(productInfo?.itemId);
-                          navigate.push(
-                            `/user/productdetails/${productName}/${productInfo?.itemId}`
-                          );
-                        }}
                       />
                     </SwiperSlide>
                   ))}
@@ -393,11 +386,6 @@ export default function ProductCard({ productInfo, favorite }) {
           </div>
         </div>
 <div className="flex flex-col gap-2 items-center justify-center min-w-0 w-full"
-         onClick={() => {
-              setSelectedProductId(productInfo?.itemId);
-              navigate.push(`/user/productdetails/${productName}/${productInfo?.itemId}`);
-
-            }}
         >
         <div className="w-full flex flex-col justify-center items-center min-w-0">
           <h1
