@@ -164,10 +164,10 @@ export default function ProductCard({ productInfo, favorite }) {
       className="min-h-[360px] h-auto group relative bg-white py-2 w-full min-w-0 rounded-3xl cursor-pointer "
     >
       <div className="flex flex-col justify-around gap-3 items-center h-full min-w-0">
-        <div className="relative h-[240px] w-full p-1 shrink-0 ">
+        <div className="relative w-full aspect-square max-h-[380px] p-1 shrink-0 ">
           <div className="relative w-full h-full">
 
-            <div className="absolute text-sm  flex justify-center items-center gap-2 z-20 px-3 "
+            <div className="absolute top-3 start-3 text-sm flex flex-col items-start gap-1 z-30 max-w-full "
               onClick={() => {
                 setSelectedProductId(productInfo?.itemId);
                 navigate.push(`/user/productdetails/${productName}/${productInfo?.itemId}`);
@@ -176,7 +176,7 @@ export default function ProductCard({ productInfo, favorite }) {
               {productInfo?.available ?
                 <div className=" flex flex-col gap-1">
                   {productInfo?.oldPrice ? (
-                    <span className="font-semibold flex justify-center items-center  text-center bg-[#8CBC67] text-xs  w-12 h-6 text-white rounded-full">
+                    <span className="font-semibold flex justify-center items-center text-center bg-[#8CBC67] text-xs min-w-[48px] px-2 h-6 text-white rounded-full whitespace-nowrap">
                       {" - " +
                         (
                           ((productInfo?.oldPrice - productInfo?.price) /
@@ -189,19 +189,19 @@ export default function ProductCard({ productInfo, favorite }) {
                     ""
                   )}
                   {productInfo?.createdDate && new Date(productInfo?.createdDate) >= new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) ?
-                    (<span className="font-semibold flex justify-center items-center  text-center bg-[#CD4354] text-xs  w-12 h-6 text-white rounded-full">
+                    (<span className="font-semibold flex justify-center items-center text-center bg-[#CD4354] text-xs min-w-[48px] px-2 h-6 text-white rounded-full whitespace-nowrap">
                       {t("hot")}
                     </span>) : ("")}
 
                 </div>
 
 
-                : <span className="font-semibold flex justify-center items-center  text-center bg-black text-xs  w-14 h-6 text-white rounded-full">
+                : <span className="font-semibold flex justify-center items-center text-center bg-black text-xs min-w-[56px] px-2 h-6 text-white rounded-full whitespace-nowrap">
                   {t("soldOut")}
                 </span>}
 
             </div>
-            <div className="w-full h-full flex justify-center px-3 items-center rounded-3xl z-10">
+            <div className="w-full h-full flex justify-center px-1 items-center rounded-3xl z-10">
               <div className=" h-full w-full relative   bg-white rounded-3xl">
                 <Swiper
                   key={locale}
@@ -232,7 +232,7 @@ export default function ProductCard({ productInfo, favorite }) {
                         priority={index === 0}
                         quality={100}
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                        className="object-fill rounded-3xl"
+                        className="object-contain rounded-3xl"
                         onClick={() => {
                           setSelectedProductId(productInfo?.itemId);
                           navigate.push(
