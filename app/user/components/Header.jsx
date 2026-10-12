@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { getRequest, postRequest, deleteRequest } from "../../../utils/requestsUtils";
+import { decodeSearchInput } from "../../../utils/functions";
 import { useRefresh } from "../../../context/refreshContext";
 import { useMenuOpen } from "../../../context/MenuOpenContext";
 import { FiHeart } from "react-icons/fi";
@@ -136,7 +137,7 @@ export default function Header() {
     setUsername(firstName);
     if(window.location.pathname.includes("search")){
 const lastPort = window.location.pathname.split("/").filter(Boolean).pop();
-setSearchInput(lastPort)
+setSearchInput(decodeSearchInput(lastPort))
     }
     // const userInfo = async()=>{
     //  const res = await getUserInfo()
@@ -238,7 +239,7 @@ setSearchInput(lastPort)
             className="text-white h-full border-2 rounded-full text-2xl bg-[#e14a5c] p-1 "
             onClick={() => {
               searchInput
-                ? navigate.push("/user/search/" + searchInput)
+                ? navigate.push("/user/search/" + encodeURIComponent(searchInput))
                 : navigate.push("/user/home");
             }}
           >
@@ -251,7 +252,7 @@ setSearchInput(lastPort)
               if (e.key === "Enter") {
                 e.preventDefault();
                 searchInput
-                  ? navigate.push("/user/search/" + searchInput)
+                  ? navigate.push("/user/search/" + encodeURIComponent(searchInput))
                   : navigate.push("/user/home");
               }
             }}
@@ -371,7 +372,7 @@ setSearchInput(lastPort)
             className="text-white h-full border-2 rounded-full text-2xl bg-[#e14a5c] p-1 "
             onClick={() => {
               searchInput
-                ? navigate.push("/user/search/" + searchInput)
+                ? navigate.push("/user/search/" + encodeURIComponent(searchInput))
                 : navigate.push("/user/home");
             }}
           >
@@ -384,7 +385,7 @@ setSearchInput(lastPort)
               if (e.key === "Enter") {
                 e.preventDefault();
                 searchInput
-                  ? navigate.push("/user/search/" + searchInput)
+                  ? navigate.push("/user/search/" + encodeURIComponent(searchInput))
                   : navigate.push("/user/home");
               }
             }}
