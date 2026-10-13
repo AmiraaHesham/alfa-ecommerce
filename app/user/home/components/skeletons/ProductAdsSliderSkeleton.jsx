@@ -1,7 +1,7 @@
 import Skeleton from "./Skeleton";
 import ProductCardSkeleton from "./ProductCardSkeleton";
 
-// Mirrors app/user/home/components/ProductAdsSlider.jsx
+// Mirrors app//components/ProductAdsSlider.jsx
 // (40% product card column + 60% image column + pagination dots)
 export default function ProductAdsSliderSkeleton() {
   return (

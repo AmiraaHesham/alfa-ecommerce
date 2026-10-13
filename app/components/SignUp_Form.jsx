@@ -162,8 +162,8 @@ setOpenForm(false)
             className="flex flex-col  gap-2 w-[90%]"
             onSubmit={handleSignUp}
           >
-            <div className=" flex items-center  gap-5 flex-wrap">
-              <div className="flex flex-col gap-2  w-full min-w-0">
+           <div className="flex gap-5 flex-wrap">
+              <div className="flex flex-col gap-2  w-full ">
                 <label className="text-gray-500 text-sm ">
                   {t("firstName")}
                 </label>

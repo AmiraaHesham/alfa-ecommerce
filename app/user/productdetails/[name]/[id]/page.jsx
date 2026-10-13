@@ -46,7 +46,7 @@ export async function generateMetadata({ params }) {
   openGraph: {
     title: product.nameEn,
     description: product.descriptionEn,
-    url: `https://alfagrouptech.com/user/home/user/productdetails/${product.nameEn}/${id}`,
+    url: `https://alfagrouptech.com//user/productdetails/${product.nameEn}/${id}`,
     type: "website",
     images: image ? [{ url: image }] : [],
   },

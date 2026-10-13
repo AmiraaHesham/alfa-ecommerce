@@ -16,7 +16,7 @@ import { toast } from "react-toastify";
 // import Link from "next/link";
 import CartTable from "./CartTable";
 import Select from "react-select";
-export default function Cart({ setShowSignUp }) {
+export default function Cart({ setShowSignIn }) {
   const { t } = useLanguage();
   const [items, setItems] = useState([]);
   const [Checkout, setCheckout] = useState(false);
@@ -191,7 +191,7 @@ export default function Cart({ setShowSignUp }) {
           toast.error(t("noProductsInCart"));
         }
       } else {
-        setShowSignUp(true);
+        setShowSignIn(true);
       }
     } catch (error) {
     } finally {
@@ -224,7 +224,7 @@ export default function Cart({ setShowSignUp }) {
           </span>
         </div>
         <Link
-          href="/user/home"
+          href="/"
           className="md:text-sm xs:text-xs font-semibold text-red-600 flex items-center gap-2"
         >
           <h1>{t("continueShopping")} </h1>

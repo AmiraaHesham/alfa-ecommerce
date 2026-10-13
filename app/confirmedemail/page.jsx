@@ -14,7 +14,7 @@ export default function ConfirmedEmailPage() {
   //     setCount((prev) => {
   //       if (prev === 1) {
   //         clearInterval(timer);
-  //         router.push("/user/home");
+  //         router.push("/");
   //         return 0;
   //       }
   //       return prev - 1;

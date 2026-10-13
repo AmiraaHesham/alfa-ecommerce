@@ -1,6 +1,6 @@
 import Skeleton from "./Skeleton";
 
-// Mirrors app/user/home/components/CategoriesSection.jsx
+// Mirrors app//components/CategoriesSection.jsx
 // (title row + 3 column grid of 64px circles with a 2 line label beside each circle)
 export default function CategorySkeleton({
   count = 6,

@@ -159,7 +159,7 @@ setSearchInput(lastPort)
             className="w-[1px] h-4 border-0  bg-gray-300"
           />
           <Link
-            href={"/user/home/#footer"}
+            href={"//#footer"}
             className="hover:text-gray-100"
           >
             {t("contact_us")}
@@ -209,7 +209,7 @@ setSearchInput(lastPort)
 
         </button>
         <div className="flex justify-center items-center min-w-0">
-          <Link href="/user/home" className="flex justify-center items-center ">
+          <Link href="/" className="flex justify-center items-center ">
 
             <span className="relative w-12 h-12 ">
               <Image
@@ -239,7 +239,7 @@ setSearchInput(lastPort)
             onClick={() => {
               searchInput
                 ? navigate.push("/user/search/" + searchInput)
-                : navigate.push("/user/home");
+                : navigate.push("/");
             }}
           >
             <IoMdSearch />
@@ -252,7 +252,7 @@ setSearchInput(lastPort)
                 e.preventDefault();
                 searchInput
                   ? navigate.push("/user/search/" + searchInput)
-                  : navigate.push("/user/home");
+                  : navigate.push("/");
               }
             }}
             placeholder={t("search") + "..."}
@@ -372,7 +372,7 @@ setSearchInput(lastPort)
             onClick={() => {
               searchInput
                 ? navigate.push("/user/search/" + searchInput)
-                : navigate.push("/user/home");
+                : navigate.push("/");
             }}
           >
             <IoMdSearch />
@@ -385,7 +385,7 @@ setSearchInput(lastPort)
                 e.preventDefault();
                 searchInput
                   ? navigate.push("/user/search/" + searchInput)
-                  : navigate.push("/user/home");
+                  : navigate.push("/");
               }
             }}
             placeholder={t("search") + "..."}

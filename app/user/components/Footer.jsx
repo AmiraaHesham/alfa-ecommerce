@@ -56,7 +56,7 @@ export default function Footer() {
     <div  className="bg-white text-black px-3 py-5 flex flex-col  w-full">
       <div className="flex  md:flex-row xs:flex-col  justify-between md:items-center xs:items-start xs:gap-5">
         <div className="flex items-center justify-start w-full flex-wrap min-w-0">
-          <Link href="/user/home">
+          <Link href="/">
             <div className="flex  items-start justify-start w-full ">
 
               <span className=" relative w-[60px] h-[60px]">
@@ -171,13 +171,13 @@ export default function Footer() {
           <div className={`flex-col  gap-2 w-full ${show.quick_links ? "flex duration-500 scale-x-100" : "hidden duration-500 "
             } md:flex`}>
             <Link
-              href={"/user/home"}
+              href={"/"}
               className="hover:text-gray-800"
             >
               {t("homepage")}
             </Link>
             <Link
-              href={"/user/home#FeaturedProducts"}
+              href={"/#FeaturedProducts"}
               className="hover:text-gray-800"
             >
               {t("featured_products")}
@@ -185,7 +185,7 @@ export default function Footer() {
 
 
             <Link
-              href={"/user/home#CategoriesSection"}
+              href={"/#CategoriesSection"}
               className="hover:text-gray-800"
             >
               {t("categories")}{" "}

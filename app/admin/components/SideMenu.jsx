@@ -289,7 +289,7 @@ export default function SideMenu() {
               localStorage.setItem("phone", "");
               localStorage.setItem("role", "");
               localStorage.setItem("username", "");
-              navigate.push("/signin");
+              navigate.push("/");
             }}
           >
             <span className="text-2xl">

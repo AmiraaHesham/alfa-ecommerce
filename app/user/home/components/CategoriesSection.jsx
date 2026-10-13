@@ -43,7 +43,7 @@ export default function CategorySection({ categories }) {
         {categories.map((category, index) => (
           <div
             key={index}
-            className="mt-4 flex min-w-0 cursor-pointer items-center gap-2 rounded-md px-1 text-start"
+            className="mt-4 flex xl:flex-row xs:flex-col min-w-0 cursor-pointer items-center gap-2 rounded-md px-1 text-start"
             onClick={() => {
               navigate.push(
                 "/user/products/category/" +
@@ -53,7 +53,7 @@ export default function CategorySection({ categories }) {
               );
             }}
           >
-            <div className="relative shrink-0 rounded-full h-[80px] w-[80px] hover:scale-105 duration-200">
+            <div className="relative shrink-0 rounded-full h-[75px] w-[75px] hover:scale-105 duration-200">
               <Image
                 src={`${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL}${getThumbnailUrl(category.imageURL) || ""
                   }`}

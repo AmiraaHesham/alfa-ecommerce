@@ -1,7 +1,7 @@
 import Skeleton from "./Skeleton";
 import ProductCardSkeleton from "./ProductCardSkeleton";
 
-// Mirrors app/user/home/components/TopDiscounted.jsx
+// Mirrors app//components/TopDiscounted.jsx
 // (banner block with a discount badge, headline text and a swiper of product cards)
 export default function TopDiscountedSkeleton({ cards = 3 }) {
   return (

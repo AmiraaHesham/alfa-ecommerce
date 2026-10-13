@@ -145,7 +145,7 @@ const responce = await getRequest("/api/users")
                 localStorage.setItem("firstName", "");
                 localStorage.setItem("role", "");
        
-                navigate.push("/signin");
+                navigate.push("/");
               }}
             >
               {t("logout")}

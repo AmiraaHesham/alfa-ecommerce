@@ -60,7 +60,7 @@ export default function SignIn({ popUp, setShowSignUp, setShowSignIn,setOpenForm
         router.refresh();
         setOpenForm(false)
       } else {
-        navigate.replace("/user/home");
+        navigate.replace("/");
       }
       setLocale(response.data.userDetails.language);
     } catch (error) {

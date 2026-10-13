@@ -21,9 +21,9 @@ export async function generateMetadata  () {
 
   return {
     title: isArabic
-      ? "ألفا جروب للتقنية"
-      : "Alfa Group Tech",
-
+      ? "AlfaGroupTech        "
+      : "AlfaGroupTech",
+                                            
     description: isArabic
       ? "ألفا جروب للتقنية هو متجرك الإلكتروني لشراء أحدث الأجهزة والإلكترونيات. اكتشف تشكيلة متنوعة من المنتجات التقنية بأسعار مميزة وعروض تناسب احتياجاتك."
       : "Alfa Group Tech is your online destination for the latest electronics and technology products. Discover a wide range of products at great prices and find the best deals in one place.",

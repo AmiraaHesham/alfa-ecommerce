@@ -89,7 +89,7 @@ export default function WishList() {
           </span>
         </div>
         <Link
-          href="/user/home"
+          href="/"
           className="text-sm font-semibold text-red-600 flex items-center gap-2"
         >
           <h1>{t("continueShopping")} </h1>
