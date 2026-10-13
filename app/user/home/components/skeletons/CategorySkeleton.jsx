@@ -1,7 +1,12 @@
 import Skeleton from "./Skeleton";
 
+<<<<<<< HEAD
 // Mirrors app//components/CategoriesSection.jsx
 // (title row + 3 column grid of 64px circles with a 2 line label beside each circle)
+=======
+// Mirrors app/user/home/components/CategoriesSection.jsx
+// (title row + 3 column grid of 80px/100px circles with a 2 line label beside each circle)
+>>>>>>> ed19dedd2cab5263c440baf12802c0d645a0f5ea
 export default function CategorySkeleton({
   count = 6,
   showHeader = true,
@@ -22,12 +27,14 @@ export default function CategorySkeleton({
         {Array.from({ length: count }).map((_, i) => (
           <div
             key={`category-${i}`}
-            className="mt-4 flex min-w-0 items-center gap-2 rounded-md px-1"
+            className="mt-4 flex justify-center items-center text-center min-w-0 px-1"
           >
-            <Skeleton className="shrink-0 rounded-full h-[64px] w-[64px]" />
-            <div className="min-w-0 flex-1 flex flex-col gap-1">
-              <Skeleton className="h-3 w-4/5" />
-              <Skeleton className="h-3 w-3/5" />
+            <div className="w-full min-w-0 flex flex-row justify-center items-center gap-2">
+              <Skeleton className="shrink-0 rounded-full h-[80px] w-[80px] xl:h-[100px] xl:w-[100px]" />
+              <div className="min-w-0 flex-1 flex flex-col items-start gap-1">
+                <Skeleton className="h-3 w-20" />
+                <Skeleton className="h-3 w-14" />
+              </div>
             </div>
           </div>
         ))}

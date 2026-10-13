@@ -9,12 +9,16 @@ import { MdFilterAlt } from "react-icons/md";
 import { LuColumns2, LuColumns3, LuColumns4 } from "react-icons/lu";
 import Filter from "./components/filter"
 import Pagination from "./components/Pagination"
+import { decodeSearchInput } from "../../../../utils/functions";
 
 const DEFAULT_PRICE_BOUNDS = { min: 0, max: 1 };
 const FILTER_OPTIONS_LOOKUP_SIZE = 100;
 
 export default function Searchpage({params}) {
-    const { searchInput } = params;
+    // Route params arrive URL-encoded (Next.js does not decode them): decode
+    // once so the heading shows the real text (e.g. Arabic) and the searchText
+    // sent to the API matches stored item names.
+    const searchInput = decodeSearchInput(params?.searchInput);
 
   const { t } = useLanguage();
   const [products, setProducts] = useState([]);

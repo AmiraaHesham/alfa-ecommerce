@@ -69,3 +69,15 @@ export const getThumbnailUrl = (imageUrl) => {
   return `${path}thumb_${fileName}`;
 };
 
+// Next.js keeps dynamic route params URL-encoded (it does not decode them),
+// so route values arrive like "%D9%87%D8%A7%D9%84%D9%83". Decode to the text
+// the user actually typed; on malformed input (stray "%") return it unchanged.
+export const decodeSearchInput = (value) => {
+  if (!value) return "";
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return value;
+  }
+};
+

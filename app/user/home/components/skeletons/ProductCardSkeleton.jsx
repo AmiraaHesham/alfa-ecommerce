@@ -6,9 +6,9 @@ export default function ProductCardSkeleton({ className = "" }) {
   return (
     <div className={`h-[360px] w-full bg-white py-2 rounded-3xl ${className}`}>
       <div className="flex flex-col justify-around gap-3 items-center h-full">
-        <div className="relative h-2/3 w-full p-1">
+        <div className="relative w-full aspect-square max-h-[380px] p-1">
           <Skeleton className="w-full h-full rounded-3xl" />
-          <Skeleton className="absolute top-2 left-3 h-6 w-12 rounded-full" />
+          <Skeleton className="absolute top-3 start-3 h-6 w-12 rounded-full" />
         </div>
 
         <div className="flex flex-col gap-2 items-center justify-center w-full px-2">
