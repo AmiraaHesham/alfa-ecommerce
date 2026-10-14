@@ -1,7 +1,7 @@
 import SectionHeaderSkeleton from "./SectionHeaderSkeleton";
 import ProductListRowSkeleton from "./ProductListRowSkeleton";
 
-// Mirrors app/user/home/components/Top10Products.jsx
+// Mirrors app//components/Top10Products.jsx
 // (p-5 white card, header, 2 columns of 8 compact product rows)
 export default function Top10ProductsSkeleton() {
   return (

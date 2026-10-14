@@ -1,6 +1,6 @@
 "use client";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Navigation } from "swiper/modules";
+import { Autoplay, Navigation ,Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -52,18 +52,20 @@ const swiperRef = useRef()
     
 </div>
        
-      <div className="group/swiper relative overflow-visible px-10 md:w-3/4 xs:w-full h-full flex justify-center items-center ">
+      <div className="group/swiper relative overflow-visible  md:w-3/4 xs:w-full h-full flex justify-center items-center ">
       <Swiper
           key={locale}
           slidesPerView={"auto"}
           // slidesOffsetBefore={5}
           // slidesOffsetAfter={5}
-          modules={[Navigation, Autoplay]}
+                  // pagination={true}
+
+          modules={[Navigation, Autoplay ]}
     navigation={{
       prevEl: ".custom-prev",
       nextEl: ".custom-next",
     }}          dir={locale === "ar" ? "rtl" : "ltr"}
-          spaceBetween={25}
+          spaceBetween={10}
            onSwiper={(swiper) => {
       swiperRef.current = swiper;
     }}
@@ -73,7 +75,7 @@ const swiperRef = useRef()
             return (
               <SwiperSlide
                 key={product.itemId}
-                className="my-10 !w-[240px] rounded-lg select-none"
+                className="my-10 !w-[235px] rounded-lg select-none"
               >
                 <div className="rounded-lg  flex justify-center  cursor-pointer">
                   <ProductCard productInfo={product} favorite={false} />
@@ -88,11 +90,11 @@ const swiperRef = useRef()
       </Swiper>
       <div className=" lg:opacity-0 lg:invisible
     lg:group-hover/swiper:opacity-100 lg:group-hover/swiper:visible
-    xs:opacity-100 xs:visible
+   
     transition-all duration-300 ">
           <button
       type="button"
-      onClick={() => swiperRef.current?.slidePrev()}
+      onClick={() => swiperRef.current?.slideNext()}
       className="absolute left-0 top-1/2 -translate-y-1/2 z-50
                   text-2xl
                 flex items-center justify-center 
@@ -102,7 +104,7 @@ const swiperRef = useRef()
     </button>
         <button
       type="button"
-      onClick={() => swiperRef.current?.slideNext()}
+      onClick={() => swiperRef.current?.slidePrev()}
       className="absolute right-0 top-1/2 -translate-y-1/2 z-50
               
                 text-2xl

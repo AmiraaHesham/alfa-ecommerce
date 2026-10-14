@@ -1,6 +1,6 @@
 import Skeleton from "./Skeleton";
 
-// Mirrors app/user/home/components/SiteFeatures.jsx
+// Mirrors app//components/SiteFeatures.jsx
 // (dark rounded-full bar with 5 icon + label items)
 export default function SiteFeaturesSkeleton({ count = 5 }) {
   return (

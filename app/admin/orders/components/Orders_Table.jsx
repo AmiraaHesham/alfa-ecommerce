@@ -18,7 +18,13 @@ export default function Orders_Table() {
   const [loading, setLoading] = useState(true);
   const pageNum = useRef(0);
   const searchInputRef = useRef(null);
-
+  const orderCancel = async (orderId) => {
+    try {
+      await postRequest(`/api/orders/${orderId}/cancel`, "", t("message"));
+      navigate.refresh();
+    } catch (error) {
+    }
+  };
   const getAllOrders = useCallback(async () => {
     try {
       const response = await postRequest(
@@ -311,7 +317,22 @@ export default function Orders_Table() {
                   <span className="shrink-0 w-[150px]">
                     {statusSelect(order, "w-full xs:text-xs text-sm font-semibold")}
                   </span>
+                  
                 </div>
+                {order.state === "CANCELLED" || order.state === "DELIVERED" ? 
+                "":   <div className="w-full flex justify-end items-end">
+                    <button
+            className={`xs:text-xs md:text-sm flex items-center justify-center  
+              text-red-700 bg-red-100 hover:bg-red-200  border border-red-700  
+           font-semibold py-1 mt-2 px-4 text-center rounded-3xl`}
+            onClick={() => orderCancel(order.orderId)}
+          >
+            {t("order_cancel")}
+          </button>
+                </div>
+                }
+               
+              
                 <div
                   className="flex items-center gap-3 mt-3 pt-3 border-t cursor-pointer"
                   onClick={() =>
@@ -366,7 +387,7 @@ export default function Orders_Table() {
       </div>
       <div className="hidden lg:block h-[520px] border-t mt-3 w-full  overflow-y-scroll">
 
-      <table className="w-full h-auto">
+        <table className="w-full h-auto">
           <thead className="bg-[#f0eff0] text-xs   text-justify sticky top-0  z-10">
             <tr className="  h-12">
               {/* <th className="w-[2%] "></th> */}
@@ -376,6 +397,7 @@ export default function Orders_Table() {
               <th className=" ">{t("items")}</th>
               <th className=" ">{t("total")}</th>
               <th className=" ">{t("state_order")}</th>
+              <th className=" ">{t("order_cancel")}</th>
             </tr>
           </thead>
           <tbody className="bg-white text-md w-full ">
@@ -471,14 +493,26 @@ export default function Orders_Table() {
                     <td>
                       {statusSelect(order, "w-[200px] text-sm font-semibold")}
                     </td>
+                    <td>
+                       {order.state === "CANCELLED" || order.state === "DELIVERED" ? 
+                       "":
+                      <button
+                        className={`xs:text-xs md:text-sm flex items-center justify-center  
+              text-red-700 bg-red-100 hover:bg-red-200  border border-red-700  
+           font-semibold py-1 px-4 text-center rounded-3xl`}
+                        onClick={() => orderCancel(order.orderId)}
+                      >
+                        {t("order_cancel")}
+                      </button>}
+                    </td>
                   </tr>
                 );
               })}
-            {/* {orders.length <= 5 ? (
+            {orders.length <= 15 ? (
               " "
-            ) : ( */}
+            ) : (
             <tr className="h-5 text-center">
-              <td colSpan="6">
+              <td colSpan="7">
                 <button
                   className=" text-red-600 w-[100px] py-1 text-center  my-3 rounded-lg"
                   onClick={() => {
@@ -490,7 +524,7 @@ export default function Orders_Table() {
                 </button>
               </td>
             </tr>
-            {/* )} */}
+            )} 
           </tbody>
         </table>
       </div>

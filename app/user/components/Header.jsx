@@ -160,7 +160,7 @@ setSearchInput(decodeSearchInput(lastPort))
             className="w-[1px] h-4 border-0  bg-gray-300"
           />
           <Link
-            href={"/user/home/#footer"}
+            href={"//#footer"}
             className="hover:text-gray-100"
           >
             {t("contact_us")}
@@ -210,7 +210,7 @@ setSearchInput(decodeSearchInput(lastPort))
 
         </button>
         <div className="flex justify-center items-center min-w-0">
-          <Link href="/user/home" className="flex justify-center items-center ">
+          <Link href="/" className="flex justify-center items-center ">
 
             <span className="relative w-12 h-12 ">
               <Image
@@ -239,8 +239,13 @@ setSearchInput(decodeSearchInput(lastPort))
             className="text-white h-full border-2 rounded-full text-2xl bg-[#e14a5c] p-1 "
             onClick={() => {
               searchInput
+<<<<<<< HEAD
+                ? navigate.push("/user/search/" + searchInput)
+                : navigate.push("/");
+=======
                 ? navigate.push("/user/search/" + encodeURIComponent(searchInput))
                 : navigate.push("/user/home");
+>>>>>>> ed19dedd2cab5263c440baf12802c0d645a0f5ea
             }}
           >
             <IoMdSearch />
@@ -252,8 +257,13 @@ setSearchInput(decodeSearchInput(lastPort))
               if (e.key === "Enter") {
                 e.preventDefault();
                 searchInput
+<<<<<<< HEAD
+                  ? navigate.push("/user/search/" + searchInput)
+                  : navigate.push("/");
+=======
                   ? navigate.push("/user/search/" + encodeURIComponent(searchInput))
                   : navigate.push("/user/home");
+>>>>>>> ed19dedd2cab5263c440baf12802c0d645a0f5ea
               }
             }}
             placeholder={t("search") + "..."}
@@ -372,8 +382,13 @@ setSearchInput(decodeSearchInput(lastPort))
             className="text-white h-full border-2 rounded-full text-2xl bg-[#e14a5c] p-1 "
             onClick={() => {
               searchInput
+<<<<<<< HEAD
+                ? navigate.push("/user/search/" + searchInput)
+                : navigate.push("/");
+=======
                 ? navigate.push("/user/search/" + encodeURIComponent(searchInput))
                 : navigate.push("/user/home");
+>>>>>>> ed19dedd2cab5263c440baf12802c0d645a0f5ea
             }}
           >
             <IoMdSearch />
@@ -385,8 +400,13 @@ setSearchInput(decodeSearchInput(lastPort))
               if (e.key === "Enter") {
                 e.preventDefault();
                 searchInput
+<<<<<<< HEAD
+                  ? navigate.push("/user/search/" + searchInput)
+                  : navigate.push("/");
+=======
                   ? navigate.push("/user/search/" + encodeURIComponent(searchInput))
                   : navigate.push("/user/home");
+>>>>>>> ed19dedd2cab5263c440baf12802c0d645a0f5ea
               }
             }}
             placeholder={t("search") + "..."}

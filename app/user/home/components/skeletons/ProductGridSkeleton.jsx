@@ -1,4 +1,4 @@
-// Mirrors app/user/home/components/FeatuerProducts.jsx grid + ProductCard
+// Mirrors app//components/FeatuerProducts.jsx grid + ProductCard
 import ProductCardSkeleton from "./ProductCardSkeleton";
 
 export default function ProductGridSkeleton({

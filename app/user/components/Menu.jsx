@@ -59,14 +59,14 @@ export default function Menu() {
   }, [isMenuOpen, getCategoriesList]);
 
   const menuLinks = [
-    { href: "/user/home", label: t("homepage"), icon: <PiHouse /> },
+    { href: "/", label: t("homepage"), icon: <PiHouse /> },
     { href: "/user/wishlist", label: t("wishlist"), icon: <FiHeart /> },
     { href: "/user/cart", label: t("cart"), icon: <MdOutlineShoppingCart /> },
     { href: "/user/profile", label: t("my_account"), icon: <PiUser /> },
     { href: "/user/ordershistory", label: t("orders"), icon: <RiShoppingBag4Fill /> },
     { href: "/user/returnorders", label: t("returns"), icon: <RiTruckLine /> },
     { href: "/user/about", label: t("about_us") },
-    { href: "/user/home#footer", label: t("contact_us") },
+    { href: "/#footer", label: t("contact_us") },
   ];
 
   if (!isMenuOpen) return null;

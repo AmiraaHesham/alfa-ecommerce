@@ -43,7 +43,11 @@ export default function CategorySection({ categories }) {
         {categories.map((category, index) => (
           <div
             key={index}
+<<<<<<< HEAD
+            className="mt-4 flex xl:flex-row xs:flex-col min-w-0 cursor-pointer items-center gap-2 rounded-md px-1 text-start"
+=======
             className="mt-4 flex justify-center items-center text-center cursor-pointer rounded-md min-w-0 px-1"
+>>>>>>> ed19dedd2cab5263c440baf12802c0d645a0f5ea
             onClick={() => {
               navigate.push(
                 "/user/products/category/" +
@@ -53,6 +57,18 @@ export default function CategorySection({ categories }) {
               );
             }}
           >
+<<<<<<< HEAD
+            <div className="relative shrink-0 rounded-full h-[75px] w-[75px] hover:scale-105 duration-200">
+              <Image
+                src={`${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL}${getThumbnailUrl(category.imageURL) || ""
+                  }`}
+                alt={locale === "ar" ? category.nameAr : category.nameEn}
+                fill
+                quality={100}
+                sizes="100px"
+                className="object-fill rounded-full"
+              />
+=======
             <div className="w-full min-w-0 flex flex-row justify-center items-center gap-2">
               <div className="relative shrink-0 rounded-full xl:h-[100px] xl:w-[100px] xs:h-[80px] xs:w-[80px] hover:scale-105 duration-200">
                 <Image
@@ -70,6 +86,7 @@ export default function CategorySection({ categories }) {
                   ? category.nameAr || category.nameEn
                   : category.nameEn || category.nameAr}
               </h1>
+>>>>>>> ed19dedd2cab5263c440baf12802c0d645a0f5ea
             </div>
           </div>
         ))}

@@ -1,7 +1,7 @@
 import SectionHeaderSkeleton from "./SectionHeaderSkeleton";
 import ProductListRowSkeleton from "./ProductListRowSkeleton";
 
-// Mirrors app/user/home/components/ProductShowcase.jsx
+// Mirrors app//components/ProductShowcase.jsx
 // (280px white card, header, compact product rows)
 export default function ProductShowcaseSkeleton({
   rows = 5,

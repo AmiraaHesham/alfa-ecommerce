@@ -2,7 +2,7 @@ import Skeleton from "./Skeleton";
 import StarsSkeleton from "./StarsSkeleton";
 import SectionHeaderSkeleton from "./SectionHeaderSkeleton";
 
-// Mirrors app/user/home/components/BestPick.jsx
+// Mirrors app//components/BestPick.jsx
 // (rounded-2xl white card, header, 4 slides of 50px circle + name + stars + price)
 export default function BestPickSkeleton() {
   return (

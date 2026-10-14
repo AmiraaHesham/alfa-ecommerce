@@ -149,7 +149,7 @@ export default function ProductDetails({ itemId }) {
         <ol className="flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-1 text-xs text-gray-500 sm:text-sm">
           <li className="shrink-0">
             <Link
-              href={"/user/home"}
+              href={"/"}
               className="transition-colors hover:text-[#E14A5C] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E14A5C]"
             >
               Home

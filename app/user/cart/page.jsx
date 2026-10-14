@@ -11,13 +11,14 @@ export default function Cart() {
   return (
     <div className="">
       <div
-        className={`fixed inset-0 bg-black/40 flex items-center justify-center z-50 ${showSignUp ? "block" : "hidden"}`}
+        className={`fixed inset-0 bg-black/40 flex items-center justify-center z-50 ${showSignin ? "block" : "hidden"}`}
       >
-        <div className=" bg-white rounded-md relative">
+       
+        <div className=" bg-white rounded-md relative w-full max-w-[480px] my-auto max-h-[90vh] overflow-y-auto">
           <MdCancel
             className="w-6 h-6 cursor-pointer hover:text-red-600 absolute top-2 right-2 "
             onClick={() => {
-              setShowSignUp(false);
+              setShowSignIn(false);
             }}
           />
           {showSignin ? (
@@ -27,7 +28,7 @@ export default function Cart() {
         </div>
       </div>
 
-      <Cartpage setShowSignUp={setShowSignUp} />
+      <Cartpage setShowSignIn={setShowSignIn} />
     </div>
   );
 }

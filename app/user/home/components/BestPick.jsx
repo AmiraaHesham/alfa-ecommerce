@@ -49,6 +49,8 @@ export default function BestPick({ Products }) {
           }}
           breakpoints={{
             720: { slidesPerView: 4 },
+            1024: { slidesPerView: 3 },
+            1440: { slidesPerView: 4 },
           }}
           className="w-full "
           onSwiper={(swiper) => {
