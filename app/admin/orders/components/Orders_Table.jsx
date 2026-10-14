@@ -12,8 +12,6 @@ export default function Orders_Table() {
   const { t } = useLanguage();
   const navigate = useRouter();
   const { selectedState, setSelectedState } = useIdContext();
-
-  // const [state, setState] = useState(selectedPendingState || "");
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const pageNum = useRef(0);

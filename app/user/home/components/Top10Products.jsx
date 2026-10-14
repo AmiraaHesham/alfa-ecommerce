@@ -16,7 +16,7 @@ export default function Top10Products({ Products, section, href }) {
                     <hr className="bg-red-500 h-[2px] border-none w-auto " />
                 </div>
             </div>
-            <div className="w-full xs:h-auto md:h-[430px]  overflow-hidden overflow-y-auto  xs:grid-cols-1 sm:grid-cols-2 grid gap-3">
+            <div className="w-full xs:h-auto md:h-[430px]  overflow-hidden overflow-y-auto  xs:grid-cols-1 sm:grid-cols-2 grid gap-1">
 
                 {Products?.map((product, index) => {
                     return (
