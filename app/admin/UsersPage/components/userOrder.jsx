@@ -1,54 +1,58 @@
 "use client";
-import { MdDelete, MdFilterList, MdOutlineDownloading } from "react-icons/md";
+import { MdFilterList } from "react-icons/md";
 import Image from "next/image";
 import { FaPlus } from "react-icons/fa";
 import { useLanguage } from "../../../../context/LanguageContext.js";
 import Link from "next/link.js";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { postRequest } from "../../../../utils/requestsUtils.js";
 import { FaUserLarge } from "react-icons/fa6";
-import { IoReloadCircle } from "react-icons/io5";
 import { IoMdSearch } from "react-icons/io";
 import { useNamePageInAdminContext } from "../../../../context/namePageInAdmin.jsx";
 import Select from "react-select";
+import {
+  InfiniteListFooter,
+  InfiniteTableFooter,
+  toPageResult,
+  useInfiniteScroll,
+} from "../../components/InfiniteScroll.jsx";
+
+const PAGE_SIZE = 10;
 
 export default function UserOrders({ userId }) {
   const { t } = useLanguage();
   const navigate = useRouter();
   const [state, setState] = useState("");
-  const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const pageNum = useRef(0);
   const { setSelectedNamePage } = useNamePageInAdminContext();
   const searchInputRef = useRef(null);
-  const getAllOrders = useCallback(async () => {
-    try {
+
+  const {
+    items: orders,
+    loading,
+    loadingMore,
+    hasMore,
+    error,
+    sentinelRef,
+    reload,
+  } = useInfiniteScroll({
+    pageSize: PAGE_SIZE,
+    queryKey: [state, userId],
+    load: async (page) => {
       const response = await postRequest(
         "/api/orders/search",
         {
-          page: pageNum.current,
-          size: 10,
-          searchText: searchInputRef.current.value,
+          page,
+          size: PAGE_SIZE,
+          searchText: searchInputRef.current?.value ?? "",
           orderState: state,
           userId: userId,
         },
         ""
       );
-      const resOrders = response.data.content || [];
-console.log(resOrders)
-      if (pageNum.current === 0) {
-        setOrders(resOrders);
-      } else setOrders((prev) => [...prev, ...resOrders]);
-    } catch (error) {
-    } finally {
-      setLoading(false);
-    }
-  }, [state, userId]);
-
-  useEffect(() => {
-    getAllOrders();
-  }, [getAllOrders]);
+      return toPageResult(response, page, PAGE_SIZE);
+    },
+  });
   return (
     <div>
       <div className="w-full  bg-white  rounded-lg border flex md:flex-row xs:flex-col gap-5  items-start  p-4 ">
@@ -60,14 +64,14 @@ console.log(resOrders)
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 e.preventDefault();
-                getAllOrders();
+                reload();
               }
             }}
             className="bg-none outline-none placeholder:text-xs h-8   bg-gray-100 p-3 rounded-lg"
           />
           <button
             className="text-lg bg-red-300 hover:bg-red-500 p-1 text-white  rounded-md"
-            onClick={getAllOrders}
+            onClick={reload}
           >
             <IoMdSearch />
           </button>
@@ -245,19 +249,14 @@ console.log(resOrders)
                 </div>
               );
             })}
-          {orders.length > 5 ? (
-            <div className="flex justify-center py-3">
-              <button
-                className=" text-red-600 w-[100px] py-1 text-center rounded-lg"
-                onClick={() => {
-                  pageNum.current += 1;
-                  getAllOrders();
-                }}
-              >
-                <IoReloadCircle className="text-4xl" />
-              </button>
-            </div>
-          ) : null}
+          <InfiniteListFooter
+            sentinelRef={sentinelRef}
+            loadingMore={loadingMore}
+            hasMore={hasMore}
+            hasItems={orders.length > 0}
+            error={error}
+            onRetry={reload}
+          />
         </div>
 
         <table className="hidden lg:table w-full   ">
@@ -366,23 +365,15 @@ console.log(resOrders)
                     </tr>
                   );
                 })}
-            {orders.length <= 5 ? (
-              " "
-            ) : (
-              <tr className="h-5 text-center">
-                <td colSpan="6">
-                  <button
-                    className=" text-red-600 w-[100px] py-1 text-center  my-3 rounded-lg"
-                    onClick={() => {
-                      pageNum.current += 1;
-                      getAllOrders();
-                    }}
-                  >
-                    <IoReloadCircle className="text-4xl" />
-                  </button>
-                </td>
-              </tr>
-            )}
+            <InfiniteTableFooter
+              colSpan={6}
+              sentinelRef={sentinelRef}
+              loadingMore={loadingMore}
+              hasMore={hasMore}
+              hasItems={orders.length > 0}
+              error={error}
+              onRetry={reload}
+            />
           </tbody>
         </table>
       </div>

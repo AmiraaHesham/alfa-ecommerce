@@ -1,62 +1,77 @@
 "use client";
 import { useLanguage } from "../../../../context/LanguageContext.js";
 import { FaCircle, FaPlus } from "react-icons/fa";
-import {  useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { postRequest } from "../../../../utils/requestsUtils.js";
 import { FaUserLarge } from "react-icons/fa6";
 import { ImBlocked } from "react-icons/im";
 import { IoMdSearch } from "react-icons/io";
 import { useIdContext } from "../../../../context/idContext.jsx";
-import { MdOutlineDownloading } from "react-icons/md";
+import { useRefresh } from "../../../../context/refreshContext.jsx";
+import {
+  InfiniteListFooter,
+  InfiniteTableFooter,
+  toPageResult,
+  useInfiniteScroll,
+} from "../../components/InfiniteScroll.jsx";
+
+const PAGE_SIZE = 15;
 
 export default function AdminsTable({ setIsFormOpen }) {
   const { t } = useLanguage();
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const pageNum = useRef(0);
-
+  const { refreshKey } = useRefresh();
   const searchInput = useRef();
   const { setSelectedAdminId } = useIdContext();
 
-  const getAllUsers = async () => {
-    try {
+  const {
+    items: users,
+    setItems,
+    loading,
+    loadingMore,
+    hasMore,
+    error,
+    sentinelRef,
+    reload,
+  } = useInfiniteScroll({
+    pageSize: PAGE_SIZE,
+    queryKey: [refreshKey],
+    load: async (page) => {
       const response = await postRequest(
         "/api/users/search",
         {
-          page: pageNum.current,
-          size: 15,
-          searchText: searchInput.current.value,
+          page,
+          size: PAGE_SIZE,
+          searchText: searchInput.current?.value ?? "",
           hasAdminRole: true,
         },
-        ""
+        "",
       );
-      const resUsers = response.data.content || [];
-      if (pageNum.current === 0) {
-        setUsers(resUsers);
-      } else setUsers((prev) => [...prev, ...resUsers]);
-    } catch (error) {
-    } finally {
-      setLoading(false);
-    }
-  };
+      return toPageResult(response, page, PAGE_SIZE);
+    },
+  });
 
   const selectAdminId = (adminId) => {
-   setIsFormOpen(true)
+    setIsFormOpen(true);
     setSelectedAdminId(adminId);
   };
 
-  const addBlock = async (userId) => {
-    await postRequest(`/api/admin/users/${userId}/block`,"",t("message"));
-    getAllUsers();
+  const setBlocked = async (userId, blocked) => {
+    const res = await postRequest(
+      `/api/admin/users/${userId}/${blocked ? "block" : "unblock"}`,
+      "",
+      t("message"),
+    );
+    if (res) {
+      setItems((prev) =>
+        prev.map((user) =>
+          user.userId === userId ? { ...user, blocked } : user,
+        ),
+      );
+    }
   };
 
-  const removeBlock = async (userId) => {
-    await postRequest(`/api/admin/users/${userId}/unblock`,"",t("message"));
-    getAllUsers();
-  };
-  useEffect(() => {
-    getAllUsers();
-  }, []);
+  const addBlock = (userId) => setBlocked(userId, true);
+  const removeBlock = (userId) => setBlocked(userId, false);
   return (
     <div className="w-full h-full ">
      
@@ -67,7 +82,7 @@ export default function AdminsTable({ setIsFormOpen }) {
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 e.preventDefault();
-                getAllUsers();
+                reload();
               }
             }}
             type="text"
@@ -76,7 +91,7 @@ export default function AdminsTable({ setIsFormOpen }) {
           />
           <button
             className="text-lg bg-red-300 hover:bg-red-500 p-1 text-white  rounded-md"
-            onClick={getAllUsers}
+            onClick={reload}
           >
             <IoMdSearch />
           </button>
@@ -176,15 +191,14 @@ export default function AdminsTable({ setIsFormOpen }) {
               );
             })}
           <div className="flex justify-center py-3">
-            <button
-              className=" text-red-600 px-5 py-1 rounded-lg"
-              onClick={() => {
-                pageNum.current += 1;
-                getAllUsers();
-              }}
-            >
-              <MdOutlineDownloading className="text-4xl" />
-            </button>
+            <InfiniteListFooter
+              sentinelRef={sentinelRef}
+              loadingMore={loadingMore}
+              hasMore={hasMore}
+              hasItems={users.length > 0}
+              error={error}
+              onRetry={reload}
+            />
           </div>
         </div>
       <div className="hidden lg:block max-h-[570px] min-w-0 mt-3 w-full overflow-x-auto overflow-y-auto">
@@ -311,19 +325,15 @@ export default function AdminsTable({ setIsFormOpen }) {
                     </>
                   );
                 })}
-            {/* <tr className="h-5 text-center">
-              <td colSpan="6">
-                <button
-                  className=" text-red-600 px-5 py-1   my-3 rounded-lg"
-                  onClick={() => {
-                    pageNum.current += 1;
-                    getAllUsers();
-                  }}
-                >
-                  <MdOutlineDownloading className="text-4xl" />
-                </button>
-              </td>
-            </tr> */}
+            <InfiniteTableFooter
+              colSpan={4}
+              sentinelRef={sentinelRef}
+              loadingMore={loadingMore}
+              hasMore={hasMore}
+              hasItems={users.length > 0}
+              error={error}
+              onRetry={reload}
+            />
           </tbody>
         </table>
       </div>

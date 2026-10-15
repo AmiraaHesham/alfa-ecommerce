@@ -9,6 +9,13 @@ import { useEffect, useState } from "react";
 import { MdDelete, MdEdit, MdUpdate } from "react-icons/md";
 import { getThumbnailUrl } from "../../../../utils/functions";
 import ProductsByCategoryPopup from "./ProductsByCategoryPopup";
+import {
+  InfiniteListFooter,
+  InfiniteTableFooter,
+  useClientInfiniteScroll,
+} from "../../components/InfiniteScroll.jsx";
+
+const CLIENT_PAGE_SIZE = 15;
 
 export default function CategorysTable({ setIsFormOpen }) {
   const { t } = useLanguage();
@@ -22,15 +29,26 @@ export default function CategorysTable({ setIsFormOpen }) {
 
   const getAllCategories = async () => {
     try {
+      setLoading(true);
       const resData = await getRequest(
         "/api/admin/itemCategory/getCategoryWithItemCounts",
       );
-      setItemCategory(resData.data);
+      setItemCategory(resData.data || []);
     } catch (error) {
     } finally {
       setLoading(false);
     }
   };
+
+  // This endpoint returns the full list at once (no server pagination), so we
+  // reveal it progressively to keep the infinite-scroll behaviour consistent.
+  const {
+    items: visibleCategories,
+    hasMore,
+    sentinelRef,
+    error: infiniteError,
+    reload: reloadInfinite,
+  } = useClientInfiniteScroll(itemCategory, CLIENT_PAGE_SIZE);
 
   const openForm = (categoryId) => {
     setSelectedCategoryId(categoryId);
@@ -89,7 +107,7 @@ export default function CategorysTable({ setIsFormOpen }) {
                 <div className="h-8 bg-gray-200 rounded animate-pulse w-24 mt-3"></div>
               </div>
             ))
-          : itemCategory.map((category, index) => (
+          : visibleCategories.map((category, index) => (
               <div
                 key={`mobile-${index}`}
                 className="bg-white border-b rounded-xl p-3 my-3 mx-2 hover:bg-gray-100 cursor-pointer"
@@ -150,6 +168,14 @@ export default function CategorysTable({ setIsFormOpen }) {
                 </div>
               </div>
             ))}
+            <InfiniteListFooter
+              sentinelRef={sentinelRef}
+              loadingMore={false}
+              hasMore={hasMore}
+              hasItems={visibleCategories.length > 0}
+              error={infiniteError}
+              onRetry={reloadInfinite}
+            />
       </div>
       <table className=" hidden lg:table w-full h-auto table-fixed rounded-3xl  border mt-3  ">
           <thead className="w-full bg-[#f0eff0] h-12 rounded-lg text-justify sticky top-0  z-10">
@@ -187,7 +213,7 @@ export default function CategorysTable({ setIsFormOpen }) {
                   </td>
                 </tr>
               ))
-              : itemCategory.map((category, index) => (
+              : visibleCategories.map((category, index) => (
                 <tr
                   key={index}
                   className=" text-red-950 border-t w-full hover:bg-gray-100 "
@@ -262,6 +288,15 @@ export default function CategorysTable({ setIsFormOpen }) {
                   </td>
                 </tr>
               ))}
+            <InfiniteTableFooter
+              colSpan={4}
+              sentinelRef={sentinelRef}
+              loadingMore={false}
+              hasMore={hasMore}
+              hasItems={visibleCategories.length > 0}
+              error={infiniteError}
+              onRetry={reloadInfinite}
+            />
           </tbody>
         </table>
       {/* </div> */}

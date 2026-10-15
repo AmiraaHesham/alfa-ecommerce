@@ -2,10 +2,9 @@
 import {
   MdBlock,
   MdDelete,
-  MdOutlineDownloading,
 } from "react-icons/md";
 import { FaCircle } from "react-icons/fa";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { useLanguage } from "../../../../context/LanguageContext.js";
 import { FaPlus } from "react-icons/fa";
 import Image from "next/image";
@@ -17,53 +16,63 @@ import { deleteRequest } from "../../../../utils/requestsUtils.js";
 import { useRefresh } from "../../../../context/refreshContext.jsx";
 import { getThumbnailUrl } from "../../../../utils/functions.jsx";
 import { IoCheckmarkCircleOutline } from "react-icons/io5";
+import {
+  InfiniteListFooter,
+  InfiniteTableFooter,
+  toPageResult,
+  useInfiniteScroll,
+} from "../../components/InfiniteScroll.jsx";
+
+const PAGE_SIZE = 10;
 
 export default function ProductsTable({ setIsFormOpen, category, setIsEditMode }) {
   const { t } = useLanguage();
-  const [products, setProducts] = useState([]);
-  const productTableRef = useRef();
-  const pageNum = useRef(0);
   const { refreshKey } = useRefresh();
-  const { triggerRefresh } = useRefresh();
   const { setSelectedProductId } = useIdContext();
   const searchInputRef = useRef();
-  const [loading, setLoading] = useState(true);
-  
-  const getAllProducts = useCallback(async () => {
-    try {
+
+  const {
+    items: products,
+    setItems,
+    loading,
+    loadingMore,
+    hasMore,
+    error,
+    sentinelRef,
+    reload,
+  } = useInfiniteScroll({
+    pageSize: PAGE_SIZE,
+    queryKey: [category ?? "", refreshKey],
+    load: async (page) => {
       const response = await postRequest(
         "/api/public/items/search",
         {
-          page: pageNum.current,
-          size: 10,
-          searchText: searchInputRef.current.value,
+          page,
+          size: PAGE_SIZE,
+          searchText: searchInputRef.current?.value ?? "",
           categoryId: category || null,
         },
         "",
       );
+      return toPageResult(response, page, PAGE_SIZE);
+    },
+  });
 
-      const resProducts = response.data.content || [];
-      console.log(resProducts)
-      if (pageNum.current === 0) {
-        setProducts(resProducts);
-      } else setProducts((prev) => [...prev, ...resProducts]);
-    } catch (error) {
-    } finally {
-      setLoading(false);
-    }
-  }, [category]);
-  useEffect(() => {
-    setLoading(true);
-    getAllProducts();
-  }, [getAllProducts, refreshKey]);
+  const patchProduct = (productId, patch) => {
+    setItems((prev) =>
+      prev.map((product) =>
+        product.itemId === productId ? { ...product, ...patch } : product,
+      ),
+    );
+  };
 
   const productFavorite = async (productId, favorite) => {
-    await postRequest(
+    const res = await postRequest(
       `/api/admin/items/${productId}/favorite/${favorite}`,
       "",
       t("message"),
     );
-    triggerRefresh();
+    if (res) patchProduct(productId, { favorite });
   };
 
   // const productUnfavorite = async (productId) => {
@@ -75,21 +84,21 @@ export default function ProductsTable({ setIsFormOpen, category, setIsEditMode }
   //   triggerRefresh();
   // };
   const productActive = async (productId, active) => {
-    await postRequest(
+    const res = await postRequest(
       `/api/admin/items/${productId}/activate/${active}`,
       "",
       t("message"),
     );
-    triggerRefresh();
+    if (res) patchProduct(productId, { active });
   };
 
   const productAvailable = async (productId, available) => {
-    await postRequest(
+    const res = await postRequest(
       `/api/admin/items/${productId}/availability/${available}`,
       "",
       t("message"),
     );
-    triggerRefresh();
+    if (res) patchProduct(productId, { available });
   };
   // const productDeaactive = async (productId) => {
   //   await postRequest(
@@ -107,8 +116,15 @@ export default function ProductsTable({ setIsFormOpen, category, setIsEditMode }
   };
   const deleteProduct = async (product) => {
     try {
-      await deleteRequest(`/api/admin/items/${product.itemId}`, t("message"));
-      getAllProducts();
+      const result = await deleteRequest(
+        `/api/admin/items/${product.itemId}`,
+        t("message"),
+      );
+      if (result) {
+        setItems((prev) =>
+          prev.filter((item) => item.itemId !== product.itemId),
+        );
+      }
     } catch (error) {
     }
   };
@@ -151,13 +167,13 @@ export default function ProductsTable({ setIsFormOpen, category, setIsEditMode }
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 e.preventDefault();
-                getAllProducts();
+                reload();
               }
             }}
           />
           <button
             className="text-lg bg-red-300 hover:bg-red-500 p-1 text-white  rounded-md"
-            onClick={getAllProducts}
+            onClick={reload}
           >
             <IoMdSearch />
           </button>
@@ -325,15 +341,14 @@ export default function ProductsTable({ setIsFormOpen, category, setIsEditMode }
             </div>
           ))}
         <div className="w-full flex justify-center items-center">
-          <button
-            className=" text-red-600 px-5 py-1   my-3 rounded-lg"
-            onClick={() => {
-              pageNum.current += 1;
-              getAllProducts();
-            }}
-          >
-            <MdOutlineDownloading className="text-4xl" />
-          </button>
+          <InfiniteListFooter
+            sentinelRef={sentinelRef}
+            loadingMore={loadingMore}
+            hasMore={hasMore}
+            hasItems={products.length > 0}
+            error={error}
+            onRetry={reload}
+          />
         </div>
       </div>
       <div className="hidden lg:block max-h-[520px] min-w-0 mt-3 w-full overflow-x-auto overflow-y-auto">
@@ -512,19 +527,15 @@ export default function ProductsTable({ setIsFormOpen, category, setIsEditMode }
                 </tr>
               ))}
 
-            <tr className="h-5 text-center">
-              <td colSpan="6">
-                <button
-                  className=" text-red-600 px-5 py-1   my-3 rounded-lg"
-                  onClick={() => {
-                    pageNum.current += 1;
-                    getAllProducts();
-                  }}
-                >
-                  <MdOutlineDownloading className="text-4xl" />
-                </button>
-              </td>
-            </tr>
+            <InfiniteTableFooter
+              colSpan={6}
+              sentinelRef={sentinelRef}
+              loadingMore={loadingMore}
+              hasMore={hasMore}
+              hasItems={products.length > 0}
+              error={error}
+              onRetry={reload}
+            />
           </tbody>
         </table>
       </div>

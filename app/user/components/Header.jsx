@@ -224,7 +224,7 @@ setSearchInput(decodeSearchInput(lastPort))
             </span>
             <div className="cursor-pointer min-w-0">
               <h1 className="text-3xl  text-white font-bold ">
-                {t("alfa_group")}<span className="text-red-600">.</span>
+                {t("alfa_group")}
               </h1>
             </div>
 

@@ -236,7 +236,7 @@ export default function ProductCard({ productInfo, favorite }) {
                     </SwiperSlide>
                   ))}
                   {/* Hover Zones */}
-                  <div className="absolute inset-0 z-40 flex">
+                  <div className="absolute inset-0 z-40 lg:flex xs:hidden">
                     {productInfo?.images?.map((img, index) => (
                       <div
                         key={img?.imageUrl || index}

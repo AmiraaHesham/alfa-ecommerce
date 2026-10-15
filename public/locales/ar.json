@@ -387,7 +387,9 @@
   "server_unavailable_title": "الخادم غير متاح حاليًا",
   "server_unavailable_desc": "نواجه مشكلة مؤقتة في الاتصال بالخادم، يرجى المحاولة مرة أخرى",
   "retry": "إعادة المحاولة",
-  "changeShippingCost":"تغيير تكلفة الشحن"
+  "changeShippingCost":"تغيير تكلفة الشحن",
+  "loading_more": "جارٍ تحميل المزيد...",
+  "no_more_records": "تم تحميل جميع السجلات"
 
   
 

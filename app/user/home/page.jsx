@@ -135,7 +135,7 @@ export default function Homepage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const requestIdRef = useRef(0);
-  const [productType, setProductType] = useState("popularProducts");
+  const [productType, setProductType] = useState("mustWatchedItems");
   // ==============================
   // Derived values
   // ==============================
@@ -292,7 +292,7 @@ export default function Homepage() {
       setTopHomeApplianceItems(topHomeApplianceItemsRes || []);
 
       const topRatedContent = topRatingProductsRes?.data?.content || [];
-      setItems(topRatedContent);
+      setItems(mustWatchedRes?.data?.content);
       setTopRatingItems(topRatedContent);
 
       setMustWatchedItems(mustWatchedRes?.data?.content || []);
@@ -461,18 +461,19 @@ export default function Homepage() {
               {/* <hr className="w-24 h-1 border-0 rounded-full bg-gradient-to-l from-red-200 via-red-400 to-red-200" /> */}
             </div>
             <div className="flex items-center gap-5 xl:justify-end xs:justify-start w-full md:text-sm xl:text-base  font-semibold">
+            <button
+                className={`items-center  justify-center rounded-full p-1  hover:text-red-600 hover:scale-105 duration-200 ${productType === "mustWatchedItems" ?"text-red-600" : "text-black"}`}
+                onClick={handleShowMustWatchedItems}
+              >
+                {t("Most_viewed_products")}
+              </button>
               <button
                 className={` items-center justify-center rounded-full p-1  hover:text-red-600 hover:scale-105 ${productType === "popularProducts" ?"text-red-600" : "text-black"} duration-200`}
                 onClick={handleShowPopularProducts}
               >
                 {t("popular_products")}
               </button>
-<button
-                className={`items-center  justify-center rounded-full p-1  hover:text-red-600 hover:scale-105 duration-200 ${productType === "mustWatchedItems" ?"text-red-600" : "text-black"}`}
-                onClick={handleShowMustWatchedItems}
-              >
-                {t("Most_viewed_products")}
-              </button>
+
               <button
                 className={`items-center  justify-center rounded-full p-1  hover:text-red-600 hover:scale-105 duration-200 ${productType === "topSoldItems" ?"text-red-600" : "text-black"}`}
                 onClick={handleShowTopSoldItems}

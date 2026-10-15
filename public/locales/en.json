@@ -386,7 +386,9 @@
   "server_unavailable_title": "Server is temporarily unavailable",
   "server_unavailable_desc": "We are facing a temporary issue. Please try again.",
   "retry": "Try Again",
-  "changeShippingCost":"Change Shipping Cost"
+  "changeShippingCost":"Change Shipping Cost",
+  "loading_more": "Loading more...",
+  "no_more_records": "All records have been loaded"
 
 
 
