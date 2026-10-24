@@ -4,8 +4,96 @@ import Swal from "sweetalert2";
 import { reportApiFailure } from "./connectivityStore";
 
 const showRequestError = (error) => {
-  const message = error?.response?.data?.error?.message;
-  if (message) toast.error(message);
+  const responseData = error?.response?.data;
+
+  // Try to collect all validation messages
+  const messagesSet = new Set();
+  
+  // Check various possible error structures
+  // 1. response.data.error.details (object with field -> message)
+  if (responseData?.error?.details) {
+    const details = responseData.error.details;
+    if (typeof details === "object" && !Array.isArray(details)) {
+      Object.values(details).forEach((msg) => {
+        if (msg && typeof msg === "string") {
+          messagesSet.add(msg);
+        } else if (msg && typeof msg === "object") {
+          // In case nested objects
+          Object.values(msg).forEach((m) => {
+            if (typeof m === "string") messagesSet.add(m);
+          });
+        }
+      });
+    } else if (Array.isArray(details)) {
+      details.forEach((item) => {
+        if (typeof item === "string") {
+          messagesSet.add(item);
+        } else if (item?.message) {
+          messagesSet.add(item.message);
+        } else if (item?.msg) {
+          messagesSet.add(item.msg);
+        }
+      });
+    }
+  }
+  
+  // 2. response.data.details
+  if (responseData?.details) {
+    const details = responseData.details;
+    if (typeof details === "object" && !Array.isArray(details)) {
+      Object.values(details).forEach((msg) => {
+        if (msg && typeof msg === "string") {
+          messagesSet.add(msg);
+        }
+      });
+    } else if (Array.isArray(details)) {
+      details.forEach((item) => {
+        if (typeof item === "string") {
+          messagesSet.add(item);
+        } else if (item?.message) {
+          messagesSet.add(item.message);
+        }
+      });
+    }
+  }
+  
+  // 3. response.data itself might be validation errors object
+  if (responseData && typeof responseData === "object" && !Array.isArray(responseData)) {
+    // Check if it's directly field errors (not wrapped)
+    if (responseData.error && typeof responseData.error === "object" && !responseData.error.message && responseData.error.details) {
+      // Already handled above
+    } else if (!responseData.error && !responseData.message && !responseData.data) {
+      // Might be direct field errors
+      const keys = Object.keys(responseData);
+      // If keys look like field names and values are strings, treat as errors
+      const hasFieldErrors = keys.some(k => typeof responseData[k] === "string" && !["status", "success", "code"].includes(k));
+      if (hasFieldErrors && keys.length > 0) {
+        keys.forEach((key) => {
+          if (typeof responseData[key] === "string" && !["status", "success", "code", "timestamp"].includes(key)) {
+            messagesSet.add(responseData[key]);
+          }
+        });
+      }
+    }
+  }
+  
+  // 4. Also check error.response.data.error.message as fallback
+  if (messagesSet.size === 0) {
+    const message = responseData?.error?.message || responseData?.message || error?.message;
+    if (message && typeof message === "string") {
+      messagesSet.add(message);
+    }
+  }
+  
+  // Display all messages as separate toasts
+  if (messagesSet.size > 0) {
+    Array.from(messagesSet).forEach((msg) => {
+      toast.error(msg);
+    });
+  } else {
+    // Fallback
+    toast.error(error?.message || "An error occurred");
+  }
 };
 
 // const redirectToLogin = () => {

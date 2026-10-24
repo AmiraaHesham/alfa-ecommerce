@@ -17,6 +17,7 @@ import TopDiscounted from "./components/TopDiscounted";
 import ImageSlider from "./components/ImageSlider";
 import CategoriesSection from "./components/CategoriesSection";
 import ProductAdsSlider from "./components/ProductAdsSlider";
+import ReviewsClients from "./components/ReviewsClients";
 import FeaturedProducts from "./components/FeatuerProducts";
 import HomeSkeleton from "./components/skeletons/HomeSkeleton";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -496,7 +497,7 @@ export default function Homepage() {
             <div className="flex flex-col items-center gap-5 w-full">
               <Top10Products
                 Products={topHomeApplianceItems}
-                section={"top_products"}
+                section={"top_appliances"}
                 href={TOP_PRODUCTS_HREF}
               />
             </div>
@@ -583,7 +584,7 @@ export default function Homepage() {
       </section>
 
       {/* ========================= More Recommended Products ========================= */}
-      <section id="newProducts" className="w-full pb-20 mt-20">
+      <section id="newProducts" className="w-full  mt-20">
         <div className="w-full flex justify-between items-center">
 
           <div>
@@ -603,6 +604,7 @@ export default function Homepage() {
           <FeaturedProducts Products={featuredProducts || []} type={"MoreRecommended"} />
         </div>
       </section>
+      <ReviewsClients/>
     </div>
   );
 }

@@ -20,15 +20,19 @@ export default function ProductsByCategoryPopup({
         className={`fixed inset-0 bg-black/40 flex items-center  justify-center z-50 `}
       >
         <div className="w-[90%]">
-          <button
+          <div className="w-full bg-white p-1"> 
+            <button
             onClick={() => {
               setPopupShow(false);
             }}
+            
           >
-            <MdCancel className="text-2xl text-red-700 bg-white rounded-md" />
+            <MdCancel className="text-3xl text-red-700 " />
           </button>
+          </div>
+          
 
-          <div className=" bg-white rounded-md ">
+          <div className=" bg-white  ">
             <FormProduct
               isFormOpen={isFormOpen}
               isEditMode={isEditMode}

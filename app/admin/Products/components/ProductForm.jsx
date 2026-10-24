@@ -193,13 +193,13 @@ export default function FormProduct({ isFormOpen, setIsFormOpen, isEditMode ,set
     try {
       const respose = await postRequest("/api/admin/items", fields, t("message"));
       if (!respose) return;
-  
-      setSelectedProductId(respose.itemId)
+
+      setSelectedProductId(respose.itemId || respose.data?.itemId || respose.id);
       triggerRefresh();
-      toast.success(t("data_saved_successfully"));
-      setShowImages(true)
-      setIsEditMode(true)
+      setShowImages(true);
+      setIsEditMode(true);
     } catch (err) {
+      console.log(err);
     } finally {
       setLoading(false);
     }
@@ -305,6 +305,7 @@ productData()
     // التحقق من السعر
     if (
       product.oldPrice !== null &&
+      product.price !== null &&
       Number(product.oldPrice) < Number(product.price)
     ) {
       toast.error(t("check_oldPrice"));
@@ -319,7 +320,7 @@ productData()
       );
       triggerRefresh();
     } catch (error) {
-      console.log(error)
+      console.log(error);
     } finally {
       setLoading(false);
     }

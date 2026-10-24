@@ -388,7 +388,9 @@
   "retry": "Try Again",
   "changeShippingCost":"Change Shipping Cost",
   "loading_more": "Loading more...",
-  "no_more_records": "All records have been loaded"
+  "no_more_records": "All records have been loaded",
+  "reviews_clients": "Customer Reviews",
+  "top_appliances": "Top appliances"
 
 
 
