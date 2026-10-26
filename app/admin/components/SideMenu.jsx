@@ -16,6 +16,7 @@ import { PiSignOutBold } from "react-icons/pi";
 
 import { useNamePageInAdminContext } from "../../../context/namePageInAdmin.jsx";
 import { useRouter } from "next/navigation.js";
+import { logoutRequest } from "../../../utils/requestsUtils";
 import { TbTruckReturn } from "react-icons/tb";
 export default function SideMenu() {
   const navigate = useRouter();
@@ -278,7 +279,8 @@ export default function SideMenu() {
           <hr className="my-6"></hr>
           <div
             className={`flex gap-4 mx-3 mb-5  xs:justify-center xl:justify-start items-center rounded-md cursor-pointer text-red-500 `}
-            onClick={() => {
+            onClick={async () => {
+              await logoutRequest();
               localStorage.setItem("id", "");
               localStorage.setItem("accessToken", "");
               localStorage.setItem("refreshToken", "");

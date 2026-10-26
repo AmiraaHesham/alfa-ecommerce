@@ -11,7 +11,7 @@ import { useLanguage } from "../../../../context/LanguageContext";
 import { RiShoppingBag4Fill } from "react-icons/ri";
 import { TbTruckReturn } from "react-icons/tb";
 import Select from "react-select";
-import { getRequest, putRequest } from "../../../../utils/requestsUtils";
+import { getRequest, putRequest, logoutRequest } from "../../../../utils/requestsUtils";
 import ResetPasswordForm from "./ResetPasswordForm";
 export default function Profile() {
   const [firstName, setFirstName] = useState("");
@@ -138,7 +138,8 @@ const responce = await getRequest("/api/users")
               <PiSignOutBold />
             </span>
             <span
-              onClick={() => {
+              onClick={async () => {
+                await logoutRequest();
                 localStorage.setItem("id", "");
                 localStorage.setItem("accessToken", "");
                 localStorage.setItem("refreshToken", "");

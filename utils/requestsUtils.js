@@ -96,6 +96,113 @@ const showRequestError = (error) => {
   }
 };
 
+const AUTH_STORAGE_KEYS = [
+  "accessToken",
+  "refreshToken",
+  "id",
+  "firstName",
+  "lastName",
+  "address",
+  "email",
+  "phone",
+  "role",
+  "username",
+  "governorateId",
+];
+
+let refreshInFlight = null;
+
+const isAuthFailure = (error) =>
+  error?.response?.status === 401 || error?.response?.status === 403;
+
+const clearAuthStorage = () => {
+  if (typeof window === "undefined") return;
+  AUTH_STORAGE_KEYS.forEach((key) => localStorage.removeItem(key));
+};
+
+const redirectToSignIn = () => {
+  if (typeof window === "undefined") return;
+  if (!window.location.pathname.startsWith("/signin")) {
+    window.location.href = "/signin";
+  }
+};
+
+const getRefreshedAccessToken = async () => {
+  if (typeof window === "undefined") return null;
+
+  const refreshToken = localStorage.getItem("refreshToken");
+  // Do not call /api/auth/refresh when there is no token. This is the path
+  // that produced the noisy 401 "refresh token missing" requests.
+  if (!refreshToken) return null;
+
+  if (!refreshInFlight) {
+    refreshInFlight = axios
+      .post(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/refresh`,
+        {},
+        { headers: { Authorization: `Bearer ${refreshToken}` } },
+      )
+      .then((response) => {
+        const accessToken = response.data?.accessToken;
+        const newRefreshToken = response.data?.refreshToken;
+        if (!accessToken || !newRefreshToken) {
+          throw new Error("Invalid refresh response");
+        }
+        localStorage.setItem("accessToken", accessToken);
+        localStorage.setItem("refreshToken", newRefreshToken);
+        return accessToken;
+      })
+      .catch((error) => {
+        if (isAuthFailure(error)) {
+          clearAuthStorage();
+          redirectToSignIn();
+        }
+        throw error;
+      })
+      .finally(() => {
+        refreshInFlight = null;
+      });
+  }
+
+  try {
+    return await refreshInFlight;
+  } catch {
+    return null;
+  }
+};
+
+export const logoutRequest = async () => {
+  if (typeof window === "undefined") return;
+
+  const postLogout = (accessToken) =>
+    axios.post(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/logout`,
+      {},
+      { headers: { Authorization: `Bearer ${accessToken}` } },
+    );
+
+  const accessToken = localStorage.getItem("accessToken");
+  if (!accessToken) return;
+
+  try {
+    await postLogout(accessToken);
+  } catch (error) {
+    // If the access token already expired, refresh once before revoking so
+    // the server still drops the user's active refresh tokens.
+    if (isAuthFailure(error)) {
+      const newAccessToken = await getRefreshedAccessToken();
+      if (newAccessToken) {
+        try {
+          await postLogout(newAccessToken);
+        } catch {
+          // Local sign-out must still complete.
+        }
+      }
+    }
+    // Local sign-out must still complete if the session already expired.
+  }
+};
+
 // const redirectToLogin = () => {
 //   if (typeof window !== "undefined") {
 //     window.location.href = "/signin";
@@ -168,46 +275,20 @@ export const postRequest = async (endpoint, dataBody, message ,toster) => {
   } catch (error) {
     reportApiFailure(error);
 
-    // 🔥 refresh token handling
-    if (error.response?.status === 403) {
-      const refreshToken = localStorage.getItem('refreshToken')
-
-      try {
-        const refreshRes = await axios.post(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/refresh`, {},
-          {
-            headers: {
-              Authorization: refreshToken ? `Bearer ${refreshToken}` : undefined,
-            },
-          });
-
-        const newAccessToken = refreshRes.data.accessToken;
-        const newRefreshToken = refreshRes.data.refreshToken;
-
-        localStorage.setItem("accessToken", newAccessToken);
-        localStorage.setItem("refreshToken", newRefreshToken);
-
-        // 🔁 إعادة الطلب بعد التحديث
+    if (isAuthFailure(error)) {
+      const newAccessToken = await getRefreshedAccessToken();
+      if (newAccessToken) {
         try {
           const retryResponse = await request(newAccessToken);
-
           toast.success(retryResponse.data.message);
-
           return retryResponse.data;
-        } catch (error) {
-          showRequestError(error)
-
-        }
-      } catch (refreshError) {
-        if (refreshError.response?.status === 500) {
-          window.location.href = "/signin";
-
+        } catch (retryError) {
+          reportApiFailure(retryError);
+          showRequestError(retryError);
         }
       }
-    }
-    else {
-      // toast.error(error.data.message);
-      showRequestError(error)
+    } else {
+      showRequestError(error);
     }
 
     throw error;
@@ -237,46 +318,21 @@ export const getRequest = async (endpoint) => {
     return response.data;
   } catch (error) {
     reportApiFailure(error);
-    // 🔥 refresh token handling
-    if (error.response?.status === 403) {
-      const refreshToken = localStorage.getItem('refreshToken')
 
-      try {
-        const refreshRes = await axios.post(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/refresh`, {},
-          {
-            headers: {
-              Authorization: refreshToken ? `Bearer ${refreshToken}` : undefined,
-            },
-          });
-
-        const newAccessToken = refreshRes.data.accessToken;
-        const newRefreshToken = refreshRes.data.refreshToken;
-
-        localStorage.setItem("accessToken", newAccessToken);
-        localStorage.setItem("refreshToken", newRefreshToken);
-
-        // 🔁 إعادة الطلب بعد التحديث
+    if (isAuthFailure(error)) {
+      const newAccessToken = await getRefreshedAccessToken();
+      if (newAccessToken) {
         try {
           const retryResponse = await request(newAccessToken);
-
           toast.success(retryResponse.data.message);
-
           return retryResponse.data;
-        } catch (error) {
-          showRequestError(error)
-
-
-
-        }
-
-      } catch (refreshError) {
-        if (refreshError.response?.status === 500) {
-          window.location.href = "/signin";
-
+        } catch (retryError) {
+          reportApiFailure(retryError);
+          showRequestError(retryError);
         }
       }
     }
+
     throw error;
   }
 };
@@ -326,46 +382,20 @@ export const putRequest = async (endpoint, dataBody, message) => {
   } catch (error) {
     reportApiFailure(error);
 
-    // 🔥 refresh token handling
-    if (error.response?.status === 403) {
-      const refreshToken = localStorage.getItem('refreshToken')
-
-      try {
-        const refreshRes = await axios.post(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/refresh`, {},
-          {
-            headers: {
-              Authorization: refreshToken ? `Bearer ${refreshToken}` : undefined,
-            },
-          });
-
-        const newAccessToken = refreshRes.data.accessToken;
-        const newRefreshToken = refreshRes.data.refreshToken;
-
-        localStorage.setItem("accessToken", newAccessToken);
-        localStorage.setItem("refreshToken", newRefreshToken);
-
-        // 🔁 إعادة الطلب بعد التحديث
+    if (isAuthFailure(error)) {
+      const newAccessToken = await getRefreshedAccessToken();
+      if (newAccessToken) {
         try {
           const retryResponse = await request(newAccessToken);
-
           toast.success(retryResponse.data.message);
-
           return retryResponse.data;
-        } catch (error) {
-          showRequestError(error)
-
+        } catch (retryError) {
+          reportApiFailure(retryError);
+          showRequestError(retryError);
         }
-
-
-      } catch (refreshError) {
-if (refreshError.response?.status === 500) {
-            window.location.href = "/signin";
-
-          }      }
-
+      }
     } else {
-      showRequestError(error)
+      showRequestError(error);
     }
 
     throw error;
@@ -416,48 +446,23 @@ export const deleteRequest = async (endpoint, message) => {
     }
   } catch (error) {
     reportApiFailure(error);
-    const refreshToken = localStorage.getItem('refreshToken')
-    // 🔥 refresh token handling
-    if (error.response?.status === 403) {
 
-
-      try {
-        const refreshRes = await axios.post(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/refresh`, {},
-          {
-            headers: {
-              Authorization: refreshToken ? `Bearer ${refreshToken}` : undefined,
-            },
-          });
-
-        const newAccessToken = refreshRes.data.accessToken;
-        const newRefreshToken = refreshRes.data.refreshToken;
-
-        localStorage.setItem("accessToken", newAccessToken);
-        localStorage.setItem("refreshToken", newRefreshToken);
-
-        // 🔁 إعادة الطلب بعد التحديث
+    if (isAuthFailure(error)) {
+      const newAccessToken = await getRefreshedAccessToken();
+      if (newAccessToken) {
         try {
           const retryResponse = await request(newAccessToken);
-
           toast.success(retryResponse.data.message);
-
           return retryResponse.data;
-        } catch (error) {
-          showRequestError(error)
-
+        } catch (retryError) {
+          reportApiFailure(retryError);
+          showRequestError(retryError);
         }
-
-      } catch (refreshError) {
-if (refreshError.response?.status === 500) {
-            window.location.href = "/signin";
-
-          }      }
+      }
+    } else {
+      showRequestError(error);
     }
-    else {
-      // toast.error(error.data.message);
-      showRequestError(error)
-    }
+
     throw error;
   }
 };
