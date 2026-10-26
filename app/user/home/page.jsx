@@ -600,7 +600,7 @@ export default function Homepage() {
 
         </div>
 
-        <div className="mt-5">
+        <div className="my-10">
           <FeaturedProducts Products={featuredProducts || []} type={"MoreRecommended"} />
         </div>
       </section>
