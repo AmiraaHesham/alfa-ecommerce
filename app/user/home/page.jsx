@@ -17,6 +17,7 @@ import TopDiscounted from "./components/TopDiscounted";
 import ImageSlider from "./components/ImageSlider";
 import CategoriesSection from "./components/CategoriesSection";
 import ProductAdsSlider from "./components/ProductAdsSlider";
+import ReviewsClients from "./components/ReviewsClients";
 import FeaturedProducts from "./components/FeatuerProducts";
 import HomeSkeleton from "./components/skeletons/HomeSkeleton";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -58,8 +59,7 @@ const EMPTY_ADS = {
   ad1: {
     itemId: "",
     imageUrl: "",
-    title: "",
-    titleAr: "",
+  
   },
   ad2: {
     itemId: "",
@@ -117,7 +117,8 @@ export default function Homepage() {
   const [recentWatchedProducts, setRecentWatchedProducts] = useState([]);
   const [ads, setAds] = useState(EMPTY_ADS);
   const [ad1Product, setAd1Product] = useState({
-    name:"",
+    nameEn:"",
+    nameAr:"",
     brand:""
   });
   const [ad3Product, setAd3Product] = useState({
@@ -135,7 +136,7 @@ export default function Homepage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const requestIdRef = useRef(0);
-  const [productType, setProductType] = useState("popularProducts");
+  const [productType, setProductType] = useState("mustWatchedItems");
   // ==============================
   // Derived values
   // ==============================
@@ -292,7 +293,7 @@ export default function Homepage() {
       setTopHomeApplianceItems(topHomeApplianceItemsRes || []);
 
       const topRatedContent = topRatingProductsRes?.data?.content || [];
-      setItems(topRatedContent);
+      setItems(mustWatchedRes?.data?.content);
       setTopRatingItems(topRatedContent);
 
       setMustWatchedItems(mustWatchedRes?.data?.content || []);
@@ -346,7 +347,7 @@ export default function Homepage() {
   // Return / JSX
   // ==============================
   return (
-    <div className="w-full lg:px-3 xs:px-0">
+    <div className="w-full px-3 ">
       {error && (
         <div className="w-full flex justify-center items-center gap-3 py-5 text-sm text-red-600">
           <span>{t("home_load_error")}</span>
@@ -372,17 +373,20 @@ export default function Homepage() {
               <div className="w-full h-full">
                 <div className="flex md:flex-row xs:flex-col gap-3 justify-center items-center h-full  w-full">
                   {/* Ads */}
-                  <div className="group xl:w-[580px] lg:w-[500px] xs:w-full h-[350px] rounded-2xl  cursor-pointer 
+                 <div className="group xl:w-[580px] lg:w-[500px] xs:w-full h-[350px] rounded-2xl  cursor-pointer 
                   text-[#EAEBB8] bg-gradient-to-b from-[#2F4D4C] via-[#263F40] to-[#0F1B1B] 
-                  flex flex-col justify-between items-center relative overflow-hidden">
+                  flex flex-col justify-between items-center relative overflow-hidden"
+                 
+                  >
+                    <Link href={`/user/productdetails/${ad1Product.nameEn}/${ads.ad1.itemId}`}>
                     <div className="w-full text-center p-5">
                       <span className="text-sm">{t("Special_Offer")} </span>
-                      {ad1Product && (
+                      {ad1Product && ( 
                         <div className="flex flex-col items-center gap-2 my-3 px-4 text-center">
                           <p className="text-2xl font-semibold">
                             {locale === "ar"
-                              ? ad1Product.nameAr || ad1Product.nameEn
-                              : ad1Product.nameEn || ad1Product.nameAr}
+                              ? ad1Product.nameAr : ad1Product.nameEn
+                              }
                           </p>
                           <div className="flex items-center gap-2">
 
@@ -404,7 +408,7 @@ export default function Homepage() {
                       />
                     </div>
 
-
+</Link> 
                   </div>
 
                   {/* Categories */}
@@ -458,18 +462,19 @@ export default function Homepage() {
               {/* <hr className="w-24 h-1 border-0 rounded-full bg-gradient-to-l from-red-200 via-red-400 to-red-200" /> */}
             </div>
             <div className="flex items-center gap-5 xl:justify-end xs:justify-start w-full md:text-sm xl:text-base  font-semibold">
+            <button
+                className={`items-center  justify-center rounded-full p-1  hover:text-red-600 hover:scale-105 duration-200 ${productType === "mustWatchedItems" ?"text-red-600" : "text-black"}`}
+                onClick={handleShowMustWatchedItems}
+              >
+                {t("Most_viewed_products")}
+              </button>
               <button
                 className={` items-center justify-center rounded-full p-1  hover:text-red-600 hover:scale-105 ${productType === "popularProducts" ?"text-red-600" : "text-black"} duration-200`}
                 onClick={handleShowPopularProducts}
               >
                 {t("popular_products")}
               </button>
-<button
-                className={`items-center  justify-center rounded-full p-1  hover:text-red-600 hover:scale-105 duration-200 ${productType === "mustWatchedItems" ?"text-red-600" : "text-black"}`}
-                onClick={handleShowMustWatchedItems}
-              >
-                {t("Most_viewed_products")}
-              </button>
+
               <button
                 className={`items-center  justify-center rounded-full p-1  hover:text-red-600 hover:scale-105 duration-200 ${productType === "topSoldItems" ?"text-red-600" : "text-black"}`}
                 onClick={handleShowTopSoldItems}
@@ -492,7 +497,7 @@ export default function Homepage() {
             <div className="flex flex-col items-center gap-5 w-full">
               <Top10Products
                 Products={topHomeApplianceItems}
-                section={"top_products"}
+                section={"top_appliances"}
                 href={TOP_PRODUCTS_HREF}
               />
             </div>
@@ -579,7 +584,7 @@ export default function Homepage() {
       </section>
 
       {/* ========================= More Recommended Products ========================= */}
-      <section id="newProducts" className="w-full pb-20 mt-20">
+      <section id="newProducts" className="w-full  mt-20">
         <div className="w-full flex justify-between items-center">
 
           <div>
@@ -599,6 +604,7 @@ export default function Homepage() {
           <FeaturedProducts Products={featuredProducts || []} type={"MoreRecommended"} />
         </div>
       </section>
+      <ReviewsClients/>
     </div>
   );
 }

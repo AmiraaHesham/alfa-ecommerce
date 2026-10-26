@@ -1,52 +1,74 @@
 "use client";
-import { MdFilterList, MdOutlineDownloading } from "react-icons/md";
+import { MdFilterList } from "react-icons/md";
 import { useLanguage } from "../../../../context/LanguageContext.js";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { postRequest } from "../../../../utils/requestsUtils.js";
 import { FaUserLarge } from "react-icons/fa6";
 import { IoMdSearch } from "react-icons/io";
 import Select from "react-select";
 import { useIdContext } from "../../../../context/idContext.jsx";
+import {
+  InfiniteListFooter,
+  InfiniteTableFooter,
+  toPageResult,
+  useInfiniteScroll,
+} from "../../components/InfiniteScroll.jsx";
+
+const PAGE_SIZE = 15;
+
 export default function Orders_Table() {
   const { t } = useLanguage();
   const navigate = useRouter();
   const { selectedState, setSelectedState } = useIdContext();
-
-  // const [state, setState] = useState(selectedPendingState || "");
-  const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const pageNum = useRef(0);
   const searchInputRef = useRef(null);
-  const orderCancel = async (orderId) => {
-    try {
-      await postRequest(`/api/orders/${orderId}/cancel`, "", t("message"));
-      navigate.refresh();
-    } catch (error) {
-    }
-  };
-  const getAllOrders = useCallback(async () => {
-    try {
+
+  const {
+    items: orders,
+    setItems,
+    loading,
+    loadingMore,
+    hasMore,
+    error,
+    sentinelRef,
+    reload,
+  } = useInfiniteScroll({
+    pageSize: PAGE_SIZE,
+    queryKey: [selectedState ?? ""],
+    load: async (page) => {
       const response = await postRequest(
         "/api/orders/search",
         {
-          page: pageNum.current,
-          size: 15,
-          searchText: searchInputRef.current.value,
+          page,
+          size: PAGE_SIZE,
+          searchText: searchInputRef.current?.value ?? "",
           orderState: selectedState,
         },
         "",
       );
-      const resOrders = response.data.content || [];
+      return toPageResult(response, page, PAGE_SIZE);
+    },
+  });
 
-      if (pageNum.current === 0) {
-        setOrders(resOrders);
-      } else setOrders((prev) => [...prev, ...resOrders]);
+  const orderCancel = async (orderId) => {
+    try {
+      const res = await postRequest(
+        `/api/orders/${orderId}/cancel`,
+        "",
+        t("message"),
+      );
+      if (res) {
+        setItems((prev) =>
+          prev.map((order) =>
+            order.orderId === orderId
+              ? { ...order, state: "CANCELLED" }
+              : order,
+          ),
+        );
+      }
     } catch (error) {
-    } finally {
-      setLoading(false);
     }
-  }, [selectedState]);
+  };
   const nextStatus = {
     PENDING: [{ value: "PROCESSING", label: t("PROCESSING") }],
     PROCESSING: [{ value: "SHIPPED", label: t("SHIPPED") }],
@@ -64,21 +86,16 @@ export default function Orders_Table() {
           t("message"),
         );
         if (res.success === true) {
-          setOrders((prev) => {
-            const updated = prev.map((item) =>
+          setItems((prev) =>
+            prev.map((item) =>
               item.orderId === orderId ? { ...item, state: newState } : item,
-            );
-
-            return updated;
-          });
+            ),
+          );
         }
       }
     } catch (error) {
     }
   };
-  useEffect(() => {
-    getAllOrders();
-  }, [getAllOrders]);
   const statusSelect = (order, selectClass) => (
     <Select
       value={{
@@ -169,14 +186,14 @@ export default function Orders_Table() {
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 e.preventDefault();
-                getAllOrders();
+                reload();
               }
             }}
             className="bg-none outline-none placeholder:text-xs h-8   bg-gray-100 p-3 rounded-lg"
           />
           <button
             className="text-lg bg-red-300 hover:bg-red-500 p-1 text-white  rounded-md"
-            onClick={getAllOrders}
+            onClick={reload}
           >
             <IoMdSearch />
           </button>
@@ -374,15 +391,14 @@ export default function Orders_Table() {
             );
           })}
         <div className="flex justify-center py-3">
-          <button
-            className=" text-red-600 w-[100px] py-1 text-center rounded-lg"
-            onClick={() => {
-              pageNum.current += 1;
-              getAllOrders();
-            }}
-          >
-            <MdOutlineDownloading className="text-4xl" />
-          </button>
+          <InfiniteListFooter
+            sentinelRef={sentinelRef}
+            loadingMore={loadingMore}
+            hasMore={hasMore}
+            hasItems={orders.length > 0}
+            error={error}
+            onRetry={reload}
+          />
         </div>
       </div>
       <div className="hidden lg:block h-[520px] border-t mt-3 w-full  overflow-y-scroll">
@@ -508,23 +524,15 @@ export default function Orders_Table() {
                   </tr>
                 );
               })}
-            {orders.length <= 15 ? (
-              " "
-            ) : (
-            <tr className="h-5 text-center">
-              <td colSpan="7">
-                <button
-                  className=" text-red-600 w-[100px] py-1 text-center  my-3 rounded-lg"
-                  onClick={() => {
-                    pageNum.current += 1;
-                    getAllOrders();
-                  }}
-                >
-                  <MdOutlineDownloading className="text-4xl" />
-                </button>
-              </td>
-            </tr>
-            )} 
+            <InfiniteTableFooter
+              colSpan={7}
+              sentinelRef={sentinelRef}
+              loadingMore={loadingMore}
+              hasMore={hasMore}
+              hasItems={orders.length > 0}
+              error={error}
+              onRetry={reload}
+            />
           </tbody>
         </table>
       </div>

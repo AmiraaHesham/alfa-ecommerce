@@ -3,10 +3,11 @@ import { useLanguage } from "../../../../context/LanguageContext";
 import { getThumbnailUrl } from "../../../../utils/functions";
 import StarRating from "../../components/StarRating";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function Top10Products({ Products, section, href }) {
-    const { locale } = useLanguage()
-    const { t } = useLanguage()
+    const { t , locale } = useLanguage()
+      const navigate = useRouter()
     return (
         <div className="w-full h-auto bg-white rounded-3xl p-5 ">
             <div className="w-full h-full flex justify-between items-center">
@@ -16,12 +17,16 @@ export default function Top10Products({ Products, section, href }) {
                     <hr className="bg-red-500 h-[2px] border-none w-auto " />
                 </div>
             </div>
-            <div className="w-full xs:h-auto md:h-[430px]  overflow-hidden overflow-y-auto  xs:grid-cols-1 sm:grid-cols-2 grid gap-3">
+            <div className="w-full xs:h-auto md:h-[430px]  xs:grid-cols-1 sm:grid-cols-2 grid gap-1">
 
                 {Products?.map((product, index) => {
                     return (
 
-                        <div key={index} className={`${index < 8 ? "flex" :"hidden"} gap-2 items-center cursor-pointer w-full`}>
+                        <div
+                        onClick={() => {
+                    navigate.push(`/user/productdetails/${product.nameEn}/${product.itemId}`);
+                  }}
+                        key={index} className={`${index < 8 ? "flex" :"hidden"} gap-2 items-center cursor-pointer w-full`}>
                             <div className="relative w-[60px] h-[60px] ">
                                 <Image src={
                                     process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +

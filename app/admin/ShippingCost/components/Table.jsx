@@ -4,6 +4,13 @@ import { useEffect, useState } from "react";
 import { getRequest, putRequest } from "../../../../utils/requestsUtils";
 import { BiEdit } from "react-icons/bi";
 import { useRefresh } from "../../../../context/refreshContext";
+import {
+  InfiniteListFooter,
+  InfiniteTableFooter,
+  useClientInfiniteScroll,
+} from "../../components/InfiniteScroll.jsx";
+
+const CLIENT_PAGE_SIZE = 15;
 
 export default function Table({
   setGovernorate,
@@ -21,11 +28,21 @@ export default function Table({
 
     const getGovernorate = async () => {
       const res = await getRequest("/api/admin/shipping-rates");
-      setGovernorates(res.data);
+      setGovernorates(res.data || []);
     };
     useEffect(() => {
       getGovernorate();
     }, [refreshKey]);
+
+    // The shipping-rates endpoint returns every governorate at once, so we
+    // reveal them progressively on the client to keep the same UX.
+    const {
+      items: visibleGovernorates,
+      hasMore,
+      sentinelRef,
+      error: infiniteError,
+      reload: reloadInfinite,
+    } = useClientInfiniteScroll(governorates, CLIENT_PAGE_SIZE);
   // const getShippingCost = async () => {
   //   try {
   //     const response = await getRequest(" /api/admin/shipping-rates");
@@ -48,7 +65,7 @@ export default function Table({
       {/* <div className=""> */}
         {/* XS mobile card layout */}
         <div className="lg:hidden p-3">
-          {governorates.map((gov) => {
+          {visibleGovernorates.map((gov) => {
             return (
               <div
                 key={gov.shippingRateId}
@@ -78,6 +95,14 @@ export default function Table({
               </div>
             );
           })}
+          <InfiniteListFooter
+            sentinelRef={sentinelRef}
+            loadingMore={false}
+            hasMore={hasMore}
+            hasItems={visibleGovernorates.length > 0}
+            error={infiniteError}
+            onRetry={reloadInfinite}
+          />
         </div>
       <div className="hidden lg:block max-h-[570px] min-w-0 mt-3 w-full overflow-x-auto overflow-y-auto">
 
@@ -106,7 +131,7 @@ export default function Table({
                     </td>
                   </tr>
                 ))
-              : governorates.map((gov) => {
+              : visibleGovernorates.map((gov) => {
                   return (
                     <tr
                       key={gov.shippingRateId}
@@ -130,6 +155,15 @@ export default function Table({
                     </tr>
                   );
                 })}
+            <InfiniteTableFooter
+              colSpan={3}
+              sentinelRef={sentinelRef}
+              loadingMore={false}
+              hasMore={hasMore}
+              hasItems={visibleGovernorates.length > 0}
+              error={infiniteError}
+              onRetry={reloadInfinite}
+            />
           </tbody>
         </table>
       </div>

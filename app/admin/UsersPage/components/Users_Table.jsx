@@ -1,10 +1,10 @@
 "use client";
 import Image from "next/image";
 import { useLanguage } from "../../../../context/LanguageContext.js";
-import { MdDelete, MdOutlineDownloading } from "react-icons/md";
+import { MdDelete } from "react-icons/md";
 import { FaCircle, FaTimes } from "react-icons/fa";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { postRequest } from "../../../../utils/requestsUtils.js";
 import { FaUserLarge } from "react-icons/fa6";
 import { ImBlocked } from "react-icons/im";
@@ -12,57 +12,63 @@ import { IoMdSearch } from "react-icons/io";
 import { MdFilterList } from "react-icons/md";
 import { FaRegCalendar } from "react-icons/fa6";
 import { useIdContext } from "../../../../context/idContext.jsx";
+import {
+  InfiniteListFooter,
+  InfiniteTableFooter,
+  toPageResult,
+  useInfiniteScroll,
+} from "../../components/InfiniteScroll.jsx";
+
+const PAGE_SIZE = 15;
+
 export default function UsersPage() {
   const navigate = useRouter();
   const { t } = useLanguage();
-  const [users, setUsers] = useState([]);
-  const pageNum = useRef(0);
-
   const searchInput = useRef();
-  // const searchInputRef = useRef();
   const { setSelectedUserId } = useIdContext();
 
-  const getAllUsers = async () => {
-    try {
-      // console.log(searchInputRef.current.value);
+  const {
+    items: users,
+    setItems,
+    loading,
+    loadingMore,
+    hasMore,
+    error,
+    sentinelRef,
+    reload,
+  } = useInfiniteScroll({
+    pageSize: PAGE_SIZE,
+    queryKey: [],
+    load: async (page) => {
       const response = await postRequest(
         "/api/users/search",
         {
-          page: pageNum.current,
-          size: 15,
-          searchText: searchInput.current.value,
+          page,
+          size: PAGE_SIZE,
+          searchText: searchInput.current?.value ?? "",
         },
-        ""
+        "",
       );
-      const resUsers = response.data.content || [];
-      if (pageNum.current === 0) {
-        setUsers(resUsers);
-      } else setUsers((prev) => [...prev, ...resUsers]);
+      return toPageResult(response, page, PAGE_SIZE);
+    },
+  });
 
-      // pagination()
-      //       console.log("Categories after set:", resProducts);
-    } catch (error) {
+  const setBlocked = async (userId, blocked) => {
+    const res = await postRequest(
+      `/api/admin/users/${userId}/${blocked ? "block" : "unblock"}`,
+      "",
+      t("message"),
+    );
+    if (res) {
+      setItems((prev) =>
+        prev.map((user) =>
+          user.userId === userId ? { ...user, blocked } : user,
+        ),
+      );
     }
   };
-  const addBlock = async (userId) => {
-    await postRequest(
-      `/api/admin/users/${userId}/block`,
-      "",
-      t("message")
-    );
-    getAllUsers();
-  };
-  const removeBlock = async (userId) => {
-    await postRequest(
-      `/api/admin/users/${userId}/unblock`,
-      "",
-      t("message")
-    );
-    getAllUsers();
-  };
-  useEffect(() => {
-    getAllUsers();
-  }, []);
+  const addBlock = (userId) => setBlocked(userId, true);
+  const removeBlock = (userId) => setBlocked(userId, false);
   return (
     <div>
       <div className="w-full h-full bg-white mt-3 rounded-lg border flex md:flex-row xs:flex-col gap-5  items-start  p-3 ">
@@ -72,7 +78,7 @@ export default function UsersPage() {
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 e.preventDefault();
-                getAllUsers();
+                reload();
               }
             }}
             type="text"
@@ -81,7 +87,7 @@ export default function UsersPage() {
           />
           <button
             className="text-lg bg-red-300 hover:bg-red-500 p-1 text-white  rounded-md"
-            onClick={getAllUsers}
+            onClick={reload}
           >
             <IoMdSearch />
           </button>
@@ -167,15 +173,14 @@ export default function UsersPage() {
             );
           })}
           <div className="flex justify-center py-3">
-            <button
-              className=" text-red-600 px-5 py-1 rounded-lg"
-              onClick={() => {
-                pageNum.current += 1;
-                getAllUsers();
-              }}
-            >
-              <MdOutlineDownloading className="text-4xl" />
-            </button>
+            <InfiniteListFooter
+              sentinelRef={sentinelRef}
+              loadingMore={loadingMore}
+              hasMore={hasMore}
+              hasItems={users.length > 0}
+              error={error}
+              onRetry={reload}
+            />
           </div>
         </div>
       <div className="hidden lg:block h-[520px]  mt-3 w-full  overflow-y-scroll">
@@ -281,19 +286,15 @@ export default function UsersPage() {
                 </tr>
               );
             })}
-            <tr className="h-5 text-center">
-              <td colSpan="6">
-                <button
-                  className=" text-red-600 px-5 py-1   my-3 rounded-lg"
-                  onClick={() => {
-                    pageNum.current += 1;
-                    getAllUsers();
-                  }}
-                >
-                  <MdOutlineDownloading className="text-4xl" />
-                </button>
-              </td>
-            </tr>
+            <InfiniteTableFooter
+              colSpan={5}
+              sentinelRef={sentinelRef}
+              loadingMore={loadingMore}
+              hasMore={hasMore}
+              hasItems={users.length > 0}
+              error={error}
+              onRetry={reload}
+            />
           </tbody>
         </table>
       </div>

@@ -216,7 +216,7 @@ export default function ProductInfo({ product, itemId }) {
             {description ? (
                 <div className="min-w-0">
                     <div
-                        className="overflow-hidden transition-[max-height] duration-500 ease-in-out"
+                        className="overflow-hidden whitespace-pre-wrap transition-[max-height] duration-500 ease-in-out"
                         style={{
                             maxHeight: descriptionExpanded
                                 ? `${descriptionHeights.full + 4}px`
@@ -225,8 +225,8 @@ export default function ProductInfo({ product, itemId }) {
                     >
                         <p
                             ref={descriptionRef}
-                            className={`break-words text-xs leading-relaxed text-gray-500 sm:text-sm ${
-                                descriptionExpanded ? "" : "line-clamp-3"
+                            className={` break-words text-xs leading-relaxed text-gray-500 sm:text-sm ${
+                                descriptionExpanded ? "" : "line-clamp-6"
                             }`}
                         >
                             {description}

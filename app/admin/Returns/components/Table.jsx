@@ -1,46 +1,52 @@
 "use client"
 import { useLanguage } from "../../../../context/LanguageContext";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { FaUserLarge } from "react-icons/fa6";
 import { IoMdSearch } from "react-icons/io";
-import { MdFilterList, MdOutlineDownloading } from "react-icons/md";
+import { MdFilterList } from "react-icons/md";
 import Select from "react-select";
 import { postRequest } from "../../../../utils/requestsUtils";
+import {
+  InfiniteListFooter,
+  InfiniteTableFooter,
+  toPageResult,
+  useInfiniteScroll,
+} from "../../components/InfiniteScroll.jsx";
+
+const PAGE_SIZE = 15;
 
 export default function ReturnTable() {
       const { t } = useLanguage();
       const navigate = useRouter();
       const [state, setState] = useState("");
-      const [returnOrders, setreturnOrders] = useState([]);
-      const [loading, setLoading] = useState(true);
-      const pageNum = useRef(0);
       const searchInputRef = useRef(null);
-      const getAllOrders = useCallback(async () => {
-        try {
+
+      const {
+        items: returnOrders,
+        loading,
+        loadingMore,
+        hasMore,
+        error,
+        sentinelRef,
+        reload,
+      } = useInfiniteScroll({
+        pageSize: PAGE_SIZE,
+        queryKey: [state],
+        load: async (page) => {
           const response = await postRequest(
             "/api/return-orders/search",
             {
-              page: pageNum.current,
-              size: 15,
-              searchText: searchInputRef.current.value,
+              page,
+              size: PAGE_SIZE,
+              searchText: searchInputRef.current?.value ?? "",
               orderState: state,
             },
             ""
           );
-          const resOrders = response.data.content || [];
-          if (pageNum.current === 0) {
-            setreturnOrders(resOrders);
-          } else setreturnOrders((prev) => [...prev, ...resOrders]);
-        } catch (error) {
-        } finally {
-          setLoading(false);
-        }  
-        }, [state]);  
-    
-      useEffect(() => {
-        getAllOrders();
-      }, [getAllOrders]);
+          return toPageResult(response, page, PAGE_SIZE);
+        },
+      });
 return(
     <div>
          <div className="w-full  bg-white  rounded-lg border flex md:flex-row xs:flex-col gap-5  items-start  p-4 ">
@@ -52,14 +58,14 @@ return(
                onKeyDown={(e) => {
                  if (e.key === "Enter") {
                    e.preventDefault();
-                   getAllOrders();
+                   reload();
                  }
                }}
                className="bg-none outline-none placeholder:text-xs h-8   bg-gray-100 p-3 rounded-lg"
              />
              <button
                className="text-lg bg-red-300 hover:bg-red-500 p-1 text-white  rounded-md"
-               onClick={getAllOrders}
+               onClick={reload}
              >
                <IoMdSearch />
              </button>
@@ -242,15 +248,14 @@ return(
                    );
                  })}
              <div className="flex justify-center py-3">
-               <button
-                 className=" text-red-600 w-[100px] py-1 text-center rounded-lg"
-                 onClick={() => {
-                   pageNum.current += 1;
-                   getAllOrders();
-                 }}
-               >
-                 <MdOutlineDownloading className="text-4xl" />
-               </button>
+               <InfiniteListFooter
+                 sentinelRef={sentinelRef}
+                 loadingMore={loadingMore}
+                 hasMore={hasMore}
+                 hasItems={returnOrders.length > 0}
+                 error={error}
+                 onRetry={reload}
+               />
              </div>
            </div>
                  <div className="hidden lg:block max-h-[520px] border-t mt-3 w-full min-w-0 overflow-x-auto overflow-y-auto">
@@ -356,23 +361,15 @@ return(
                        </tr>
                      );
                    })}
-               {/* {orders.length <= 5 ? (
-                 " "
-               ) : ( */}
-<tr className="h-auto text-center">
-                  <td colSpan="6">
-                   <button
-                     className=" text-red-600 w-[100px] py-1 text-center  my-3 rounded-lg"
-                     onClick={() => {
-                       pageNum.current += 1;
-                       getAllOrders();
-                     }}
-                   >
-                     <MdOutlineDownloading className="text-4xl" />
-                   </button>
-                 </td>
-               </tr>
-               {/* )} */}
+              <InfiniteTableFooter
+                colSpan={6}
+                sentinelRef={sentinelRef}
+                loadingMore={loadingMore}
+                hasMore={hasMore}
+                hasItems={returnOrders.length > 0}
+                error={error}
+                onRetry={reload}
+              />
              </tbody>
            </table>
          </div>
