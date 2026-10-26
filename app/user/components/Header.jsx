@@ -46,11 +46,14 @@ export default function Header() {
 
     if (!validLangs.includes(newLang)) return;
     setLocale(newLang);
+    localStorage.setItem("lang", newLang);
+
+    // Language is a local preference for guests; only persist it server-side
+    // when there is an authenticated session.
+    if (!localStorage.getItem("id")) return;
+
     try {
       await postRequest(`/api/users/language/${newLang}`, "", "");
-      setLocale(newLang);
-
-      localStorage.setItem("lang", newLang);
     } catch (err) {
       console.error("Failed to update language", err);
     }
