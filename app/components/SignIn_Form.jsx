@@ -10,6 +10,7 @@ import Link from "next/link";
 import { FaEye } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { reportApiFailure } from "../../utils/connectivityStore";
+import { resolveLanguage } from "../../utils/languageUtils";
 
 export default function SignIn({ popUp, setShowSignUp, setShowSignIn,setOpenForm }) {
   const navigate = useRouter();
@@ -46,8 +47,9 @@ export default function SignIn({ popUp, setShowSignUp, setShowSignIn,setOpenForm
       localStorage.setItem("id", response.data.userDetails.userId);
       localStorage.setItem("firstName", response.data.userDetails.firstName);
 
-      localStorage.setItem("lang", response.data.userDetails.language);
-      setLocale(response.data.userDetails.language);
+      const language = resolveLanguage(response.data.userDetails.language);
+      localStorage.setItem("lang", language);
+      setLocale(language);
       localStorage.setItem("role", response.data.userDetails.role);
       localStorage.setItem(
         "governorateId",
@@ -62,7 +64,6 @@ export default function SignIn({ popUp, setShowSignUp, setShowSignIn,setOpenForm
       } else {
         navigate.replace("/");
       }
-      setLocale(response.data.userDetails.language);
     } catch (error) {
       reportApiFailure(error);
       const message = error?.response?.data?.error?.message;

@@ -10,6 +10,7 @@ import Link from "next/link";
 import Select from "react-select";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import { resolveLanguage } from "../../utils/languageUtils";
 
 export default function SignUp({ popUp, setShowSignIn ,setOpenForm}) {
   const navigate = useRouter();
@@ -87,7 +88,9 @@ const router = useRouter();
           localStorage.setItem("phone", response.data.userDetails.phone);
           localStorage.setItem("email", response.data.userDetails.email);
           localStorage.setItem("username", response.data.userDetails.username);
-          localStorage.setItem("lang", response.data.userDetails.language);
+          const language = resolveLanguage(response.data.userDetails.language);
+          localStorage.setItem("lang", language);
+          setLocale(language);
           localStorage.setItem("role", response.data.userDetails.role);
           localStorage.setItem(
             "governorateId",
