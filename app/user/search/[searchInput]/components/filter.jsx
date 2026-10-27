@@ -17,6 +17,13 @@ export const EMPTY_FILTERS = {
 
 const RATING_OPTIONS = [5, 4, 3, 2, 1];
 
+const BRAND_OPTIONS = [
+  { value: "Senator", labelKey: "Senator" },
+  { value: "OMEGA", labelKey: "OMEGA" },
+  { value: "PANORAMA", labelKey: "PANORAMA" },
+  { value: "IBOX", labelKey: "IBOX" },
+];
+
 const toNumber = (value) => {
   if (value === "" || value === null || value === undefined) return null;
   const parsed = Number(value);
@@ -237,42 +244,24 @@ export default function Filter({
           {t("brand")}
         </h3>
         <div className="relative min-w-0">
-          <FiSearch className="absolute top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 start-3" />
-          <input
+          <select
             id="filter-brand"
-            type="text"
-            value={brandQuery}
-            placeholder={t("search_brand")}
-            autoComplete="off"
+            value={filters.brand || ""}
             onChange={(event) => {
-              setBrandQuery(event.target.value);
-              setFilters((prev) => ({ ...prev, brand: event.target.value }));
-              setShowBrandDropdown(true);
+              const value = event.target.value;
+              setFilters((prev) => ({ ...prev, brand: value }));
+              setBrandQuery(value);
+              setShowBrandDropdown(false);
             }}
-            onFocus={() => setShowBrandDropdown(true)}
-            onBlur={() => setTimeout(() => setShowBrandDropdown(false), 150)}
-            onKeyDown={(event) => {
-              if (event.key === "Enter" && suggestions.length > 0) {
-                event.preventDefault();
-                handleSelectBrand(suggestions[0]);
-              }
-              if (event.key === "Escape") {
-                setShowBrandDropdown(false);
-                event.currentTarget.blur();
-              }
-            }}
-            className="w-full h-10 pe-9 ps-9 rounded-xl border border-gray-200 bg-white focus:border-red-400 focus:outline-none focus:ring-2 focus:ring-red-100 text-sm text-gray-800 placeholder:text-gray-400"
-          />
-          {brandQuery && (
-            <button
-              type="button"
-              onClick={handleClearBrand}
-              className="absolute top-1/2 -translate-y-1/2 end-3 text-gray-400 hover:text-gray-600"
-              aria-label={t("clear")}
-            >
-              <IoClose className="w-4 h-4" />
-            </button>
-          )}
+            className="w-full h-10 px-3 rounded-xl border border-gray-200 bg-white focus:border-red-400 focus:outline-none focus:ring-2 focus:ring-red-100 text-sm text-gray-800"
+          >
+            <option value="">{t("all") || ""}</option>
+            {BRAND_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>
+                {t(option.labelKey)}
+              </option>
+            ))}
+          </select>
         </div>
 
         {showBrandDropdown && suggestions.length > 0 && (

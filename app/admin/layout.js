@@ -3,8 +3,7 @@ import { useEffect, useState } from "react";
 import Header from "./components/Header";
 import SideMenu from "./components/SideMenu";
 import Image from "next/image";
-
-export default function AdminLayout({ children }) {
+import AdminInactivityHandler from "./components/AdminInactivityHandler";
 
   const [loading, setLoading] = useState(true);
   const [role, setRole] = useState('')
@@ -33,13 +32,15 @@ export default function AdminLayout({ children }) {
       {
         role === 'ADMIN' ?
           (
-            <main className=" flex min-w-0  ">
-              <SideMenu homepage={"bg-red-100 text-red-500"} />
-              <div className="w-full h-full min-w-0 ">
-                <Header page_title={"Homepage Management"} />
-                <div className="  ">{children}</div>
-              </div>
-            </main>
+            <AdminInactivityHandler>
+              <main className=" flex min-w-0  ">
+                <SideMenu homepage={"bg-red-100 text-red-500"} />
+                <div className="w-full h-full min-w-0 ">
+                  <Header page_title={"Homepage Management"} />
+                  <div className="  ">{children}</div>
+                </div>
+              </main>
+            </AdminInactivityHandler>
           ) : (
 
             <div className="w-full h-full flex justify-center items-center text-center">

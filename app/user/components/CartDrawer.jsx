@@ -231,16 +231,13 @@ export default function CartDrawer({
               {t("view_cart")}
             </button>
             <button
-              onClick={() => {
-                onClose && onClose();
-                navigate.push(checkoutHref);
-              }}
+            onClick={onClose}
               className={`flex w-full items-center justify-center rounded-full px-4 py-3 text-sm font-semibold text-white transition-colors ${items.length === 0
                   ? "cursor-not-allowed bg-gray-300"
                   : "bg-[#E76E7D] hover:bg-[#CD4354]"
                 }`}
             >
-              {t("checkout")}
+              {t("continueShopping")}
             </button>
           </div>
         </footer>

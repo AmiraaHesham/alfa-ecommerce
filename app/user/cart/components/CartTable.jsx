@@ -2,6 +2,7 @@ import Image from "next/image";
 import { useLanguage } from "../../../../context/LanguageContext";
 import { getThumbnailUrl } from "../../../../utils/functions";
 import { MdCancel } from "react-icons/md";
+import { useRouter } from "next/navigation";
 
 export default function CartTable({
   items,
@@ -10,7 +11,7 @@ export default function CartTable({
   onQuantityChange,
 }) {
   const { t, locale } = useLanguage();
-
+ const navigate = useRouter()
   const userId =
     typeof window !== "undefined" ? localStorage.getItem("id") : null;
 
@@ -58,7 +59,11 @@ export default function CartTable({
                 className="flex p-4 border-b border-gray-100"
               >
                 <div className="flex gap-4 w-full">
-                  <div className="flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gray-100">
+                  <div 
+                     onClick={()=>{
+                         navigate.push(`/user/productdetails/${product.nameEn}/${product.itemId}`);
+                      }}
+                  className="flex h-24 w-24 shrink-0 items-center justify-center cursor-pointer overflow-hidden rounded-xl bg-gray-100">
                     <Image
                       alt=""
                       src={`${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL}${getThumbnailUrl(product.images[0]?.imageUrl)}`}
@@ -70,7 +75,11 @@ export default function CartTable({
 
                   <div className="flex-1 min-w-0 flex flex-col">
                     <div className="flex items-start justify-between gap-2">
-                      <h1 className="font-semibold text-lg text-gray-900 leading-snug break-words">
+                      <h1 
+                         onClick={()=>{
+                         navigate.push(`/user/productdetails/${product.nameEn}/${product.itemId}`);
+                      }}
+                      className="font-semibold text-lg text-gray-900 leading-snug break-words">
                         {getName(product)}
                       </h1>
                       <button
@@ -155,7 +164,7 @@ export default function CartTable({
       </div>
 
       {/* ── Desktop / Tablet table layout ───────────────────────── */}
-      <div className="xs:hidden md:flex w-full h-auto min-w-0 overflow-x-auto rounded-3xl bg-white">
+      <div className="xs:hidden md:flex w-full min-w-0 h-[400px]  rounded-3xl bg-white">
         <table className="w-full min-w-[640px] h-auto">
           <thead className="text-center uppercase tracking-wide">
             <tr className="h-20 border-b border-b-gray-200 border-gray-100">
@@ -166,7 +175,7 @@ export default function CartTable({
               <th className="px-5 text-end">{t("subtotal")}</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200 bg-white text-md w-full">
+          <tbody className="divide-y divide-gray-200 bg-white text-md ">
             {loading ? (
               [...Array(5)].map((_, index) => (
                 <tr key={`skeleton-${index}`}>
@@ -199,7 +208,7 @@ export default function CartTable({
                 return (
                   <tr
                     key={index}
-                    className="transition-colors hover:bg-gray-50/60"
+                    className="transition-colors hover:bg-gray-50/60 h-10 "
                   >
                     <td className="py-5 ps-5">
                       <button
@@ -212,7 +221,11 @@ export default function CartTable({
                       </button>
                     </td>
                     <td className="py-5 px-5">
-                      <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-4 cursor-pointer"
+                      onClick={()=>{
+                         navigate.push(`/user/productdetails/${product.nameEn}/${product.itemId}`);
+                      }}
+                      >
                         <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gray-100">
                           <Image
                             alt=""
