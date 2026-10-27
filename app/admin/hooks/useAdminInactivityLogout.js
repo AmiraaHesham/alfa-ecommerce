@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { logoutRequest } from "../../../utils/requestsUtils";
 
 const INACTIVITY_TIMEOUT = 10 * 60 * 1000; // 10 minutes
-const WARNING_BEFORE_LOGOUT = 60 * 1000; // 60 seconds before logout
+const WARNING_BEFORE_LOGOUT = 30 * 1000; // 30 seconds before logout
 const ACTIVITY_THROTTLE_MS = 1000; // At most one timer reset per second of activity
 
 const AUTH_STORAGE_KEYS = [
