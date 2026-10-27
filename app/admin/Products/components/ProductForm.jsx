@@ -501,15 +501,60 @@ productData()
             <label className="text-xs text-gray-600 font-semibold block mb-1">
               {t("brand")}
             </label>
-            <input
-              type="text"
-              value={product.brand || ""}
-              onChange={(e) =>
-                setProduct((prev) => ({ ...prev, brand: e.target.value }))
-              }
-              
-              className="w-full  outline-none  text-base  my-1  p-2 border rounded-md focus:border-red-600 transition-colors"
-            />
+            <div className=" border rounded-md">
+              <Select
+                options={[
+                  { value: "Senator", label: t("Senator") },
+                  { value: "OMEGA", label: t("OMEGA") },
+                  { value: "PANORAMA", label: t("PANORAMA") },
+                  { value: "IBOX", label: t("IBOX") },
+                ]}
+                value={
+                  product.brand
+                    ? { value: product.brand, label: t(product.brand) }
+                    : null
+                }
+                onChange={(option) => {
+                  setProduct((prev) => ({
+                    ...prev,
+                    brand: option ? option.value : "",
+                  }));
+                }}
+                isSearchable={false}
+                placeholder={t("brand")}
+                className="placeholder:text-sm"
+                styles={{
+                  control: (provided) => ({
+                    ...provided,
+                    border: "none",
+                    boxShadow: "none",
+                    fontWeight: "600",
+                    height: "100%",
+                    width: "100%",
+                  }),
+                  input: (base) => ({
+                    ...base,
+                    color: "#374151",
+                  }),
+                  option: (base, state) => ({
+                    ...base,
+                    backgroundColor: state.isSelected
+                      ? "#dc2626"
+                      : state.isFocused
+                        ? "#fee2e2"
+                        : "#ffffff",
+                    color: state.isSelected ? "#ffffff" : "#374151",
+                    cursor: "pointer",
+                    padding: "10px",
+                    "&:hover": {
+                      backgroundColor: state.isSelected
+                        ? "#dc2626"
+                        : "#fee2e2",
+                    },
+                  }),
+                }}
+              />
+            </div>
           </div>
           <div className="w-full my-1">
             <label className="text-xs text-gray-600 font-semibold block mb-1">

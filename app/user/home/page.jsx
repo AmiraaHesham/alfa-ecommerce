@@ -441,8 +441,9 @@ export default function Homepage() {
                   src={IMAGE_BASE_URL + ads.ad2.imageUrl}
                   alt="Advertisement"
                   fill
-                  sizes="300px"
-                  className="object-cover"
+                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                   quality={100}
+                  className="object-fill"
                 />
               )}
             </div>
@@ -491,7 +492,7 @@ export default function Homepage() {
 
           </div>
           <div className="flex xl:flex-row xs:flex-col mt-10 gap-5 justify-between  items-start w-full">
-            <div className="md:w-[670px] xs:w-full h-[500px] bg-white rounded-3xl">
+            <div className="w-full h-[500px] bg-white rounded-3xl">
               <ProductAdsSlider />
             </div>
             <div className="flex flex-col items-center gap-5 w-full">
@@ -509,7 +510,7 @@ export default function Homepage() {
       {/* ========================= Promo Banner ========================= */}
       <section className="my-32">
         <div className="w-full flex flex-col md:flex-row lg:justify-between items-stretch gap-5">
-          <div className="group cursor-pointer w-full flex flex-col justify-center items-center h-[550px] bg-white rounded-3xl  overflow-hidden p-5">
+          <div className="group cursor-pointer w-full flex flex-col justify-center items-center h-[500px] bg-white rounded-3xl  overflow-hidden p-5">
             {ads.ad3.imageUrl ? (
               <div className="w-full h-2/3 relative group-hover:scale-105 duration-500 transition-all">
 
@@ -528,12 +529,12 @@ export default function Homepage() {
               <h1 className="text-3xl font-bold">{ad3Product.brand} </h1>
 
               <h1 className=" text-center my-3">{locale === "ar" ? ads.ad3.titleAr : ads.ad3.title} </h1>
-             <Link href={`/user/productdetails/${ad3Product.name}/${ads.ad3.itemId}`}><button  className="text-white rounded-full bg-[#CD4354] hover:bg-[#c13b4a] w-[120px] py-3 px-5 mt-2 text-sm font-semibold ">{t("buyNow")} </button></Link> 
+             <Link className={ads.ad3.itemId ? "block" : "hidden"} href={`/user/productdetails/${ad3Product.name}/${ads.ad3.itemId}`}><button  className="text-white rounded-full bg-[#CD4354] hover:bg-[#c13b4a] w-[120px] py-3 px-5 mt-2 text-sm font-semibold ">{t("buyNow")} </button></Link> 
 
             </div>
 
           </div>
-          <div className="group cursor-pointer text-white w-full flex flex-col justify-center items-center h-[550px] bg-black rounded-3xl  overflow-hidden p-5">
+          <div className="group cursor-pointer text-white w-full flex flex-col justify-center items-center h-[500px] bg-black rounded-3xl  overflow-hidden p-5">
             {ads.ad4.imageUrl ? (
               <div className="w-full h-2/3 relative group-hover:scale-105 duration-500 transition-all">
                 <Image
@@ -552,11 +553,11 @@ export default function Homepage() {
               <h1 className="text-3xl font-bold">{ad4Product.brand} </h1>
 
               <h1 className=" text-center my-3">{locale === "ar" ? ads.ad4.titleAr : ads.ad4.title} </h1>
-             <Link href={`/user/productdetails/${ad4Product.name}/${ads.ad4.itemId}`}><button  className="text-white rounded-full bg-[#CD4354] hover:bg-[#c13b4a] w-[120px] py-3 px-5 mt-2 text-sm font-semibold ">{t("buyNow")} </button></Link> 
+             <Link className={ads.ad4.itemId ? "block" : "hidden"} href={`/user/productdetails/${ad4Product.name}/${ads.ad4.itemId}`}><button  className="text-white rounded-full bg-[#CD4354] hover:bg-[#c13b4a] w-[120px] py-3 px-5 mt-2 text-sm font-semibold ">{t("buyNow")} </button></Link> 
 
             </div>
           </div>
-          <div className="group cursor-pointer w-full flex flex-col justify-center items-center h-[550px] bg-white rounded-3xl  overflow-hidden p-5">
+          <div className="group cursor-pointer w-full flex flex-col justify-center items-center h-[500px] bg-white rounded-3xl  overflow-hidden p-5">
             {ads.ad5.imageUrl ? (
               <div className="w-full h-2/3 relative group-hover:scale-105 duration-500 transition-all">
 
@@ -575,7 +576,7 @@ export default function Homepage() {
               <h1 className="text-3xl font-bold">{ad5Product.brand} </h1>
 
               <h1 className=" text-center my-3">{locale === "ar" ? ads.ad5.titleAr : ads.ad5.title} </h1>
-             <Link href={`/user/productdetails/${ad5Product.name}/${ads.ad5.itemId}`}><button  className="text-white rounded-full bg-[#CD4354] hover:bg-[#c13b4a] w-[120px] py-3 px-5 mt-2 text-sm font-semibold ">{t("buyNow")} </button></Link> 
+             <Link className={ads.ad5.itemId ? "block" : "hidden"} href={`/user/productdetails/${ad5Product.name}/${ads.ad5.itemId}`}><button  className="text-white rounded-full bg-[#CD4354] hover:bg-[#c13b4a] w-[120px] py-3 px-5 mt-2 text-sm font-semibold ">{t("buyNow")} </button></Link> 
 
             </div>
 
