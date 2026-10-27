@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import useAdminInactivityLogout from "./useAdminInactivityLogout";
+import useAdminInactivityLogout from "../hooks/useAdminInactivityLogout";
 
 export default function AdminInactivityHandler({ children, showWarning = true }) {
   const { showWarningModal, timeLeft, cancelWarningAndReset, logoutNow } =

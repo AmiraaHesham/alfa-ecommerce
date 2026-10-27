@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { logoutRequest } from "../../utils/requestsUtils";
+import { logoutRequest } from "../../../utils/requestsUtils";
 
 const INACTIVITY_TIMEOUT = 10 * 60 * 1000; // 10 minutes
 const WARNING_BEFORE_LOGOUT = 60 * 1000; // 60 seconds before logout

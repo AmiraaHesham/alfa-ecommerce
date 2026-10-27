@@ -5,6 +5,7 @@ import SideMenu from "./components/SideMenu";
 import Image from "next/image";
 import AdminInactivityHandler from "./components/AdminInactivityHandler";
 
+export default function AdminLayout({ children }) {
   const [loading, setLoading] = useState(true);
   const [role, setRole] = useState('')
   useEffect(() => {
