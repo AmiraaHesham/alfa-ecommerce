@@ -454,7 +454,7 @@ export default function Homepage() {
             </section>
           </div>
         </div>
-        <section className="w-full xs:order-1 lg:order-2">
+        <section className="w-full min-w-0 xs:order-1 lg:order-2">
           <div className="w-full flex xl:flex-row xs:flex-col justify-between items-center gap-2">
             <div className="w-full">
               <h1 className="flex items-center font-semibold gap-2 text-2xl mb-1">
