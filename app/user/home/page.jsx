@@ -492,7 +492,7 @@ export default function Homepage() {
 
           </div>
           <div className="flex xl:flex-row xs:flex-col mt-10 gap-5 justify-between  items-start w-full">
-            <div className="w-full h-[500px] bg-white rounded-3xl">
+            <div className="md:w-[670px] xs:w-full h-[500px] bg-white rounded-3xl">
               <ProductAdsSlider />
             </div>
             <div className="flex flex-col items-center gap-5 w-full">
