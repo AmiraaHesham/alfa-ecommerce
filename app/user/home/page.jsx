@@ -454,7 +454,7 @@ export default function Homepage() {
             </section>
           </div>
         </div>
-        <section className="w-full xs:order-1 lg:order-2">
+        <section className="w-full min-w-0 xs:order-1 lg:order-2">
           <div className="w-full flex xl:flex-row xs:flex-col justify-between items-center gap-2">
             <div className="w-full">
               <h1 className="flex items-center font-semibold gap-2 text-2xl mb-1">
@@ -492,7 +492,7 @@ export default function Homepage() {
 
           </div>
           <div className="flex xl:flex-row xs:flex-col mt-10 gap-5 justify-between  items-start w-full">
-            <div className="md:w-[670px] xs:w-full h-[500px] bg-white rounded-3xl">
+            <div className="w-full h-[500px] bg-white rounded-3xl">
               <ProductAdsSlider />
             </div>
             <div className="flex flex-col items-center gap-5 w-full">
