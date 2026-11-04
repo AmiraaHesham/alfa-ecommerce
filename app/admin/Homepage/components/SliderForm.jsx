@@ -2,11 +2,35 @@
 import Image from "next/image";
 import { MdCancel } from "react-icons/md";
 import { IoCloudUploadSharp } from "react-icons/io5";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useLanguage } from "../../../../context/LanguageContext.js";
 import { getRequest, postRequest } from "../../../../utils/requestsUtils.js";
 import { useRefresh } from "../../../../context/refreshContext.jsx";
+import { getThumbnailUrl } from "../../../../utils/functions.jsx";
 import Select from "react-select";
+
+const IMAGE_BASE_URL = process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL;
+
+// The public search endpoint returns a paginated object (`data.content`),
+// while `/items/recent` returns a plain array. Normalise both shapes so the
+// dropdown can render whichever one the API sends.
+const extractProducts = (payload) => {
+    const data = payload?.data ?? payload;
+    if (Array.isArray(data)) return data;
+    if (Array.isArray(data?.content)) return data.content;
+    return [];
+};
+
+const mapProductToOption = (product, locale) => ({
+    value: product.itemId,
+    label:
+        (locale === "ar" ? product.nameAr : product.nameEn) ||
+        product.nameAr ||
+        product.nameEn ||
+        product.code ||
+        `#${product.itemId}`,
+    product,
+});
 
 export default function SliderForm({ isFormOpen, setIsFormOpen }) {
     const [photo, setPhoto] = useState({
@@ -15,50 +39,140 @@ export default function SliderForm({ isFormOpen, setIsFormOpen }) {
     });
 
     const [itemId, setItemId] = useState("");
-    const { t } = useLanguage();
-    const{locale} = useLanguage()
+    const { t, locale } = useLanguage();
     const { triggerRefresh } = useRefresh();
-    const [loading, setLoading] = useState();
+    const [loading, setLoading] = useState(false);
     const [search, setSearch] = useState("");
     const [options, setOptions] = useState([]);
     const [selectedProduct, setSelectedProduct] = useState(null);
+    const [searchLoading, setSearchLoading] = useState(false);
+    const [focusedOption, setFocusedOption] = useState(null);
+    const recentOptionsRef = useRef([]);
+    const searchTimerRef = useRef(null);
+    const searchRequestIdRef = useRef(0);
+    const searchValueRef = useRef("");
+
     useEffect(() => {
-        const fetchRecentItems = async () => {
+        searchValueRef.current = search;
+    }, [search]);
+
+    const resetForm = useCallback(() => {
+        setPhoto({ imageFile: "", image: "" });
+        setItemId("");
+        setSelectedProduct(null);
+        setSearch("");
+        setFocusedOption(null);
+        setSearchLoading(false);
+        searchValueRef.current = "";
+        searchRequestIdRef.current++;
+        clearTimeout(searchTimerRef.current);
+    }, []);
+
+    const fetchRecentItems = useCallback(async () => {
+        try {
             const res = await getRequest("/api/public/items/recent");
-            const products = res?.data || [];
-            setOptions(
-                products.map((product) => ({
-                    value: product.itemId,
-                    label: locale === "ar" ? product.nameAr : product.nameEn,
-                    product,
-                }))
+            const recentOptions = extractProducts(res).map((product) =>
+                mapProductToOption(product, locale)
             );
-        };
-        fetchRecentItems();
+            recentOptionsRef.current = recentOptions;
+            // Don't overwrite results if the user already started typing.
+            if (!searchValueRef.current.trim()) {
+                setOptions(recentOptions);
+            }
+        } catch (error) {
+            recentOptionsRef.current = [];
+            if (!searchValueRef.current.trim()) {
+                setOptions([]);
+            }
+        }
     }, [locale]);
 
-    const handleSearch = async () => {
+    useEffect(() => {
+        if (!isFormOpen) return;
+        resetForm();
+        fetchRecentItems();
+    }, [isFormOpen, resetForm, fetchRecentItems]);
+
+    const searchProducts = useCallback(
+        async (value) => {
+            const query = value.trim();
+            const requestId = ++searchRequestIdRef.current;
+
+            if (!query) {
+                setSearchLoading(false);
+                setOptions(recentOptionsRef.current);
+                return;
+            }
+
+            setSearchLoading(true);
+            try {
+                const res = await postRequest(
+                    "/api/public/items/search",
+                    {
+                        page: 0,
+                        size: 50,
+                        searchText: query,
+                    },
+                    ""
+                );
+
+                if (requestId !== searchRequestIdRef.current) return;
+
+                setOptions(
+                    extractProducts(res).map((product) =>
+                        mapProductToOption(product, locale)
+                    )
+                );
+            } catch (error) {
+                if (requestId !== searchRequestIdRef.current) return;
+                setOptions([]);
+            } finally {
+                if (requestId === searchRequestIdRef.current) {
+                    setSearchLoading(false);
+                }
+            }
+        },
+        [locale]
+    );
+
+    // Search as the user types; pressing Enter still searches immediately.
+    useEffect(() => {
+        if (!isFormOpen) return;
+
+        clearTimeout(searchTimerRef.current);
+
         if (!search.trim()) {
-            setOptions([]);
+            searchRequestIdRef.current++;
+            setSearchLoading(false);
+            setOptions(recentOptionsRef.current);
             return;
         }
 
-        const res = await postRequest(
-            "/api/public/items/search",
-            {
-                searchText: search,
-            }, ""
-        );
+        searchTimerRef.current = setTimeout(() => searchProducts(search), 350);
+        return () => clearTimeout(searchTimerRef.current);
+    }, [search, isFormOpen, searchProducts]);
 
-        const products = res?.data || [];
+    useEffect(() => () => clearTimeout(searchTimerRef.current), []);
 
-        setOptions(
-            products.map((product) => ({
-                value: product.itemId,
-                label: locale === "ar"? product.nameAr : product.nameEn,
-                
-                product,
-            }))
+    const formatOptionLabel = ({ label, product }) => {
+        const url = product?.images?.[0]?.imageUrl || product?.mainImageURL || "";
+        const thumbnail = url ? IMAGE_BASE_URL + getThumbnailUrl(url) : "";
+
+        return (
+            <div className="flex items-center gap-3">
+                {thumbnail ? (
+                    <Image
+                        src={thumbnail}
+                        alt=""
+                        width={30}
+                        height={30}
+                        className="rounded-md object-cover w-[30px] h-[30px]"
+                    />
+                ) : (
+                    <div className="w-[30px] h-[30px] bg-gray-100 rounded-md" />
+                )}
+                <span>{label}</span>
+            </div>
         );
     };
     const handelupload = async (e) => {
@@ -80,14 +194,37 @@ export default function SliderForm({ isFormOpen, setIsFormOpen }) {
     };
  
     const handleSubmit = async () => {
-        
+        if (loading) return;
+        if (!photo.imageFile) {
+            alert(t("please_fill_all_fields"));
+            return;
+        }
+
         const formData = new FormData();
         formData.append("imageFile", photo.imageFile);
         formData.append("itemId", itemId);
-        
-        await postRequest("/api/admin/sliderImages", formData, t("message"));
-        triggerRefresh()
-    }
+
+        try {
+            setLoading(true);
+            const res = await postRequest(
+                "/api/admin/sliderImages",
+                formData,
+                t("message")
+            );
+
+            // `postRequest` resolves with no value when the user cancels the
+            // confirmation dialog, so don't close or refresh in that case.
+            if (!res) return;
+
+            triggerRefresh();
+            setIsFormOpen(false);
+            resetForm();
+        } catch (error) {
+            // The shared request helper already displays the API error.
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <div
@@ -115,10 +252,7 @@ export default function SliderForm({ isFormOpen, setIsFormOpen }) {
                         className="text-3xl text-red-950  hover:text-red-800"
                         onClick={() => {
                             setIsFormOpen(false);
-                            setPhoto({ imageFile: "", image: "" });
-                            setSelectedProduct(null)
-                            setSearch("")
-                            setOptions([])
+                            resetForm();
                         }}
                     >
                         <MdCancel />
@@ -130,6 +264,7 @@ export default function SliderForm({ isFormOpen, setIsFormOpen }) {
                         className=" md:w-[60%] xs:w-[80%] "
                         onSubmit={(e) => {
                             e.preventDefault();
+                            handleSubmit();
                         }}
                     >
                         <label htmlFor="fileInput" className="cursor-pointer ">
@@ -177,6 +312,9 @@ export default function SliderForm({ isFormOpen, setIsFormOpen }) {
                                     value={selectedProduct}
                                     inputValue={search}
                                     isSearchable
+                                    isLoading={searchLoading}
+                                    filterOption={() => true}
+                                    formatOptionLabel={formatOptionLabel}
                                     placeholder={t("search")}
                                     onInputChange={(value, actionMeta) => {
                                         if (actionMeta.action === "input-change") {
@@ -184,21 +322,25 @@ export default function SliderForm({ isFormOpen, setIsFormOpen }) {
                                         }
                                         return value;
                                     }}
+                                    onFocusedOptionChange={({ focusedOption: option }) => setFocusedOption(option)}
 
                                     onKeyDown={(e) => {
-                                        if (e.key === "Enter") {
+                                        if (e.key === "Enter" && !focusedOption) {
                                             e.preventDefault();
-                                            handleSearch();
+                                            clearTimeout(searchTimerRef.current);
+                                            searchProducts(search);
                                         }
                                     }}
 
                                     onChange={(selected) => {
-                                        setItemId(selected.value)
+                                        if (!selected) return;
+                                        setItemId(selected.value);
                                         setSelectedProduct(selected);
                                         setSearch("");
+                                        setFocusedOption(null);
                                     }}
 
-                                    noOptionsMessage={() => "لا توجد منتجات"}
+                                    noOptionsMessage={() => t("no_products") || "لا توجد منتجات"}
                                      styles={{
                     control: (provided) => ({
                       ...provided,
@@ -248,16 +390,8 @@ export default function SliderForm({ isFormOpen, setIsFormOpen }) {
                             <button
                                 type="submit"
                                 id="btn-saveCategory"
-                                className={`bg-red-600 py-2 px-3 text-white mt-7  hover:bg-red-800 rounded-lg `}
-                                onClick={() => {
-                            setPhoto({ imageFile: "", image: "" });
-                                    setSelectedProduct(null)
-                                    setSearch("")
-                                    setOptions([])
-                                    handleSubmit()
-                                      setIsFormOpen(false);
-
-                                }}
+                                disabled={loading}
+                                className={`bg-red-600 py-2 px-3 text-white mt-7  hover:bg-red-800 rounded-lg disabled:opacity-60 disabled:cursor-not-allowed`}
                             >
                                 {t("save")}
                             </button>
