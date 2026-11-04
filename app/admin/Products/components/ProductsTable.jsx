@@ -1,189 +1,272 @@
 "use client";
-import {
-  MdBlock,
-  MdDelete,
-} from "react-icons/md";
-import { FaCircle } from "react-icons/fa";
-import { useRef } from "react";
-import { useLanguage } from "../../../../context/LanguageContext.js";
-import { FaPlus } from "react-icons/fa";
 import Image from "next/image";
+import { useCallback, useEffect, useMemo, useRef } from "react";
+import { FaCircle, FaPlus } from "react-icons/fa";
 import { GoStarFill } from "react-icons/go";
-import { postRequest } from "../../../../utils/requestsUtils.js";
-import { useIdContext } from "../../../../context/idContext";
-import { IoMdSearch } from "react-icons/io";
-import { deleteRequest } from "../../../../utils/requestsUtils.js";
-import { useRefresh } from "../../../../context/refreshContext.jsx";
-import { getThumbnailUrl } from "../../../../utils/functions.jsx";
 import { IoCheckmarkCircleOutline } from "react-icons/io5";
-import {
-  InfiniteListFooter,
-  InfiniteTableFooter,
-  toPageResult,
-  useInfiniteScroll,
-} from "../../components/InfiniteScroll.jsx";
+import { MdBlock, MdDelete } from "react-icons/md";
+
+import { useLanguage } from "../../../../context/LanguageContext.js";
+import { useIdContext } from "../../../../context/idContext.jsx";
+import { useRefresh } from "../../../../context/refreshContext.jsx";
+import { deleteRequest, postRequest } from "../../../../utils/requestsUtils.js";
+import { getThumbnailUrl } from "../../../../utils/functions.jsx";
+import { DataTable, DataTableToolbar } from "../../components/data-table";
+import { useServerDataTable } from "../../hooks/useServerDataTable";
+import { createProductsColumns } from "../../config/productsTable.config";
 
 const PAGE_SIZE = 10;
+const EMPTY_FILTERS = [];
 
-export default function ProductsTable({ setIsFormOpen, category, setIsEditMode }) {
-  const { t } = useLanguage();
+export default function ProductsTable({
+  setIsFormOpen,
+  category,
+  setIsEditMode,
+}) {
+  const { t, locale } = useLanguage();
   const { refreshKey } = useRefresh();
   const { setSelectedProductId } = useIdContext();
-  const searchInputRef = useRef();
+  const setItemsRef = useRef(null);
 
-  const {
-    items: products,
-    setItems,
-    loading,
-    loadingMore,
-    hasMore,
-    error,
-    sentinelRef,
-    reload,
-  } = useInfiniteScroll({
-    pageSize: PAGE_SIZE,
-    queryKey: [category ?? "", refreshKey],
-    load: async (page) => {
-      const response = await postRequest(
-        "/api/public/items/search",
-        {
-          page,
-          size: PAGE_SIZE,
-          searchText: searchInputRef.current?.value ?? "",
-          categoryId: category || null,
-        },
-        "",
-      );
-      return toPageResult(response, page, PAGE_SIZE);
-    },
-  });
-
-  const patchProduct = (productId, patch) => {
-    setItems((prev) =>
+  const patchProduct = useCallback((productId, patch) => {
+    setItemsRef.current?.((prev) =>
       prev.map((product) =>
         product.itemId === productId ? { ...product, ...patch } : product,
       ),
     );
-  };
+  }, []);
 
-  const productFavorite = async (productId, favorite) => {
-    const res = await postRequest(
-      `/api/admin/items/${productId}/favorite/${favorite}`,
-      "",
-      t("message"),
-    );
-    if (res) patchProduct(productId, { favorite });
-  };
-
-  // const productUnfavorite = async (productId) => {
-  //   await postRequest(
-  //     `/api/admin/items/${productId}/unfavorite`,
-  //     "",
-  //     t("message"),
-  //   );
-  //   triggerRefresh();
-  // };
-  const productActive = async (productId, active) => {
-    const res = await postRequest(
-      `/api/admin/items/${productId}/activate/${active}`,
-      "",
-      t("message"),
-    );
-    if (res) patchProduct(productId, { active });
-  };
-
-  const productAvailable = async (productId, available) => {
-    const res = await postRequest(
-      `/api/admin/items/${productId}/availability/${available}`,
-      "",
-      t("message"),
-    );
-    if (res) patchProduct(productId, { available });
-  };
-  // const productDeaactive = async (productId) => {
-  //   await postRequest(
-  //     `/api/admin/items/${productId}/deactivate`,
-  //     "",
-  //     t("message"),
-  //   );
-  //   triggerRefresh();
-  // };
-
-  const openForm = (productID) => {
-    setIsFormOpen(true);
-    setIsEditMode(true)
-    setSelectedProductId(productID);
-  };
-  const deleteProduct = async (product) => {
-    try {
-      const result = await deleteRequest(
-        `/api/admin/items/${product.itemId}`,
+  const productFavorite = useCallback(
+    async (productId, favorite) => {
+      const res = await postRequest(
+        `/api/admin/items/${productId}/favorite/${favorite}`,
+        "",
         t("message"),
       );
-      if (result) {
-        setItems((prev) =>
-          prev.filter((item) => item.itemId !== product.itemId),
-        );
-      }
-    } catch (error) {
-    }
-  };
-  // const SkeletonRow = () => (
-  //     <tr className="border-b">
-  //       <td className="px-4 py-3">
-  //         <div className="h-6 bg-gray-200 rounded animate-pulse w-24"></div>
-  //       </td>
-  //       <td className="px-4 py-3">
-  //         <div className="h-6 bg-gray-200 rounded animate-pulse w-20"></div>
-  //       </td>
-  //       <td className="px-4 py-3">
-  //         <div className="h-6 bg-gray-200 rounded animate-pulse w-12"></div>
-  //       </td>
-  //       <td className="px-4 py-3">
-  //         <div className="h-6 bg-gray-200 rounded animate-pulse w-32"></div>
-  //       </td>
-  //       <td className="px-4 py-3">
-  //         <div className="h-6 bg-gray-200 rounded animate-pulse w-28"></div>
-  //       </td>
-  //       <td className="px-4 py-3">
-  //         <div className="h-6 bg-gray-200 rounded animate-pulse w-36"></div>
-  //       </td>
-  //     </tr>
-  //   );
-  //   const SkeletonInputSearch = () => (
-  //         <div className="h-6 bg-gray-200 rounded animate-pulse w-24"></div>
+      if (res) patchProduct(productId, { favorite });
+    },
+    [patchProduct, t],
+  );
 
-  //   );
-  return (
-    <div className="w-full p-5">
-      <div className="bg-white  border rounded-lg  w-full  flex justify-between  p-3 items-center  xs:gap-4">
-        <div className="flex items-center justify-between border px-1 rounded-md   bg-gray-100">
-          <input
-            type="text"
-            placeholder={t("search")}
-            className="bg-none outline-none placeholder:text-sm  w-[250px] bg-gray-100 p-1 rounded-lg"
-            // value={searchInput}
-            ref={searchInputRef}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                reload();
-              }
-            }}
-          />
+  const productActive = useCallback(
+    async (productId, active) => {
+      const res = await postRequest(
+        `/api/admin/items/${productId}/activate/${active}`,
+        "",
+        t("message"),
+      );
+      if (res) patchProduct(productId, { active });
+    },
+    [patchProduct, t],
+  );
+
+  const productAvailable = useCallback(
+    async (productId, available) => {
+      const res = await postRequest(
+        `/api/admin/items/${productId}/availability/${available}`,
+        "",
+        t("message"),
+      );
+      if (res) patchProduct(productId, { available });
+    },
+    [patchProduct, t],
+  );
+
+  const openForm = useCallback(
+    (productId) => {
+      setIsFormOpen(true);
+      setIsEditMode(true);
+      setSelectedProductId(productId);
+    },
+    [setIsEditMode, setIsFormOpen, setSelectedProductId],
+  );
+
+  const deleteProduct = useCallback(
+    async (product) => {
+      try {
+        const result = await deleteRequest(
+          `/api/admin/items/${product.itemId}`,
+          t("message"),
+        );
+        if (result) {
+          setItemsRef.current?.((prev) =>
+            prev.filter((item) => item.itemId !== product.itemId),
+          );
+        }
+      } catch (error) {
+        // The shared request utility already surfaces the error.
+      }
+    },
+    [t],
+  );
+
+  const columns = useMemo(
+    () =>
+      createProductsColumns({
+        t,
+        locale,
+        onOpen: openForm,
+        onToggleFavorite: productFavorite,
+        onToggleActive: productActive,
+        onToggleAvailable: productAvailable,
+        onDelete: deleteProduct,
+      }),
+    [
+      t,
+      locale,
+      openForm,
+      productFavorite,
+      productActive,
+      productAvailable,
+      deleteProduct,
+    ],
+  );
+
+  const baseFilters = useMemo(
+    () =>
+      category
+        ? [
+            {
+              field: "itemCategory.itemCategoryId",
+              operator: "EQUALS",
+              value: category,
+            },
+          ]
+        : EMPTY_FILTERS,
+    [category],
+  );
+
+  const tableState = useServerDataTable({
+    endpoint: "/api/admin/items/search",
+    columns,
+    pageSize: PAGE_SIZE,
+    refreshKey,
+    baseFilters,
+    getRowId: (product) => String(product.itemId),
+  });
+
+  useEffect(() => {
+    setItemsRef.current = tableState.setItems;
+  }, [tableState.setItems]);
+
+  const productName = (product) =>
+    locale === "ar" ? product.nameAr : product.nameEn;
+
+  const renderMobileCard = (product) => {
+    const imageUrl = product.images?.[0]?.imageUrl;
+    return (
+      <div
+        className="mb-3 cursor-pointer rounded-xl border bg-white p-3 hover:bg-gray-100"
+        onClick={() => openForm(product.itemId)}
+      >
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex min-w-0 items-center gap-3">
+            {imageUrl ? (
+              <Image
+                alt=""
+                src={`${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL}${getThumbnailUrl(
+                  imageUrl,
+                )}`}
+                width={50}
+                height={50}
+                className="my-1 h-14 w-14 rounded-xl border p-1"
+              />
+            ) : (
+              <div className="my-1 flex h-14 w-14 items-center justify-center rounded-xl border bg-gray-100 text-[10px] text-gray-400">
+                {t("no_image")}
+              </div>
+            )}
+            <div className="min-w-0">
+              <h1 className="truncate text-sm font-semibold">
+                {productName(product)}
+              </h1>
+              <h1 className="truncate text-xs text-gray-500">
+                {t("code")} : {product.code}
+              </h1>
+            </div>
+          </div>
           <button
-            className="text-lg bg-red-300 hover:bg-red-500 p-1 text-white  rounded-md"
-            onClick={reload}
+            type="button"
+            className={`flex shrink-0 items-center justify-center text-lg ${
+              product.favorite ? "text-yellow-500" : "text-gray-500"
+            }`}
+            onClick={async (event) => {
+              event.stopPropagation();
+              await productFavorite(product.itemId, !product.favorite);
+            }}
           >
-            <IoMdSearch />
+            <GoStarFill />
           </button>
         </div>
+        <div className="mt-3 border-t pt-3 text-xs text-gray-500">
+          {locale === "ar"
+            ? product.itemCategory?.nameAr
+            : product.itemCategory?.nameEn}
+        </div>
+        <div className="mt-2 flex items-end justify-between gap-3">
+          <div className="min-w-0 text-base font-bold">
+            {Number(product.price).toLocaleString("en-US")} {t("currency")}
+          </div>
+        </div>
+        <div className="mt-3 flex items-center justify-between gap-3 border-t pt-3">
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              className={`flex items-center justify-center text-base ${
+                product.active ? "text-green-600" : "text-gray-600"
+              }`}
+              onClick={(event) => {
+                event.stopPropagation();
+                productActive(product.itemId, !product.active);
+              }}
+            >
+              <FaCircle />
+            </button>
+            <button
+              type="button"
+              className="flex items-center justify-center text-lg"
+              onClick={(event) => {
+                event.stopPropagation();
+                productAvailable(product.itemId, !product.available);
+              }}
+            >
+              {product.available ? (
+                <IoCheckmarkCircleOutline className="text-green-500" />
+              ) : (
+                <MdBlock className="text-red-500" />
+              )}
+            </button>
+          </div>
+          <button
+            type="button"
+            className="flex items-center gap-1 rounded-md bg-red-300 px-2 py-1 text-sm font-semibold text-red-800 hover:bg-red-400"
+            onClick={(event) => {
+              event.stopPropagation();
+              deleteProduct(product);
+            }}
+          >
+            <MdDelete />
+            {t("delete")}
+          </button>
+        </div>
+      </div>
+    );
+  };
+
+  const toolbar = (
+    <DataTableToolbar
+      table={tableState.table}
+      searchValue={tableState.globalFilter}
+      onSearchChange={tableState.setGlobalFilter}
+      className="!p-3 xs:gap-4"
+      actions={
         <button
-          className="p-2 text-white xs:text-xs md:text-sm rounded-md bg-[#E76E7D] text-center flex items-center justify-center gap-2"
+          type="button"
+          className="flex items-center justify-center gap-2 rounded-md bg-[#E76E7D] p-2 text-center text-white xs:text-xs md:text-sm"
           onClick={() => {
             setIsFormOpen(true);
             setSelectedProductId(null);
-            setIsEditMode(false)
+            setIsEditMode(false);
           }}
         >
           <span className="text-base">
@@ -191,354 +274,29 @@ export default function ProductsTable({ setIsFormOpen, category, setIsEditMode }
           </span>
           <h1 className="xs:hidden md:block">{t("add_new_product")}</h1>
         </button>
-      </div>
+      }
+    />
+  );
 
-      {/* <div
-        ref={productTableRef}
-        className=" rounded-xl border  "
-      > */}
-      {/* XS mobile card layout */}
-      <div className="lg:hidden h-[600px]  mt-3 border p-3 rounded-3xl overflow-y-auto min-w-0">
-        {loading
-          ? // Skeleton cards
-          [...Array(6)].map((_, index) => (
-            <div
-              key={`mobile-skeleton-${index}`}
-              className="bg-white border rounded-xl p-3 mb-3"
-            >
-              <div className="flex items-center gap-3">
-                <div className="h-10 w-10 bg-gray-200 rounded-lg animate-pulse shrink-0"></div>
-                <div className="flex-1 space-y-2">
-                  <div className="h-4 bg-gray-200 rounded animate-pulse w-28"></div>
-                  <div className="h-2 bg-gray-200 rounded animate-pulse w-20"></div>
-                </div>
-              </div>
-              <div className="h-3 bg-gray-200 rounded animate-pulse w-24 mt-3"></div>
-              <div className="h-4 bg-gray-200 rounded animate-pulse w-20 mt-3"></div>
-            </div>
-          ))
-          : products.map((product, index) => (
-            <div
-              key={`mobile-${index}`}
-              className="bg-white border rounded-xl p-3 mb-3 hover:bg-gray-100 cursor-pointer"
-              onClick={() => openForm(product.itemId)}
-            >
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex items-center gap-3 min-w-0">
-                 <Image
-                      alt=""
-                      src={product.images?.[0]?.imageUrl
-                        ? `${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL}${getThumbnailUrl(
-                          product.images[0].imageUrl
-                        )}`
-                        : ""}
-                      width={50}
-                      height={50}
-                      className="rounded-xl w-14 h-14  border my-1 p-1"
-                    />
-                  <div className="min-w-0">
-                    <h1 className="text-sm font-semibold truncate">
-                      {typeof window !== "undefined"
-                        ? localStorage.lang === "ar"
-                          ? product.nameAr
-                          : product.nameEn
-                        : null}
-                    </h1>
-                    <h1 className="text-xs text-gray-500 truncate">
-                      {t("code")} : {product.code}
-                    </h1>
-                  </div>
-                </div>
-                <button
-                  className={
-                    "flex items-center justify-center shrink-0 text-lg " +
-                    (product.favorite
-                      ? " text-yellow-500"
-                      : " text-gray-500")
-                  }
-                  onClick={async (e) => {
-                    e.stopPropagation();
-                    if (product.favorite === false) {
-                      await productFavorite(product.itemId, true);
-                    } else {
-                      await productFavorite(product.itemId, false);
-                    }
-                  }}
-                >
-                  <GoStarFill />
-                </button>
-              </div>
-              <div className="text-xs text-gray-500 mt-3 pt-3 border-t">
-                {typeof window !== "undefined"
-                  ? localStorage.lang === "ar"
-                    ? product.itemCategory.nameAr
-                    : product.itemCategory.nameEn
-                  : null}
-              </div>
-              <div className="flex items-end justify-between gap-3 mt-2">
-                <div className="min-w-0">
-                  <div className="text-base font-bold">
-                    {product.price.toLocaleString("en-US") +" "+ t("currency")}
-                  </div>
-                  {/* <div className="text-xs text-gray-600">
-                    {product.oldPrice
-                      ? product.oldPrice.toLocaleString("en-US") +
-                      " " +
-                      t("currency")
-                      : "--"}
-                  </div> */}
-                </div>
-              </div>
-              <div className="flex items-center justify-between gap-3 mt-3 pt-3 border-t">
-                <div className="flex items-center gap-3">
-                  <button
-                    className={
-                      "flex items-center justify-center text-base " +
-                      (product.active
-                        ? "text-green-600"
-                        : "text-gray-600")
-                    }
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      if (product.active === false) {
-                        productActive(product.itemId, true);
-                      } else {
-                        productActive(product.itemId, false);
-                      }
-                    }}
-                  >
-                    <FaCircle />
-                  </button>
-                  <button
-                    className={"flex items-center justify-center text-lg "}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      if (product.available === false) {
-                        productAvailable(product.itemId, true);
-                      } else {
-                        productAvailable(product.itemId, false);
-                      }
-                    }}
-                  >
-                    {product.available ? (
-                      <IoCheckmarkCircleOutline className="text-green-500" />
-                    ) : (
-                      <MdBlock className="text-red-500" />
-                    )}
-                  </button>
-                </div>
-                <button
-                  className="text-red-800 text-sm flex items-center gap-1 bg-red-300 px-2 py-1 font-semibold rounded-md hover:bg-red-400"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    deleteProduct(product);
-                  }}
-                >
-                  <MdDelete />
-                  {t("delete")}
-                </button>
-              </div>
-            </div>
-          ))}
-        <div className="w-full flex justify-center items-center">
-          <InfiniteListFooter
-            sentinelRef={sentinelRef}
-            loadingMore={loadingMore}
-            hasMore={hasMore}
-            hasItems={products.length > 0}
-            error={error}
-            onRetry={reload}
-          />
-        </div>
-      </div>
-      <div className="hidden lg:block max-h-[520px] min-w-0 mt-3 w-full overflow-x-auto overflow-y-auto">
-        <table className="w-full h-auto border rounded-3xl">
-          <thead className=" bg-[#ececec] text-xs text-justify sticky top-0  z-10">
-            <tr className="  h-12  ">
-              <th className=""></th>
-              <th className="">{t("PRODUCT_NAME")}</th>
-              <th className="">{t("product_category")}</th>
-              <th className="">{t("price")}</th>
-              {/* <th className="">{t("old_price")}</th> */}
-
-              <th className="w-[10%]"></th>
-            </tr>
-          </thead>
-          <tbody className="bg-white text-black text-lg w-full ">
-            {loading
-              ? // Skeleton rows
-              [...Array(9)].map((_, index) => (
-                <tr key={`skeleton-${index}`} className="border-b">
-                  <td className="px-4 py-2">
-                    <div className="h-4 bg-gray-200 rounded animate-pulse w-20"></div>
-                  </td>
-                  <td className="px-4 py-2 flex items-center gap-2">
-                    <div className="h-12 bg-gray-200 rounded-lg animate-pulse w-16"></div>
-                    <div className="flex flex-col gap-2">
-                      <div className="h-4 bg-gray-200 rounded-lg animate-pulse w-28"></div>
-                      <div className="h-2 bg-gray-200 rounded-md animate-pulse w-20"></div>
-                    </div>
-                  </td>
-                  <td className="px-4 py-2">
-                    <div className="h-4 bg-gray-200 rounded animate-pulse w-24"></div>
-                  </td>
-                  <td className="px-4 py-2">
-                    <div className="h-4 bg-gray-200 rounded animate-pulse w-24"></div>
-                  </td>
-                  <td className="px-4 py-2">
-                    <div className="h-4 bg-gray-200 rounded animate-pulse w-24"></div>
-                  </td>
-                  <td className="px-4 py-2">
-                    <div className="h-4 bg-gray-200 rounded animate-pulse w-16"></div>
-                  </td>
-                </tr>
-              ))
-              : products.map((product, index) => (
-                <tr
-                  key={index}
-                  className=" border hover:bg-gray-100 hover:bg-opacity-40 cursor-pointer  "
-                >
-                  <td>
-                    <div className="flex items-center justify-center gap-3">
-                      <button
-                        className={
-                          "flex items-center justify-center gap-3 text-sm " +
-                          (product.active
-                            ? "text-green-600"
-                            : "text-gray-600")
-                        }
-                        onClick={() => {
-                          if (product.active === false) {
-                            productActive(product.itemId, true);
-                          } else {
-                            productActive(product.itemId, false);
-                          }
-                        }}
-                      >
-                        <FaCircle />
-                      </button>
-                      <button
-                        className={
-                          "flex items-center justify-center " +
-                          (product.favorite
-                            ? " text-yellow-500"
-                            : " text-gray-500")
-                        }
-                        onClick={async () => {
-                          if (product.favorite === false) {
-                            await productFavorite(product.itemId, true);
-                          } else {
-                            await productFavorite(product.itemId, false);
-                          }
-                        }}
-                      >
-                        <GoStarFill />
-                      </button>
-                      <button
-                        className={
-                          "flex items-center justify-center "}
-
-
-                        onClick={async () => {
-                          if (product.available === false) {
-                            await productAvailable(product.itemId, true);
-                          } else {
-                            await productAvailable(product.itemId, false);
-                          }
-                        }}
-                      >
-                        {product.available ? (
-                          <IoCheckmarkCircleOutline className="text-green-500 text-lg" />
-
-                        ) : (
-                          <MdBlock className="text-red-500" />
-
-                        )}
-                      </button>
-                    </div>
-                  </td>
-                  <td
-                    className="flex items-center gap-4"
-                    onClick={() => openForm(product.itemId)}
-                  >
-                    <Image
-                      alt=""
-                      src={product.images?.[0]?.imageUrl
-                        ? `${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL}${getThumbnailUrl(
-                          product.images[0].imageUrl
-                        )}`
-                        : ""}
-                      width={50}
-                      height={50}
-                      className="rounded-xl xs:w-10 xs:h-10 md:w-14 md:h-14  border my-1 p-1"
-                    />
-                    <div>
-                      <h1 className="text-sm font-semibold">
-                        {typeof window !== "undefined"
-                          ? localStorage.lang === "ar"
-                            ? product.nameAr
-                            : product.nameEn
-                          : null}
-                      </h1>
-                      <h1 className="text-xs text-gray-500">
-                        {t("code")} : {product.code}
-                      </h1>
-                    </div>
-                  </td>
-
-                  <td onClick={() => openForm(product.itemId)}>
-                    <div className="  text-sm text-gray-500 font-semibold mx-1">
-                      <h1>
-                        {typeof window !== "undefined"
-                          ? localStorage.lang === "ar"
-                            ? product.itemCategory.nameAr
-                            : product.itemCategory.nameEn
-                          : null}
-                      </h1>
-                    </div>
-                  </td>
-                  <td
-                    className="text-sm font-bold"
-                    onClick={() => openForm(product.itemId)}
-                  >
-                    {product.price.toLocaleString("en-US")}
-                  </td>
-                  {/* <td
-                    className="text-sm font-bold text-gray-600"
-                    onClick={() => openForm(product.itemId)}
-                  >
-                    {product.oldPrice
-                      ? product.oldPrice.toLocaleString("en-US") +
-                      " " +
-                      t("currency")
-                      : "--"}
-                  </td> */}
-                  <td>
-                    <button
-                      className="text-red-800 text-sm flex items-center gap-1 bg-red-300 px-2 py-1 font-semibold rounded-md hover:bg-red-400"
-                      onClick={() => {
-                        deleteProduct(product);
-                      }}
-                    >
-                      <MdDelete />
-                      {t("delete")}
-                    </button>
-                  </td>
-                </tr>
-              ))}
-
-            <InfiniteTableFooter
-              colSpan={6}
-              sentinelRef={sentinelRef}
-              loadingMore={loadingMore}
-              hasMore={hasMore}
-              hasItems={products.length > 0}
-              error={error}
-              onRetry={reload}
-            />
-          </tbody>
-        </table>
-      </div>
+  return (
+    <div className="w-full p-5">
+      <DataTable
+        table={tableState.table}
+        loading={tableState.loading}
+        loadingMore={tableState.loadingMore}
+        hasMore={tableState.hasMore}
+        error={tableState.error}
+        sentinelRef={tableState.sentinelRef}
+        onRetry={tableState.reload}
+        toolbar={toolbar}
+        mobileCard={renderMobileCard}
+        mobileWrapperClassName="lg:hidden h-[600px] mt-3 border p-3 rounded-3xl overflow-y-auto min-w-0"
+        desktopWrapperClassName="hidden lg:block max-h-[520px] min-w-0 mt-3 w-full overflow-x-auto overflow-y-auto"
+        tableClassName="w-full h-auto border rounded-3xl"
+        headerClassName="bg-[#ececec] text-xs text-justify sticky top-0 z-10"
+        rowClassName="border hover:bg-gray-100 hover:bg-opacity-40 cursor-pointer"
+        emptyMessage={t("no_data")}
+      />
     </div>
   );
 }

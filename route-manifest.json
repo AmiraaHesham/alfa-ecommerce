@@ -1,0 +1,55 @@
+{
+  "generatedFrom": "frontend/app/**/page.jsx",
+  "routes": [
+    "/",
+    "/admin/Admins",
+    "/admin/Categories",
+    "/admin/Contact",
+    "/admin/Dashboard",
+    "/admin/Homepage",
+    "/admin/orders",
+    "/admin/orders/OrdersDetails/[id]",
+    "/admin/Products",
+    "/admin/returnorderdetails/[id]",
+    "/admin/Returns",
+    "/admin/ShippingCost",
+    "/admin/UsersPage/UserInfo/[id]",
+    "/admin/UsersPage/Users",
+    "/confirmedemail",
+    "/email-failed",
+    "/forgotpassword",
+    "/signin",
+    "/signup",
+    "/user/about",
+    "/user/cart",
+    "/user/home",
+    "/user/orderdetails/[id]",
+    "/user/ordershistory",
+    "/user/productdetails/[name]/[id]",
+    "/user/products/category/[category]/[id]",
+    "/user/products/section/[section]",
+    "/user/profile",
+    "/user/returnorderdetails/[id]",
+    "/user/returnorders",
+    "/user/search/[searchInput]",
+    "/user/wishlist"
+  ],
+  "api": {
+    "forgotPassword": {
+      "method": "POST",
+      "path": "/api/auth/forgot-password"
+    },
+    "resetPassword": {
+      "method": "PUT",
+      "path": "/api/auth/rest-forget-password"
+    },
+    "changePassword": {
+      "method": "PUT",
+      "path": "/api/users/reset-password"
+    },
+    "confirmEmail": {
+      "method": "GET",
+      "path": "/api/auth/confirm-email"
+    }
+  }
+}
