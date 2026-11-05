@@ -1,541 +1,282 @@
 "use client";
-import { MdFilterList } from "react-icons/md";
-import { useLanguage } from "../../../../context/LanguageContext.js";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { useRef } from "react";
-import { postRequest } from "../../../../utils/requestsUtils.js";
 import { FaUserLarge } from "react-icons/fa6";
-import { IoMdSearch } from "react-icons/io";
-import Select from "react-select";
+
+import { useLanguage } from "../../../../context/LanguageContext.js";
 import { useIdContext } from "../../../../context/idContext.jsx";
+import { useNamePageInAdminContext } from "../../../../context/namePageInAdmin.jsx";
+import { postRequest } from "../../../../utils/requestsUtils.js";
+import { DataTable, DataTableToolbar } from "../../components/data-table";
+import { useServerDataTable } from "../../hooks/useServerDataTable";
 import {
-  InfiniteListFooter,
-  InfiniteTableFooter,
-  toPageResult,
-  useInfiniteScroll,
-} from "../../components/InfiniteScroll.jsx";
+  createOrderColumns,
+  formatOrderDate,
+  OrderStateFilter,
+  OrderStatusSelect,
+} from "../../config/ordersTable.config";
 
-const PAGE_SIZE = 15;
+const ADMIN_PAGE_SIZE = 15;
+const USER_PAGE_SIZE = 10;
 
-export default function Orders_Table() {
+export default function Orders_Table({ mode = "admin", userId }) {
   const { t } = useLanguage();
-  const navigate = useRouter();
+  const router = useRouter();
   const { selectedState, setSelectedState } = useIdContext();
-  const searchInputRef = useRef(null);
+  const { setSelectedNamePage } = useNamePageInAdminContext();
+  const setItemsRef = useRef(null);
 
-  const {
-    items: orders,
-    setItems,
-    loading,
-    loadingMore,
-    hasMore,
-    error,
-    sentinelRef,
-    reload,
-  } = useInfiniteScroll({
-    pageSize: PAGE_SIZE,
-    queryKey: [selectedState ?? ""],
-    load: async (page) => {
-      const response = await postRequest(
-        "/api/orders/search",
-        {
-          page,
-          size: PAGE_SIZE,
-          searchText: searchInputRef.current?.value ?? "",
-          orderState: selectedState,
-        },
-        "",
-      );
-      return toPageResult(response, page, PAGE_SIZE);
+  const openOrder = useCallback(
+    (orderId) => {
+      router.push(`/admin/orders/OrdersDetails/${orderId}`);
+      setSelectedNamePage("Orders Management");
     },
-  });
+    [router, setSelectedNamePage],
+  );
 
-  const orderCancel = async (orderId) => {
-    try {
-      const res = await postRequest(
-        `/api/orders/${orderId}/cancel`,
-        "",
-        t("message"),
-      );
-      if (res) {
-        setItems((prev) =>
-          prev.map((order) =>
-            order.orderId === orderId
-              ? { ...order, state: "CANCELLED" }
-              : order,
-          ),
-        );
-      }
-    } catch (error) {
-    }
-  };
-  const nextStatus = {
-    PENDING: [{ value: "PROCESSING", label: t("PROCESSING") }],
-    PROCESSING: [{ value: "SHIPPED", label: t("SHIPPED") }],
-    SHIPPED: [{ value: "DELIVERED", label: t("DELIVERED") }],
-    DELIVERED: [],
-  };
-  const updateOrderState = async (orderId, newState) => {
-    try {
-      if (newState === "CANCELED") {
-        ("");
-      } else {
+  const updateOrderState = useCallback(
+    async (orderId, newState) => {
+      try {
         const res = await postRequest(
           `/api/admin/orders/${orderId}/changeState/${newState}`,
           "",
           t("message"),
         );
-        if (res.success === true) {
-          setItems((prev) =>
+        if (res?.success === true) {
+          setItemsRef.current?.((prev) =>
             prev.map((item) =>
               item.orderId === orderId ? { ...item, state: newState } : item,
             ),
           );
         }
+      } catch (error) {
+        // Shared request utility already surfaces the error.
       }
-    } catch (error) {
-    }
-  };
-  const statusSelect = (order, selectClass) => (
-    <Select
-      value={{
-        value: order.state,
-        label: t(order.state),
-      }}
-      onChange={(option) => updateOrderState(order.orderId, option.value)}
-      options={nextStatus[order.state] || []}
-      isSearchable={false}
-      className={selectClass}
-      styles={{
-        control: (base) => ({
-          ...base,
-
-          backgroundColor: "#f3f4f6",
-          border: "none",
-          borderRadius: "0.375rem",
-          minHeight: "36px",
-          cursor: "pointer",
-          boxShadow: "none",
-          "&:hover": {
-            borderColor: "#dc2626",
-          },
-          "&:focus": {
-            borderColor: "#b91c1c",
-            boxShadow: "0 0 0 3px rgba(185, 28, 28, 0.2)",
-            // outline: "none",
-          },
-        }),
-        option: (base, state) => ({
-          ...base,
-          backgroundColor: state.isSelected
-            ? "#dc2626"
-            : state.isFocused
-              ? "#fee2e2"
-              : "#ffffff",
-          color: state.isSelected ? "#ffffff" : "#374151",
-          cursor: "pointer",
-          // padding: "8px 12px",
-          fontSize: "14px",
-          "&:hover": {
-            backgroundColor: state.isSelected ? "#dc2626" : "#fee2e2",
-          },
-        }),
-        menu: (base) => ({
-          ...base,
-          backgroundColor: "#ffffff",
-          borderRadius: "0.375rem",
-          boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
-          zIndex: 9999,
-        }),
-        placeholder: (base) => ({
-          ...base,
-          color: "#374151",
-          fontSize: "14px",
-          fontWeight: "600",
-        }),
-        singleValue: (base) => ({
-          ...base,
-          color:
-            order.state === "PROCESSING"
-              ? "#3b82f6"
-              : order.state === "SHIPPED"
-                ? "#eab308"
-                : order.state === "PENDING"
-                  ? "#c2410c"
-                  : order.state === "CANCELLED"
-                    ? "#f21818"
-                    : "#22c55e",
-          fontSize: "14px",
-          fontWeight: "600",
-        }),
-        input: (base) => ({
-          ...base,
-          color: "#374151",
-        }),
-      }}
-    />
+    },
+    [t],
   );
-  return (
-    <div>
-      <div className="w-full  bg-white mt-3 rounded-lg border flex md:flex-row xs:flex-col gap-5  items-start  p-4 ">
-        <div className="flex items-center justify-between border px-1 rounded-md  bg-gray-100">
-          <input
-            type="text"
-            ref={searchInputRef}
-            placeholder={t("search")}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                reload();
-              }
-            }}
-            className="bg-none outline-none placeholder:text-xs h-8   bg-gray-100 p-3 rounded-lg"
-          />
-          <button
-            className="text-lg bg-red-300 hover:bg-red-500 p-1 text-white  rounded-md"
-            onClick={reload}
-          >
-            <IoMdSearch />
-          </button>
-        </div>
-        <div className="flex items-center gap-4">
-          <div className="flex items-center justify-center border px-3 rounded-md bg-gray-100 h-9">
-            <span className="text-gray-400 text-lg ">
-              <MdFilterList />
+
+  const cancelOrder = useCallback(
+    async (orderId) => {
+      try {
+        const res = await postRequest(
+          `/api/orders/${orderId}/cancel`,
+          "",
+          t("message"),
+        );
+        if (res) {
+          setItemsRef.current?.((prev) =>
+            prev.map((order) =>
+              order.orderId === orderId
+                ? { ...order, state: "CANCELLED" }
+                : order,
+            ),
+          );
+        }
+      } catch (error) {
+        // Shared request utility already surfaces the error.
+      }
+    },
+    [t],
+  );
+
+  const columns = useMemo(
+    () =>
+      createOrderColumns({
+        mode,
+        t,
+        onOpen: openOrder,
+        onUpdateState: updateOrderState,
+        onCancel: cancelOrder,
+      }),
+    [mode, t, openOrder, updateOrderState, cancelOrder],
+  );
+
+  const baseFilters = useMemo(
+    () =>
+      mode === "user" && userId
+        ? [{ field: "userId", operator: "EQUALS", value: userId }]
+        : [],
+    [mode, userId],
+  );
+
+  const initialFilters = useMemo(() => {
+    if (mode !== "admin" || !selectedState) return [];
+    return [
+      {
+        id: "state",
+        value: { operator: "EQUALS", value: selectedState },
+      },
+    ];
+  }, [mode, selectedState]);
+
+  const tableState = useServerDataTable({
+    endpoint: "/api/admin/orders/search",
+    columns,
+    pageSize: mode === "admin" ? ADMIN_PAGE_SIZE : USER_PAGE_SIZE,
+    baseFilters,
+    initialFilters,
+    getRowId: (order) => String(order.orderId),
+  });
+
+  useEffect(() => {
+    setItemsRef.current = tableState.setItems;
+  }, [tableState.setItems]);
+
+  const stateValue =
+    tableState.columnFilters.find((filter) => filter.id === "state")?.value
+      ?.value ?? "";
+
+  const applyStateFilter = (value) => {
+    tableState.setColumnFilters((prev) => {
+      const others = prev.filter((filter) => filter.id !== "state");
+      return value
+        ? [
+            ...others,
+            { id: "state", value: { operator: "EQUALS", value } },
+          ]
+        : others;
+    });
+    if (mode === "admin") setSelectedState(value);
+  };
+
+  const renderMobileCard = (order) => {
+    const dateOnly = formatOrderDate(order.createdDate);
+    return (
+      <div
+        key={order.orderId}
+        className="mb-3 cursor-pointer rounded-xl border bg-white p-3 hover:bg-gray-50"
+      >
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0" onClick={() => openOrder(order.orderId)}>
+            <span className="text-sm font-bold text-red-600">{order.code}</span>
+            <div className="mt-1 text-xs text-gray-500">{dateOnly}</div>
+          </div>
+          {mode === "admin" ? (
+            <span className="w-[150px] shrink-0">
+              <OrderStatusSelect
+                order={order}
+                t={t}
+                onChange={(state) => updateOrderState(order.orderId, state)}
+                className="w-full text-sm font-semibold xs:text-xs"
+              />
             </span>
-            <Select
-              value={
-                selectedState
-                  ? {
-                    value: selectedState,
-                    label: t(selectedState),
-                  }
-                  : null
-              }
-              onChange={(option) => {
-                setSelectedState(option ? option.value : "");
+          ) : (
+            <span
+              className={`shrink-0 text-xs font-semibold ${
+                order.state === "PROCESSING"
+                  ? "text-blue-500"
+                  : order.state === "SHIPPED"
+                    ? "text-yellow-500"
+                    : order.state === "PENDING"
+                      ? "text-orange-500"
+                      : order.state === "DELIVERED"
+                        ? "text-green-500"
+                        : "text-red-500"
+              }`}
+            >
+              {t(order.state)}
+            </span>
+          )}
+        </div>
+
+        {mode === "admin" &&
+        order.state !== "CANCELLED" &&
+        order.state !== "DELIVERED" ? (
+          <div className="flex w-full items-end justify-end">
+            <button
+              type="button"
+              className="mt-2 flex items-center justify-center rounded-3xl border border-red-700 bg-red-100 px-4 py-1 text-center font-semibold text-red-700 hover:bg-red-200 xs:text-xs md:text-sm"
+              onClick={(event) => {
+                event.stopPropagation();
+                cancelOrder(order.orderId);
               }}
-              options={[
-                { value: "", label: t("all_statuses") },
-                { value: "PENDING", label: t("PENDING") },
-                { value: "PROCESSING", label: t("PROCESSING") },
-                { value: "SHIPPED", label: t("SHIPPED") },
-                { value: "DELIVERED", label: t("DELIVERED") },
-              ]}
-              placeholder={t("all_statuses")}
-              isClearable
-              isSearchable={false}
-              className="w-[200px] text-sm font-semibold"
-              styles={{
-                control: (base) => ({
-                  ...base,
-                  backgroundColor: "#f3f4f6",
-                  border: "none",
-                  borderRadius: "0.375rem",
-                  minHeight: "36px",
-                  cursor: "pointer",
-                  boxShadow: "none",
-                  "&:hover": {
-                    borderColor: "#dc2626",
-                  },
-                  "&:focus": {
-                    borderColor: "#b91c1c",
-                    boxShadow: "0 0 0 3px rgba(185, 28, 28, 0.2)",
-                    // outline: "none",
-                  },
-                }),
-                option: (base, state) => ({
-                  ...base,
-                  backgroundColor: state.isSelected
-                    ? "#dc2626"
-                    : state.isFocused
-                      ? "#fee2e2"
-                      : "#ffffff",
-                  color: state.isSelected ? "#ffffff" : "#374151",
-                  cursor: "pointer",
-                  // padding: "8px 12px",
-                  fontSize: "14px",
-                  "&:hover": {
-                    backgroundColor: state.isSelected ? "#dc2626" : "#fee2e2",
-                  },
-                }),
-                menu: (base) => ({
-                  ...base,
-                  backgroundColor: "#ffffff",
-                  borderRadius: "0.375rem",
-                  boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
-                  zIndex: 9999,
-                }),
-                placeholder: (base) => ({
-                  ...base,
-                  color: "#374151",
-                  fontSize: "14px",
-                  fontWeight: "600",
-                }),
-                singleValue: (base) => ({
-                  ...base,
-                  color: "#374151",
-                  fontSize: "14px",
-                  fontWeight: "600",
-                }),
-                input: (base) => ({
-                  ...base,
-                  color: "#374151",
-                }),
-              }}
-            />
+            >
+              {t("order_cancel")}
+            </button>
+          </div>
+        ) : null}
+
+        <div
+          className="mt-3 flex cursor-pointer items-center gap-3 border-t pt-3"
+          onClick={() => openOrder(order.orderId)}
+        >
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border bg-gray-50 p-2 text-gray-600">
+            <FaUserLarge />
+          </span>
+          <div className="min-w-0">
+            <h1 className="truncate text-sm font-semibold">
+              {(order.user?.firstName ?? "") +
+                " " +
+                (order.user?.lastName ?? "")}
+            </h1>
+            <h1 className="truncate text-xs text-gray-500">
+              {order.user?.email}
+            </h1>
+          </div>
+        </div>
+
+        <div className="mt-3 flex items-center justify-between border-t pt-3">
+          <div className="flex items-center gap-3">
+            <span
+              className="cursor-pointer rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-600"
+              onClick={() => openOrder(order.orderId)}
+            >
+              {order.orderItemLines?.length ?? 0} {t("items")}
+            </span>
+            <span className="break-words text-base font-bold">
+              {Number(
+                (mode === "admin" ? order.netTotal : order.total) ?? 0,
+              ).toLocaleString("en-US")}{" "}
+              {t("currency")}
+            </span>
           </div>
         </div>
       </div>
-      {/* <div className="  "> */}
-      {/* XS mobile card layout */}
-      <div className="lg:hidden mt-5">
-        {loading
-          ? // Skeleton cards
-          [...Array(6)].map((_, index) => (
-            <div
-              key={`mobile-skeleton-${index}`}
-              className="bg-white border rounded-xl p-3 mb-3"
-            >
-              <div className="h-4 bg-gray-200 rounded animate-pulse w-24"></div>
-              <div className="h-3 bg-gray-200 rounded animate-pulse w-16 mt-2"></div>
-              <div className="flex items-center gap-3 mt-3 pt-3 border-t">
-                <div className="h-9 w-9 bg-gray-200 rounded-full animate-pulse shrink-0"></div>
-                <div className="flex-1 space-y-2">
-                  <div className="h-3 bg-gray-200 rounded animate-pulse w-28"></div>
-                  <div className="h-2 bg-gray-200 rounded animate-pulse w-20"></div>
-                </div>
-              </div>
-              <div className="h-4 bg-gray-200 rounded animate-pulse w-20 mt-3"></div>
-            </div>
-          ))
-          : orders.map((order, index) => {
-            const date = new Date(order.createdDate);
-            const dateOnly = date.toLocaleDateString("en-GB");
-            return (
-              <div
-                key={`mobile-${index}`}
-                className="bg-white border rounded-xl p-3 mb-3 hover:bg-gray-50"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    <span
-                      className="text-sm font-bold text-red-600 cursor-pointer"
-                      onClick={() =>
-                        navigate.push(
-                          `/admin/orders/OrdersDetails/${order.orderId}`,
-                        )
-                      }
-                    >
-                      {order.code}
-                    </span>
-                    <div className="text-xs text-gray-500 mt-1">{dateOnly}</div>
-                  </div>
-                  <span className="shrink-0 w-[150px]">
-                    {statusSelect(order, "w-full xs:text-xs text-sm font-semibold")}
-                  </span>
-                  
-                </div>
-                {order.state === "CANCELLED" || order.state === "DELIVERED" ? 
-                "":   <div className="w-full flex justify-end items-end">
-                    <button
-            className={`xs:text-xs md:text-sm flex items-center justify-center  
-              text-red-700 bg-red-100 hover:bg-red-200  border border-red-700  
-           font-semibold py-1 mt-2 px-4 text-center rounded-3xl`}
-            onClick={() => orderCancel(order.orderId)}
-          >
-            {t("order_cancel")}
-          </button>
-                </div>
-                }
-               
-              
-                <div
-                  className="flex items-center gap-3 mt-3 pt-3 border-t cursor-pointer"
-                  onClick={() =>
-                    navigate.push(
-                      `/admin/orders/OrdersDetails/${order.orderId}`,
-                    )
-                  }
-                >
-                  <span className="w-9 h-9 text-gray-600 shrink-0 bg-gray-50 flex justify-center items-center p-2 rounded-full border ">
-                    <FaUserLarge />
-                  </span>
-                  <div className="min-w-0">
-                    <h1 className="font-semibold text-sm truncate">
-                      {order.user.firstName + " " + order.user.lastName}
-                    </h1>
-                    <h1 className="text-xs  text-gray-500 truncate">
-                      {order.user.email}
-                    </h1>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between mt-3 pt-3 border-t">
-                  <div className="flex items-center gap-3">
-                    <span
-                      className="py-1 px-3 font-semibold rounded-full bg-red-100 text-red-600 text-xs cursor-pointer"
-                      onClick={() =>
-                        navigate.push(
-                          `/admin/orders/OrdersDetails/${order.orderId}`,
-                        )
-                      }
-                    >
-                      {order.orderItemLines.length} {t("items")}
-                    </span>
-                    <span className="text-base font-bold break-words">
-                      {order.netTotal.toLocaleString("en-US")} {t("currency")}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        <div className="flex justify-center py-3">
-          <InfiniteListFooter
-            sentinelRef={sentinelRef}
-            loadingMore={loadingMore}
-            hasMore={hasMore}
-            hasItems={orders.length > 0}
-            error={error}
-            onRetry={reload}
-          />
-        </div>
-      </div>
-      <div className="hidden lg:block h-[520px] border-t mt-3 w-full  overflow-y-scroll">
+    );
+  };
 
-        <table className="w-full h-auto">
-          <thead className="bg-[#f0eff0] text-xs   text-justify sticky top-0  z-10">
-            <tr className="  h-12">
-              {/* <th className="w-[2%] "></th> */}
-              <th className=" px-5 ">{t("order_id")}</th>
-              <th className=" ">{t("date")}</th>
-              <th className=" ">{t("user")}</th>
-              <th className=" ">{t("items")}</th>
-              <th className=" ">{t("total")}</th>
-              <th className=" ">{t("state_order")}</th>
-              <th className=" ">{t("order_cancel")}</th>
-            </tr>
-          </thead>
-          <tbody className="bg-white text-md w-full ">
-            {loading
-              ? // Skeleton rows
-              [...Array(7)].map((_, index) => (
-                <tr key={`skeleton-${index}`} className="border-b h-12">
-                  <td className="px-4 py-2">
-                    <div className="h-4 bg-gray-200 rounded animate-pulse w-36"></div>
-                  </td>
+  const toolbar = (
+    <DataTableToolbar
+      table={tableState.table}
+      searchValue={tableState.globalFilter}
+      onSearchChange={tableState.setGlobalFilter}
+      className="!p-4"
+      leading={
+        <OrderStateFilter
+          value={stateValue}
+          onChange={applyStateFilter}
+          t={t}
+        />
+      }
+    />
+  );
 
-                  {/* <td className="px-4 py-2 flex items-center gap-2">
-                    <div className="h-12 bg-gray-200 rounded-full animate-pulse w-12"></div>
-                    <div className="flex flex-col gap-2">
-                    <div  className="h-4 bg-gray-200 rounded-lg animate-pulse w-28"></div>
-                    <div  className="h-2 bg-gray-200 rounded-md animate-pulse w-20"></div>
-                    </div>
-                  </td> */}
-                  {/* <td className="px-4 py-2"><div className="h-4 bg-gray-200 rounded animate-pulse w-24"></div></td> */}
-                  <td className=" py-2">
-                    <div className="h-4 bg-gray-200 rounded animate-pulse w-20"></div>
-                  </td>
-                  <td className=" py-2">
-                    <div className="h-4 bg-gray-200 rounded animate-pulse w-28"></div>
-                  </td>
-                  <td className=" py-2">
-                    <div className="h-10 bg-gray-200 rounded-full animate-pulse w-10"></div>
-                  </td>
-                  <td className=" py-2">
-                    <div className="h-4 bg-gray-200 rounded animate-pulse w-16"></div>
-                  </td>
-                  <td className=" py-2">
-                    <div className="h-4 bg-gray-200 rounded animate-pulse w-16"></div>
-                  </td>
-                </tr>
-              ))
-              : orders.map((order, index) => {
-                const date = new Date(order.createdDate);
-                const dateOnly = date.toLocaleDateString("en-GB");
-                return (
-                  <tr
-                    key={index}
-                    className=" text-red-950 border-t w-full hover:bg-gray-50 cursor-pointer"
-                  >
-                    <td
-                      className="font-semibold text-red-500 px-5"
-                      onClick={() =>
-                        navigate.push(
-                          `/admin/orders/OrdersDetails/${order.orderId}`,
-                        )
-                      }
-                    >
-                      {order.code}
-                    </td>
-                    <td className="text-sm">{dateOnly}</td>
-                    <td
-                      onClick={() =>
-                        navigate.push(
-                          `/admin/orders/OrdersDetails/${order.orderId}`,
-                        )
-                      }
-                    >
-                      <div className="flex items-center gap-3">
-                        <span className="w-[40px] h-[40px] text-gray-600 my-2  bg-gray-50 flex justify-center items-center p-2 rounded-full border ">
-                          <FaUserLarge />
-                        </span>
-                        <div>
-                          <h1 className="font-semibold text-sm">
-                            {order.user.firstName + " " + order.user.lastName}
-                          </h1>
-                          <h1 className="text-xs  text-gray-500">
-                            {order.user.email}
-                          </h1>
-                        </div>
-                      </div>
-                    </td>
-
-                    <td
-                      className="text-sm "
-                      onClick={() =>
-                        navigate.push(
-                          `/admin/orders/OrdersDetails/${order.orderId}`,
-                        )
-                      }
-                    >
-                      <span className="py-2 px-5 font-semibold rounded-full   bg-red-100 text-red-600">
-                        {order.orderItemLines.length}
-                      </span>
-                    </td>
-                    <td className="text-sm font-bold">
-                      {order.netTotal.toLocaleString("en-US")} {t("currency")}
-                    </td>
-                    <td>
-                      {statusSelect(order, "w-[200px] text-sm font-semibold")}
-                    </td>
-                    <td>
-                       {order.state === "CANCELLED" || order.state === "DELIVERED" ? 
-                       "":
-                      <button
-                        className={`xs:text-xs md:text-sm flex items-center justify-center  
-              text-red-700 bg-red-100 hover:bg-red-200  border border-red-700  
-           font-semibold py-1 px-4 text-center rounded-3xl`}
-                        onClick={() => orderCancel(order.orderId)}
-                      >
-                        {t("order_cancel")}
-                      </button>}
-                    </td>
-                  </tr>
-                );
-              })}
-            <InfiniteTableFooter
-              colSpan={7}
-              sentinelRef={sentinelRef}
-              loadingMore={loadingMore}
-              hasMore={hasMore}
-              hasItems={orders.length > 0}
-              error={error}
-              onRetry={reload}
-            />
-          </tbody>
-        </table>
-      </div>
-    </div>
+  return (
+    <DataTable
+      table={tableState.table}
+      loading={tableState.loading}
+      loadingMore={tableState.loadingMore}
+      hasMore={tableState.hasMore}
+      error={tableState.error}
+      sentinelRef={tableState.sentinelRef}
+      onRetry={tableState.reload}
+      toolbar={toolbar}
+      mobileCard={renderMobileCard}
+      mobileWrapperClassName={
+        mode === "admin"
+          ? "lg:hidden mt-5"
+          : "lg:hidden mt-5 h-[500px] w-full overflow-x-scroll overflow-y-scroll rounded-xl border"
+      }
+      desktopWrapperClassName={
+        mode === "admin"
+          ? "hidden lg:block h-[520px] border-t mt-3 w-full overflow-y-scroll"
+          : "hidden lg:block mt-5 h-[500px] w-full overflow-x-scroll overflow-y-scroll rounded-xl border"
+      }
+      tableClassName={mode === "admin" ? "w-full h-auto" : "w-full"}
+      headerClassName="bg-[#f0eff0] text-xs text-justify sticky top-0 z-10"
+      rowClassName="text-red-950 border-t w-full hover:bg-gray-50 cursor-pointer"
+      emptyMessage={t("no_data")}
+    />
   );
 }

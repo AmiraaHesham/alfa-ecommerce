@@ -11,6 +11,7 @@ import { FaEye } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { reportApiFailure } from "../../utils/connectivityStore";
 import { resolveLanguage } from "../../utils/languageUtils";
+import { postRequest } from "../../utils/requestsUtils";
 
 export default function SignIn({ popUp, setShowSignUp, setShowSignIn,setOpenForm }) {
   const navigate = useRouter();
@@ -20,6 +21,7 @@ export default function SignIn({ popUp, setShowSignUp, setShowSignIn,setOpenForm
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [forgotSuccess, setForgotSuccess] = useState("");
   const { locale, setLocale } = useLanguage();
   const { t } = useLanguage();
   const input_passwordRef = useRef();
@@ -75,15 +77,18 @@ export default function SignIn({ popUp, setShowSignUp, setShowSignIn,setOpenForm
   const handleSendForgotPasswordEmail = async (e) => {
     e.preventDefault();
     setError(null);
+    setForgotSuccess("");
 
     try {
       setLoading(true);
-
-      const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/forgot-password/?email=${email}`,
+      await postRequest("/api/auth/forgot-password", { email }, "", true);
+      setForgotSuccess(
+        t("forgotPasswordEmailSent") ||
+          "If an account with that email exists, a reset link has been sent.",
       );
-
     } catch (err) {
+      const message = err?.response?.data?.error?.message;
+      if (message) toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -242,15 +247,20 @@ export default function SignIn({ popUp, setShowSignUp, setShowSignIn,setOpenForm
                 <MdEmail />
               </span>
             </div>
+            {forgotSuccess ? (
+              <p role="status" className="text-sm text-green-700">
+                {forgotSuccess}
+              </p>
+            ) : null}
             <div className="my-10 flex gap-5">
               <button
                 type="submit"
                 className="bg-red-600 text-white rounded-md w-full h-10 shadow hover:bg-red-700"
               >
-                {loading ? t("send") : t("sending")}
+                {loading ? t("sending") : t("send")}
               </button>
               <button
-                type="submit"
+                type="button"
                 className="bg-white text-red-600 border-red-600 border rounded-md w-full h-10  hover:bg-red-600 shadow hover:text-white"
                 onClick={() => {
                   const welcome_section =

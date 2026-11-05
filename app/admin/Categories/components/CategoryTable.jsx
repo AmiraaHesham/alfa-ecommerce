@@ -1,58 +1,36 @@
 "use client";
 import Image from "next/image";
+import { useMemo, useState } from "react";
 import { FaPlus } from "react-icons/fa";
+import { MdDelete, MdEdit } from "react-icons/md";
+
+import { useLanguage } from "../../../../context/LanguageContext.js";
 import { useIdContext } from "../../../../context/idContext";
 import { useRefresh } from "../../../../context/refreshContext";
-import { useLanguage } from "../../../../context/LanguageContext.js";
-import { deleteRequest, getRequest } from "../../../../utils/requestsUtils.js";
-import { useEffect, useState } from "react";
-import { MdDelete, MdEdit, MdUpdate } from "react-icons/md";
+import { deleteRequest } from "../../../../utils/requestsUtils.js";
 import { getThumbnailUrl } from "../../../../utils/functions";
+import { DataTable, DataTableToolbar } from "../../components/data-table";
+import { useServerDataTable } from "../../hooks/useServerDataTable";
+import { createCategoryColumns } from "../../config/categoriesTable.config";
 import ProductsByCategoryPopup from "./ProductsByCategoryPopup";
-import {
-  InfiniteListFooter,
-  InfiniteTableFooter,
-  useClientInfiniteScroll,
-} from "../../components/InfiniteScroll.jsx";
 
-const CLIENT_PAGE_SIZE = 15;
+const PAGE_SIZE = 15;
 
 export default function CategorysTable({ setIsFormOpen }) {
-  const { t } = useLanguage();
-  const { triggerRefresh } = useRefresh();
+  const { t, locale } = useLanguage();
+  const { triggerRefresh, refreshKey } = useRefresh();
   const { setSelectedCategoryId } = useIdContext();
-  const { refreshKey } = useRefresh();
-  let [itemCategory, setItemCategory] = useState([]);
-  let [categoryId, setCategoryId] = useState();
-  const [loading, setLoading] = useState(true);
+  const [categoryId, setCategoryId] = useState();
   const [popupShow, setPopupShow] = useState(false);
-
-  const getAllCategories = async () => {
-    try {
-      setLoading(true);
-      const resData = await getRequest(
-        "/api/admin/itemCategory/getCategoryWithItemCounts",
-      );
-      setItemCategory(resData.data || []);
-    } catch (error) {
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // This endpoint returns the full list at once (no server pagination), so we
-  // reveal it progressively to keep the infinite-scroll behaviour consistent.
-  const {
-    items: visibleCategories,
-    hasMore,
-    sentinelRef,
-    error: infiniteError,
-    reload: reloadInfinite,
-  } = useClientInfiniteScroll(itemCategory, CLIENT_PAGE_SIZE);
 
   const openForm = (categoryId) => {
     setSelectedCategoryId(categoryId);
     setIsFormOpen(true);
+  };
+
+  const openProducts = (categoryId) => {
+    setCategoryId(categoryId);
+    setPopupShow(true);
   };
 
   const deleteCategory = async (categoryId) => {
@@ -62,20 +40,105 @@ export default function CategorysTable({ setIsFormOpen }) {
         t("message"),
       );
       triggerRefresh();
-    } catch (error) {
+    } catch {
+      // Shared request utility already surfaces the error.
     }
   };
 
-  useEffect(() => {
-    getAllCategories();
-  }, [refreshKey]);
+  const columns = useMemo(
+    () =>
+      createCategoryColumns({
+        t,
+        locale,
+        onOpen: openProducts,
+        onEdit: openForm,
+        onDelete: deleteCategory,
+      }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [t, locale],
+  );
 
-  return (
-    <div>
-      <ProductsByCategoryPopup categoryId={categoryId} popupShow={popupShow} setPopupShow={setPopupShow} />
-      <div className="bg-white h-[50px] border rounded-lg border-1  w-full mt-2 flex justify-end p-5 items-center">
+  const tableState = useServerDataTable({
+    endpoint: "/api/admin/itemCategory/search",
+    columns,
+    pageSize: PAGE_SIZE,
+    refreshKey,
+    getRowId: (category) => String(category.itemCategoryId),
+  });
+
+  const renderMobileCard = (category) => (
+    <div
+      key={category.itemCategoryId}
+      className="mx-2 my-3 cursor-pointer rounded-xl border-b bg-white p-3 hover:bg-gray-100"
+      onClick={() => openProducts(category.itemCategoryId)}
+    >
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex min-w-0 items-center gap-3">
+          {category.imageURL ? (
+            <Image
+              alt=""
+              src={
+                process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +
+                getThumbnailUrl(category.imageURL ?? "")
+              }
+              width={40}
+              height={40}
+              className="h-10 w-10 shrink-0 rounded-xl border p-1"
+            />
+          ) : (
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border bg-gray-100 text-[10px] text-gray-400">
+              {t("no_image")}
+            </div>
+          )}
+          <div className="min-w-0">
+            <h1 className="truncate text-sm font-semibold">
+              {locale === "ar" ? category.nameAr : category.nameEn}
+            </h1>
+            <h1 className="text-xs text-gray-600">{t("main_category")}</h1>
+          </div>
+        </div>
+        <div className="shrink-0 rounded-full bg-red-100 px-3 py-1 text-center text-xs font-semibold text-red-600">
+          <h1>{category.itemsCount ?? 0}</h1>
+          <h2>{t("products_category")}</h2>
+        </div>
+      </div>
+      <div className="mt-3 flex items-center gap-3 border-t pt-3">
         <button
-          className="p-2  text-white xs:text-xs md:text-sm rounded-md bg-[#CD4354] text-center flex items-center justify-center gap-2"
+          type="button"
+          className="flex items-center gap-1 rounded-md bg-blue-300 px-3 py-1 text-sm font-semibold text-blue-800 hover:bg-blue-400"
+          onClick={(event) => {
+            event.stopPropagation();
+            openForm(category.itemCategoryId);
+          }}
+        >
+          <MdEdit />
+          {t("edit")}
+        </button>
+        <button
+          type="button"
+          className="flex items-center gap-1 rounded-md bg-red-300 px-3 py-1 text-sm font-semibold text-red-800 hover:bg-red-400"
+          onClick={(event) => {
+            event.stopPropagation();
+            deleteCategory(category.itemCategoryId);
+          }}
+        >
+          <MdDelete />
+          {t("delete")}
+        </button>
+      </div>
+    </div>
+  );
+
+  const toolbar = (
+    <DataTableToolbar
+      table={tableState.table}
+      searchValue={tableState.globalFilter}
+      onSearchChange={tableState.setGlobalFilter}
+      className="!p-3"
+      actions={
+        <button
+          type="button"
+          className="flex items-center justify-center gap-2 rounded-md bg-[#CD4354] p-2 text-center text-white xs:text-xs md:text-sm"
           onClick={() => {
             setIsFormOpen(true);
             setSelectedCategoryId(null);
@@ -86,220 +149,34 @@ export default function CategorysTable({ setIsFormOpen }) {
           </span>
           <h1>{t("add_category")}</h1>
         </button>
-      </div>
-      {/* <div className="bg-white rounded-xl w-full  "> */}
-        {/* XS mobile card layout */}
-      <div className="lg:hidden h-auto border mt-3 rounded-xl overflow-y-scroll">
-        {loading
-          ? // Skeleton cards
-            [...Array(5)].map((_, index) => (
-              <div
-                key={`mobile-skeleton-${index}`}
-                className="bg-white border-b rounded-xl p-3 my-3 mx-2"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 bg-gray-200 rounded-lg animate-pulse shrink-0"></div>
-                  <div className="flex-1 space-y-2">
-                    <div className="h-3 bg-gray-200 rounded animate-pulse w-28"></div>
-                    <div className="h-2 bg-gray-200 rounded animate-pulse w-16"></div>
-                  </div>
-                </div>
-                <div className="h-8 bg-gray-200 rounded animate-pulse w-24 mt-3"></div>
-              </div>
-            ))
-          : visibleCategories.map((category, index) => (
-              <div
-                key={`mobile-${index}`}
-                className="bg-white border-b rounded-xl p-3 my-3 mx-2 hover:bg-gray-100 cursor-pointer"
-                onClick={() => {
-                  setCategoryId(category.itemCategoryId);
-                  setPopupShow(true);
-                }}
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex items-center gap-3 min-w-0">
-                    <Image
-                      alt=""
-                      src={
-                        process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +
-                        getThumbnailUrl(category.imageURL)
-                      }
-                      width={40}
-                      height={40}
-                      className="rounded-xl w-10 h-10 border p-1 shrink-0"
-                    />
-                    <div className="min-w-0">
-                      <h1 className="text-sm font-semibold truncate">
-                        {localStorage.lang === "ar"
-                          ? category.nameAr
-                          : category.nameEn}
-                      </h1>
-                      <h1 className="text-xs text-gray-600">
-                        {t("main_category")}
-                      </h1>
-                    </div>
-                  </div>
-                  <div className="bg-red-100 rounded-full text-red-600 px-3 py-1 font-semibold text-xs shrink-0 text-center">
-                    <h1>{category.itemsCount}</h1>
-                    <h2>{t("products_category")}</h2>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 mt-3 pt-3 border-t">
-                  <button
-                    className="text-blue-800 text-sm flex items-center gap-1 bg-blue-300 px-3 py-1 font-semibold rounded-md hover:bg-blue-400"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      openForm(category.itemCategoryId);
-                    }}
-                  >
-                    <MdEdit />
-                    {t("edit")}
-                  </button>
-                  <button
-                    className="text-red-800 text-sm flex items-center gap-1 bg-red-300 px-3 py-1 font-semibold rounded-md hover:bg-red-400"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      deleteCategory(category.itemCategoryId);
-                    }}
-                  >
-                    <MdDelete />
-                    {t("delete")}
-                  </button>
-                </div>
-              </div>
-            ))}
-            <InfiniteListFooter
-              sentinelRef={sentinelRef}
-              loadingMore={false}
-              hasMore={hasMore}
-              hasItems={visibleCategories.length > 0}
-              error={infiniteError}
-              onRetry={reloadInfinite}
-            />
-      </div>
-      <table className=" hidden lg:table w-full h-auto table-fixed rounded-3xl  border mt-3  ">
-          <thead className="w-full bg-[#f0eff0] h-12 rounded-lg text-justify sticky top-0  z-10">
-            <tr className="  text-xs">
-              <th className=" px-5">{t("image")}</th>
-              <th className="">{t("category_name_capetal")}</th>
-              <th className=" px-5">{t("products_count")}</th>
-              <th className=""></th> 
-            </tr>
-          </thead>
-          <tbody className="bg-white text-md w-full cursor-pointer ">
-            {loading
-              ? // Skeleton rows
-              [...Array(7)].map((_, index) => (
-                <tr key={`skeleton-${index}`} className="border-t">
-                  <td className="px-4 py-2">
-                    <div className="h-14 bg-gray-200 rounded-lg animate-pulse w-14"></div>
-                  </td>
+      }
+    />
+  );
 
-                  {/* <td className="px-4 py-2 flex items-center gap-2">
-                    <div className="h-12 bg-gray-200 rounded-lg animate-pulse w-16"></div>
-                    <div className="flex flex-col gap-2">
-                    <div  className="h-4 bg-gray-200 rounded-lg animate-pulse w-28"></div>
-                    <div  className="h-2 bg-gray-200 rounded-md animate-pulse w-20"></div>
-                    </div>
-                  </td> */}
-                  <td className=" py-2">
-                    <div className="h-4 bg-gray-200 rounded animate-pulse w-24"></div>
-                  </td>
-                  <td className="py-2">
-                    <div className="h-4 bg-gray-200 rounded animate-pulse w-16"></div>
-                  </td>
-                  <td className="py-2">
-                    <div className="h-4 bg-gray-200 rounded animate-pulse w-16"></div>
-                  </td>
-                </tr>
-              ))
-              : visibleCategories.map((category, index) => (
-                <tr
-                  key={index}
-                  className=" text-red-950 border-t w-full hover:bg-gray-100 "
-                >
-                  <td
-                    className="px-4"
-                    onClick={() => {
-                      setCategoryId(category.itemCategoryId)
-                      setPopupShow(true)
-                    }}
-                  >
-                    <span className="w-[100px]">
-                      <Image
-                        alt=""
-                        src={
-                          process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL +
-                          getThumbnailUrl(category.imageURL)}
-                        width={40}
-                        height={40}
-                        className="rounded-xl xs:w-10 xs:h-10 md:w-16 md:h-16  border my-1 p-1"
-                      // decoding="async"
-                      />
-                    </span>
-                  </td>
-
-                  <td
-                    onClick={() => {
-                      setCategoryId(category.itemCategoryId)
-                      setPopupShow(true)
-                    }}>
-                    <div>
-                      <h1 className="md:text-sm xs:text-xs font-semibold">
-                        {localStorage.lang === "ar"
-                          ? category.nameAr
-                          : category.nameEn}
-                      </h1>
-                      <h1 className="md:text-xs xs:text-[10px]">
-                        {t("main_category")}
-                      </h1>
-                    </div>
-                  </td>
-                  <td onClick={() => {
-                    setCategoryId(category.itemCategoryId)
-                    setPopupShow(true)
-                  }}>
-                    <div className="bg-red-100 md:w-[80px]  xs:w-[60px] text-center rounded-full text-red-600  px-2 font-semibold md:text-xs xs:text-[10px]">
-                      <h1>{category.itemsCount}</h1>
-                      <h2>{t("products_category")}</h2>
-                    </div>
-                  </td>
-                  <td>
-                    <div className="flex gap-5">
-                      <button
-                        className="text-blue-800 text-sm flex items-center gap-1 bg-blue-300 px-2 py-1 font-semibold rounded-md hover:bg-blue-400"
-                        onClick={() => {
-                          openForm(category.itemCategoryId);
-                        }}
-                      >
-                        <MdEdit />
-                        <h1 className="md:block xs:hidden">{t("edit")}</h1>
-                      </button>
-                      <button
-                        className="text-red-800 text-sm flex items-center gap-1 bg-red-300 px-2 py-1 font-semibold rounded-md hover:bg-red-400"
-                        onClick={() =>
-                          deleteCategory(category.itemCategoryId)
-                        }
-                      >
-                        <MdDelete />
-                        <h1 className="md:block xs:hidden">{t("delete")}</h1>
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            <InfiniteTableFooter
-              colSpan={4}
-              sentinelRef={sentinelRef}
-              loadingMore={false}
-              hasMore={hasMore}
-              hasItems={visibleCategories.length > 0}
-              error={infiniteError}
-              onRetry={reloadInfinite}
-            />
-          </tbody>
-        </table>
-      {/* </div> */}
+  return (
+    <div>
+      <ProductsByCategoryPopup
+        categoryId={categoryId}
+        popupShow={popupShow}
+        setPopupShow={setPopupShow}
+      />
+      <DataTable
+        table={tableState.table}
+        loading={tableState.loading}
+        loadingMore={tableState.loadingMore}
+        hasMore={tableState.hasMore}
+        error={tableState.error}
+        sentinelRef={tableState.sentinelRef}
+        onRetry={tableState.reload}
+        toolbar={toolbar}
+        mobileCard={renderMobileCard}
+        mobileWrapperClassName="lg:hidden mt-3 h-auto rounded-xl border overflow-y-scroll"
+        desktopWrapperClassName="hidden lg:block mt-3 w-full overflow-y-auto"
+        tableClassName="w-full h-auto table-fixed rounded-3xl border"
+        headerClassName="bg-[#f0eff0] h-12 rounded-lg text-justify sticky top-0 z-10 text-xs"
+        rowClassName="text-red-950 border-t w-full hover:bg-gray-100 cursor-pointer"
+        emptyMessage={t("no_data")}
+      />
     </div>
   );
 }

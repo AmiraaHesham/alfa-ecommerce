@@ -1,16 +1,14 @@
 "use client";
-import { useLanguage } from "../../../../context/LanguageContext";
-import { useEffect, useState } from "react";
-import { getRequest, putRequest } from "../../../../utils/requestsUtils";
+import { useMemo } from "react";
 import { BiEdit } from "react-icons/bi";
-import { useRefresh } from "../../../../context/refreshContext";
-import {
-  InfiniteListFooter,
-  InfiniteTableFooter,
-  useClientInfiniteScroll,
-} from "../../components/InfiniteScroll.jsx";
 
-const CLIENT_PAGE_SIZE = 15;
+import { useLanguage } from "../../../../context/LanguageContext";
+import { useRefresh } from "../../../../context/refreshContext";
+import { DataTable, DataTableToolbar } from "../../components/data-table";
+import { useServerDataTable } from "../../hooks/useServerDataTable";
+import { createShippingColumns } from "../../config/shippingTable.config";
+
+const PAGE_SIZE = 15;
 
 export default function Table({
   setGovernorate,
@@ -18,155 +16,87 @@ export default function Table({
   setGovernoratePrice,
   setShowForm,
 }) {
-  const { t } = useLanguage();
-  const [loading, setLoading] = useState(false);
-  const {locale} = useLanguage()
-  // const [shippingcost, setShippingCost] = useState([]);
-   const [governorates, setGovernorates] = useState([]);
-    // const [value, setValue] = useState(null);
-    const { refreshKey } = useRefresh();
+  const { t, locale } = useLanguage();
+  const { refreshKey } = useRefresh();
 
-    const getGovernorate = async () => {
-      const res = await getRequest("/api/admin/shipping-rates");
-      setGovernorates(res.data || []);
-    };
-    useEffect(() => {
-      getGovernorate();
-    }, [refreshKey]);
+  const editRate = (rate) => {
+    setGovernorate(
+      locale === "ar" ? rate.governorate?.nameAr : rate.governorate?.nameEn,
+    );
+    setGovernorateId(rate.shippingRateId);
+    setGovernoratePrice(rate.shippingCost);
+    setShowForm(true);
+  };
 
-    // The shipping-rates endpoint returns every governorate at once, so we
-    // reveal them progressively on the client to keep the same UX.
-    const {
-      items: visibleGovernorates,
-      hasMore,
-      sentinelRef,
-      error: infiniteError,
-      reload: reloadInfinite,
-    } = useClientInfiniteScroll(governorates, CLIENT_PAGE_SIZE);
-  // const getShippingCost = async () => {
-  //   try {
-  //     const response = await getRequest(" /api/admin/shipping-rates");
-  //     const resOrders = response.data || [];
-  //     console.log(resOrders)
-  //       // setShippingCost(resOrders);
- 
-  //   } catch (error) {
-  //     console.log(error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
+  const columns = useMemo(
+    () => createShippingColumns({ t, locale, onEdit: editRate }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [t, locale],
+  );
 
-  // useEffect(() => {
-  //   getShippingCost();
-  // }, []);
-  return (
-    <div className="w-full pt-3 md:px-16 xs:px-0 h-full ">
-      {/* <div className=""> */}
-        {/* XS mobile card layout */}
-        <div className="lg:hidden p-3">
-          {visibleGovernorates.map((gov) => {
-            return (
-              <div
-                key={gov.shippingRateId}
-                className="bg-white border rounded-xl p-3 mb-3 hover:bg-gray-50"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <h1 className="text-sm font-semibold min-w-0 break-words">
-                    {locale === "ar" ? gov.governorate.nameAr : gov.governorate.nameEn}
-                  </h1>
-                  <button
-                    className="hover:bg-red-200 text-red-600 rounded-full p-2 shrink-0"
-                    onClick={() => {
-                      setGovernorate(locale === "ar" ? gov.governorate.nameAr : gov.governorate.nameEn);
-                      setGovernorateId(gov.shippingRateId);
-                      setGovernoratePrice(gov.shippingCost);
-                      setShowForm(true);
-                    }}
-                  >
-                    <BiEdit />
-                  </button>
-                </div>
-                <div className="flex items-center justify-between mt-3 pt-3 border-t">
-                  <span className="text-base font-bold">
-                    {t("shippingCost")} : {gov.shippingCost}
-                  </span>
-                </div>
-              </div>
-            );
-          })}
-          <InfiniteListFooter
-            sentinelRef={sentinelRef}
-            loadingMore={false}
-            hasMore={hasMore}
-            hasItems={visibleGovernorates.length > 0}
-            error={infiniteError}
-            onRetry={reloadInfinite}
-          />
-        </div>
-      <div className="hidden lg:block max-h-[570px] min-w-0 mt-3 w-full overflow-x-auto overflow-y-auto">
+  const tableState = useServerDataTable({
+    endpoint: "/api/admin/shipping-rates/search",
+    columns,
+    pageSize: PAGE_SIZE,
+    refreshKey,
+    getRowId: (rate) => String(rate.shippingRateId),
+  });
 
-        <table className="hidden lg:table w-full min-w-[560px] border ">
-          <thead className="bg-[#f0eff0] text-xs   text-justify sticky top-0  z-10">
-            <tr className="  h-12 ">
-              <th className="p-5 ">{t("governorate")}</th>
-              <th className=" ">{t("shippingCost")}</th>
-              <th className=" "></th>
-            </tr>
-          </thead>
-          <tbody className="bg-white text-md w-full ">
-            {loading
-              ? // Skeleton rows
-                [...Array(7)].map((_, index) => (
-                  <tr key={`skeleton-${index}`} className="border-b h-12">
-                    <td className="px-4 py-2">
-                      <div className="h-4 bg-gray-200 rounded animate-pulse w-36"></div>
-                    </td>
-
-                    <td className=" py-2">
-                      <div className="h-4 bg-gray-200 rounded animate-pulse w-20"></div>
-                    </td>
-                    <td className=" py-2">
-                      <div className="h-4 bg-gray-200 rounded animate-pulse w-20"></div>
-                    </td>
-                  </tr>
-                ))
-              : visibleGovernorates.map((gov) => {
-                  return (
-                    <tr
-                      key={gov.shippingRateId}
-                      className="  border w-full h-14 hover:bg-gray-50 "
-                    >
-                      <td className="font-semibold  px-5">{locale === "ar"?gov.governorate.nameAr : gov.governorate.nameEn}</td>
-                      <td className=" font-semibold px-5">{gov.shippingCost} </td>
-                      <td className="text-2xl">
-                        <button
-                          className="hover:bg-red-200 text-red-600 rounded-full p-2"
-                          onClick={() => {
-                            setGovernorate(locale === "ar"? gov.governorate.nameAr : gov.governorate.nameEn);
-                            setGovernorateId(gov.shippingRateId);
-                            setGovernoratePrice(gov.shippingCost);
-                            setShowForm(true);
-                          }}
-                        >
-                          <BiEdit />
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
-            <InfiniteTableFooter
-              colSpan={3}
-              sentinelRef={sentinelRef}
-              loadingMore={false}
-              hasMore={hasMore}
-              hasItems={visibleGovernorates.length > 0}
-              error={infiniteError}
-              onRetry={reloadInfinite}
-            />
-          </tbody>
-        </table>
+  const renderMobileCard = (rate) => (
+    <div
+      key={rate.shippingRateId}
+      className="mb-3 rounded-xl border bg-white p-3 hover:bg-gray-50"
+    >
+      <div className="flex items-start justify-between gap-3">
+        <h1 className="min-w-0 break-words text-sm font-semibold">
+          {locale === "ar"
+            ? rate.governorate?.nameAr
+            : rate.governorate?.nameEn}
+        </h1>
+        <button
+          type="button"
+          className="shrink-0 rounded-full p-2 text-red-600 hover:bg-red-200"
+          onClick={() => editRate(rate)}
+        >
+          <BiEdit />
+        </button>
       </div>
+      <div className="mt-3 flex items-center justify-between border-t pt-3">
+        <span className="text-base font-bold">
+          {t("shippingCost")} : {rate.shippingCost}
+        </span>
+      </div>
+    </div>
+  );
+
+  const toolbar = (
+    <DataTableToolbar
+      table={tableState.table}
+      searchValue={tableState.globalFilter}
+      onSearchChange={tableState.setGlobalFilter}
+      className="!p-3"
+    />
+  );
+
+  return (
+    <div className="h-full w-full px-0 pt-3 xs:px-0 md:px-16">
+      <DataTable
+        table={tableState.table}
+        loading={tableState.loading}
+        loadingMore={tableState.loadingMore}
+        hasMore={tableState.hasMore}
+        error={tableState.error}
+        sentinelRef={tableState.sentinelRef}
+        onRetry={tableState.reload}
+        toolbar={toolbar}
+        mobileCard={renderMobileCard}
+        mobileWrapperClassName="lg:hidden p-3"
+        desktopWrapperClassName="hidden lg:block max-h-[570px] min-w-0 mt-3 w-full overflow-x-auto overflow-y-auto"
+        tableClassName="w-full min-w-[560px] border"
+        headerClassName="bg-[#f0eff0] text-xs text-justify sticky top-0 z-10"
+        rowClassName="border w-full h-14 hover:bg-gray-50"
+        emptyMessage={t("no_data")}
+      />
     </div>
   );
 }

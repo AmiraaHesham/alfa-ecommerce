@@ -1,51 +1,119 @@
 "use client";
-import { MdEmail, MdLanguage } from "react-icons/md";
-import { FaEyeSlash, FaUserLarge } from "react-icons/fa6";
-import { useState, useRef, useEffect } from "react";
-// import { loginUser } from '../../utils/auth';
 
-import axios from "axios";
-import { useRouter } from "next/navigation";
-import Image from "next/image";
-import { useLanguage } from "../../context/LanguageContext";
+import { useState } from "react";
 import Link from "next/link";
-import { FaEye } from "react-icons/fa";
-import { postRequest } from "../../utils/requestsUtils";
+import { useSearchParams } from "next/navigation";
+import { MdLanguage } from "react-icons/md";
+import { useLanguage } from "../../context/LanguageContext";
+import { postRequest, putRequest } from "../../utils/requestsUtils";
 
 export default function ForgotPassword() {
-  const navigate = useRouter();
+  const searchParams = useSearchParams();
+  const token = searchParams.get("token");
+  const { locale, setLocale, t } = useLanguage();
 
   const [email, setEmail] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const { locale, setLocale } = useLanguage();
-  const { t } = useLanguage();
-  const input_passwordRef = useRef();
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
+  const requestReset = async (event) => {
+    event.preventDefault();
+    setError("");
+    setSuccess("");
+    setLoading(true);
+
+    try {
+      await postRequest("/api/auth/forgot-password", { email }, "", true);
+      setSuccess(
+        t("forgotPasswordEmailSent") ||
+          "If an account with that email exists, a reset link has been sent.",
+      );
+      setEmail("");
+    } catch (err) {
+      setError(
+        err?.response?.data?.error?.message ||
+          t("somethingWentWrong") ||
+          "Something went wrong. Please try again.",
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const resetPassword = async (event) => {
+    event.preventDefault();
+    setError("");
+    setSuccess("");
+
+    if (!token) {
+      setError(t("invalidResetLink") || "The reset link is invalid or missing.");
+      return;
+    }
+    if (newPassword.length < 8) {
+      setError(
+        t("passwordTooShort") ||
+          "Password must be at least 8 characters long.",
+      );
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setError(t("passwordMismatch") || "Passwords do not match.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await putRequest(
+        "/api/auth/rest-forget-password",
+        {
+          token,
+          newPassword,
+          repeatPassword: confirmPassword,
+        },
+        "",
+      );
+      setSuccess(
+        t("resetSuccess") ||
+          "Password updated successfully. You can now sign in.",
+      );
+      setNewPassword("");
+      setConfirmPassword("");
+      if (typeof window !== "undefined") {
+        window.history.replaceState({}, "", "/forgotpassword");
+      }
+    } catch (err) {
+      setError(
+        err?.response?.data?.error?.message ||
+          t("somethingWentWrong") ||
+          "Something went wrong. Please try again.",
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <div className="h-full w-full p-10  md:order-1 xs:order-2">
+    <div className="h-full w-full p-10 md:order-1 xs:order-2">
       <div className="flex justify-between">
-        <div className="">
+        <div>
           <h3 className="text-3xl my-3 font-semibold font-serif">
-            إعادة تعيين كلمة المرور
+            {token
+              ? t("resetPasswordTitle") || "Reset your password"
+              : t("forgotPassword") || "Forgot password"}
           </h3>
-          {/* <h4 className="text-sm text-gray-500 font-serif">
-            {t("welcomeMessage")}
-          </h4> */}
         </div>
-        <div className="flex items-center gap-1 mx-5  ">
-          <span className="text-red-600 text-2xl ">
+        <div className="flex items-center gap-1 mx-5">
+          <span className="text-red-600 text-2xl">
             <MdLanguage />
           </span>
-
           <select
-            className="w-[80px] rounded text-white bg-red-700  py-1  px-1"
-            value={locale} // افترض أن عندك متغير اسمه lang (مثل 'AR' أو 'EN')
-            onChange={(e) => {
-              const newLang = e.target.value;
-              setLocale(newLang);
-            }}
+            aria-label="Language"
+            className="w-[80px] rounded text-white bg-red-700 py-1 px-1"
+            value={locale}
+            onChange={(event) => setLocale(event.target.value)}
           >
             <option value="ar" className="bg-white text-red-500">
               العربية
@@ -56,88 +124,85 @@ export default function ForgotPassword() {
           </select>
         </div>
       </div>
-      <div className="flex justify-center items-center  mt-20">
+
+      <div className="flex justify-center items-center mt-20">
         <div className="flex flex-col gap-7 w-[80%]">
-          <form className="flex flex-col gap-6">
-            <div className="flex flex-col gap-3">
-              <div className=" w-full px-2 rounded-md h-10  border items-center ">
+          {success ? (
+            <div role="status" className="rounded-md bg-green-50 p-5 text-green-800">
+              <p>{success}</p>
+              <Link href="/signin" className="mt-3 inline-block font-semibold text-red-600">
+                {t("backToSignIn") || "Back to sign in"}
+              </Link>
+            </div>
+          ) : token ? (
+            <form className="flex flex-col gap-6" onSubmit={resetPassword}>
+              <div className="w-full px-2 rounded-md h-10 border items-center">
                 <input
-                  ref={input_passwordRef}
-                  className=" w-full h-full px-3 outline-none"
+                  aria-label={t("newPassword") || "New password"}
+                  className="w-full h-full px-3 outline-none"
                   placeholder={t("newPassword")}
                   type="password"
-                  onChange={(e) => setNewPassword(e.target.value)}
+                  autoComplete="new-password"
+                  value={newPassword}
+                  onChange={(event) => setNewPassword(event.target.value)}
                   required
                 />
               </div>
-              <div>
-                <div className=" w-full px-2 rounded-md h-10 border items-center gap-3">
-                  <input
-                    ref={input_passwordRef}
-                    className=" w-full h-full px-3 outline-none"
-                    placeholder={t("confirmPassword")}
-                    type="password"
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    required
-                  />
-                </div>
-                <button
-                  type="submit"
-                  className="bg-red-600 text-white rounded-md w-full h-10 my-10 hover:bg-red-700"
-                >
-                  {loading ? t("save") : t("save")}
-                </button>
-              </div>
-            </div>
-            {/* <div className="flex w-full px-2 rounded-md h-10 border items-center gap-3"> */}
-            {/* <label className="text-gray-500">Email Address</label>    */}
-            {/* <input
-                ref={input_passwordRef}
-                className=" w-full px-3 outline-none"
-                placeholder={t("password")}
-                type="password"
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              /> */}
-            {/* <span className="text-xl text-gray-700">
-                <FaEyeSlash
-                  id="eyeSlash" */}
-            {/* className={input_passwordRef.current.type === "text"? "hidden" : "block"
-                   }
-                  onClick={() => {
-                    input_passwordRef.current.type = "text";
-                    const eyeSlash = document.querySelector("#eyeSlash");
-                    eyeSlash.classList.add("hidden");
-                    const eye = document.querySelector("#eye");
-                    eye.classList.remove("hidden");
-                  }}
+              <div className="w-full px-2 rounded-md h-10 border items-center gap-3">
+                <input
+                  aria-label={t("confirmPassword") || "Confirm password"}
+                  className="w-full h-full px-3 outline-none"
+                  placeholder={t("confirmPassword")}
+                  type="password"
+                  autoComplete="new-password"
+                  value={confirmPassword}
+                  onChange={(event) => setConfirmPassword(event.target.value)}
+                  required
                 />
-                <FaEye
-                  id="eye"
-                  className="hidden" */}
-            {/* input_passwordRef.current.type === "password"
-                      ? "hidden"
-                      : "block"
-                   } */}
-            {/* //       onClick={() => {
-            //         input_passwordRef.current.type = "password";
-            //         const eyeSlash = document.querySelector("#eyeSlash");
-            //         eyeSlash.classList.remove("hidden");
-            //         const eye = document.querySelector("#eye");
-            //         eye.classList.add("hidden");
-            //       }}
-            //     />{" "}
-            //   </span>
-            // </div> */}
-            {/* <h1 className="text-red-500 text-sm">{t("forgotPassword")} </h1>
-            <hr className="h-1"></hr> */}
+              </div>
+              <button
+                type="submit"
+                disabled={loading}
+                className="bg-red-600 text-white rounded-md w-full h-10 my-10 hover:bg-red-700 disabled:opacity-60"
+              >
+                {loading ? t("sending") || "Saving..." : t("save") || "Save"}
+              </button>
+            </form>
+          ) : (
+            <form className="flex flex-col gap-6" onSubmit={requestReset}>
+              <div className="w-full px-2 rounded-md h-10 border items-center">
+                <input
+                  aria-label={t("email") || "Email"}
+                  className="w-full h-full px-3 outline-none"
+                  placeholder={t("email")}
+                  type="email"
+                  autoComplete="email"
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
+                  required
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={loading}
+                className="bg-red-600 text-white rounded-md w-full h-10 my-10 hover:bg-red-700 disabled:opacity-60"
+              >
+                {loading ? t("sending") || "Sending..." : t("send") || "Send"}
+              </button>
+            </form>
+          )}
 
-            {/* <Link href="/signup"> */}
-            {/* <span className="flex justify-center items-center text-sm text-gray-500 font-serif">
-                {t("createNewAccount")}
-              </span> */}
-            {/* </Link> */}
-          </form>
+          {error ? (
+            <p role="alert" className="text-sm text-red-600">
+              {error}
+            </p>
+          ) : null}
+
+          {!token && !success ? (
+            <Link href="/signin" className="text-sm text-gray-500">
+              {t("backToSignIn") || "Back to sign in"}
+            </Link>
+          ) : null}
         </div>
       </div>
     </div>

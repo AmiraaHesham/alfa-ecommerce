@@ -1,64 +1,55 @@
 "use client";
-import { useLanguage } from "../../../../../context/LanguageContext.js";
-import Image from "next/image";
-import { getRequest } from "../../../../../utils/requestsUtils.js";
-import { useCallback, useEffect, useState } from "react";
-import { useOrderDetailsContext } from "../../../../../context/orderDetailsContext.jsx";
-import { getThumbnailUrl } from "../../../../../utils/functions.jsx";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { getCoreRowModel, useReactTable } from "@tanstack/react-table";
 
-const ProductImage = ({ item, size = 60, className = "" }) => {
-  const imageUrl = item?.images?.[0]?.imageUrl;
-  const src = imageUrl
-    ? process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL + getThumbnailUrl(imageUrl)
-    : null;
-  return (
-    <div className={`relative  shrink-0 ${className}`} style={{ width: size, height: size }}>
-      {src ? (
-        <Image
-          alt=""
-          src={src}
-          fill
-          sizes={`${size}px`}
-          className="object-cover rounded-xl"
-        />
-      ) : (
-        <div className="w-full h-full rounded-xl bg-gray-100 flex items-center justify-center">
-          <span className="text-[10px] text-gray-400">no image</span>
-        </div>
-      )}
-    </div>
-  );
-};
+import { useLanguage } from "../../../../../context/LanguageContext.js";
+import { getRequest } from "../../../../../utils/requestsUtils.js";
+import { useOrderDetailsContext } from "../../../../../context/orderDetailsContext.jsx";
+import { DataTable } from "../../../components/data-table";
+import {
+  createOrderItemColumns,
+  createReturnItemColumns,
+  ItemImage,
+} from "../../../config/orderItemsTable.config";
 
 export default function OrdersItems({ orderId, orderType }) {
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
   const [orderItems, setOrderItems] = useState([]);
   const [reasonMessage, setReasonMessage] = useState();
   const [itemPrice, setItemPrice] = useState();
   const [shippingCost, setShippingCost] = useState();
   const [itemQuantity, setItemQuantity] = useState();
+  const [loading, setLoading] = useState(true);
   const { setSelectedOrderState } = useOrderDetailsContext();
   const { setSelectedOrderCode } = useOrderDetailsContext();
   const { setSelectedOrderDate } = useOrderDetailsContext();
-
   const [orderTotalPrice, setOrderTotalPrice] = useState("");
-  const orderItem = useCallback(async () => {
-    const res = await getRequest(`/api/${orderType}/${orderId}`);
-    const resData = res.data;
-    setOrderItems(
-      orderType === "orders" ? resData.orderItemLines : resData.item,
-    );
-    setOrderTotalPrice(
-      orderType === "orders" ? resData.netTotal : resData.refundAmount,
-    );
-    setShippingCost(resData.shippingCost);
-    setReasonMessage(resData.reasonMessage);
-    setItemPrice(orderType === "orders" ? "" : resData.unitPrice);
-    setItemQuantity(orderType === "orders" ? "" : resData.quantity);
-    setSelectedOrderState(resData.state);
 
-    setSelectedOrderDate(resData.createdDate);
-    setSelectedOrderCode(resData.code);
+  const orderItem = useCallback(async () => {
+    try {
+      setLoading(true);
+      const res = await getRequest(`/api/${orderType}/${orderId}`);
+      const resData = res.data;
+      setOrderItems(
+        orderType === "orders"
+          ? resData.orderItemLines ?? []
+          : resData.item
+            ? [{ ...resData, item: resData.item }]
+            : [],
+      );
+      setOrderTotalPrice(
+        orderType === "orders" ? resData.netTotal : resData.refundAmount,
+      );
+      setShippingCost(resData.shippingCost);
+      setReasonMessage(resData.reasonMessage);
+      setItemPrice(orderType === "orders" ? "" : resData.unitPrice);
+      setItemQuantity(orderType === "orders" ? "" : resData.quantity);
+      setSelectedOrderState(resData.state);
+      setSelectedOrderDate(resData.createdDate);
+      setSelectedOrderCode(resData.code);
+    } finally {
+      setLoading(false);
+    }
   }, [
     orderType,
     orderId,
@@ -66,189 +57,136 @@ export default function OrdersItems({ orderId, orderType }) {
     setSelectedOrderDate,
     setSelectedOrderCode,
   ]);
+
   useEffect(() => {
     orderItem();
   }, [orderItem]);
+
+  const columns = useMemo(
+    () =>
+      orderType === "orders"
+        ? createOrderItemColumns({ t, locale })
+        : createReturnItemColumns({ t, locale }),
+    [orderType, t, locale],
+  );
+
+  const table = useReactTable({
+    data: orderItems,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    getRowId: (row, index) => String(row.itemLineId ?? index),
+  });
+
+  const renderMobileCard = (item) => {
+    if (orderType === "orders") {
+      return (
+        <div className="mx-2 my-3 rounded-xl border bg-white p-3">
+          <div className="flex items-start gap-3">
+            <ItemImage imageUrl={item.item?.images?.[0]?.imageUrl} />
+            <div className="min-w-0">
+              <h1 className="truncate text-sm font-semibold">
+                {locale === "ar" ? item.item?.nameAr : item.item?.nameEn}
+              </h1>
+              <h1 className="truncate text-xs text-gray-500">
+                {item.item?.code}
+              </h1>
+            </div>
+          </div>
+          <div className="mt-3 flex items-center justify-between gap-3 border-t pt-3">
+            <div>
+              <div className="text-sm font-semibold">
+                {Number(item.unitPrice ?? 0).toLocaleString("en-US")}{" "}
+                {t("currency")}
+              </div>
+              <div className="text-xs line-through">
+                {Number(item.oldUnitPrice ?? 0).toLocaleString("en-US")}{" "}
+                {t("currency")}
+              </div>
+            </div>
+            <div className="shrink-0 text-sm text-gray-500">
+              {t("quantity")} : {item.quantity}
+            </div>
+          </div>
+          <div className="mt-3 flex items-center justify-between border-t pt-3">
+            <div className="text-base font-bold">
+              {t("total")} :{" "}
+              {Number(item.totalPrice ?? 0).toLocaleString("en-US")}{" "}
+              {t("currency")}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="mx-2 my-3 rounded-xl border bg-white p-3">
+        <div className="flex items-start gap-3">
+          <ItemImage imageUrl={item.item?.images?.[0]?.imageUrl} />
+          <div className="min-w-0">
+            <h1 className="truncate text-sm font-semibold">
+              {locale === "ar" ? item.item?.nameAr : item.item?.nameEn}
+            </h1>
+            <h1 className="truncate text-xs text-gray-500">
+              {item.item?.code}
+            </h1>
+          </div>
+        </div>
+        <div className="mt-3 flex items-center justify-between gap-3 border-t pt-3">
+          <div className="text-sm font-semibold">
+            {Number(itemPrice ?? 0).toLocaleString("en-US")} {t("currency")}
+          </div>
+          <div className="shrink-0 text-sm text-gray-500">
+            {t("quantity")} : {itemQuantity}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
-    <div className="w-full ">
-      <div className="h-16 flex md:text-base xs:text-sm border-t  border-l border-r rounded-t-lg items-center justify-between  px-6 bg-white">
+    <div className="w-full">
+      <div className="flex h-16 items-center justify-between rounded-t-lg border-l border-r border-t bg-white px-6 xs:text-sm md:text-base">
         <h1
-          className={`md:text-base xs:text-sm  ${orderType === "orders" ? "hidden" : "block"}`}
+          className={`xs:text-sm md:text-base ${
+            orderType === "orders" ? "hidden" : "block"
+          }`}
         >
           {t("reasonMessage")}: {reasonMessage}
         </h1>
-      
-          <div className={` ${orderType === "orders" ? "block" : "hidden"}`}>
-          {t("shippingCost") }: {"  "}
-          <span className="md:text-lg xs:text-base  font-semibold">
-            {shippingCost?.toLocaleString("en-US")} {t("currency")}
+        <div className={orderType === "orders" ? "block" : "hidden"}>
+          {t("shippingCost")}:{" "}
+          <span className="font-semibold xs:text-base md:text-lg">
+            {Number(shippingCost ?? 0).toLocaleString("en-US")}{" "}
+            {t("currency")}
           </span>{" "}
         </div>
-        <div className="">
-          {t("total")}: {"  "}
-          <span className="md:text-lg xs:text-base  text-[#CD4354] font-semibold">
-            {orderTotalPrice.toLocaleString("en-US")} {t("currency")}
+        <div>
+          {t("total")}:{" "}
+          <span className="font-semibold text-[#CD4354] xs:text-base md:text-lg">
+            {Number(orderTotalPrice ?? 0).toLocaleString("en-US")}{" "}
+            {t("currency")}
           </span>
         </div>
       </div>
       <div
-        className={`  w-full ${orderType === "orders" ? "h-[435px]  overflow-hidden overflow-x-scroll  overflow-y-scroll" : ""}  border  `}
+        className={`w-full border ${
+          orderType === "orders"
+            ? "h-[435px] overflow-hidden overflow-x-scroll overflow-y-scroll"
+            : ""
+        }`}
       >
-        {/* XS mobile card layout */}
-      <div className="">
-        {orderType === "orders" ? (
-          orderItems.map((item, index) => {
-            return (
-              <div
-                key={`mobile-${index}`}
-                className="bg-white border rounded-xl p-3 my-3 mx-2 lg:hidden max-h-[435px] overflow-y-scroll"
-              >
-                <div className="flex items-start gap-3">
-                  <ProductImage item={item.item} />
-                  <div className="min-w-0">
-                    <h1 className="font-semibold text-sm truncate">
-                      {localStorage.lang === "ar"
-                        ? item.item.nameAr
-                        : item.item.nameEn}
-                    </h1>
-                    <h1 className="text-xs  text-gray-500 truncate">
-                      {item.item.code}
-                    </h1>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between gap-3 mt-3 pt-3 border-t">
-                  <div>
-                    <div className="text-sm font-semibold">
-                      {item.unitPrice.toLocaleString("en-US")} {t("currency")}
-                    </div>
-                    <div className="text-xs line-through ">
-                      {item.oldUnitPrice.toLocaleString("en-US")} {t("currency")}
-                    </div>
-                  </div>
-                  <div className="text-sm text-gray-500 shrink-0">
-                    {t("quantity")} : {item.quantity}
-                  </div>
-                </div>
-                <div className="flex items-center justify-between mt-3 pt-3 border-t">
-                  <div className="text-base font-bold">
-                    {t("total")} : {item.totalPrice.toLocaleString("en-US")}{" "}
-                    {t("currency")}
-                  </div>
-                </div>
-              </div>
-            );
-          })
-        ) : (
-          <div className="bg-white border rounded-xl p-3 my-3 mx-2 lg:hidden max-h-[435px] overflow-y-scroll">
-            <div className="flex items-start gap-3">
-              <ProductImage item={orderItems} />
-              <div className="min-w-0">
-                <h1 className="font-semibold text-sm truncate">
-                  {localStorage.lang === "ar"
-                    ? orderItems.nameAr
-                    : orderItems.nameEn}
-                </h1>
-                <h1 className="text-xs  text-gray-500 truncate">
-                  {orderItems.code}
-                </h1>
-              </div>
-            </div>
-            <div className="flex items-center justify-between gap-3 mt-3 pt-3 border-t">
-              <div className="text-sm font-semibold">
-                {itemPrice?.toLocaleString("en-US")} {t("currency")}
-              </div>
-              <div className="text-sm text-gray-500 shrink-0">
-                {t("quantity")} : {itemQuantity}
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-      <table className="hidden lg:table w-full  h-auto rounded-lg">
-          <thead className=" text-xs bg-[#f0eff0] text-justify">
-            <tr className="  h-12  ">
-              <th className=" "></th>
-              <th className="">{t("product")}</th>
-              <th className="   ">{t("price")}</th>
-              <th className="">{t("quantity")}</th>
-
-              {orderType === "orders" ? (
-                <th className=" text-center ">{t("total")}</th>
-              ) : null}
-            </tr>
-          </thead>
-          <tbody className="bg-white text-md w-full ">
-            {orderType === "orders" ? (
-              orderItems.map((item, index) => {
-                return (
-                  <tr key={index} className="  border-b w-full">
-                    <td></td>
-                    <td>
-                      <div className="flex items-center p-2 gap-3">
-                        <ProductImage item={item.item} />
-                        <div>
-                          <h1 className="font-semibold mx-2">
-                            {localStorage.lang === "ar"
-                              ? item.item.nameAr
-                              : item.item.nameEn}
-                          </h1>
-                          <h1 className="text-sm mx-2 text-gray-500">
-                            {item.item.code}
-                          </h1>
-                        </div>
-                      </div>
-                    </td>
-                    <td className=" text-gray-500  ">
-                      <span className=" font-semibold mx-1 text-black">
-                        {item.unitPrice.toLocaleString("en-US")}{" "}
-                        {t("currency")}
-                      </span>
-                      <span className="text-sm line-through ">
-                        {" "}
-                        {item.oldUnitPrice.toLocaleString("en-US")}{" "}
-                        {t("currency")}
-                      </span>{" "}
-                    </td>
-                    <td className="">
-                      {item.quantity}
-                    </td>
-
-                    <td className="text-[#E76E7D] font-semibold text-center">
-                      {item.totalPrice.toLocaleString("en-US")} {t("currency")}
-                    </td>
-                  </tr>
-                );
-              })
-            ) : (
-              <tr className=" text-red-950 border-b w-full">
-                <td></td>
-                <td>
-                  <div className="flex items-center gap-3">
-                    <ProductImage item={orderItems} />
-                    <div>
-                      <h1 className="font-semibold text-sm">
-                        {localStorage.lang === "ar"
-                          ? orderItems.nameAr
-                          : orderItems.nameEn}
-                      </h1>
-                      <h1 className="text-xs  text-gray-500">
-                        {orderItems.code}
-                      </h1>
-                    </div>
-                  </div>
-                </td>
-                <td className="text-sm font-semibold text-center ">
-                  {itemPrice?.toLocaleString("en-US")} {t("currency")}
-                </td>
-                <td className="text-sm text-center ">{itemQuantity}</td>
-
-                {/* <td className="text-sm font-semibold text-center">
-                  {orderTotalPrice.toLocaleString("en-US")} {t("currency")}
-                </td> */}
-              </tr>
-            )}
-          </tbody>
-        </table>
+        <DataTable
+          table={table}
+          loading={loading}
+          mobileCard={renderMobileCard}
+          mobileWrapperClassName="lg:hidden"
+          desktopWrapperClassName="hidden lg:block w-full"
+          tableClassName="w-full h-auto rounded-lg"
+          headerClassName="text-xs bg-[#f0eff0] text-justify"
+          rowClassName="border-b w-full"
+          showInfiniteFooter={false}
+          emptyMessage={t("no_data")}
+        />
       </div>
     </div>
   );

@@ -1,377 +1,147 @@
-"use client"
-import { useLanguage } from "../../../../context/LanguageContext";
+"use client";
+import { useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
 import { FaUserLarge } from "react-icons/fa6";
-import { IoMdSearch } from "react-icons/io";
-import { MdFilterList } from "react-icons/md";
-import Select from "react-select";
-import { postRequest } from "../../../../utils/requestsUtils";
+
+import { useLanguage } from "../../../../context/LanguageContext";
+import { DataTable, DataTableToolbar } from "../../components/data-table";
+import { useServerDataTable } from "../../hooks/useServerDataTable";
 import {
-  InfiniteListFooter,
-  InfiniteTableFooter,
-  toPageResult,
-  useInfiniteScroll,
-} from "../../components/InfiniteScroll.jsx";
+  createReturnColumns,
+  formatReturnDate,
+  ReturnStateFilter,
+} from "../../config/returnsTable.config";
 
 const PAGE_SIZE = 15;
 
 export default function ReturnTable() {
-      const { t } = useLanguage();
-      const navigate = useRouter();
-      const [state, setState] = useState("");
-      const searchInputRef = useRef(null);
+  const { t } = useLanguage();
+  const router = useRouter();
 
-      const {
-        items: returnOrders,
-        loading,
-        loadingMore,
-        hasMore,
-        error,
-        sentinelRef,
-        reload,
-      } = useInfiniteScroll({
-        pageSize: PAGE_SIZE,
-        queryKey: [state],
-        load: async (page) => {
-          const response = await postRequest(
-            "/api/return-orders/search",
-            {
-              page,
-              size: PAGE_SIZE,
-              searchText: searchInputRef.current?.value ?? "",
-              orderState: state,
-            },
-            ""
-          );
-          return toPageResult(response, page, PAGE_SIZE);
-        },
-      });
-return(
-    <div>
-         <div className="w-full  bg-white  rounded-lg border flex md:flex-row xs:flex-col gap-5  items-start  p-4 ">
-           <div className="flex items-center justify-between border px-1 rounded-md  bg-gray-100">
-             <input
-               type="text"
-               ref={searchInputRef}
-               placeholder={t("search")}
-               onKeyDown={(e) => {
-                 if (e.key === "Enter") {
-                   e.preventDefault();
-                   reload();
-                 }
-               }}
-               className="bg-none outline-none placeholder:text-xs h-8   bg-gray-100 p-3 rounded-lg"
-             />
-             <button
-               className="text-lg bg-red-300 hover:bg-red-500 p-1 text-white  rounded-md"
-               onClick={reload}
-             >
-               <IoMdSearch />
-             </button>
-           </div>
-           <div className="flex items-center gap-4">
-             <div className="flex items-center justify-center border px-3 rounded-md bg-gray-100 h-9">
-               <span className="text-gray-400 text-lg ">
-                 <MdFilterList />
-               </span>
-               <Select
-                 value={
-                   state
-                     ? {
-                         value: state,
-                         label: t(state),
-                       }
-                     : null
-                 }
-                 onChange={(option) => {
-                   setState(option ? option.value : "");
-                 }}
-                 options={[
-                   { value: "", label: t("all_statuses") },
-                   { value: "PENDING", label: t("PENDING") },
-                   { value: "APPROVED", label: t("APPROVED") },
-                   { value: "REFUNDED", label: t("REFUNDED") },
-                 ]}
-                 placeholder={t("all_statuses")}
-                 isClearable
-                   isSearchable={false}
+  const columns = useMemo(
+    () =>
+      createReturnColumns({
+        t,
+        onOpen: (returnOrderId) =>
+          router.push(`/admin/returnorderdetails/${returnOrderId}`),
+      }),
+    [router, t],
+  );
 
-                 className="w-[200px] text-sm font-semibold"
-                 styles={{
-                   control: (base) => ({
-                     ...base,
-                     backgroundColor: "#f3f4f6",
-                     border: "none",
-                     borderRadius: "0.375rem",
-                     minHeight: "36px",
-                     cursor: "pointer",
-                     boxShadow: "none",
-                     "&:hover": {
-                       borderColor: "#dc2626",
-                     },
-                     "&:focus": {
-                       borderColor: "#b91c1c",
-                       boxShadow: "0 0 0 3px rgba(185, 28, 28, 0.2)",
-                       // outline: "none",
-                     },
-                   }),
-                   option: (base, state) => ({
-                     ...base,
-                     backgroundColor: state.isSelected
-                       ? "#dc2626"
-                       : state.isFocused
-                       ? "#fee2e2"
-                       : "#ffffff",
-                     color: state.isSelected ? "#ffffff" : "#374151",
-                     cursor: "pointer",
-                     // padding: "8px 12px",
-                     fontSize: "14px",
-                     "&:hover": {
-                       backgroundColor: state.isSelected ? "#dc2626" : "#fee2e2",
-                     },
-                   }),
-                   menu: (base) => ({
-                     ...base,
-                     backgroundColor: "#ffffff",
-                     borderRadius: "0.375rem",
-                     boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
-                     zIndex: 9999,
-                   }),
-                   placeholder: (base) => ({
-                     ...base,
-                     color: "#374151",
-                     fontSize: "14px",
-                     fontWeight: "600",
-                   }),
-                   singleValue: (base) => ({
-                     ...base,
-                     color: "#374151",
-                     fontSize: "14px",
-                     fontWeight: "600",
-                   }),
-                   input: (base) => ({
-                     ...base,
-                     color: "#374151",
-                   }),
-                 }}
-               />
-             </div>
-           </div>
-         </div>
-{/* <div className="  "> */}
-           {/* XS mobile card layout */}
-           <div className="lg:hidden h-[600px]  mt-5">
-             {loading
-               ? // Skeleton cards
-                 [...Array(6)].map((_, index) => (
-                   <div
-                     key={`mobile-skeleton-${index}`}
-                     className="bg-white border rounded-xl p-3 mb-3"
-                   >
-                     <div className="h-4 bg-gray-200 rounded animate-pulse w-24"></div>
-                     <div className="h-3 bg-gray-200 rounded animate-pulse w-16 mt-2"></div>
-                     <div className="flex items-center gap-3 mt-3 pt-3 border-t">
-                       <div className="h-9 w-9 bg-gray-200 rounded-full animate-pulse shrink-0"></div>
-                       <div className="flex-1 space-y-2">
-                         <div className="h-3 bg-gray-200 rounded animate-pulse w-28"></div>
-                         <div className="h-2 bg-gray-200 rounded animate-pulse w-20"></div>
-                       </div>
-                     </div>
-                     <div className="h-4 bg-gray-200 rounded animate-pulse w-20 mt-3"></div>
-                   </div>
-                 ))
-               : returnOrders.map((order, index) => {
-                   const date = new Date(order.createdDate);
-                   const dateOnly = date.toLocaleDateString("en-GB");
-                   return (
-                     <div
-                       key={`mobile-${index}`}
-                       className="bg-white border rounded-xl p-3 mb-3 hover:bg-gray-50 cursor-pointer"
-                       onClick={() =>
-                         navigate.push(
-                           `/admin/returnorderdetails/${order.returnOrderId}`
-                         )
-                       }
-                     >
-                       <div className="flex items-start justify-between gap-3">
-                         <div className="min-w-0">
-                           <span className="text-sm font-bold text-red-600">
-                             {order.code}
-                           </span>
-                           <div className="text-xs text-gray-500 mt-1">
-                             {dateOnly}
-                           </div>
-                         </div>
-                         <span
-                           className={`text-xs font-semibold shrink-0 ${
-                             order.state === "PROCESSING"
-                               ? "text-blue-500"
-                               : order.state === "SHIPPED"
-                               ? "text-yellow-500"
-                               : order.state === "PENDING"
-                               ? "text-orange-700"
-                               : order.state === "CANCELLED"
-                               ? "text-red-500"
-                               : "text-green-500"
-                           }`}
-                         >
-                           {t(order.state)}
-                         </span>
-                       </div>
-                       <div className="flex items-center gap-3 mt-3 pt-3 border-t">
-                         <span className="w-9 h-9 text-gray-600 shrink-0 bg-gray-50 flex justify-center items-center p-2 rounded-full border ">
-                           <FaUserLarge />
-                         </span>
-                         <div className="min-w-0">
-                           <h1 className="font-semibold text-sm truncate">
-                             {order.user?.firstName + " " + order.user?.lastName}
-                           </h1>
-                           <h1 className="text-xs  text-gray-500 truncate">
-                             {order.user?.email}
-                           </h1>
-                         </div>
-                       </div>
-                       <div className="flex items-center justify-between gap-3 mt-3 pt-3 border-t">
-                         <span className="text-base font-bold break-words">
-                           {order.unitPrice.toLocaleString("en-US") +
-                             " " +
-                             t("currency")}
-                         </span>
-                         <span className="text-xs text-gray-600 font-semibold text-right">
-                           {t(order.reason).length <= 30
-                             ? t(order.reason)
-                             : t(order.reason).slice(0, 30) + " ..."}
-                         </span>
-                       </div>
-                     </div>
-                   );
-                 })}
-             <div className="flex justify-center py-3">
-               <InfiniteListFooter
-                 sentinelRef={sentinelRef}
-                 loadingMore={loadingMore}
-                 hasMore={hasMore}
-                 hasItems={returnOrders.length > 0}
-                 error={error}
-                 onRetry={reload}
-               />
-             </div>
-           </div>
-                 <div className="hidden lg:block max-h-[520px] border-t mt-3 w-full min-w-0 overflow-x-auto overflow-y-auto">
+  const tableState = useServerDataTable({
+    endpoint: "/api/admin/return-orders/search",
+    columns,
+    pageSize: PAGE_SIZE,
+    getRowId: (order) => String(order.returnOrderId),
+  });
 
-           <table className="w-full h-auto min-w-[800px]">
-             <thead className="bg-[#f0eff0] text-xs   text-justify sticky top-0  z-10">
-               <tr className="  h-12">
-                 {/* <th className="w-[2%] "></th> */}
-                 <th className=" px-5 ">{t("order_id")}</th>
-                 <th className=" ">{t("date")}</th>
-                 <th className=" ">{t("user")}</th>
-                 <th className=" ">{t("price")}</th>
-                 <th className=" ">{t("Reason_for_return")}</th>
-                 <th className=" ">{t("state_order")}</th>
-               </tr>
-             </thead>
-             <tbody className="bg-white text-md w-full divide-y divide-gray-200">
-               {loading
-                 ? // Skeleton rows
-                   [...Array(7)].map((_, index) => (
-                     <tr key={`skeleton-${index}`} className="border-b h-12">
-                       <td className="px-4 py-2">
-                         <div className="h-4 bg-gray-200 rounded animate-pulse w-36"></div>
-                       </td>
-                       <td className=" py-2">
-                         <div className="h-4 bg-gray-200 rounded animate-pulse w-20"></div>
-                       </td>
-                       <td className=" py-2">
-                         <div className="h-4 bg-gray-200 rounded animate-pulse w-28"></div>
-                       </td>
-                       <td className=" py-2">
-                         <div className="h-4 bg-gray-200 rounded animate-pulse w-28"></div>
-                       </td>
-                       <td className=" py-2">
-                         <div className="h-4 bg-gray-200 rounded animate-pulse w-16"></div>
-                       </td>
-                       <td className=" py-2">
-                         <div className="h-4 bg-gray-200 rounded animate-pulse w-16"></div>
-                       </td>
-                     </tr>
-                   ))
-                 : returnOrders.map((order, index) => {
-                     const date = new Date(order.createdDate);
-                     const dateOnly = date.toLocaleDateString("en-GB");
-                     return (
-<tr
-                          key={index}
-                          className="  w-full transition-colors hover:bg-gray-50 cursor-pointer"
-                         onClick={() =>
-                           navigate.push(
-                             `/admin/returnorderdetails/${order.returnOrderId}`
-                           )
-                         }
-                       >
-                         <td className="font-semibold text-red-500 px-5">
-                           {order.code}
-                         </td>
-                         <td
-                          className="text-sm">
-                            {dateOnly}
-                          </td>
-                         <td>
-                           <div className="flex items-center gap-3">
-                             <span className="w-[40px] h-[40px] text-gray-600 my-2  bg-gray-50 flex justify-center items-center p-2 rounded-full border ">
-                               <FaUserLarge />
-                             </span>
-                             <div>
-                               <h1 className="font-semibold text-sm">
-                                 {order.user?.firstName + " " + order.user?.lastName}
-                               </h1>
-                               <h1 className="text-xs  text-gray-500">
-                                 {order.user?.email}
-                               </h1>
-                             </div>
-                           </div>
-                         </td>
-   
-                         <td className="text-sm ">
-                           <span className=" font-semibold  ">
-                             {order.unitPrice.toLocaleString("en-US") + " " + t("currency")}
-                           </span>
-                         </td>
-                         <td className="text-xs px-5 font-semibold">
-                           {t(order.reason).length <= 30?
-                           t(order.reason): t(order.reason).slice(0, 30) + " ..."
-                          }
-                         </td>
-                         <td
-                           className={`text-xs font-semibold ${
-                             order.state === "PROCESSING"
-                               ? "text-blue-500"
-                               : order.state === "SHIPPED"
-                               ? "text-yellow-500"
-                               : order.state === "PENDING"
-                               ? "text-orange-700":
-                                 order.state === "CANCELLED" ? 
-                                 "text-red-500"
-                               : "text-green-500"
-                           }`}
-                         >
-                           {t(order.state)}
-                         </td>
-                       </tr>
-                     );
-                   })}
-              <InfiniteTableFooter
-                colSpan={6}
-                sentinelRef={sentinelRef}
-                loadingMore={loadingMore}
-                hasMore={hasMore}
-                hasItems={returnOrders.length > 0}
-                error={error}
-                onRetry={reload}
-              />
-             </tbody>
-           </table>
-         </div>
-       </div>
-)}
+  const stateValue =
+    tableState.columnFilters.find((filter) => filter.id === "state")?.value
+      ?.value ?? "";
+
+  const applyStateFilter = (value) => {
+    tableState.setColumnFilters((prev) => {
+      const others = prev.filter((filter) => filter.id !== "state");
+      return value
+        ? [...others, { id: "state", value: { operator: "EQUALS", value } }]
+        : others;
+    });
+  };
+
+  const renderMobileCard = (order) => {
+    const dateOnly = formatReturnDate(order.createdDate);
+    return (
+      <div
+        key={order.returnOrderId}
+        className="mb-3 cursor-pointer rounded-xl border bg-white p-3 hover:bg-gray-50"
+        onClick={() =>
+          router.push(`/admin/returnorderdetails/${order.returnOrderId}`)
+        }
+      >
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <span className="text-sm font-bold text-red-600">{order.code}</span>
+            <div className="mt-1 text-xs text-gray-500">{dateOnly}</div>
+          </div>
+          <span
+            className={`shrink-0 text-xs font-semibold ${
+              order.state === "PROCESSING"
+                ? "text-blue-500"
+                : order.state === "SHIPPED"
+                  ? "text-yellow-500"
+                  : order.state === "PENDING"
+                    ? "text-orange-700"
+                    : order.state === "CANCELLED" || order.state === "REJECTED"
+                      ? "text-red-500"
+                      : "text-green-500"
+            }`}
+          >
+            {t(order.state)}
+          </span>
+        </div>
+        <div className="mt-3 flex items-center gap-3 border-t pt-3">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border bg-gray-50 p-2 text-gray-600">
+            <FaUserLarge />
+          </span>
+          <div className="min-w-0">
+            <h1 className="truncate text-sm font-semibold">
+              {(order.user?.firstName ?? "") +
+                " " +
+                (order.user?.lastName ?? "")}
+            </h1>
+            <h1 className="truncate text-xs text-gray-500">
+              {order.user?.email}
+            </h1>
+          </div>
+        </div>
+        <div className="mt-3 flex items-center justify-between gap-3 border-t pt-3">
+          <span className="break-words text-base font-bold">
+            {Number(order.unitPrice ?? 0).toLocaleString("en-US")}{" "}
+            {t("currency")}
+          </span>
+          <span className="text-right text-xs font-semibold text-gray-600">
+            {t(order.reason).length <= 30
+              ? t(order.reason)
+              : `${t(order.reason).slice(0, 30)} ...`}
+          </span>
+        </div>
+      </div>
+    );
+  };
+
+  const toolbar = (
+    <DataTableToolbar
+      table={tableState.table}
+      searchValue={tableState.globalFilter}
+      onSearchChange={tableState.setGlobalFilter}
+      className="!p-4"
+      leading={
+        <ReturnStateFilter
+          value={stateValue}
+          onChange={applyStateFilter}
+          t={t}
+        />
+      }
+    />
+  );
+
+  return (
+    <DataTable
+      table={tableState.table}
+      loading={tableState.loading}
+      loadingMore={tableState.loadingMore}
+      hasMore={tableState.hasMore}
+      error={tableState.error}
+      sentinelRef={tableState.sentinelRef}
+      onRetry={tableState.reload}
+      toolbar={toolbar}
+      mobileCard={renderMobileCard}
+      mobileWrapperClassName="lg:hidden mt-5"
+      desktopWrapperClassName="hidden lg:block max-h-[520px] border-t mt-3 w-full min-w-0 overflow-x-auto overflow-y-auto"
+      tableClassName="w-full h-auto min-w-[800px]"
+      headerClassName="bg-[#f0eff0] text-xs text-justify sticky top-0 z-10"
+      rowClassName="w-full transition-colors hover:bg-gray-50 cursor-pointer"
+      emptyMessage={t("no_data")}
+    />
+  );
+}

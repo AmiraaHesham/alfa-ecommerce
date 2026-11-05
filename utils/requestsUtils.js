@@ -209,7 +209,7 @@ export const logoutRequest = async () => {
 //   }
 // };
 
-export const postRequest = async (endpoint, dataBody, message ,toster) => {
+export const postRequest = async (endpoint, dataBody, message ,toster, options = {}) => {
   const getToken = () =>
     typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
   const lang =
@@ -225,6 +225,7 @@ export const postRequest = async (endpoint, dataBody, message ,toster) => {
           Authorization: token ? `Bearer ${token}` : undefined,
           "Accept-Language": lang,
         },
+        signal: options.signal,
       }
     )
   }
@@ -273,6 +274,9 @@ export const postRequest = async (endpoint, dataBody, message ,toster) => {
 
     }
   } catch (error) {
+    if (axios.isCancel(error) || error?.code === "ERR_CANCELED") {
+      throw error;
+    }
     reportApiFailure(error);
 
     if (isAuthFailure(error)) {
@@ -283,6 +287,9 @@ export const postRequest = async (endpoint, dataBody, message ,toster) => {
           toast.success(retryResponse.data.message);
           return retryResponse.data;
         } catch (retryError) {
+          if (axios.isCancel(retryError) || retryError?.code === "ERR_CANCELED") {
+            throw retryError;
+          }
           reportApiFailure(retryError);
           showRequestError(retryError);
         }
@@ -353,8 +360,23 @@ export const putRequest = async (endpoint, dataBody, message) => {
         },
       },
     );
-  }
+  };
+
+  const send = async () => {
+    const token = getToken();
+    const response = await request(token);
+    toast.success(response.data.message);
+    return response.data;
+  };
+
   try {
+    // Empty message means "no confirmation dialog" — the same convention as
+    // postRequest(). This is required for flows where a confirmation makes no
+    // sense (password reset) and prevents the empty Swal dialog bug.
+    if (message === "") {
+      return await send();
+    }
+
     const result = await Swal.fire({
       icon: "info",
       title: message,
@@ -373,12 +395,11 @@ export const putRequest = async (endpoint, dataBody, message) => {
       reverseButtons: lang === "ar",
     });
 
-    if (result.isConfirmed) {
-      const token = getToken();
-      const response = await request(token);
-      toast.success(response.data.message);
-      return response.data;
+    if (!result?.isConfirmed) {
+      return null;
     }
+
+    return await send();
   } catch (error) {
     reportApiFailure(error);
 

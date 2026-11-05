@@ -109,7 +109,13 @@ export function toPageResult(payload, page, pageSize = 15) {
   } else {
     hasMore = normalized.content.length >= pageSize;
   }
-  return { items: normalized.content, hasMore };
+  return {
+    items: normalized.content,
+    hasMore,
+    totalElements: normalized.totalElements,
+    totalPages: normalized.totalPages,
+    pageNumber: normalized.number,
+  };
 }
 
 const SCROLL_OVERFLOW = new Set(["auto", "scroll", "overlay"]);
@@ -248,12 +254,15 @@ export function useInfiniteScroll({
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [error, setError] = useState(null);
+  const [totalElements, setTotalElements] = useState(0);
+  const [pageIndex, setPageIndex] = useState(0);
 
   const pageRef = useRef(0);
   const busyRef = useRef(false);
   const seqRef = useRef(0);
   const hasMoreRef = useRef(true);
   const aliveRef = useRef(true);
+  const abortRef = useRef(null);
   const itemsRef = useRef(items);
   const loadRef = useRef(load);
   const getKeyRef = useRef(getKey);
@@ -267,6 +276,7 @@ export function useInfiniteScroll({
     aliveRef.current = true;
     return () => {
       aliveRef.current = false;
+      abortRef.current?.abort();
     };
   }, []);
 
@@ -281,6 +291,11 @@ export function useInfiniteScroll({
       // is allowed to supersede an in-flight request (search/filter changed).
       if (mode === "more" && (busyRef.current || !hasMoreRef.current)) return;
 
+      if (mode === "reset") {
+        abortRef.current?.abort();
+        abortRef.current = new AbortController();
+      }
+
       busyRef.current = true;
       const seq = ++seqRef.current;
 
@@ -292,7 +307,9 @@ export function useInfiniteScroll({
       }
 
       try {
-        const result = await loadRef.current(page);
+        const result = await loadRef.current(page, {
+          signal: abortRef.current?.signal,
+        });
         if (seq !== seqRef.current || !aliveRef.current) return; // stale response
         const content = Array.isArray(result?.items) ? result.items : [];
         const base = mode === "reset" ? [] : itemsRef.current;
@@ -300,6 +317,13 @@ export function useInfiniteScroll({
         const added = merged.length - base.length;
         setItems(merged);
         pageRef.current = mode === "reset" ? 0 : page;
+        setPageIndex(mode === "reset" ? 0 : page);
+        const total = Number(result?.totalElements);
+        if (Number.isFinite(total)) {
+          setTotalElements(total);
+        } else if (mode === "reset") {
+          setTotalElements(merged.length);
+        }
         // Stop when the page is empty or (for a "more" request) when it added
         // no new unique rows, which protects against an un-paginated backend.
         const more =
@@ -311,6 +335,14 @@ export function useInfiniteScroll({
         setError(null);
       } catch (err) {
         if (seq !== seqRef.current || !aliveRef.current) return;
+        // Aborted requests are not user-facing errors.
+        if (
+          err?.name === "CanceledError" ||
+          err?.name === "AbortError" ||
+          err?.code === "ERR_CANCELED"
+        ) {
+          return;
+        }
         setError(err);
         // Keep loading available so the user can retry.
         hasMoreRef.current = true;
@@ -343,6 +375,8 @@ export function useInfiniteScroll({
     hasMoreRef.current = true;
     setHasMore(true);
     setError(null);
+    setTotalElements(0);
+    setPageIndex(0);
     runRef.current(0, "reset");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [queryKeyStr, enabled]);
@@ -374,6 +408,8 @@ export function useInfiniteScroll({
     sentinelRef,
     loadMore,
     reload,
+    totalElements,
+    pageIndex,
   };
 }
 
