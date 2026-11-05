@@ -8,9 +8,9 @@ import { useLanguage } from "../../../../context/LanguageContext";
 import { getThumbnailUrl } from "../../../../utils/functions";
 import StarRating from "../../components/StarRating";
 import { useIdContext } from "../../../../context/idContext";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useRef } from "react";
+import { productPath } from "../../../../lib/seo";
 import { MdOutlineArrowBackIosNew, MdOutlineArrowForwardIos } from "react-icons/md";
 
 export default function BestPick({ Products }) {
@@ -19,7 +19,6 @@ export default function BestPick({ Products }) {
   const swiperRef = useRef()
 
   const { setSelectedProductId } = useIdContext()
-  const navigate = useRouter()
   const truncateText = (text) => {
     if (text.length > 20) {
       return text.slice(0, 18) + "...";
@@ -30,7 +29,7 @@ export default function BestPick({ Products }) {
   return (
     <div className="w-full  bg-white rounded-2xl p-4 relative group/BestPick">
       <div className="w-full flex justify-between items-center">
-        <h1 className="font-semibold text-base  sticky z-10 ">{t("Best_pick_of_the_week")}</h1>
+        <h2 className="font-semibold text-base  sticky z-10 ">{t("Best_pick_of_the_week")}</h2>
         <div className="text-xs font-semibold">
           <Link href="/user/products/section/topLast30Days">{t("shopMore")} </Link>
           <hr className="bg-red-500 h-[2px] border-none w-auto " />
@@ -61,12 +60,10 @@ export default function BestPick({ Products }) {
             const nameProduct = locale === "ar" ? product.nameAr : product.nameEn
             return (
               <SwiperSlide key={index} className="">
-                <div
+                <Link
+                  href={productPath(product)}
                   className="flex items-center  cursor-pointer gap-1 select-none w-full"
-                  onClick={() => {
-                    setSelectedProductId(product.itemId);
-                    navigate.push(`/user/productdetails/${product.nameEn}/${product.itemId}`);
-                  }}
+                  onClick={() => setSelectedProductId(product.itemId)}
                 >
                   <div className="relative w-[50px] h-[50px]  rounded-full hover:scale-105 duration-200 shrink-0">
                     <Image
@@ -77,7 +74,7 @@ export default function BestPick({ Products }) {
                       alt=""
                       fill
                       priority
-                      quality={100}
+                      quality={85}
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                       className="object-fill "
                     />
@@ -104,7 +101,7 @@ export default function BestPick({ Products }) {
 
                     </div>
                   </div>
-                </div>
+                </Link>
               </SwiperSlide>
             );
           })

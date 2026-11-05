@@ -197,7 +197,7 @@
   "all": "الكل",
   "priceLowToHigh": "من الأقل سعر",
   "priceHighToLow": "من الأعلى سعر",
-  "no_data": " لا توجد منتجات ",
+  "no_data": "لا توجد بيانات",
   "hello": "مرحبا",
   "edit_category": "تعديل القسم",
   "edit_product": "تعديل المنتج",
@@ -409,11 +409,7 @@
   "somethingWentWrong": "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
   "send": "إرسال رابط إعادة التعيين",
   "sending": "جارٍ الإرسال...",
-  "filters": "الفلاتر",
   "clear_all": "مسح الكل",
-  "clear": "مسح",
-  "close": "إغلاق",
-  "no_data": "لا توجد بيانات",
   "filter_operator_EQUALS": "يساوي",
   "filter_operator_NOT_EQUALS": "لا يساوي",
   "filter_operator_CONTAINS": "يحتوي على",
@@ -426,5 +422,8 @@
   "filter_operator_LESS_THAN_OR_EQUAL": "أصغر من أو يساوي",
   "filter_operator_BETWEEN": "بين",
   "filter_operator_IS_NULL": "فارغ",
-  "filter_operator_IS_NOT_NULL": "غير فارغ"
+  "filter_operator_IS_NOT_NULL": "غير فارغ",
+  "all_products": "كل المنتجات",
+  "all_products_intro": "تصفح كل منتجات ألفا جروب تكنولوجي بأسعار ومواصفات حقيقية.",
+  "category_seo_intro": "تصفح منتجات هذا القسم من ألفا جروب تكنولوجي بأسعار ومواصفات حقيقية."
 }

@@ -215,7 +215,7 @@ export default function ProductAdsSlider() {
                         alt=""
                         fill
                         sizes="(max-width: 1024px) 100vw, 60vw"
-                        quality={100}
+                        quality={85}
                         className="object-cover"
                       />
                     ) : (

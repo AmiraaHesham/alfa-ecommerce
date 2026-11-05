@@ -21,79 +21,82 @@ import { MdOutlineLocalShipping } from "react-icons/md";
 import { LuShieldCheck } from "react-icons/lu";
 import { IoIosCalendar } from "react-icons/io";
 import Link from "next/link";
+import { categoryPath } from "../../../../lib/seo";
 
+const EMPTY_PRODUCT = {
+  nameEn: "",
+  nameAr: "",
+  price: null,
+  oldPrice: null,
+  descriptionAr: "",
+  descriptionEn: "",
+  category: {
+    id: null,
+    nameAr: "",
+    nameEn: "",
+    seoCode: null,
+  },
+  code: "",
+  mainImage: "",
+  mainImagefile: "",
+  available: null,
+  images: [],
+  averageRating: 0,
+  ratingCount: 0,
+  ram: "",
+  flash: "",
+  content: "",
+  brand: "",
+  releaseYear: "",
+};
 
-export default function ProductDetails({ itemId }) {
-  const [loading, setLoading] = useState(true);
+function mapProduct(data) {
+  if (!data) return EMPTY_PRODUCT;
+  return {
+    ...EMPTY_PRODUCT,
+    nameEn: data.nameEn || "",
+    nameAr: data.nameAr || "",
+    code: data.code || "",
+    price: data.price,
+    oldPrice: data.oldPrice,
+    descriptionAr: data.descriptionAr || "",
+    descriptionEn: data.descriptionEn || "",
+    images: Array.isArray(data.images) ? data.images : [],
+    ram: data.ram || "",
+    flash: data.flash || "",
+    content: data.contents || "",
+    brand: data.brand || "",
+    releaseYear: data.releaseYear || "",
+    available: data.available,
+    ratingCount: data.ratingCount || 0,
+    averageRating: data.averageRating || 0,
+    seoCode: data.seoCode || null,
+    category: {
+      id: data.itemCategory?.itemCategoryId || null,
+      nameAr: data.itemCategory?.nameAr || "",
+      nameEn: data.itemCategory?.nameEn || "",
+      seoCode: data.itemCategory?.seoCode || null,
+      imageURL: data.itemCategory?.imageURL || null,
+    },
+  };
+}
+
+export default function ProductDetails({ itemId, initialProduct, categorySlug }) {
+  const [loading, setLoading] = useState(!initialProduct);
   const [ratingRefreshKey, setRatingRefreshKey] = useState(0);
   const [reviews, setReviews] = useState([]);
   const [reviewsLoading, setReviewsLoading] = useState(false);
   const [reviewsError, setReviewsError] = useState(false);
   const { t, locale } = useLanguage();
-  const [product, setProduct] = useState({
-    nameEn: "",
-    nameAr: "",
-    price: null,
-    oldPrice: null,
-    descriptionAr: "",
-    descriptionEn: "",
-    category: {
-      id: null,
-      nameAr: "",
-      nameEn: "",
-    },
-    code: "",
-    mainImage: "",
-    mainImagefile: "",
-    available: null,
-    images: [],
-    averageRating: 0,
-    ratingCount: 0,
-    ram:"",
-    flash:"",
-    content:"",
-    brand:"",
-    releaseYear:""
-
-
-  });
-
+  const [product, setProduct] = useState(() => mapProduct(initialProduct));
 
   const productDetails = useCallback(async () => {
     setLoading(true);
     try {
       const res = await getProductDetails(itemId);
-      const resData = res.data;
-      setProduct((prev) => ({
-        ...prev,
-        nameEn: resData.nameEn,
-        nameAr: resData.nameAr,
-        code: resData.code,
-        price: resData.price,
-        oldPrice: resData.oldPrice,
-        descriptionAr: resData.descriptionAr,
-        descriptionEn: resData.descriptionEn,
-        images: resData.images,
-          ram:resData.ram,
-          flash:resData.flash,
-          content:resData.content,
-          brand:resData.brand,
-          releaseYear:resData.releaseYear,
-        available: resData.available,
-          ratingCount: resData.ratingCount,
-          averageRating: resData.averageRating,
-        category: {
-          ...prev.category,
-          id: resData.itemCategory.itemCategoryId,
-          nameAr: resData.itemCategory.nameAr,
-          nameEn: resData.itemCategory.nameEn,
-               
-        },
-      }));
-      setLoading(false);
+      setProduct(mapProduct(res.data));
     } catch (error) {
       console.log(error);
-      setLoading(true);
     } finally {
       setLoading(false);
     }
@@ -133,8 +136,13 @@ export default function ProductDetails({ itemId }) {
   }, [recordRecentWatched]);
 
   useEffect(() => {
+    if (initialProduct && Number(initialProduct.itemId) === Number(itemId)) {
+      setProduct(mapProduct(initialProduct));
+      setLoading(false);
+      return;
+    }
     productDetails();
-  }, [productDetails]);
+  }, [initialProduct, itemId, productDetails]);
 
   useEffect(() => {
     fetchReviews();
@@ -142,6 +150,12 @@ export default function ProductDetails({ itemId }) {
 
   const categoryName = locale === "ar" ? product.category.nameAr : product.category.nameEn;
   const productName = locale === "ar" ? product.nameAr : product.nameEn;
+  const categoryHref = product.category.id
+    ? categoryPath({
+        ...product.category,
+        seoCode: product.category.seoCode || categorySlug,
+      })
+    : null;
 
   return (
     <div className="min-w-0  ">
@@ -152,14 +166,14 @@ export default function ProductDetails({ itemId }) {
               href={"/"}
               className="transition-colors hover:text-[#E14A5C] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E14A5C]"
             >
-              Home
+              {locale === "ar" ? "الرئيسية" : t("homepage")}
             </Link>
           </li>
           {product.category.id ? (
             <li className="flex min-w-0 items-center gap-x-1.5">
               <span aria-hidden className="text-gray-300">/</span>
               <Link
-                href={"/user/products/category/" + product.category.nameEn + "/" + product.category.id}
+                href={categoryHref}
                 className="max-w-[45vw] truncate transition-colors hover:text-[#E14A5C] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E14A5C] sm:max-w-none"
               >
                 {categoryName}

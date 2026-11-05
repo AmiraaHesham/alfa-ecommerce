@@ -26,7 +26,7 @@ const swiperRef = useRef()
     fill
     priority
     sizes="200vw"
-    quality={100}
+    quality={85}
     className="object-fill rounded-3xl"
   />
       <div className="w-full h-full absolute top-0  flex md:flex-row xs:flex-col px-2 justify-center items-center ">
@@ -39,7 +39,7 @@ const swiperRef = useRef()
    </div>
    <div className=" md:order-2 xs:order-1 w-full flex flex-col md:items-center xs:items-start justify-center">
     <div className=" md:text-center xs:text-start  w-full text-white ">
-          <h1 className="text-4xl font-bold mb-3"> {t("top_discount")} </h1>
+          <h2 className="text-4xl font-bold mb-3"> {t("top_discount")} </h2>
           <h2 className="text-sm xs:w-2/3 md:w-full">{t("text_for_discounts")} </h2>
         </div>
       

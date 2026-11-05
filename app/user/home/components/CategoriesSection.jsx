@@ -1,27 +1,19 @@
 "use client";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation } from "swiper/modules";
 import Image from "next/image";
+import Link from "next/link";
 import "swiper/css";
-import "swiper/css/navigation";
 
-import { useIdContext } from "../../../../context/idContext";
-import { useRouter } from "next/navigation";
-import { IoIosArrowRoundBack, IoIosArrowRoundForward } from "react-icons/io";
 import { useLanguage } from "../../../../context/LanguageContext";
 import { useEffect, useState } from "react";
 import { getThumbnailUrl } from "../../../../utils/functions";
-import { useSearshInputContext } from "../../../../context/searshInputContext";
 import { AiFillFire } from "react-icons/ai";
+import { categoryPath } from "../../../../lib/seo";
 
 export default function CategorySection({ categories }) {
   const { locale } = useLanguage();
 
   const { t } = useLanguage();
-  const { setSelectedSearchInput } = useSearshInputContext();
-
-  const { setSelectedCategoryId } = useIdContext();
-  const navigate = useRouter();
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
     setMounted(true);
@@ -33,25 +25,18 @@ export default function CategorySection({ categories }) {
           <div className="flex items-center gap-2">
            
             <span className="text-[#7354EF] text-xl"> <AiFillFire/> </span>
-             <h1 className="flex items-center font-semibold gap-2 text-2xl  ">
+             <h2 className="flex items-center font-semibold gap-2 text-2xl  ">
               {t("hot_categorios")}
-            </h1>
+            </h2>
           </div>
         
         </div>
       <div className="w-full grid grid-cols-3 gap-x-2 gap-y-1 mt-2">
         {categories.map((category, index) => (
-          <div
-            key={index}
+          <Link
+            key={category.itemCategoryId || category.seoCode || index}
+            href={categoryPath(category)}
             className="mt-4 flex  justify-center items-center text-center cursor-pointer rounded-md min-w-0 px-1"
-            onClick={() => {
-              navigate.push(
-                "/user/products/category/" +
-                  category.nameEn +
-                  "/" +
-                  category.itemCategoryId,
-              );
-            }}
           >
             <div className="w-full min-w-0 flex xl:flex-row xs:flex-col justify-center items-center gap-2">
               <div className="relative shrink-0 rounded-full h-[80px] w-[80px] hover:scale-105 duration-200">
@@ -60,18 +45,18 @@ export default function CategorySection({ categories }) {
                     }`}
                   alt={locale === "ar" ? category.nameAr : category.nameEn}
                   fill
-                  quality={100}
+                  quality={85}
                   sizes="100px"
                   className="object-fill rounded-full"
                 />
               </div>
-              <h1 className="min-w-0 flex-1 font-semibold text-sm break-words line-clamp-2">
+              <h2 className="min-w-0 flex-1 font-semibold text-sm break-words line-clamp-2">
                 {locale === "ar"
                   ? category.nameAr || category.nameEn
                   : category.nameEn || category.nameAr}
-              </h1>
+              </h2>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </div>

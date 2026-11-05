@@ -77,9 +77,9 @@ export default function ReviewsClients() {
 
   return (
     <section className="w-full my-10">
-      <h1 id="reviews-clients-title" className="text-2xl font-medium my-7">
+      <h2 id="reviews-clients-title" className="text-2xl font-medium my-7">
         {t("reviews_clients")}
-      </h1>
+      </h2>
 
       <ul
         aria-labelledby="reviews-clients-title"
@@ -97,7 +97,7 @@ export default function ReviewsClients() {
                 src={review.src}
                 alt={getAltText(index)}
                 fill
-                quality={100}
+                quality={85}
                 priority={index < 3}
                 sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 33vw"
                 className={`${
@@ -153,7 +153,7 @@ export default function ReviewsClients() {
               alt={getAltText(activeIndex)}
               width={activeReview.width}
               height={activeReview.height}
-              quality={100}
+              quality={85}
               sizes="(max-width: 1024px) 100vw, 1024px"
               className="h-auto w-full rounded-xl bg-white object-contain shadow-2xl"
             />

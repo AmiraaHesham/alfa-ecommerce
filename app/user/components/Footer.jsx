@@ -62,9 +62,8 @@ export default function Footer() {
               <span className=" relative w-[60px] h-[60px]">
                 <Image
                   src="/Images/logo.png"
-                  alt="logo"
+                  alt="شعار ألفا جروب تكنولوجي"
                   fill
-                  priority
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                   className="object-fill"
                 />
@@ -72,7 +71,7 @@ export default function Footer() {
             </div>
           </Link>
           <div>
-            <h1 className="text-4xl font-semibold ">{t("alfa_group")}</h1>
+            <h2 className="text-4xl font-semibold ">{t("alfa_group")}</h2>
           </div>
         </div>
         <div className="flex justify-between items-center gap-2">
@@ -80,6 +79,7 @@ export default function Footer() {
             href={contact.facebook}
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="فيسبوك"
             className={`w-8 h-8 bg-blue-600 text-white  p-[6px] rounded-full block ${contact.facebook === "" ? "hidden" : "block"
               }`}
           >
@@ -91,6 +91,7 @@ export default function Footer() {
             href={contact.whatsApp}
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="واتساب"
             className={` w-8 h-8 bg-green-600 text-white rounded-full  p-[6px] ${contact.whatsApp === "" ? "hidden" : "block"
               } `}
           >
@@ -102,6 +103,7 @@ export default function Footer() {
             href={contact.telegram}
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="تيليجرام"
             className={` w-8 h-8  bg-blue-600 text-white  p-[6px] rounded-full ${contact.telegram === "" ? "hidden" : "block"
               }`}
           >
@@ -114,6 +116,7 @@ export default function Footer() {
             href={contact.instagram}
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="إنستجرام"
             className={` w-8 h-8 bg-pink-600 text-white rounded-full  p-[6px]  ${contact.instagram === "" ? "hidden" : "block"
               }`}
           >
@@ -126,6 +129,7 @@ export default function Footer() {
             href={contact.x}
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="إكس"
             className={` w-8 h-8 bg-black text-white rounded-full  p-[7px] ${contact.x === "" ? "hidden" : "block"
               }`}
           >
@@ -137,6 +141,7 @@ export default function Footer() {
             href={contact.youtube}
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="يوتيوب"
             className={` w-8 h-8 rounded-full bg-red-600 text-white p-[6px] ${contact.youtube === "" ? "hidden" : "block"
               }`}
           >
@@ -164,7 +169,7 @@ export default function Footer() {
             }))}
           >
 
-            <h1 className="text-xl font-medium  text-black">{t("quick_links")} </h1>
+            <h2 className="text-xl font-medium  text-black">{t("quick_links")} </h2>
             <span className={`text-black md:hidden transition-transform duration-300 ${show.quick_links ? "rotate-180" : ""
               }`}><IoIosArrowDown /></span>
           </div>
@@ -210,7 +215,7 @@ export default function Footer() {
               customer_service: !prev.customer_service
             }))}>
 
-            <h1 className="text-xl font-medium  text-black">{t("customer_service")} </h1>
+            <h2 className="text-xl font-medium  text-black">{t("customer_service")} </h2>
             <span className={`text-black md:hidden transition-transform duration-300 ${show.customer_service ? "rotate-180" : ""
               }`}><IoIosArrowDown /></span>          </div>
           <div className={`flex-col gap-2 w-full ${show.customer_service ? "flex duration-500 scale-x-100" : "hidden duration-500 "
@@ -255,7 +260,7 @@ export default function Footer() {
             }))}
           >
 
-            <h1 className="text-xl font-medium  text-black">{t("my_account")} </h1>
+            <h2 className="text-xl font-medium  text-black">{t("my_account")} </h2>
             <span className={`text-black md:hidden transition-transform duration-300 ${show.my_account ? "rotate-180" : ""
               }`}><IoIosArrowDown /></span>          </div>
           <div className={`flex-col  gap-2 w-full ${show.my_account ? "flex duration-500 scale-x-100" : "hidden duration-500 "
@@ -293,7 +298,7 @@ export default function Footer() {
             }))}
           >
 
-            <h1 className="text-xl font-medium  text-black">{t("contact_us")} </h1>
+            <h2 className="text-xl font-medium  text-black">{t("contact_us")} </h2>
             <span className={`text-black md:hidden transition-transform duration-300 ${show.contact_us ? "rotate-180" : ""
               }`}><IoIosArrowDown /></span>
           </div>
@@ -322,7 +327,7 @@ export default function Footer() {
       </div>
       <hr className="h-px  border-0 bg-gray-200 " />
       <div className="flex justify-center items-center w-full mt-4">
-        <h1> {<div>  Designed & Developed by | <span className="font-semibold">BlueSoft</span> © {new Date().getFullYear()} </div>}   </h1>
+        <h2> {<div>  Designed & Developed by | <span className="font-semibold">BlueSoft</span> © {new Date().getFullYear()} </div>}   </h2>
       </div>
     </div>
   );

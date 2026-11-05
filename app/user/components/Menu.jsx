@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useLanguage } from "../../../context/LanguageContext";
 import { getCategories } from "../../../utils/functions";
+import { categoryPath } from "../../../lib/seo";
 import { useMenuOpen } from "../../../context/MenuOpenContext";
 import {
   MdDevices,
@@ -110,7 +111,7 @@ export default function Menu() {
         {activeTab === "categories" ? (
           <div className="flex-1 overflow-y-auto bg-white">
             <Link
-              href="/user/products/category/all/null"
+              href="/products"
               onClick={closeMenu}
               className="flex items-center gap-3 px-4 h-14 border-b border-gray-200"
             >
@@ -132,9 +133,7 @@ export default function Menu() {
               categoriesList.map((item) => (
                 <Link
                   key={item.itemCategoryId}
-                  href={`/user/products/category/${encodeURIComponent(
-                    item.nameEn
-                  )}/${item.itemCategoryId}`}
+                  href={categoryPath(item)}
                   onClick={closeMenu}
                   className="flex items-center gap-3 px-4 h-14 border-b border-gray-200 hover:bg-gray-50"
                 >

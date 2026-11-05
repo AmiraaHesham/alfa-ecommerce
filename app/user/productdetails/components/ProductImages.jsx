@@ -82,7 +82,7 @@ export default function ProductImages({ product }) {
                       ? img.imageUrl
                       : getThumbnailUrl(img.imageUrl))
                   }
-                  alt=""
+                  alt={`${productName} - ${locale === "ar" ? "صورة مصغرة" : "thumbnail"} ${index + 1}`}
                   fill
                   sizes="80px"
                   className="object-contain p-1"
@@ -105,7 +105,7 @@ export default function ProductImages({ product }) {
     navigation={{
       prevEl: ".custom-prev",
       nextEl: ".custom-next",
-    }}     
+    }}
             onSwiper={(swiper) => {
               swiperRef.current = swiper;
             }}
@@ -126,8 +126,10 @@ export default function ProductImages({ product }) {
                   src={urlImage + img.imageUrl}
                   alt={
                     productName
-                      ? `${productName} - image ${index + 1}`
-                      : `Product image ${index + 1}`
+                      ? `${productName} - ${locale === "ar" ? "صورة" : "image"} ${index + 1}`
+                      : locale === "ar"
+                        ? `صورة المنتج ${index + 1}`
+                        : `Product image ${index + 1}`
                   }
                   fill
                   priority={index === 0}
@@ -143,19 +145,21 @@ export default function ProductImages({ product }) {
               transition-all duration-300 ">
                     <button
                 type="button"
+                aria-label={locale === "ar" ? "الصورة السابقة" : "Previous image"}
                 onClick={() => swiperRef.current?.slidePrev()}
                 className="absolute left-0 top-1/3 -translate-y-1/2 z-50
                             text-2xl
-                          flex items-center justify-center 
+                          flex items-center justify-center
                           text-gray-700 hover:text-black"
               >
                 < MdOutlineArrowBackIosNew />
               </button>
                   <button
                 type="button"
+                aria-label={locale === "ar" ? "الصورة التالية" : "Next image"}
                 onClick={() => swiperRef.current?.slideNext()}
                 className="absolute right-0 top-1/3 -translate-y-1/2 z-50
-                        
+
                           text-2xl
                           flex items-center justify-center  text-gray-700 hover:text-black"
               >
@@ -170,7 +174,7 @@ export default function ProductImages({ product }) {
         )}
       </div>
 
-      
+
     </div>
   );
 }

@@ -1,91 +1,61 @@
-"use client"
-import { useRouter } from "next/navigation";
-import Header from "./user/components/Header";
-import Footer from './user/components/Footer'
-import BottomNav from './user/components/BottomNav'
-import Menu from './user/components/Menu'
-import { MenuOpenProvider } from "../context/MenuOpenContext";
-import { FaSquareWhatsapp, FaWhatsapp } from "react-icons/fa6";
-import { getRequest } from "../utils/requestsUtils";
-import { useEffect, useState } from "react";
-import Image from "next/image";
-import HomePage from "./user/home/page";
-export default function Home() {
-  const router = useRouter();
-    const [whatsAppUrl, setWhatsAppUrl] = useState()
-    const [role, setRole] = useState()
-  
-    const getWhatsappUrl = async () => {
-      const response = await getRequest("/api/public/contact");
-      setWhatsAppUrl(response?.data?.whatsappURL);
-    }
-    useEffect(() => {
-      getWhatsappUrl()
-    }, [])
-  
-    useEffect(() => {
-      setRole(localStorage.role)
-    }, [role])
-  useEffect(() => {
-    // غيّر '/ar' إلى الرابط اللي عايزه
-    const role =
-      typeof window !== "undefined" ? localStorage.getItem("role") : null;
-    if (
-      role === "ADMIN"
+import HomePageClient from "./components/HomePageClient";
+import HomeSeoIntro from "./components/HomeSeoIntro";
+import { getAllCategories, getRecentProducts } from "../lib/api";
+import {
+  SITE_URL,
+  SITE_NAME_AR,
+  DEFAULT_OG_IMAGE,
+  buildBreadcrumbJsonLd,
+  serializeJsonLd,
+} from "../lib/seo";
 
-    ) {
-      router.replace('/admin/Dashboard');
+export const revalidate = 300;
+export const dynamic = "force-dynamic";
 
-    } else {
-      router.replace('/'); // استخدم replace عشان ما يبقاش في التاريخ
+export const metadata = {
+  title: {
+    absolute: `${SITE_NAME_AR} | إلكترونيات وأجهزة منزلية`,
+  },
+  description:
+    "تسوق أجهزة استقبال وشاشات وكابلات وأجهزة منزلية وإلكترونيات من ألفا جروب تكنولوجي بأسعار ومواصفات حقيقية.",
+  alternates: { canonical: SITE_URL },
+  openGraph: {
+    type: "website",
+    url: SITE_URL,
+    siteName: SITE_NAME_AR,
+    locale: "ar_EG",
+    title: `${SITE_NAME_AR} | إلكترونيات وأجهزة منزلية`,
+    description:
+      "تسوق أجهزة استقبال وشاشات وكابلات وأجهزة منزلية وإلكترونيات من ألفا جروب تكنولوجي.",
+    images: [{ url: DEFAULT_OG_IMAGE, alt: SITE_NAME_AR }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${SITE_NAME_AR} | إلكترونيات وأجهزة منزلية`,
+    description:
+      "تسوق أجهزة استقبال وشاشات وكابلات وأجهزة منزلية وإلكترونيات من ألفا جروب تكنولوجي.",
+    images: [DEFAULT_OG_IMAGE],
+  },
+};
 
-    }
-  }, [router]);
+export default async function HomePage() {
+  const [categories, products] = await Promise.all([
+    getAllCategories().catch(() => []),
+    getRecentProducts().catch(() => []),
+  ]);
+  const breadcrumbs = [{ name: "الرئيسية", url: SITE_URL }];
 
   return (
-       <>
-    
-          {
-            role === 'ADMIN' ? (
-              <div className="w-full h-screen flex justify-center items-center text-center">
-                <div className=" ">
-                  <div className="flex justify-center items-center mb-20">
-                    <Image src='/Images/logo.png' width={200} height={200} alt='logo ' className="flex justify-center items-center" />
-    
-                  </div>
-                  <h1 className="text-2xl font-semibold ">You are not authorized to view this page</h1>
-                </div>
-    
-              </div>
-    
-            ) : (
-              <MenuOpenProvider>
-                <div className="w-full">
-                  <Header />
-                  <div className=" w-full max-w-[1500px] min-w-0 pb-20 sm:pb-0 overflow-x-clip mx-auto">
-<HomePage/>
-                  </div>
-    
-      <a
-                      href={whatsAppUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="fixed bottom-[5.5rem] right-5 z-40 sm:bottom-14"
-                    >
-                      <FaWhatsapp
-                        className="bg-green-500 text-white p-1 rounded-xl text-5xl drop-shadow-lg hover:scale-110 duration-300"
-                      />
-                    </a>
-          <footer id="footer" className="w-full  bg-white pb-20 sm:pb-0">
-                  <Footer />
-                </footer>
-                <BottomNav />
-                <Menu />
-              </div>
-            </MenuOpenProvider>
-          )
-        }
-      </>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: serializeJsonLd(buildBreadcrumbJsonLd(breadcrumbs)),
+        }}
+      />
+      <HomePageClient>
+        <HomeSeoIntro categories={categories} products={products} />
+      </HomePageClient>
+    </>
   );
-
 }

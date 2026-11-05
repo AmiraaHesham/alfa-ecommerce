@@ -5,13 +5,13 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useLanguage } from "../../../../context/LanguageContext";
 import { getThumbnailUrl } from "../../../../utils/functions";
+import { productPath } from "../../../../lib/seo";
 
 export default function ImageSlider({ sliderImages }) {
   const { locale } = useLanguage();
-  const navigate = useRouter();
 
   return (
     <div className="w-full lg:h-[510px] xs:h-[470px] rounded-3xl">
@@ -35,20 +35,20 @@ export default function ImageSlider({ sliderImages }) {
       >
         {sliderImages.map((img, index) => (
           <SwiperSlide key={index} className="relative w-full rounded-3xl">
-            <button
-              onClick={() => img.itemId ? navigate.push(`/user/productdetails/item/${img.itemId}`) : null}
+            <Link
+              href={img.itemId ? productPath({ itemId: img.itemId, nameEn: img.titleEn || img.title, nameAr: img.titleAr || img.title }) : "/products"}
               className="relative w-full h-full block cursor-pointer"
             >
               <Image
                 src={process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL + img.imageUrl} 
-                alt={`Slide ${index + 1}`}
+                alt={img.titleAr || img.title || `عرض ${index + 1}`}
                 fill
-                priority
+                priority={index === 0}
                 
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                 className="object-cover rounded-3xl"
               />
-            </button>
+            </Link>
           </SwiperSlide>
         ))}
       </Swiper>

@@ -10,6 +10,8 @@
     "test": "jest --runInBand",
     "pretest": "node scripts/generate-route-manifest.mjs",
     "routes:manifest": "node scripts/generate-route-manifest.mjs",
+    "seo:validate": "node scripts/validate-seo.mjs",
+    "seo:warm-images": "node scripts/warm-images.mjs",
     "test:e2e": "playwright test"
   },
   "dependencies": {

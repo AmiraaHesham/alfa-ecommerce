@@ -6,11 +6,12 @@ import { postRequest } from "../../../../utils/requestsUtils";
 import { useRouter } from "next/navigation";
 import { useRefresh } from "../../../../context/refreshContext";
 import { useCartDrawerOpen } from "../../../../context/CartDrawerOpenContext";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { useLanguage } from "../../../../context/LanguageContext";
 import { toast } from "react-toastify";
 import Link from "next/link";
 import StarRating from "../../components/StarRating";
+import { categoryPath } from "../../../../lib/seo";
 
 export default function ProductInfo({ product, itemId }) {
     const navigate = useRouter();
@@ -30,23 +31,8 @@ export default function ProductInfo({ product, itemId }) {
         locale === "ar" ? product.descriptionAr : product.descriptionEn;
 
     const [descriptionExpanded, setDescriptionExpanded] = useState(false);
-    const descriptionRef = useRef(null);
-    const [descriptionHeights, setDescriptionHeights] = useState({
-        collapsed: 0,
-        full: 0,
-    });
 
-    useEffect(() => {
-        const el = descriptionRef.current;
-        if (!el) return;
-        setDescriptionHeights({
-            collapsed: el.clientHeight,
-            full: el.scrollHeight,
-        });
-    }, [description, locale]);
-
-    const canExpandDescription =
-        descriptionHeights.full > descriptionHeights.collapsed + 1;
+    const canExpandDescription = description && description.length > 220;
 
     const addFavoriteItems = async () => {
         if (userId) {
@@ -162,7 +148,7 @@ export default function ProductInfo({ product, itemId }) {
                         <span className="inline-flex min-w-0 items-center gap-1">
                             <span>{t("product_category")}:</span>
                             <Link
-                                href={`/user/products/category/${product.category.nameEn}/${product.category.id}`}
+                                href={categoryPath(product.category)}
                                 className="max-w-[180px] truncate font-medium text-gray-700 transition-colors hover:text-[#E14A5C] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E14A5C]"
                             >
                                 {locale === "ar" ? product.category.nameAr : product.category.nameEn}
@@ -215,25 +201,15 @@ export default function ProductInfo({ product, itemId }) {
 
             {description ? (
                 <div className="min-w-0">
-                    <div
-                        className="overflow-hidden whitespace-pre-wrap transition-[max-height] duration-500 ease-in-out"
-                        style={{
-                            maxHeight: descriptionExpanded
-                                ? `${descriptionHeights.full + 4}px`
-                                : `${descriptionHeights.collapsed}px`,
-                        }}
+                    <p
+                        className={`break-words text-xs leading-relaxed text-gray-500 sm:text-sm ${
+                            descriptionExpanded ? "" : "line-clamp-6"
+                        }`}
                     >
-                        <p
-                            ref={descriptionRef}
-                            className={` break-words text-xs leading-relaxed text-gray-500 sm:text-sm ${
-                                descriptionExpanded ? "" : "line-clamp-6"
-                            }`}
-                        >
-                            {description}
-                        </p>
-                    </div>
+                        {description}
+                    </p>
 
-                    {descriptionExpanded || canExpandDescription ? (
+                    {canExpandDescription ? (
                         <button
                             type="button"
                             onClick={() => setDescriptionExpanded((value) => !value)}

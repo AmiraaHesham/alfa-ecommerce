@@ -208,9 +208,8 @@ setSearchInput(decodeSearchInput(lastPort))
         className="h-px border-0 bg-gray-600"
       />
       <div className="w-full  flex items-center  p-5  justify-between flex-wrap gap-y-3 min-w-0 ">
-        <button onClick={toggleMenu} className="text-white text-3xl xs:block lg:hidden">
+        <button onClick={toggleMenu} aria-label={locale === "ar" ? "فتح القائمة" : "Open menu"} className="text-white text-3xl xs:block lg:hidden">
           <PiListBold />
-
         </button>
         <div className="flex justify-center items-center min-w-0">
           <Link href="/" className="flex justify-center items-center ">
@@ -218,7 +217,7 @@ setSearchInput(decodeSearchInput(lastPort))
             <span className="relative w-12 h-12 ">
               <Image
                 src="/Images/logo.png"
-                alt="logo"
+                alt="شعار ألفا جروب تكنولوجي"
                 fill
                 sizes="200px"
                 priority
@@ -226,9 +225,9 @@ setSearchInput(decodeSearchInput(lastPort))
               />
             </span>
             <div className="cursor-pointer min-w-0">
-              <h1 className="text-3xl  text-white font-bold ">
+              <span className="text-3xl  text-white font-bold ">
                 {t("alfa_group")}
-              </h1>
+              </span>
             </div>
 
           </Link>
@@ -240,6 +239,7 @@ setSearchInput(decodeSearchInput(lastPort))
         >
           <button
             className="text-white h-full border-2 rounded-full text-2xl bg-[#e14a5c] p-1 "
+            aria-label={t("search") || "بحث"}
             onClick={() => {
               searchInput
                 ? navigate.push("/user/search/" + encodeURIComponent(searchInput))
@@ -273,6 +273,7 @@ setSearchInput(decodeSearchInput(lastPort))
 
           <div className="flex items-center xs:gap-2 lg:gap-5 text-white">
             <button
+              aria-label={locale === "ar" ? "تغيير اللغة" : "Change language"}
               onClick={() => {
                 const newLocale = locale === "ar" ? "en" : "ar";
                 setLocale(newLocale);
@@ -373,6 +374,7 @@ setSearchInput(decodeSearchInput(lastPort))
         >
           <button
             className="text-white h-full border-2 rounded-full text-2xl bg-[#e14a5c] p-1 "
+            aria-label={t("search") || "بحث"}
             onClick={() => {
               searchInput
                 ? navigate.push("/user/search/" + encodeURIComponent(searchInput))

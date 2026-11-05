@@ -36,7 +36,7 @@ export default function SiteFeatures() {
 
                             <LiaCertificateSolid className="w-full h-full text-[#e14a5c] " />
                         </span>
-                        <h1 className=" w-3/4 text-sm ">{t("High_Quality")}</h1>
+                        <h2 className=" w-3/4 text-sm ">{t("High_Quality")}</h2>
                     </div>
                 </SwiperSlide>
 
@@ -45,7 +45,7 @@ export default function SiteFeatures() {
                         <span className="text-3xl p-1">
                             <FaShippingFast className="w-full h-full  text-[#e14a5c] " />
                         </span>
-                        <h1 className="sm:w-full xs:w-1/2 text-sm">{t("Fast_Delivery")}</h1>
+                        <h2 className="sm:w-full xs:w-1/2 text-sm">{t("Fast_Delivery")}</h2>
                     </div>
                 </SwiperSlide>
 
@@ -56,7 +56,7 @@ export default function SiteFeatures() {
 
                             <RiLoopRightFill className="w-full h-full  text-[#e14a5c] " />
                         </span>
-                        <h1 className="sm:w-full xs:w-1/2 text-sm ">{t("Easy_Returns")}</h1>
+                        <h2 className="sm:w-full xs:w-1/2 text-sm ">{t("Easy_Returns")}</h2>
                     </div>
                 </SwiperSlide>
                 
@@ -66,7 +66,7 @@ export default function SiteFeatures() {
 
                             <LuShieldCheck className="w-full h-full  text-[#e14a5c]  " />
                         </span>
-                        <h1 className="sm:w-full xs:w-1/2 text-sm ">{t("Original_Products")}</h1>
+                        <h2 className="sm:w-full xs:w-1/2 text-sm ">{t("Original_Products")}</h2>
                     </div>
                 </SwiperSlide>
 <SwiperSlide className="!w-full md:!w-[270px]   text-center">
@@ -76,7 +76,7 @@ export default function SiteFeatures() {
 
                             <IoMdPricetags className="w-full h-full text-[#e14a5c] " />
                         </span>
-                        <h1 className="sm:w-full xs:w-1/2 text-sm">{t("Best_Prices")}</h1>
+                        <h2 className="sm:w-full xs:w-1/2 text-sm">{t("Best_Prices")}</h2>
 
                     </div>
                 </SwiperSlide>

@@ -3,22 +3,29 @@
 import {
   createContext,
   useContext,
-  useState,
   useEffect,
+  useState,
 } from 'react';
+
+import arMessages from '../public/locales/ar.json';
+import enMessages from '../public/locales/en.json';
+
+const BUNDLES = { ar: arMessages, en: enMessages };
+const SUPPORTED_LANGUAGES = ['ar', 'en'];
 
 const LanguageContext = createContext({
   locale: 'ar',
   setLocale: () => {},
   t: (key) => key,
+  isLanguageReady: true,
 });
 
 export const LanguageProvider = ({ children }) => {
-  const [locale, setLocale] = useState(null);
-  const [messages, setMessages] = useState({});
-  const [isLanguageReady, setIsLanguageReady] = useState(false);
+  // Render Arabic on the server and on the first client paint. This keeps the
+  // SEO-visible HTML translated instead of exposing translation keys, and
+  // avoids a hydration mismatch when the visitor later switches language.
+  const [locale, setLocale] = useState('ar');
 
-  // تحديد اللغة من localStorage أو لغة المتصفح
   useEffect(() => {
     let savedLang = null;
 
@@ -28,73 +35,26 @@ export const LanguageProvider = ({ children }) => {
       console.error('Unable to read saved language:', error);
     }
 
-    const browserLang =
-      typeof navigator !== 'undefined'
-        ? navigator.language?.toLowerCase().split('-')[0]
-        : 'ar';
-
-    // اللغات المدعومة فقط
-    const supportedLanguages = ['ar', 'en'];
-
-    const initialLang = supportedLanguages.includes(savedLang)
-      ? savedLang
-      : supportedLanguages.includes(browserLang)
-        ? browserLang
-        : 'ar';
-
-    setLocale(initialLang);
-    setIsLanguageReady(true);
+    // Arabic is the canonical server-rendered language. Do not auto-switch to
+    // the browser language: that would replace already-rendered Arabic content
+    // after hydration, causing layout shifts and inconsistent SEO content.
+    if (SUPPORTED_LANGUAGES.includes(savedLang)) {
+      setLocale(savedLang);
+    }
   }, []);
 
-  // حفظ اللغة عند تغييرها
   useEffect(() => {
-    if (!locale || !isLanguageReady) return;
-
     try {
       localStorage.setItem('lang', locale);
     } catch (error) {
       console.error('Unable to save language:', error);
     }
-  }, [locale, isLanguageReady]);
-
-  // تحميل ملف الترجمة
-  useEffect(() => {
-    if (!locale) return;
-
-    let cancelled = false;
-
-    const loadMessages = async () => {
-      try {
-        const response = await fetch(`/locales/${locale}.json`);
-
-        if (!response.ok) {
-          throw new Error(`Failed to load locale: ${locale}`);
-        }
-
-        const data = await response.json();
-
-        if (!cancelled) {
-          setMessages(data);
-        }
-      } catch (error) {
-        if (!cancelled) {
-          console.error('Translation loading error:', error);
-          setMessages({});
-        }
-      }
-    };
-
-    loadMessages();
-
-    return () => {
-      cancelled = true;
-    };
   }, [locale]);
 
-  // دالة الترجمة
+  const messages = BUNDLES[locale] || BUNDLES.ar;
+
   const t = (key) => {
     if (!key) return '';
-
     return messages[key] ?? key;
   };
 
@@ -104,7 +64,7 @@ export const LanguageProvider = ({ children }) => {
         locale,
         setLocale,
         t,
-        isLanguageReady,
+        isLanguageReady: true,
       }}
     >
       {children}

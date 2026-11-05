@@ -1,5 +1,6 @@
 import { useIdContext } from "../../../context/idContext";
 import Image from "next/image";
+import Link from "next/link";
 import { FaHeart } from "react-icons/fa";
 import { MdOutlineAddShoppingCart } from "react-icons/md";
 import { deleteRequest, postRequest } from "../../../utils/requestsUtils";
@@ -17,8 +18,9 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { useRef } from "react";
+import { productPath, categoryPath } from "../../../lib/seo";
 
-export default function ProductCard({ productInfo, favorite }) {
+export default function ProductCard({ productInfo, favorite, priority = false }) {
   const { setSelectedProductId } = useIdContext();
   const navigate = useRouter();
   const { t } = useLanguage();
@@ -157,12 +159,17 @@ export default function ProductCard({ productInfo, favorite }) {
   // const describtion =
   // productInfo?.[locale === "ar" ? "descriptionAr" : "descriptionEn"] || "";
   const productName = locale === "ar" ? productInfo?.nameAr : productInfo?.nameEn;
+  const displayName = productName || productInfo?.nameEn || productInfo?.nameAr || "منتج";
+  const productHref = productPath(productInfo);
+  const categoryHref = productInfo?.itemCategory
+    ? categoryPath(productInfo.itemCategory)
+    : null;
 
   // Single handler for the whole card: clicking any part of the card opens the
   // product details (image, name, category, prices, badges).
   const openProductDetails = () => {
     setSelectedProductId(productInfo?.itemId);
-    navigate.push(`/user/productdetails/${productName}/${productInfo?.itemId}`);
+    navigate.push(productHref);
   };
 
   return (
@@ -220,19 +227,26 @@ export default function ProductCard({ productInfo, favorite }) {
                   {productInfo?.images?.map((img, index) => (
                     <SwiperSlide className="rounded-3xl z-50" key={img?.imageUrl || index}
                     >
-                      <Image
-                        src={
-                          `${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL}${getThumbnailUrl(
-                            img?.imageUrl
-                          )}` || ""
-                        }
-                        alt=""
-                        fill
-                        priority={index === 0}
-                        quality={100}
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                        className="object-contain rounded-3xl"
-                      />
+                      <Link
+                        href={productHref}
+                        onClick={(event) => event.stopPropagation()}
+                        aria-label={displayName}
+                        className="relative block h-full w-full"
+                      >
+                        <Image
+                          src={
+                            `${process.env.NEXT_PUBLIC_API_IMAGE_BASE_URL}${getThumbnailUrl(
+                              img?.imageUrl
+                            )}` || ""
+                          }
+                          alt={`${displayName} - ${locale === "ar" ? "صورة" : "image"} ${index + 1}`}
+                          fill
+                          priority={priority && index === 0}
+                          quality={85}
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                          className="object-contain rounded-3xl"
+                        />
+                      </Link>
                     </SwiperSlide>
                   ))}
                   {/* Hover Zones */}
@@ -388,16 +402,35 @@ export default function ProductCard({ productInfo, favorite }) {
 <div className="flex flex-col gap-2 items-center justify-center min-w-0 w-full"
         >
         <div className="w-full flex flex-col justify-center items-center min-w-0">
-          <h1
+          <h2
             className="text-sm font-bold break-words text-center w-full"
-
           >
-            {productName?.length <= 29
-              ? productName
-              : productName?.slice(0, 29) + " ..."}
-          </h1>
+            <Link
+              href={productHref}
+              onClick={(event) => event.stopPropagation()}
+              className="transition-colors hover:text-[#E14A5C]"
+            >
+              {displayName?.length <= 29
+                ? displayName
+                : displayName?.slice(0, 29) + " ..."}
+            </Link>
+          </h2>
           <div className="flex justify-center items-cente text-gray-500 text-sm">
-            {locale === "ar" ? productInfo?.itemCategory?.nameAr : productInfo?.itemCategory?.nameEn}
+            {categoryHref ? (
+              <Link
+                href={categoryHref}
+                onClick={(event) => event.stopPropagation()}
+                className="transition-colors hover:text-[#E14A5C]"
+              >
+                {locale === "ar"
+                  ? productInfo?.itemCategory?.nameAr
+                  : productInfo?.itemCategory?.nameEn}
+              </Link>
+            ) : (
+              locale === "ar"
+                ? productInfo?.itemCategory?.nameAr
+                : productInfo?.itemCategory?.nameEn
+            )}
             {" "}
           </div>
 

@@ -193,7 +193,7 @@
   "all": "All",
   "priceLowToHigh": "Price: Low to High",
   "priceHighToLow": "Price: High to Low",
-  "no_data": "No products found",
+  "no_data": "No data",
   "hello": "Hello",
   "edit_category": "Edit Category",
   "processing_orders": "Processing Orders",
@@ -408,11 +408,7 @@
   "somethingWentWrong": "Something went wrong. Please try again.",
   "send": "Send reset link",
   "sending": "Sending...",
-  "filters": "Filters",
   "clear_all": "Clear all",
-  "clear": "Clear",
-  "close": "Close",
-  "no_data": "No data",
   "filter_operator_EQUALS": "Equals",
   "filter_operator_NOT_EQUALS": "Not equals",
   "filter_operator_CONTAINS": "Contains",
@@ -425,5 +421,8 @@
   "filter_operator_LESS_THAN_OR_EQUAL": "Less than or equal",
   "filter_operator_BETWEEN": "Between",
   "filter_operator_IS_NULL": "Is empty",
-  "filter_operator_IS_NOT_NULL": "Is not empty"
+  "filter_operator_IS_NOT_NULL": "Is not empty",
+  "all_products": "All products",
+  "all_products_intro": "Browse all Alfa Group Tech products with real prices and specifications.",
+  "category_seo_intro": "Browse products in this category with real prices and specifications."
 }

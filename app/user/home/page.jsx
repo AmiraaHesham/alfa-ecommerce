@@ -42,6 +42,7 @@ import {
 } from "../../../utils/functions";
 import { getRequest } from "../../../utils/requestsUtils";
 import "aos/dist/aos.css";
+import { productPath } from "../../../lib/seo";
 
 // ==============================
 // Constants
@@ -53,7 +54,7 @@ const AD_RANGE = { min: 1, max: 5 };
 // id of the "Home Appliances" category used by the top products section
 const HOME_APPLIANCES_CATEGORY_ID = 9;
 const TOP_PRODUCTS_COUNT = 10;
-const TOP_PRODUCTS_HREF = `/user/products/category/Home%20Appliances/${HOME_APPLIANCES_CATEGORY_ID}`;
+const TOP_PRODUCTS_HREF = `/categories/home-appliances`;
 
 const EMPTY_ADS = {
   ad1: {
@@ -244,6 +245,8 @@ export default function Homepage() {
           ...prev,
           brand: adProduct.brand || null,
           name: adProduct.nameEn || null,
+          seoCode: adProduct.seoCode || null,
+          itemId: adProduct.itemId || null,
         }));
       });
 
@@ -378,7 +381,7 @@ export default function Homepage() {
                   flex flex-col justify-between items-center relative overflow-hidden"
                  
                   >
-                    <Link href={`/user/productdetails/${ad1Product.nameEn}/${ads.ad1.itemId}`}>
+                    <Link href={productPath(ad1Product)}>
                     <div className="w-full text-center p-5">
                       <span className="text-sm">{t("Special_Offer")} </span>
                       {ad1Product && ( 
@@ -408,7 +411,7 @@ export default function Homepage() {
                       />
                     </div>
 
-</Link> 
+</Link>
                   </div>
 
                   {/* Categories */}
@@ -442,7 +445,7 @@ export default function Homepage() {
                   alt="Advertisement"
                   fill
                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                   quality={100}
+                   quality={85}
                   className="object-fill"
                 />
               )}
@@ -457,9 +460,9 @@ export default function Homepage() {
         <section className="w-full min-w-0 xs:order-1 lg:order-2">
           <div className="w-full flex xl:flex-row xs:flex-col justify-between items-center gap-2">
             <div className="w-full">
-              <h1 className="flex items-center font-semibold gap-2 text-2xl mb-1">
+              <h2 className="flex items-center font-semibold gap-2 text-2xl mb-1">
                 {t("featured_products")}
-              </h1>
+              </h2>
               {/* <hr className="w-24 h-1 border-0 rounded-full bg-gradient-to-l from-red-200 via-red-400 to-red-200" /> */}
             </div>
             <div className="flex items-center gap-5 xl:justify-end xs:justify-start w-full md:text-sm xl:text-base  font-semibold">
@@ -526,11 +529,10 @@ export default function Homepage() {
               <div className="w-full h-full" />
             )}
             <div className="flex flex-col justify-around items-center w-full">
-              <h1 className="text-3xl font-bold">{ad3Product.brand} </h1>
+              <h2 className="text-3xl font-bold">{ad3Product.brand} </h2>
 
-              <h1 className=" text-center my-3">{locale === "ar" ? ads.ad3.titleAr : ads.ad3.title} </h1>
-             <Link className={ads.ad3.itemId ? "block" : "hidden"} href={`/user/productdetails/${ad3Product.name}/${ads.ad3.itemId}`}><button  className="text-white rounded-full bg-[#CD4354] hover:bg-[#c13b4a] w-[120px] py-3 px-5 mt-2 text-sm font-semibold ">{t("buyNow")} </button></Link> 
-
+              <h2 className=" text-center my-3">{locale === "ar" ? ads.ad3.titleAr : ads.ad3.title} </h2>
+             <Link className={ads.ad3.itemId ? "block" : "hidden"} href={productPath({...ad3Product, itemId: ads.ad3.itemId})}><button  className="text-white rounded-full bg-[#CD4354] hover:bg-[#c13b4a] w-[120px] py-3 px-5 mt-2 text-sm font-semibold ">{t("buyNow")} </button></Link>
             </div>
 
           </div>
@@ -550,11 +552,10 @@ export default function Homepage() {
               <div className="w-full h-full" />
             )}
             <div className="flex flex-col justify-around items-center w-full">
-              <h1 className="text-3xl font-bold">{ad4Product.brand} </h1>
+              <h2 className="text-3xl font-bold">{ad4Product.brand} </h2>
 
-              <h1 className=" text-center my-3">{locale === "ar" ? ads.ad4.titleAr : ads.ad4.title} </h1>
-             <Link className={ads.ad4.itemId ? "block" : "hidden"} href={`/user/productdetails/${ad4Product.name}/${ads.ad4.itemId}`}><button  className="text-white rounded-full bg-[#CD4354] hover:bg-[#c13b4a] w-[120px] py-3 px-5 mt-2 text-sm font-semibold ">{t("buyNow")} </button></Link> 
-
+              <h2 className=" text-center my-3">{locale === "ar" ? ads.ad4.titleAr : ads.ad4.title} </h2>
+             <Link className={ads.ad4.itemId ? "block" : "hidden"} href={productPath({...ad4Product, itemId: ads.ad4.itemId})}><button  className="text-white rounded-full bg-[#CD4354] hover:bg-[#c13b4a] w-[120px] py-3 px-5 mt-2 text-sm font-semibold ">{t("buyNow")} </button></Link>
             </div>
           </div>
           <div className="group cursor-pointer w-full flex flex-col justify-center items-center h-[500px] bg-white rounded-3xl  overflow-hidden p-5">
@@ -573,11 +574,10 @@ export default function Homepage() {
               <div className="w-full h-full" />
             )}
             <div className="flex flex-col justify-around items-center w-full">
-              <h1 className="text-3xl font-bold">{ad5Product.brand} </h1>
+              <h2 className="text-3xl font-bold">{ad5Product.brand} </h2>
 
-              <h1 className=" text-center my-3">{locale === "ar" ? ads.ad5.titleAr : ads.ad5.title} </h1>
-             <Link className={ads.ad5.itemId ? "block" : "hidden"} href={`/user/productdetails/${ad5Product.name}/${ads.ad5.itemId}`}><button  className="text-white rounded-full bg-[#CD4354] hover:bg-[#c13b4a] w-[120px] py-3 px-5 mt-2 text-sm font-semibold ">{t("buyNow")} </button></Link> 
-
+              <h2 className=" text-center my-3">{locale === "ar" ? ads.ad5.titleAr : ads.ad5.title} </h2>
+             <Link className={ads.ad5.itemId ? "block" : "hidden"} href={productPath({...ad5Product, itemId: ads.ad5.itemId})}><button  className="text-white rounded-full bg-[#CD4354] hover:bg-[#c13b4a] w-[120px] py-3 px-5 mt-2 text-sm font-semibold ">{t("buyNow")} </button></Link>
             </div>
 
           </div>
@@ -589,9 +589,9 @@ export default function Homepage() {
         <div className="w-full flex justify-between items-center">
 
           <div>
-            <h1 className="flex items-center font-semibold gap-2 xs:text-base md:text-xl mb-1">
+            <h2 className="flex items-center font-semibold gap-2 xs:text-base md:text-xl mb-1">
               {t("morerecommendedproducts")}
-            </h1>
+            </h2>
             {/* <hr className="w-24 h-1 border-0 rounded-full bg-gradient-to-l from-red-200 via-red-400 to-red-200" /> */}
           </div>
           <div className="text-xs font-semibold">
